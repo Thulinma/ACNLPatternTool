@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Animal Crossing: New Leaf Pattern Tool - By Thulinma (ACNL Pattern Maker)</title>
+<style>
+BODY,HTML{color:white;background-color:black;}
+CANVAS{border:1px solid white;background-color:white;}
+#colors,#color_pal{border:2px solid white;}
+.col_block{width:32px;height:32px;display:inline-block;margin:0;padding:0;font-size:0;}
+.col_block.picked{width:24px;height:24px;margin:4px;}
+.col_row{height:32px;background-color:black;}
+.col_pal_block{height:30px;width:30px;float:left;overflow:hidden;margin:5px;}
+.col_pal{width:10px;height:10px;border:0;float:left;margin:0;padding:0;}
+.col_pal.picked{width:5px;height:5px;margin:2.5px;}
+.question .que{color:limegreen;text-decoration:underline;cursor:pointer;}
+INPUT,SELECT{border:0;color:white;background-color:#444444;padding-left:1em;padding-right:1em;}
+#icon_title{width:15em;}
+#icon_creator,#icon_town{width:9em;}
+#icon_creator_id,#icon_town_id,#unknown_id{margin-left:1em;width:3em;}
+.pretext{width:7em;display:inline-block;}
+A,A:visited,A:active,A:hover{color:yellow;}
+</style>
+<!-- SCRIPTSTART -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script src="qrcode.js"></script>
+<script src="jquery.qrcode.js"></script>
+<script src="filesaver.js"></script>
+<script src="jsqrcode.min.js"></script>
+<script src="acnl.js"></script>
+<script src="page.js"></script>
+<!-- SCRIPTSTOP -->
+</head>
+<body>
+<h1>Animal Crossing: New Leaf Pattern Tool - By Thulinma</h1>
+<p>Last updated: June 30, 2013<br>Questions / remarks / cookies? Please read the FAQ on the bottom of the page!</p>
+<div style="display:inline-block;">
+<canvas id="acnl_icon" width="64" height="64" style="display:block;margin-left:32px;margin-bottom:32px;"></canvas>
+<canvas id="acnl_icon_zoom" width="128" height="128" style="display:block;"></canvas>
+</div>
+<canvas id="acnl_icon_zoomier" width="512" height="512"></canvas>
+
+<div id="colors" style="display:inline-block;"><div class="col_row"><div id="col0" class="col_block picked"></div><div id="col1" class="col_block"></div><div id="col2" class="col_block"></div></div><div class="col_row"><div id="col3" class="col_block"></div><div id="col4" class="col_block"></div><div id="col5" class="col_block"></div></div><div class="col_row"><div id="col6" class="col_block"></div><div id="col7" class="col_block"></div><div id="col8" class="col_block"></div></div><div class="col_row"><div id="col9" class="col_block"></div><div id="col10" class="col_block"></div><div id="col11" class="col_block"></div></div><div class="col_row"><div id="col12" class="col_block"></div><div id="col13" class="col_block"></div><div id="col14" class="col_block"></div></div></div>
+
+<div id="color_pal" style="display:inline-block;width:160px;height:170px;"></div>
+
+<div><input type="button" id="zoomin" value="+">&nbsp;&nbsp;<input type="button" id="zoomout" value="-"></div>
+
+<div><span class="pretext">Title:</span><input type="text" id="icon_title"></div>
+<div><span class="pretext">Creator:</span><input type="text" id="icon_creator"><input type="text" id="icon_creator_id"></div>
+<div><span class="pretext">Town:</span><input type="text" id="icon_town"><input type="text" id="icon_town_id"></div>
+<div><input type="button" id="creator_copy" value="Copy creator">&nbsp;&nbsp;&nbsp;<input type="button" id="creator_paste" value="Paste creator"></div>
+
+<div><input type="button" value="Download ACNL file" id="acnl_gen"></div>
+<div><span class="pretext">Load ACNL file or QR-image:</span><input type="file" id="files"></div>
+<div><span class="pretext">Convert image:</span><input type="file" id="img_files">&nbsp;&nbsp;<select id="conv_meth">
+<option value="top">Use the top 15 most-used nearest colors (ugly, fast)</option>
+<option value="lowest">Optimize out of top 40 most-used nearest colors (best, slow)</option>
+<option value="grey">Convert to greyscale (fast and good, but no colors)</option>
+<option value="sepia">Convert to sepia (fast and good, but no colors)</option>
+</select></div>
+
+<div id="qr" style="border:20px solid white;width:512px;min-height:512px;background-color:white;"></div>
+
+
+<h1>FAQ</h1>
+<div class="question">
+  <p class="que">ZOMG This thing doesn't work!</p>
+  <p class="ans">The ACNL pattern tool is completely written in HTML5 and JavaScript. As such, it requires a decently standards-compliant browser. The latest versions of Chrome / Chromium / Firefox work. Anything else I don't guarantee anything on. Especially Internet Explorer will probably choke on this entire page.</p>
+</div>
+<div class="question">
+  <p class="que">How do I use this thing?</p>
+  <p class="ans">Click a color on the 3x5 palette and then just "draw" on one of the pattern representations. Any of the zoom levels is drawable and they all update at the same time. When you want to import to ACNL, simply scan the QR code at the bottom using the QR machine at the Able Sisters in-game. Don't have the QR machine yet? Talk to the quiet sister in the back for 10 days in a row to unlock it. The download ACNL file button lets you save the pattern to your computer for later use. You can also upload ACNL files or images containing QR codes. Don't upload images containing multiple QR codes - multi-part codes need to be uploaded one at a time, in order.</p>
+</div>
+<div class="question">
+  <p class="que">How did you make this?</p>
+  <div class="ans"><p>Mostly magic. It helped that I made the <a href="http://http://aviator.home.xs4all.nl/acww/">ACWW pattern tool</a>, and ACNL patterns are mostly in the same format. As to how exactly it works - HTML5 and JavaScript.<br><br>I make use of the following JavaScript libraries from others (some with my own modifications or fixes), everything else is my work:</p>
+  <ul>
+    <li>FileSaver by Eli Grey <a href="https://github.com/eligrey/FileSaver.js">[link]</a></li>
+    <li>jquery-qrcode by Jerome Etienne <a href="https://github.com/jeromeetienne/jquery-qrcode">[link]</a></li>
+    <li>QR code generator by Kazuhiko Arase <a href="http://d-project.googlecode.com/svn/trunk/misc/qrcode/index.html">[link]</a></li>
+    <li>jsqrcode by Lazar Laszlo<a href="https://github.com/LazarSoft/jsqrcode">[link]</a></li>
+    <li>jQuery by the jQuery Foundation <a href="http://jquery.com/">[link]</a></li>
+  </ul>
+  </div>
+</div>
+<div class="question">
+  <p class="que">Wait if you made the ACWW Pattern tool - does that mean ACWW patterns can be imported?</p>
+  <p class="ans">Yeah, I plan to add that as a feature in the future.</p>
+</div>
+<div class="question">
+  <p class="que">This is open source? So I can re-use this code for my own projects?</p>
+  <p class="ans">Yes. Please don't claim you wrote it all yourself, and try to include a notice "Based on the ACNL Pattern tool by Thulinma" somewhere. You don't *have* to include a notice like that, but I will be very very disappointed in you if you don't.</p>
+</div>
+<div class="question">
+  <p class="que">Is there an offline version I can use without an internet connection?</p>
+  <p class="ans">Yes. <a href="acnltool.zip">This is the download link.</a></p>
+</div>
+<div class="question">
+  <p class="que">I made something better / fixed something / added more browser support!</p>
+  <p class="ans">That's not a question! But - yay! Drop me a line with your code changes and if I like them I'll migrate them into the main project.</p>
+</div>
+<div class="question">
+  <p class="que">Can I make a suggestion?</p>
+  <p class="ans">If you think you can make your suggestion yourself - go ahead, and see the "question" above this one. If you can't - I probably don't have interest in implementing it myself unless your idea is truly awesome (and/or I'm already working on it) - but you can always suggest it and who knows.</p>
+</div>
+<div class="question">
+  <p class="que">Why isn't my QR code being read? It works in the game!</p>
+  <p class="ans">I'm using the <a href="https://github.com/LazarSoft/jsqrcode">jsqrcode</a> port from the zxing QR libraries. Unfortunately this port isn't very accurate and it has trouble with some QR codes. In fact, I had to make some fixes to get it to read ACNL QR codes at all (I've submitted the needed fixes to the author of the port, so everyone can benefit from them). Feel free to improve the library yourself and let me know if/when more fixes become available and I'll integrate them as soon as I can.</p>
+</div>
+<div class="question">
+  <p class="que">What are ".ACNL" files?</p>
+  <p class="ans">A small binary format storage for ACNL patterns. Similar to ACWW files, they contain the pattern and nothing more. For ACNL files I used the exact binary contents of the QR codes - so any QR code can be decoded into an ACNL file and any ACNL file encoded into QR.</p>
+</div>
+<div class="question">
+  <p class="que">What features are you still working on?</p>
+  <div class="ans"><p>Some of the stuff I have in mind includes:</p>
+    <ul>
+      <li>importing stored ACWW files</li>
+      <li>adding a pattern database with tagging/search</li>
+      <li>experimenting with out of bounds color values (many values are not used in-game...)</li>
+      <li>Adding image conversion for pro designs</li>
+      <li>Figure out what the 6 bytes of unknown data represent</li>
+      <li>Add support for viewing/changing the pattern type</li>
+    </ul>
+  </div>
+</div>
+<div class="question">
+  <p class="que">What is the changelog?</p>
+  <ul class="ans">
+    <li>June 24, 2013: First working version, QR code generation.</li>
+    <li>June 25, 2013: Pattern editing (drawing), palette editing, title/creator/town and all related ID editing.</li>
+    <li>June 28, 2013: Firefox support, creator copy/paste buttons, loading ACNL files.</li>
+    <li>June 29, 2013: Loading QR code images now works, added an empty default pattern, removed old preset patterns (they were used without permission), added preliminary support for converting images to patterns (pretty low quality, but it works), improved the colors (now actual colors as they are in-game)</li>
+    <li>June 30, 2013: Support for pro patterns (both import and export), added pixel grid, added zoom buttons, added offline version download link in FAQ, added a selection box with 4 different image conversion optimizers</li>
+  </ul>
+</div>
+<div class="question">
+  <p class="que">How do I contact you?</p>
+  <p class="ans">You can e-mail me at thulinma@thulinma.com - but please keep in mind I'm a busy guy so don't e-mail me unless you have a worthwhile contribution or something similar. :-)</p>
+</div>
+
+</body>
+</html>
