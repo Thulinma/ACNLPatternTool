@@ -11,6 +11,7 @@ CANVAS{border:1px solid white;background-color:white;}
 .col_block.picked{width:24px;height:24px;margin:4px;}
 .col_row{height:32px;background-color:black;}
 .col_pal_block{height:30px;width:30px;float:left;overflow:hidden;margin:5px;}
+.col_pal_row{height:10px;width:150px;float:left;overflow:hidden;margin:5px;}
 .col_pal{width:10px;height:10px;border:0;float:left;margin:0;padding:0;}
 .col_pal.picked{width:5px;height:5px;margin:2.5px;}
 .question .que{color:limegreen;text-decoration:underline;cursor:pointer;}
@@ -33,7 +34,7 @@ A,A:visited,A:active,A:hover{color:yellow;}
 </head>
 <body>
 <h1>Animal Crossing: New Leaf Pattern Tool - By Thulinma</h1>
-<p>Last updated: June 30, 2013<br>Questions / remarks / cookies? Please read the FAQ on the bottom of the page!</p>
+<p>Last updated: May 24, 2014<br>Questions / remarks / cookies? Please read the FAQ on the bottom of the page!</p>
 <div style="display:inline-block;">
 <canvas id="acnl_icon" width="64" height="64" style="display:block;margin-left:32px;margin-bottom:32px;"></canvas>
 <canvas id="acnl_icon_zoom" width="128" height="128" style="display:block;"></canvas>
@@ -42,7 +43,7 @@ A,A:visited,A:active,A:hover{color:yellow;}
 
 <div id="colors" style="display:inline-block;"><div class="col_row"><div id="col0" class="col_block picked"></div><div id="col1" class="col_block"></div><div id="col2" class="col_block"></div></div><div class="col_row"><div id="col3" class="col_block"></div><div id="col4" class="col_block"></div><div id="col5" class="col_block"></div></div><div class="col_row"><div id="col6" class="col_block"></div><div id="col7" class="col_block"></div><div id="col8" class="col_block"></div></div><div class="col_row"><div id="col9" class="col_block"></div><div id="col10" class="col_block"></div><div id="col11" class="col_block"></div></div><div class="col_row"><div id="col12" class="col_block"></div><div id="col13" class="col_block"></div><div id="col14" class="col_block"></div></div></div>
 
-<div id="color_pal" style="display:inline-block;width:160px;height:170px;"></div>
+<div id="color_pal" style="display:inline-block;width:160px;height:180px;"></div>
 
 <div><input type="button" id="zoomin" value="+">&nbsp;&nbsp;<input type="button" id="zoomout" value="-"></div>
 
@@ -133,6 +134,7 @@ A,A:visited,A:active,A:hover{color:yellow;}
     <li>June 28, 2013: Firefox support, creator copy/paste buttons, loading ACNL files.</li>
     <li>June 29, 2013: Loading QR code images now works, added an empty default pattern, removed old preset patterns (they were used without permission), added preliminary support for converting images to patterns (pretty low quality, but it works), improved the colors (now actual colors as they are in-game)</li>
     <li>June 30, 2013: Support for pro patterns (both import and export), added pixel grid, added zoom buttons, added offline version download link in FAQ, added a selection box with 4 different image conversion optimizers</li>
+    <li>May 24, 2014: Still alive! Fixed a bug causing drawing to get stuck in several browsers. Fixed bug of having 16 shades of grey instead of the 15 from in-game. Updated jsqrcode for better QR code recognition. Added support for automatically attempting to recover from some corrupt QR codes. Special thanks to "Kiddiecat" for pointing out the drawing bug. Special thanks to "Michael New" for pointing out the 16 shades of grey bug. Special thanks to "Edel Fern&aacute;ndez" for supplying a corrupt QR code.</li>
   </ul>
 </div>
 <div class="question">

@@ -1,5 +1,16 @@
 $(function(){
 
+  var goingToRefresh = false;
+  function triggerRefresh(){
+    if (goingToRefresh){clearTimeout(goingToRefresh);}
+    goingToRefresh = setTimeout(function(){ACNL.qr($("#qr"));}, 3000);
+  }
+  
+  function noRefresh(){
+    if (goingToRefresh){clearTimeout(goingToRefresh);}
+    goingToRefresh = false;
+  }
+  
   var chosen_color = 0;
 
   function newIcon(data){
@@ -21,7 +32,7 @@ $(function(){
     ACNL.draw($("#acnl_icon")[0]);
     ACNL.draw($("#acnl_icon_zoom")[0]);
     ACNL.draw($("#acnl_icon_zoomier")[0]);
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   };
   
   $("#icon_title").keyup(function(){
@@ -29,7 +40,7 @@ $(function(){
       $(this).val($(this).val().substr(0, 20));
     }
     ACNL.setTitle($(this).val());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   $("#icon_creator").keyup(function(){
@@ -37,7 +48,7 @@ $(function(){
       $(this).val($(this).val().substr(0, 10));
     }
     ACNL.setCreator($(this).val());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   $("#icon_town").keyup(function(){
@@ -45,28 +56,29 @@ $(function(){
       $(this).val($(this).val().substr(0, 10));
     }
     ACNL.setTown($(this).val());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   $("#icon_creator_id").keyup(function(){
     ACNL.setCreatorID($(this).val());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   $("#icon_town_id").keyup(function(){
     ACNL.setTownID($(this).val());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   $("#unknown_id").keyup(function(){
     ACNL.setUnknownID($(this).val());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   $("#acnl_gen").click(function(){
     ACNL.download();
   });
   
+  var drawing = false;
   $("#acnl_icon, #acnl_icon_zoom, #acnl_icon_zoomier").click(function(e){
     var xpos = 0, ypos = 0;
     if (e.offsetX == undefined){
@@ -79,9 +91,10 @@ $(function(){
     var x = Math.floor(xpos / ($(this).width() / ACNL.getWidth()));
     var y = Math.floor(ypos / ($(this).height() / ACNL.getWidth()));
     ACNL.setColor(x, y, chosen_color);
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   }).mousemove(function(e){
-    if (e.which == 1){
+    if (drawing && e.which == 1){
+      noRefresh();
       var xpos = 0, ypos = 0;
       if (e.offsetX == undefined){
         xpos = e.pageX-$(e.target).offset().left;
@@ -95,7 +108,10 @@ $(function(){
       ACNL.setColor(x, y, chosen_color);
     }
   }).mouseup(function(){
-    ACNL.qr($("#qr"));
+    drawing = false;
+    triggerRefresh();
+  }).mousedown(function(){
+    drawing = true;
   });
   
   for (var i = 0; i < 15; i++){
@@ -127,16 +143,18 @@ $(function(){
   for (var i = 0x00; i < 0xFF; i += 0x10){
     $("#color_pal").append(create_block(i));
   }
-  for (var i = 0; i < 16; i++){
-    $("#color_pal").append($("<div>").attr("class", "col_pal").css("background-color", ACNL.getPal((i << 4) + 0x0F)).data("color", (i << 4) + 0x0F));
+  var grey_row = $("<div>").attr("class", "col_pal_row");
+  for (var i = 0; i < 15; i++){
+    grey_row.append($("<div>").attr("class", "col_pal").css("background-color", ACNL.getPal((i << 4) + 0x0F)).data("color", (i << 4) + 0x0F));
   }
+  $("#color_pal").append(grey_row);
   $(".col_pal").click(function(){
     $(".col_pal").attr("class", "col_pal");
     $(this).attr("class", "col_pal picked");
     var newindex = $(this).data("color");
     ACNL.setIndex(chosen_color, newindex);
     $("#col"+chosen_color).css("background-color", ACNL.getColor(chosen_color));
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
 
   /*
@@ -167,7 +185,7 @@ $(function(){
     $("#icon_creator_id").val(ACNL.getCreatorID());
     $("#icon_town").val(ACNL.getTown());
     $("#icon_town_id").val(ACNL.getTownID());
-    ACNL.qr($("#qr"));
+    triggerRefresh();
   });
   
   var multi_icon = "";
@@ -176,6 +194,12 @@ $(function(){
       var r = new FileReader();
       r.onload = function(re) {
         qrcode.callback = function(r){
+          
+          if (r.length < 0x21C){
+            alert("Sorry, I can't recognize this as a valid pattern. :-(");
+            return;
+          }
+          
           if (r.length == 0x26C){//regular pattern
             newIcon(r);
             return;
@@ -186,10 +210,27 @@ $(function(){
             if (multi_icon.length == 0x438){alert("Please input the third code next."); return;}
             if (multi_icon.length == 0x654){alert("Please input the last code next."); return;}
             if (multi_icon.length == 0x870){newIcon(multi_icon); multi_icon = ""; return;}
+            multi_icon = "";
             alert("Something, somewhere, went terribly wrong. Please start over. :-(");
             return;
           }
-          alert("Sorry, I can't recognize this as a valid pattern. :-(");
+          
+          alert("Whoah! That code doesn't look right, but I think I can fix it, attempting fix...");
+          
+          if (r[0x68] == 0xA){
+            newIcon(r);
+            return;
+          }else{
+            multi_icon += r.substr(0, 0x21C);
+            if (multi_icon.length == 0x21C){alert("Please input the second code next."); return;}
+            if (multi_icon.length == 0x438){alert("Please input the third code next."); return;}
+            if (multi_icon.length == 0x654){alert("Please input the last code next."); return;}
+            if (multi_icon.length == 0x870){newIcon(multi_icon); multi_icon = ""; return;}
+            multi_icon = "";
+            alert("Something, somewhere, went terribly wrong. Please start over. :-(");
+            return;
+          }
+          
         };
         qrcode.decode(re.target.result);
       }
@@ -375,7 +416,7 @@ $(function(){
             case "sepia": palette_sepia(imgdata); break;
           }
           reColorize(imgdata);
-          ACNL.qr($("#qr"));
+          triggerRefresh();
         }
         img.src = re.target.result;
       }

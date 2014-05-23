@@ -373,23 +373,24 @@ var ACNL = function(){
       
       //greys
       case 0x0F: return "#FFFFFF";
-      case 0x1F: return "#EEEEEE";
-      case 0x2F: return "#DDDDDD";
-      case 0x3F: return "#CCCCCC";
-      case 0x4F: return "#BBBBBB";
-      case 0x5F: return "#AAAAAA";
-      case 0x6F: return "#999999";
-      case 0x7F: return "#888888";
-      case 0x8F: return "#777777";
-      case 0x9F: return "#666666";
-      case 0xAF: return "#555555";
-      case 0xBF: return "#444444";
-      case 0xCF: return "#333333";
-      case 0xDF: return "#222222";
-      case 0xEF: return "#111111";
-      case 0xFF: return "#000000";
+      case 0x1F: return "#ECECEC";
+      case 0x2F: return "#DADADA";
+      case 0x3F: return "#C8C8C8";
+      case 0x4F: return "#B6B6B6";
+      case 0x5F: return "#A3A3A3";
+      case 0x6F: return "#919191";
+      case 0x7F: return "#7F7F7F";
+      case 0x8F: return "#6D6D6D";
+      case 0x9F: return "#5B5B5B";
+      case 0xAF: return "#484848";
+      case 0xBF: return "#363636";
+      case 0xCF: return "#242424";
+      case 0xDF: return "#121212";
+      case 0xEF: return "#000000";
       
       default:
+        //0x?9 - 0x?E aren't used. Not sure what they do in-game. Can somebody test this?
+        //0xFF is displayed as white in-game, editing it causes a game freeze.
         return "";
     }
   };
