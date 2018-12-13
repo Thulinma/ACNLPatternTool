@@ -1,0 +1,26 @@
+Animal Crossing: New Leaf Pattern Tool
+======================================
+This originally started as a short project made over the span of a few days.
+After the main problems were solved, work on the project was mostly halted.
+A year or so after the original development, several bug fixes powered by a collection of user reports was pushed through.
+Recent interest (mostly due to the upcoming new Animal Crossing game announced for Nintendo Switch), caused me to open up this repository to public viewing, and allow others to more directly contribute code.
+
+License Information
+===================
+This code should be considered public domain (technically, it's licensed under the [Do What The Fuck You Want To Public License](LICENSING)). In short: use it however you like, for any purpose.
+
+I do have a request: __I would appreciate it if you included a mention of the source somewhere in your project along the lines of "Based on the ACNL Pattern tool by Thulinma".__
+This is not a requirement or condition, just a request. The only repercussion you will face for not doing so is me being very disappointed with you.
+
+I make no claims regarding the licenses of libraries used by this project. Specifically, the following dependencies are used:
+
+ - [FileSaver.js by eligrey](//github.com/eligrey/FileSaver.js/) is used for saving patterns as .acnl files (MIT license).
+ - [jQuery by the jQuery Foundation](//jquery.com/) is used for easy accessing of HTML elements (MIT license).
+ - [jquery-qrcode by Lars Jung](//github.com/lrsjng/jquery-qrcode) is used for QR code generation (MIT license).
+ - [QR Code Generator by Kazuhiko Arase](http://www.d-project.com/qrcode/index.html) is used for QR code generation (MIT license).
+ - [JavaScript QR code reader by Lazar Laszlo](https://github.com/LazarSoft/jsqrcode) is used for QR code reading (Apache License 2.0), with a [minor contribution](https://github.com/LazarSoft/jsqrcode/pull/20) from me.
+
+Contibuting
+===========
+There are no contribution guidelines yet. Get in touch if you want to help!
+
