@@ -9,15 +9,42 @@
 //0x 56 - 0x 57 (  2) = Unknown (values are usually random - changing seems to have no effect)
 //0x 58 - 0x 66 ( 15) = Color code indexes
 //0x 67         (  1) = Unknown (value is usually random - changing seems to have no effect)
-//0x 68         (  1) = Ten? (seems to always be 0x0A)
-//0x 69         (  1) = Pattern type (normal patterns: 0x09, dresses: 0x00, photo boards: 0x08)
+//0x 68         (  1) = Ten? (seems to always be 0x0A or 0x00)
+//0x 69         (  1) = Pattern type (see below)
 //0x 6A - 0x 6B (  2) = Zero? (seems to always be 0x0000)
 //0x 6C - 0x26B (512) = Pattern Data 1 (mandatory)
 //0x26C - 0x46B (512) = Pattern Data 2 (optional)
 //0x46C - 0x66B (512) = Pattern Data 3 (optional)
 //0x66C - 0x86B (512) = Pattern Data 4 (optional)
 //0x86C - 0x86F (  4) = Zero padding (optional)
+//
+// Pattern types:
+// 0x00 = fullsleeve dress (pro)
+// 0x01 = halfsleeve dress (pro)
+// 0x02 = sleeveless dress (pro)
+// 0x03 = Longsleeve shirt (pro)
+// 0x04 = Midsleeve shirt (pro)
+// 0x07 = Plain pattern (hat)
+// 0x08 = Standee (pro)
+// 0x09 = Plain pattern (easel)
+//
+//
 var ACNL = function(){
+
+  function widthForType(t){
+    return (t < 6 || t == 8) ? 64 : 32;
+  };
+
+  function emptyPattern(type){
+    var temp;
+    if (type < 6 || type == 8){
+      temp = window.atob("RQBtAHAAdAB5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVAG4AawBuAG8AdwBuAAAAAAAAAAAAVQBuAGsAbgBvAHcAbgAAAAAAAAAxGQ8fLz9PX29/j5+vz8/f78wKCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    }else{
+      temp = window.atob("RQBtAHAAdAB5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVAG4AawBuAG8AdwBuAAAAAAAAAAAAVQBuAGsAbgBvAHcAbgAAAAAAAABeCw8fLz9PX29/j5+vv8/f73YKCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+    }
+    return temp.substr(0,0x69) + String.fromCharCode(type) + temp.substr(0x69+1);
+  }
+
   var data;
   var creator_data = null;
   var canvasses = [];
@@ -102,6 +129,11 @@ var ACNL = function(){
   };
   
   function getZoom(cnvs){
+    if (cnvs.width && cnvs.height){
+      if (cnvs.width == cnvs.height/4){
+        return cnvs.width/32;
+      }
+    }
     if ($(cnvs).width() < $(cnvs).height()){
       return Math.floor($(cnvs).width() / getWidth());
     }else{
@@ -109,6 +141,37 @@ var ACNL = function(){
     }
     return 1;
   };
+
+  function getTypeNum(){
+    return data.charCodeAt(0x69);
+  };
+
+  function getTypeStr(){
+    switch (getTypeNum()){
+      case 0: return "Long sleeves dress";
+      case 1: return "Short sleeves dress";
+      case 2: return "Sleeveless dress";
+      case 3: return "Long sleeves shirt";
+      case 4: return "Short sleeves shirt";
+      case 5: return "Sleeveless shirt";
+      case 7: return "Hat";
+      case 8: return "Standee";
+      case 9: return "Normal pattern (Easel)";
+      default: return "Unimplemented pattern type";
+    }
+  }
+  
+  function getTypeModel(){
+    switch (getTypeNum()){
+      case 0: return "dress_long.gltf";
+      case 1: return "dress_half.gltf";
+      case 2: return "dress_none.gltf";
+      case 3: return "shirt_long.gltf";
+      case 4: return "shirt_half.gltf";
+      case 5: return "shirt_none.gltf";
+      default: return "";
+    }
+  }
   
   function download(){
     try{
@@ -157,7 +220,7 @@ var ACNL = function(){
   };//draw
   
   function drawPixel(context, x, y, col, zoom){
-    if (y > 63){
+    if (y > 63 && (zoom > 1 || context.canvas.width == context.canvas.height)){
       y -= 64; x += 32;
     }
     try{
@@ -176,6 +239,10 @@ var ACNL = function(){
   function setColor(x, y, c){
     if (x < 0 || y < 0 || c < 0 || c > 15 || x > 63 || y > 63 || isNaN(x) || isNaN(y)){return false;}
     if (data.length != 0x870 && (x > 31 || y > 31)){return false;}
+    if (x > 31){
+      x -= 32;
+      y += 64;
+    }
     var offset = 0x6C + Math.floor(x/2) + y*16;
     var val = data.charCodeAt(offset) & 0xFF;
     var oldval = val;
@@ -424,5 +491,5 @@ var ACNL = function(){
     return getPal(getIndex(col));
   };
   
-  return {"download":download, "load":function(d){data = d;}, "draw":draw, "qr":qr, "getColor":getColor, "getTitle":getTitle, "getCreator":getCreator, "getTown":getTown, "getCreatorID":getCreatorID, "getTownID":getTownID, "getUnknownID":getUnknownID, "setColor":setColor, "setTitle":setTitle, "setCreator":setCreator, "setTown":setTown, "setCreatorID":setCreatorID, "setTownID":setTownID, "setUnknownID":setUnknownID, "getPal":getPal, "setIndex":setIndex, "getIndex":getIndex, "copyCreator":copyCreator, "pasteCreator":pasteCreator, "getWidth":getWidth};
+  return {"download":download, "load":function(d){data = d;}, "draw":draw, "qr":qr, "getColor":getColor, "getTitle":getTitle, "getCreator":getCreator, "getTown":getTown, "getCreatorID":getCreatorID, "getTownID":getTownID, "getUnknownID":getUnknownID, "setColor":setColor, "setTitle":setTitle, "setCreator":setCreator, "setTown":setTown, "setCreatorID":setCreatorID, "setTownID":setTownID, "setUnknownID":setUnknownID, "getPal":getPal, "setIndex":setIndex, "getIndex":getIndex, "copyCreator":copyCreator, "pasteCreator":pasteCreator, "getWidth":getWidth, "getTypeNum":getTypeNum, "getTypeStr":getTypeStr, "getTypeModel":getTypeModel, "emptyPattern":emptyPattern, "setByte":setByte, "widthForType":widthForType, "getData":function(){return data;}};
 }();

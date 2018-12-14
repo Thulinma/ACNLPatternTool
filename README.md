@@ -15,10 +15,12 @@ This is not a requirement or condition, just a request. The only repercussion yo
 I make no claims regarding the licenses of libraries used by this project. Specifically, the following dependencies are used:
 
  - [FileSaver.js by eligrey](//github.com/eligrey/FileSaver.js/) is used for saving patterns as .acnl files (MIT license).
- - [jQuery by the jQuery Foundation](//jquery.com/) is used for easy accessing of HTML elements (MIT license).
  - [jquery-qrcode by Lars Jung](//github.com/lrsjng/jquery-qrcode) is used for QR code generation (MIT license).
  - [QR Code Generator by Kazuhiko Arase](http://www.d-project.com/qrcode/index.html) is used for QR code generation (MIT license).
  - [JavaScript QR code reader by Lazar Laszlo](https://github.com/LazarSoft/jsqrcode) is used for QR code reading (Apache License 2.0), with a [minor contribution](https://github.com/LazarSoft/jsqrcode/pull/20) from me.
+ - [jQuery by the jQuery Foundation](//jquery.com/) is used for easy accessing of HTML elements (MIT license).
+ - [three.js and GLTFLoader by the three.js authors](//github.com/mrdoob/three.js/) is used for 3D rendering (MIT license).
+ - 3D models were ripped from the game by [Centrixe (previously Tiramisu6) @ The Models Resource](//www.models-resource.com/submitter/Centrixe/).
 
 Contibuting
 ===========

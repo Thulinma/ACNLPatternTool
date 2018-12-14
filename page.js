@@ -1,7 +1,70 @@
 $(function(){
 
+
+  
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+  var renderer = new THREE.WebGLRenderer({"canvas":$("#acnl_preview")[0]});
+  var texture;
+  var renderCanvas = document.createElement('canvas');
+  renderCanvas.width = 32;
+  renderCanvas.height = 128;
+
+  var renderContext = renderCanvas.getContext('2d');
+  renderContext.fillStyle = "rgba(255,255,255,1)";
+  renderContext.fillRect(0, 0, 32, 128);
+
+  renderer.gammaOutput = true;
+  renderer.gammaFactor = 2.2;
+  renderer.setSize(128, 128);
+  camera.position.z = 15;
+  camera.position.y = 30;
+  camera.rotation.x = 5.6;
+
+  var model = false;
+  function animate() {
+    if (model){
+      model.rotation.y += 0.01;
+    }
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  function loadModel(path){
+    if (model){
+      scene.remove(model);
+      model = false;
+    }
+    if (path == ""){
+      return;
+    }
+    var loader = new THREE.GLTFLoader();
+    loader.load(path, function(gltf){
+      model = gltf.scene.children[0];
+      model.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          texture = new THREE.Texture(renderCanvas) 
+          texture.needsUpdate = true;
+          texture.encoding = THREE.sRGBEncoding;
+          texture.flipY = false;
+          texture.magFilter = THREE.NearestFilter;
+          child.material = new THREE.MeshBasicMaterial({map:texture});
+        }
+      });
+      scene.add(model);
+    }, undefined, console.error);
+  }
+
   var goingToRefresh = false;
   function triggerRefresh(){
+    if (model){
+      model.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.map.needsUpdate = true;
+        }
+      });
+    }
     if (goingToRefresh){clearTimeout(goingToRefresh);}
     goingToRefresh = setTimeout(function(){ACNL.qr($("#qr"));}, 3000);
   }
@@ -29,9 +92,12 @@ $(function(){
     $("#icon_creator_id").val(ACNL.getCreatorID());
     $("#icon_town").val(ACNL.getTown());
     $("#icon_town_id").val(ACNL.getTownID());
+    $("#icon_type").val(ACNL.getTypeNum());
     ACNL.draw($("#acnl_icon")[0]);
     ACNL.draw($("#acnl_icon_zoom")[0]);
     ACNL.draw($("#acnl_icon_zoomier")[0]);
+    ACNL.draw(renderCanvas);
+    loadModel(ACNL.getTypeModel());
     triggerRefresh();
   };
   
@@ -170,7 +236,7 @@ $(function(){
   }).change();
   */
 
-  newIcon(window.atob("RQBtAHAAdAB5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVAG4AawBuAG8AdwBuAAAAAAAAAAAAVQBuAGsAbgBvAHcAbgAAAAAAAABeCw8fLz9PX29/j5+vv8/f73YKCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="));
+  newIcon(ACNL.emptyPattern(9));
 
   $("#creator_copy").click(function(){
     ACNL.copyCreator();
@@ -186,6 +252,18 @@ $(function(){
     $("#icon_town").val(ACNL.getTown());
     $("#icon_town_id").val(ACNL.getTownID());
     triggerRefresh();
+  });
+
+  $("#icon_type").change(function(){
+    newType = $("#icon_type").val();
+    if (ACNL.getTypeNum() != newType){
+      if (ACNL.widthForType(ACNL.getTypeNum()) != ACNL.widthForType(newType)){
+        newIcon(ACNL.emptyPattern(newType));
+      }else{
+        ACNL.setByte(0x69, newType);
+        newIcon(ACNL.getData());
+      }
+    }
   });
   
   var multi_icon = "";
