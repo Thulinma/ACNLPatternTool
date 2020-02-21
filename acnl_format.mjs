@@ -31,12 +31,41 @@
 // 0x09 = Plain pattern (easel)
 
 class ACNLFormat{
+  ///Either transfers an existing ArrayBuffer, of creates a new pattern, optionally using the passed pattern type.
   constructor(qr_buffer = null){
-    this.b = qr_buffer;
-    if (this.b !== null){
-      this.dataView = new DataView(this.b, 0, this.b.length);
-      this.dataBytes = new Uint8Array(this.b, 0, this.b.length);
+    this.b = null;
+
+    //If we were passed an arraybuffer, copy it.
+    if (qr_buffer instanceof ArrayBuffer){
+      //Create new buffer
+      this.b = new ArrayBuffer(qr_buffer.byteLength > 620 ? 2160 : 620);
+      this.dataView = new DataView(this.b, 0, this.b.byteLength);
+      this.dataBytes = new Uint8Array(this.b, 0, this.b.byteLength);
+      //Copy contents from input
+      let inBytes = new Uint8Array(qr_buffer, 0, qr_buffer.byteLength);
+      for (let i = 0; i < qr_buffer.byteLength && i < this.b.byteLength; ++i){
+        this.dataBytes[i] = inBytes[i];
+      }
     }
+
+    //No pattern yet? Let's create one based on the create_pat_type type.
+    if (this.b === null){
+      //If we're creating new patterns, make them easel-type, unless our argument was a number, then use that type number.
+      let create_pat_type = 9;//easel
+      if ((typeof qr_buffer) == "number"){create_pat_type = qr_buffer;}
+      this.b = new ArrayBuffer((create_pat_type < 6 || create_pat_type == 8) ? 2160 : 620);
+      this.dataView = new DataView(this.b, 0, this.b.byteLength);
+      this.dataBytes = new Uint8Array(this.b, 0, this.b.byteLength);
+      this.title = "Empty";
+      this.creator = ["Unknown", 0];
+      this.town = ["Unknown", 0];
+      this.unknown_a = 0x3119;
+      this.setDefaultPalette();
+      this.unknown_b = 0xCC;
+      this.unknown_c = 10;
+      this.patternType = create_pat_type;
+    }
+
   }
 
   ///UTF16 decode helper
@@ -62,7 +91,7 @@ class ACNLFormat{
   };
 
   ///Decodes a raw pattern to internal JSON format
-  decode(b){
+  toJSON(b){
     var r = {
       title: this.title,
       author: [this.creator, this.town],
@@ -72,40 +101,35 @@ class ACNLFormat{
         C: this.unknown_c,
         D: this.unknown_d
       },
-      texture_size: (this.b.length > 620 ? 64 : 32),
+      texture_size: (this.b.byteLength > 620 ? 64 : 32),
       pattern_type: this.patternType,
       pattern_type_str: ACNLFormat.getTypeStr(this.patternType),
     };
     return r;
   }
-  ///Encodes internal JSON format back to raw pattern
-  encode(raw, pattern){
-    this.setTitle(raw, pattern.title);
-    this.setCreator(raw, "Unknown", 0);
-    this.setTown(raw, "Unknown", 0);
-    this.setUnknownA(raw, 0x3119);
-    this.setPalette(raw, "something");//TODO
-    this.setUnknownB(raw, 0xCC);
-    this.setUnknownC(raw, 10);
-    this.setPatternType(raw, pattern_type);
+
+  ///Writes the ACNL pattern structure to the passed ArrayBuffer object as an array of palette indexes
+  toPixels(ab){
+    let offset = 0x6C;
+    let pixel = 0;
+    for (let i = offset; i < this.b.byteLength; i++){
+      ab[pixel++] = (this.dataBytes[i] & 0x0F);
+      ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+    }
   }
+
+  ///Writes passed ArrayBuffer of palette indexes to the ACNL structure
+  fromPixels(ab){
+    let offset = 0x6C;
+    let pixel = 0;
+    for (let i = offset; i < this.b.byteLength; i++){
+      this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
+    }
+  }
+
   ///Returns a blank pattern in raw format
   static createBlankPattern(pattern_type){
     var buffer;
-    if (pattern_type < 6 || pattern_type == 8){
-      buffer = new ArrayBuffer(2160);//pro pattern
-    }else{
-      buffer = new ArrayBuffer(620);//standard pattern
-    }
-    this.setTitle(buffer, "Empty");
-    this.setCreator(buffer, "Unknown", 0);
-    this.setTown(buffer, "Unknown", 0);
-    this.setUnknownA(buffer, 0x3119);
-    this.setDefaultPalette(buffer);
-    this.setUnknownB(buffer, 0xCC);
-    this.setUnknownC(buffer, 10);
-    this.setPatternType(buffer, pattern_type);
-    return buffer;
   };
 
 
@@ -186,267 +210,74 @@ class ACNLFormat{
   get unknown_d(){
     return this.dataView.getUint16(0x6A, true);
   };
-  static getPaletteColor(clr){
-    switch (clr){
-      //pinks
-      case 0x00: return "#FFEFFF";
-      case 0x01: return "#FF9AAD";
-      case 0x02: return "#EF559C";
-      case 0x03: return "#FF65AD";
-      case 0x04: return "#FF0063";
-      case 0x05: return "#BD4573";
-      case 0x06: return "#CE0052";
-      case 0x07: return "#9C0031";
-      case 0x08: return "#522031";
-      
-      //reds
-      case 0x10: return "#FFBACE";
-      case 0x11: return "#FF7573";
-      case 0x12: return "#DE3010";
-      case 0x13: return "#FF5542";
-      case 0x14: return "#FF0000";
-      case 0x15: return "#CE6563";
-      case 0x16: return "#BD4542";
-      case 0x17: return "#BD0000";
-      case 0x18: return "#8C2021";
-      
-      //oranges
-      case 0x20: return "#DECFBD";
-      case 0x21: return "#FFCF63";
-      case 0x22: return "#DE6521";
-      case 0x23: return "#FFAA21";
-      case 0x24: return "#FF6500";
-      case 0x25: return "#BD8A52";
-      case 0x26: return "#DE4500";
-      case 0x27: return "#BD4500";
-      case 0x28: return "#633010";
-      
-      //pastels or something, I guess?
-      case 0x30: return "#FFEFDE";
-      case 0x31: return "#FFDFCE";
-      case 0x32: return "#FFCFAD";
-      case 0x33: return "#FFBA8C";
-      case 0x34: return "#FFAA8C";
-      case 0x35: return "#DE8A63";
-      case 0x36: return "#BD6542";
-      case 0x37: return "#9C5531";
-      case 0x38: return "#8C4521";
-      
-      //purple
-      case 0x40: return "#FFCFFF";
-      case 0x41: return "#EF8AFF";
-      case 0x42: return "#CE65DE";
-      case 0x43: return "#BD8ACE";
-      case 0x44: return "#CE00FF";
-      case 0x45: return "#9C659C";
-      case 0x46: return "#8C00AD";
-      case 0x47: return "#520073";
-      case 0x48: return "#310042";
-      
-      //pink
-      case 0x50: return "#FFBAFF";
-      case 0x51: return "#FF9AFF";
-      case 0x52: return "#DE20BD";
-      case 0x53: return "#FF55EF";
-      case 0x54: return "#FF00CE";
-      case 0x55: return "#8C5573";
-      case 0x56: return "#BD009C";
-      case 0x57: return "#8C0063";
-      case 0x58: return "#520042";
-      
-      //brown
-      case 0x60: return "#DEBA9C";
-      case 0x61: return "#CEAA73";
-      case 0x62: return "#734531";
-      case 0x63: return "#AD7542";
-      case 0x64: return "#9C3000";
-      case 0x65: return "#733021";
-      case 0x66: return "#522000";
-      case 0x67: return "#311000";
-      case 0x68: return "#211000";
-      
-      //yellow
-      case 0x70: return "#FFFFCE";
-      case 0x71: return "#FFFF73";
-      case 0x72: return "#DEDF21";
-      case 0x73: return "#FFFF00";
-      case 0x74: return "#FFDF00";
-      case 0x75: return "#CEAA00";
-      case 0x76: return "#9C9A00";
-      case 0x77: return "#8C7500";
-      case 0x78: return "#525500";
-      
-      //blue
-      case 0x80: return "#DEBAFF";
-      case 0x81: return "#BD9AEF";
-      case 0x82: return "#6330CE";
-      case 0x83: return "#9C55FF";
-      case 0x84: return "#6300FF";
-      case 0x85: return "#52458C";
-      case 0x86: return "#42009C";
-      case 0x87: return "#210063";
-      case 0x88: return "#211031";
-      
-      //ehm... also blue?
-      case 0x90: return "#BDBAFF";
-      case 0x91: return "#8C9AFF";
-      case 0x92: return "#3130AD";
-      case 0x93: return "#3155EF";
-      case 0x94: return "#0000FF";
-      case 0x95: return "#31308C";
-      case 0x96: return "#0000AD";
-      case 0x97: return "#101063";
-      case 0x98: return "#000021";
-      
-      //green
-      case 0xA0: return "#9CEFBD";
-      case 0xA1: return "#63CF73";
-      case 0xA2: return "#216510";
-      case 0xA3: return "#42AA31";
-      case 0xA4: return "#008A31";
-      case 0xA5: return "#527552";
-      case 0xA6: return "#215500";
-      case 0xA7: return "#103021";
-      case 0xA8: return "#002010";
-      
-      //icky greenish yellow
-      case 0xB0: return "#DEFFBD";
-      case 0xB1: return "#CEFF8C";
-      case 0xB2: return "#8CAA52";
-      case 0xB3: return "#ADDF8C";
-      case 0xB4: return "#8CFF00";
-      case 0xB5: return "#ADBA9C";
-      case 0xB6: return "#63BA00";
-      case 0xB7: return "#529A00";
-      case 0xB8: return "#316500";
-      
-      //Wtf? More blue?
-      case 0xC0: return "#BDDFFF";
-      case 0xC1: return "#73CFFF";
-      case 0xC2: return "#31559C";
-      case 0xC3: return "#639AFF";
-      case 0xC4: return "#1075FF";
-      case 0xC5: return "#4275AD";
-      case 0xC6: return "#214573";
-      case 0xC7: return "#002073";
-      case 0xC8: return "#001042";
-      
-      //gonna call this cyan
-      case 0xD0: return "#ADFFFF";
-      case 0xD1: return "#52FFFF";
-      case 0xD2: return "#008ABD";
-      case 0xD3: return "#52BACE";
-      case 0xD4: return "#00CFFF";
-      case 0xD5: return "#429AAD";
-      case 0xD6: return "#00658C";
-      case 0xD7: return "#004552";
-      case 0xD8: return "#002031";
-      
-      //more cyan, because we didn't have enough blue-like colors yet
-      case 0xE0: return "#CEFFEF";
-      case 0xE1: return "#ADEFDE";
-      case 0xE2: return "#31CFAD";
-      case 0xE3: return "#52EFBD";
-      case 0xE4: return "#00FFCE";
-      case 0xE5: return "#73AAAD";
-      case 0xE6: return "#00AA9C";
-      case 0xE7: return "#008A73";
-      case 0xE8: return "#004531";
-      
-      //also green. Fuck it, whatever.
-      case 0xF0: return "#ADFFAD";
-      case 0xF1: return "#73FF73";
-      case 0xF2: return "#63DF42";
-      case 0xF3: return "#00FF00";
-      case 0xF4: return "#21DF21";
-      case 0xF5: return "#52BA52";
-      case 0xF6: return "#00BA00";
-      case 0xF7: return "#008A00";
-      case 0xF8: return "#214521";
-      
-      //greys
-      case 0x0F: return "#FFFFFF";
-      case 0x1F: return "#ECECEC";
-      case 0x2F: return "#DADADA";
-      case 0x3F: return "#C8C8C8";
-      case 0x4F: return "#B6B6B6";
-      case 0x5F: return "#A3A3A3";
-      case 0x6F: return "#919191";
-      case 0x7F: return "#7F7F7F";
-      case 0x8F: return "#6D6D6D";
-      case 0x9F: return "#5B5B5B";
-      case 0xAF: return "#484848";
-      case 0xBF: return "#363636";
-      case 0xCF: return "#242424";
-      case 0xDF: return "#121212";
-      case 0xEF: return "#000000";
-      
-      default:
-        //0x?9 - 0x?E aren't used. Not sure what they do in-game. Can somebody test this?
-        //0xFF is displayed as white in-game, editing it causes a game freeze.
-        return "";
-    }
-  }
 };
 
-export default ACNLFormat;
+ACNLFormat.prototype.paletteColors = [
+  //Pinks (0x00 - 0x08)
+  "#FFEFFF", "#FF9AAD", "#EF559C", "#FF65AD", "#FF0063", "#BD4573", "#CE0052", "#9C0031", "#522031",
+  "","","","","","",//0x09-0x0E unused / unknown
+  "#FFFFFF", //0x0F: Grey 1
+  //Reds (0x10 - 0x18)
+  "#FFBACE", "#FF7573", "#DE3010", "#FF5542", "#FF0000", "#CE6563", "#BD4542", "#BD0000", "#8C2021",
+  "","","","","","",//0x19-0x1E unused / unknown
+  "#ECECEC", //0x1F: Grey 2
+  //Oranges (0x20 - 0x28)
+  "#DECFBD", "#FFCF63", "#DE6521", "#FFAA21", "#FF6500", "#BD8A52", "#DE4500", "#BD4500", "#633010",
+  "","","","","","",//0x29-0x2E unused / unknown
+  "#DADADA", //0x2F: Grey 3
+  //Pastels or something, I guess? (0x30 - 0x38)
+  "#FFEFDE", "#FFDFCE", "#FFCFAD", "#FFBA8C", "#FFAA8C", "#DE8A63", "#BD6542", "#9C5531", "#8C4521",
+  "","","","","","",//0x39-0x3E unused / unknown
+  "#C8C8C8", //0x3F: Grey 4
+  //Purple (0x40 - 0x48)
+  "#FFCFFF", "#EF8AFF", "#CE65DE", "#BD8ACE", "#CE00FF", "#9C659C", "#8C00AD", "#520073", "#310042",
+  "","","","","","",//0x49-0x4E unused / unknown
+  "#B6B6B6", //0x4F: Grey 5
+  //Pink (0x50 - 0x58)
+  "#FFBAFF", "#FF9AFF", "#DE20BD", "#FF55EF", "#FF00CE", "#8C5573", "#BD009C", "#8C0063", "#520042",
+  "","","","","","",//0x59-0x5E unused / unknown
+  "#A3A3A3", //0x5F: Grey 6
+  //Brown (0x60 - 0x68)
+  "#DEBA9C", "#CEAA73", "#734531", "#AD7542", "#9C3000", "#733021", "#522000", "#311000", "#211000",
+  "","","","","","",//0x69-0x6E unused / unknown
+  "#919191", //0x6F: Grey 7
+  //Yellow (0x70 - 0x78)
+  "#FFFFCE", "#FFFF73", "#DEDF21", "#FFFF00", "#FFDF00", "#CEAA00", "#9C9A00", "#8C7500", "#525500",
+  "","","","","","",//0x79-0x7E unused / unknown
+  "#7F7F7F", //0x7F: Grey 8
+  //Blue (0x80 - 0x88)
+  "#DEBAFF", "#BD9AEF", "#6330CE", "#9C55FF", "#6300FF", "#52458C", "#42009C", "#210063", "#211031",
+  "","","","","","",//0x89-0x8E unused / unknown
+  "#6D6D6D", //0x8F: Grey 9
+  //Ehm... also blue? (0x90 - 0x98)
+  "#BDBAFF", "#8C9AFF", "#3130AD", "#3155EF", "#0000FF", "#31308C", "#0000AD", "#101063", "#000021",
+  "","","","","","",//0x99-0x9E unused / unknown
+  "#5B5B5B", //0x9F: Grey 10
+  //Green (0xA0 - 0xA8)
+  "#9CEFBD", "#63CF73", "#216510", "#42AA31", "#008A31", "#527552", "#215500", "#103021", "#002010",
+  "","","","","","",//0xA9-0xAE unused / unknown
+  "#484848", //0xAF: Grey 11
+  //Icky greenish yellow (0xB0 - 0xB8)
+  "#DEFFBD", "#CEFF8C", "#8CAA52", "#ADDF8C", "#8CFF00", "#ADBA9C", "#63BA00", "#529A00", "#316500",
+  "","","","","","",//0xB9-0xBE unused / unknown
+  "#363636", //0xBF: Grey 12
+  //Wtf? More blue? (0xC0 - 0xC8)
+  "#BDDFFF", "#73CFFF", "#31559C", "#639AFF", "#1075FF", "#4275AD", "#214573", "#002073", "#001042",
+  "","","","","","",//0xC9-0xCE unused / unknown
+  "#242424", //0xCF: Grey 13
+  //Gonna call this cyan (0xD0 - 0xD8)
+  "#ADFFFF", "#52FFFF", "#008ABD", "#52BACE", "#00CFFF", "#429AAD", "#00658C", "#004552", "#002031",
+  "","","","","","",//0xD9-0xDE unused / unknown
+  "#121212", //0xDF: Grey 14
+  //More cyan, because we didn't have enough blue-like colors yet (0xE0 - 0xE8)
+  "#CEFFEF", "#ADEFDE", "#31CFAD", "#52EFBD", "#00FFCE", "#73AAAD", "#00AA9C", "#008A73", "#004531",
+  "","","","","","",//0xE9-0xEE unused / unknown
+  "#000000", //0xEF: Grey 15
+  //Also green. Fuck it, whatever. (0xF0 - 0xF8)
+  "#ADFFAD", "#73FF73", "#63DF42", "#00FF00", "#21DF21", "#52BA52", "#00BA00", "#008A00", "#214521",
+  "","","","","","",//0xF9-0xFE unused / unknown
+  "", //0xFF unused (white in-game, editing freezes the game)
+];
 
-/*
-  function setColor(x, y, c){
-    if (x < 0 || y < 0 || c < 0 || c > 15 || x > 63 || y > 63 || isNaN(x) || isNaN(y)){return false;}
-    if (data.length != 0x870 && (x > 31 || y > 31)){return false;}
-    if (x > 31){
-      x -= 32;
-      y += 64;
-    }
-    var offset = 0x6C + Math.floor(x/2) + y*16;
-    var val = data.charCodeAt(offset) & 0xFF;
-    var oldval = val;
-    if ((x % 2) == 1){
-      val = (val & 0x0F) + (c << 4);
-    }else{
-      val = (val & 0xF0) + c;
-    }
-    if (val == oldval){
-      return;
-    }
-    setByte(offset, val);
-    for (var i in canvasses){
-      drawPixel(canvasses[i], x, y, c, getZoom(canvasses[i].canvas));
-    }
-  };
-  
-  
-  function setIndex(index, clr){
-    setByte(0x58 + index, clr);
-    var offset = 0x6C;
-    for (var z in canvasses){
-      var zoom = getZoom(canvasses[z].canvas);
-      for (var i = offset; i < data.length; i++){
-        dpoint = data.charCodeAt(i);
-        col = dpoint & 0x0F;
-        if (col == index){
-          j = (i - offset)*2;
-          drawPixel(canvasses[z], (j % 32), Math.floor(j / 32), index, zoom);
-        }
-        col = (dpoint >> 4) & 0x0F;
-        if (col == index){
-          j = (i - offset)*2 + 1;
-          drawPixel(canvasses[z], (j % 32), Math.floor(j / 32), index, zoom);
-        }
-      }
-    }
-  };
-  
-  function getIndex(col){
-    return data.charCodeAt(0x58 + col);
-  };
-  
-  function getColor(col){
-    return getPal(getIndex(col));
-  };
-  
-  return {"download":download, "load":function(d){data = d;}, "draw":draw, "qr":qr, "getColor":getColor, "getTitle":getTitle, "getCreator":getCreator, "getTown":getTown, "getCreatorID":getCreatorID, "getTownID":getTownID, "getUnknownID":getUnknownID, "setColor":setColor, "setTitle":setTitle, "setCreator":setCreator, "setTown":setTown, "setCreatorID":setCreatorID, "setTownID":setTownID, "setUnknownID":setUnknownID, "getPal":getPal, "setIndex":setIndex, "getIndex":getIndex, "copyCreator":copyCreator, "pasteCreator":pasteCreator, "getWidth":getWidth, "getTypeNum":getTypeNum, "getTypeStr":getTypeStr, "getTypeModel":getTypeModel, "emptyPattern":emptyPattern, "setByte":setByte, "widthForType":widthForType, "getData":function(){return data;}};
-}();
-*/
+//export default ACNLFormat;
 
