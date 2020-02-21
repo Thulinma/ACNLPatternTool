@@ -1,7 +1,10 @@
-$(function(){
+
+var draw = new DrawingTool();
+var copiedCreator = [];
 
 
-  
+/// Sets up everything needed for 3D rendering textures
+function setup3DRender(){
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
   var renderer = new THREE.WebGLRenderer({"canvas":$("#acnl_preview")[0]});
@@ -9,6 +12,7 @@ $(function(){
   var renderCanvas = document.createElement('canvas');
   renderCanvas.width = 32;
   renderCanvas.height = 128;
+  draw.addCanvas(renderCanvas);
 
   var renderContext = renderCanvas.getContext('2d');
   renderContext.fillStyle = "rgba(255,255,255,1)";
@@ -31,14 +35,17 @@ $(function(){
   }
   animate();
 
+  /// Loads a new 3D model for the pattern
   function loadModel(path){
     if (model){
       scene.remove(model);
       model = false;
     }
     if (path == ""){
+      $("#acnl_preview").hide();
       return;
     }
+    $("#acnl_preview").show();
     var loader = new THREE.GLTFLoader();
     loader.load(path, function(gltf){
       model = gltf.scene.children[0];
@@ -53,222 +60,181 @@ $(function(){
         }
       });
       scene.add(model);
-    }, undefined, console.error);
+    }, undefined, function(){
+      $("#acnl_preview").hide();
+    });
   }
 
-  var goingToRefresh = false;
-  function triggerRefresh(){
-    if (model){
-      model.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.map.needsUpdate = true;
-        }
-      });
+  //If the type of pattern changes, change the model too
+  draw.onLoad((d) => {
+    function getTypeModel(n){
+      switch (n){
+        case 0: return "dress_long.gltf";
+        case 1: return "dress_half.gltf";
+        case 2: return "dress_none.gltf";
+        case 3: return "shirt_long.gltf";
+        case 4: return "shirt_half.gltf";
+        case 5: return "shirt_none.gltf";
+        default: return "";
+      }
     }
-    if (goingToRefresh){clearTimeout(goingToRefresh);}
-    goingToRefresh = setTimeout(function(){ACNL.qr($("#qr"));}, 3000);
-  }
-  
-  function noRefresh(){
-    if (goingToRefresh){clearTimeout(goingToRefresh);}
-    goingToRefresh = false;
-  }
-  
-  var chosen_color = 0;
+    loadModel(getTypeModel(d.pattern.patternType));
+  });
+}
 
-  function newIcon(data){
-    ACNL.load(data);
-    for (var i = 0; i < 15; i++){
-      $("#col"+i).css("background-color", ACNL.getColor(i));
-    }
-    chosen_color = 0;
+
+$(function(){
+
+  draw.onLoad(function(d){
+    //Set up current palette display
+    for (var i = 0; i < 15; i++){$("#col"+i).css("background-color", d.getPalette(i));}
     $(".col_pal").attr("class", "col_pal").each(function(){
-      if ($(this).data("color") == ACNL.getIndex(chosen_color)){
+      if ($(this).data("color") == draw.color){
         $(this).attr("class", "col_pal picked");
       }
     });
-    $("#icon_title").val(ACNL.getTitle());
-    $("#icon_creator").val(ACNL.getCreator());
-    $("#icon_creator_id").val(ACNL.getCreatorID());
-    $("#icon_town").val(ACNL.getTown());
-    $("#icon_town_id").val(ACNL.getTownID());
-    $("#icon_type").val(ACNL.getTypeNum());
-    ACNL.draw($("#acnl_icon")[0]);
-    ACNL.draw($("#acnl_icon_zoom")[0]);
-    ACNL.draw($("#acnl_icon_zoomier")[0]);
-    ACNL.draw(renderCanvas);
-    loadModel(ACNL.getTypeModel());
-    triggerRefresh();
-  };
-  
-  $("#icon_title").keyup(function(){
-    if ($(this).val().length > 20){
-      $(this).val($(this).val().substr(0, 20));
-    }
-    ACNL.setTitle($(this).val());
-    triggerRefresh();
+    //Load the edit fields with their current values
+    $("#icon_title").val(d.title);
+    $("#icon_creator").val(d.creator[0]);
+    $("#icon_creator_id").val(d.creator[1]);
+    $("#icon_town").val(d.town[0]);
+    $("#icon_town_id").val(d.town[1]);
+    $("#icon_type").val(d.patternType);
   });
+ 
+  //When edit fields are changed, update the pattern's values to match
+  $("#icon_title").keyup(function(){draw.title = $(this).val();});
+  $("#icon_creator").keyup(function(){draw.creator = $(this).val();});
+  $("#icon_town").keyup(function(){draw.town = $(this).val();});
+  $("#icon_creator_id").keyup(function(){draw.creator = parseInt($(this).val());});
+  $("#icon_town_id").keyup(function(){draw.town = parseInt($(this).val());});
 
-  $("#icon_creator").keyup(function(){
-    if ($(this).val().length > 10){
-      $(this).val($(this).val().substr(0, 10));
-    }
-    ACNL.setCreator($(this).val());
-    triggerRefresh();
-  });
-
-  $("#icon_town").keyup(function(){
-    if ($(this).val().length > 10){
-      $(this).val($(this).val().substr(0, 10));
-    }
-    ACNL.setTown($(this).val());
-    triggerRefresh();
-  });
-
-  $("#icon_creator_id").keyup(function(){
-    ACNL.setCreatorID($(this).val());
-    triggerRefresh();
-  });
-
-  $("#icon_town_id").keyup(function(){
-    ACNL.setTownID($(this).val());
-    triggerRefresh();
-  });
-
-  $("#unknown_id").keyup(function(){
-    ACNL.setUnknownID($(this).val());
-    triggerRefresh();
-  });
-
+  //Download button
   $("#acnl_gen").click(function(){
-    ACNL.download();
-  });
-  
-  var drawing = false;
-  $("#acnl_icon, #acnl_icon_zoom, #acnl_icon_zoomier").click(function(e){
-    var xpos = 0, ypos = 0;
-    if (e.offsetX == undefined){
-      xpos = e.pageX-$(e.target).offset().left;
-      ypos = e.pageY-$(e.target).offset().top;
-    }else{
-      xpos = e.offsetX;
-      ypos = e.offsetY;
+    try{
+      var blob = new Blob([draw.toBytes()], {"type": "application/octet-stream"});
+      saveAs(blob, draw.title+".acnl");
+    }catch(e){
+      alert("Failed to save file. Try using a different browser. :-(");
     }
-    var x = Math.floor(xpos / ($(this).width() / ACNL.getWidth()));
-    var y = Math.floor(ypos / ($(this).height() / ACNL.getWidth()));
-    ACNL.setColor(x, y, chosen_color);
-    triggerRefresh();
-  }).mousemove(function(e){
-    if (drawing && e.which == 1){
-      noRefresh();
-      var xpos = 0, ypos = 0;
-      if (e.offsetX == undefined){
-        xpos = e.pageX-$(e.target).offset().left;
-        ypos = e.pageY-$(e.target).offset().top;
-      }else{
-        xpos = e.offsetX;
-        ypos = e.offsetY;
-      }
-      var x = Math.floor(xpos / ($(this).width() / ACNL.getWidth()));
-      var y = Math.floor(ypos / ($(this).height() / ACNL.getWidth()));
-      ACNL.setColor(x, y, chosen_color);
-    }
-  }).mouseup(function(){
-    drawing = false;
-    triggerRefresh();
-  }).mousedown(function(){
-    drawing = true;
   });
-  
+ 
+  //Current palette buttons, change the current color selection in the drawing tool when clicked
   for (var i = 0; i < 15; i++){
     $("#col"+i).data("col", i).click(function(){
       $(".col_block").attr("class", "col_block");
       $(this).attr("class", "col_block picked");
-      chosen_color = $(this).data("col");
+      draw.color = parseInt($(this).data("col"));
       $(".col_pal").attr("class", "col_pal").each(function(){
-        if ($(this).data("color") == ACNL.getIndex(chosen_color)){
+        if ($(this).data("color") == draw.color){
           $(this).attr("class", "col_pal picked");
         }
       });
     });
   }
 
+  //FAQ display
   $(".question").click(function(){
     $(this).children(".ans").toggle();
   });
   $(".ans").hide();
-  
+ 
+  //Dynamically creates a 3x3 grid of one color set from the palette
   function create_block(p){
     var block = $("<div>").attr("class", "col_pal_block");
-    for (var i = 0; i < 9; i++){
-      block.append($("<div>").attr("class", "col_pal").css("background-color", ACNL.getPal(p+i)).data("color", p+i));
+    for (let i = 0; i < 9; i++){
+      let c = ACNLFormat.paletteColors[p+i];
+      block.append($("<div>").attr("class", "col_pal").css("background-color", c).data("color", c));
     }
     return block;
   };
   
+  //Create all color sets
   for (var i = 0x00; i < 0xFF; i += 0x10){
     $("#color_pal").append(create_block(i));
   }
+
+  //Add the grey color set
   var grey_row = $("<div>").attr("class", "col_pal_row");
-  for (var i = 0; i < 15; i++){
-    grey_row.append($("<div>").attr("class", "col_pal").css("background-color", ACNL.getPal((i << 4) + 0x0F)).data("color", (i << 4) + 0x0F));
+  for (let i = 0; i < 15; i++){
+    let c = ACNLFormat.paletteColors[(i << 4) + 0x0F];
+    grey_row.append($("<div>").attr("class", "col_pal").css("background-color", c).data("color", c));
   }
   $("#color_pal").append(grey_row);
+
+  //If any palette set color is clicked, set the currently selected palette color to it
   $(".col_pal").click(function(){
     $(".col_pal").attr("class", "col_pal");
     $(this).attr("class", "col_pal picked");
-    var newindex = $(this).data("color");
-    ACNL.setIndex(chosen_color, newindex);
-    $("#col"+chosen_color).css("background-color", ACNL.getColor(chosen_color));
-    triggerRefresh();
+    draw.setPalette(draw.currentColor, $(this).data("color"));
+    $("#col"+draw.currentColor).css("background-color", draw.color);
   });
 
-  /*
-  $(".pattern_preset").each(function(){
-    var name = $(this).data("name");
-    var pattern = $(this).data("pattern");
-    $("#load_pattern").append($("<option>").text(name).attr("value", pattern));
-    $(this).remove();
-  });
+  //We have three configured pattern displays, the last of which has a grid
+  draw.addCanvas($("#acnl_icon")[0]);
+  draw.addCanvas($("#acnl_icon_zoom")[0]);
+  draw.addCanvas($("#acnl_icon_zoomier")[0], {grid:true});
+  setup3DRender(); 
+  
+  //Load an empty pattern
+  draw.load(null);
 
-  $("#load_pattern").change(function(){
-    newIcon(window.atob($("#load_pattern").val()));
-  }).change();
-  */
-
-  newIcon(ACNL.emptyPattern(9));
-
+  //Copy/paste buttons
   $("#creator_copy").click(function(){
-    ACNL.copyCreator();
+    copiedCreator = [draw.creator, draw.town];
     $("#creator_copy").val("Creator copied!");
     setTimeout(function(){$("#creator_copy").val("Copy creator");}, 1000);
-    $("#creator_paste").val("Paste creator ("+ACNL.getCreator()+" / "+ACNL.getTown()+")");
+    $("#creator_paste").val("Paste creator ("+copiedCreator[0][0]+" / "+copiedCreator[1][0]+")");
   });
-
   $("#creator_paste").click(function(){
-    ACNL.pasteCreator();
-    $("#icon_creator").val(ACNL.getCreator());
-    $("#icon_creator_id").val(ACNL.getCreatorID());
-    $("#icon_town").val(ACNL.getTown());
-    $("#icon_town_id").val(ACNL.getTownID());
-    triggerRefresh();
+    [draw.creator, draw.town] = copiedCreator;
+    $("#icon_creator").val(draw.creator[0]);
+    $("#icon_creator_id").val(draw.creator[1]);
+    $("#icon_town").val(draw.town[0]);
+    $("#icon_town_id").val(draw.town[1]);
   });
 
-  $("#icon_type").change(function(){
-    newType = $("#icon_type").val();
-    if (ACNL.getTypeNum() != newType){
-      if (ACNL.widthForType(ACNL.getTypeNum()) != ACNL.widthForType(newType)){
-        newIcon(ACNL.emptyPattern(newType));
-      }else{
-        ACNL.setByte(0x69, newType);
-        newIcon(ACNL.getData());
-      }
+  //Renders QR code(s) to the #qr element
+  $("#qr_gen").click(function(){
+    let obj = $("#qr");
+    let data = draw.toString();
+    obj.html("");
+    if (draw.width == 64){
+      obj.qrcode({"correctLevel":0, "text":data.substr(0, 0x21C), "render":"canvas", "width":512, "height":512, "multipart_num":0, "multipart_total":3, "multipart_parity":0x77});
+      obj.qrcode({"correctLevel":0, "text":data.substr(0x21C, 0x21C), "render":"canvas", "width":512, "height":512, "multipart_num":1, "multipart_total":3, "multipart_parity":0x77});
+      obj.qrcode({"correctLevel":0, "text":data.substr(0x21C*2, 0x21C), "render":"canvas", "width":512, "height":512, "multipart_num":2, "multipart_total":3, "multipart_parity":0x77});
+      obj.qrcode({"correctLevel":0, "text":data.substr(0x21C*3, 0x21C), "render":"canvas", "width":512, "height":512, "multipart_num":3, "multipart_total":3, "multipart_parity":0x77});
+    }else{
+      obj.qrcode({"correctLevel":0, "text":data, "render":"canvas", "width":512, "height":512});
     }
   });
-  
+
+  //Pattern type change
+  $("#icon_type").change(function(){
+    draw.patternType = $("#icon_type").val();
+  });
+
+  //Zoom controls
+  $("#zoomin").click(function(){
+    var s = Math.floor($("#acnl_icon_zoomier")[0].width / 64)*64;
+    $("#acnl_icon_zoomier")[0].width = s+64;
+    $("#acnl_icon_zoomier")[0].height = s+64;
+    draw.render();
+  });
+  $("#zoomout").click(function(){
+    var s = Math.floor($("#acnl_icon_zoomier")[0].width / 64)*64;
+    if (s < 256){s = 256;}
+    $("#acnl_icon_zoomier")[0].width = s-64;
+    $("#acnl_icon_zoomier")[0].height = s-64;
+    draw.render();
+  });
+
+ 
+  //Handle uploaded files (ACNL or QR code image)
   var multi_icon = "";
   function parseFiles(files){
     if (files[0].type.match('image.*')){
+      //Assume QR code image
       var r = new FileReader();
       r.onload = function(re) {
         qrcode.callback = function(r){
@@ -279,7 +245,7 @@ $(function(){
           }
           
           if (r.length == 0x26C){//regular pattern
-            newIcon(r);
+            draw.load(r);
             return;
           }
           if (r.length == 0x21C){//multi-part pattern
@@ -287,7 +253,7 @@ $(function(){
             if (multi_icon.length == 0x21C){alert("Please input the second code next."); return;}
             if (multi_icon.length == 0x438){alert("Please input the third code next."); return;}
             if (multi_icon.length == 0x654){alert("Please input the last code next."); return;}
-            if (multi_icon.length == 0x870){newIcon(multi_icon); multi_icon = ""; return;}
+            if (multi_icon.length == 0x870){draw.load(multi_icon); multi_icon = ""; return;}
             multi_icon = "";
             alert("Something, somewhere, went terribly wrong. Please start over. :-(");
             return;
@@ -296,14 +262,14 @@ $(function(){
           alert("Whoah! That code doesn't look right, but I think I can fix it, attempting fix...");
           
           if (r[0x68] == 0xA){
-            newIcon(r);
+            draw.load(r);
             return;
           }else{
             multi_icon += r.substr(0, 0x21C);
             if (multi_icon.length == 0x21C){alert("Please input the second code next."); return;}
             if (multi_icon.length == 0x438){alert("Please input the third code next."); return;}
             if (multi_icon.length == 0x654){alert("Please input the last code next."); return;}
-            if (multi_icon.length == 0x870){newIcon(multi_icon); multi_icon = ""; return;}
+            if (multi_icon.length == 0x870){draw.load(multi_icon); multi_icon = ""; return;}
             multi_icon = "";
             alert("Something, somewhere, went terribly wrong. Please start over. :-(");
             return;
@@ -315,166 +281,115 @@ $(function(){
       r.readAsDataURL(files[0]);
     }else{
       //assume ACNL file
-      var r = new FileReader();
-      r.onload = function(re) { 
-        newIcon(re.target.result);
-      }
-      r.readAsBinaryString(files[0]);
+      var readNew = new FileReader();
+      readNew.onload = function(re){draw.load(re.target.result);}
+      readNew.readAsArrayBuffer(files[0]);
     }
-  };
-  
+  }; 
   $("#files").change(function(e){
     parseFiles(e.target.files);
     $("#files").val("");
   });
   
-  function palette_top(imgdata){
-    var palette = [];
-    for (var i = 0; i < 256; i++){palette.push({"n":i, "c":0});}
-    function myPal(r, g, b){
-      var best = 120;//there's no worse best score than 119
-      var bestno = 0;
-      for (var i = 0; i < 256; i++){
-        var toMatch = ACNL.getPal(i);
-        if (toMatch.length < 7){continue;}
-        var x = parseInt(toMatch.substr(1, 2), 16);
-        var y = parseInt(toMatch.substr(3, 2), 16);
-        var z = parseInt(toMatch.substr(5, 2), 16);
-        var match = Math.abs(x - r) + Math.abs(y - g) + Math.abs(z - b);
-        if (match < best){
-          best = match;
-          bestno = i;
-        }
-      }
-      palette[bestno].c++;
-    };
-    for (var i = 0; i < 4096; i+=4){myPal(imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);}
+  //Sets the palette to the top-15 closest RGB colors
+  function image_rgb(imgdata){
+    let palette = [];
+    for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
+    let pixelCount = draw.pixelCount * 4;
+    for (let i = 0; i < pixelCount; i+=4){
+      palette[draw.findRGB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
+    }
     palette.sort(function(a, b){
       if (a.c > b.c){return -1;}
       if (a.c < b.c){return 1;}
       return 0;
     });
-    while (palette.length > 15){palette.pop();}
-    for (var i = 0; i < 15; i++){
-      ACNL.setIndex(i, palette[i].n);
+    for (let i = 0; i < 15; i++){draw.setPalette(i, palette[i].n);}
+
+    //Set each pixel to the nearest color from the palette
+    for (let i = 0; i < pixelCount; i+=4){
+      let x = (i >> 2) % draw.width;
+      let y = Math.floor((i >> 2) / draw.width);
+      draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
     }
-  };
-  
-  function reColorize(imgdata){
-    function myIndex(r, g, b){
-      var best = 255*3;
-      var bestno = 0;
-      for (var i = 0; i < 15; i++){
-        var toMatch = ACNL.getPal(ACNL.getIndex(i));
-        if (toMatch.length < 7){continue;}
-        var x = parseInt(toMatch.substr(1, 2), 16);
-        var y = parseInt(toMatch.substr(3, 2), 16);
-        var z = parseInt(toMatch.substr(5, 2), 16);
-        var match = Math.abs(x - r) + Math.abs(y - g) + Math.abs(z - b);
-        if (match < best){
-          best = match;
-          bestno = i;
-        }
-      }
-      return bestno;
-    };
-    for (var i = 0; i < 4096; i+=4){
-      var x = Math.floor(i / 4) % 32;
-      var y = Math.floor(Math.floor(i / 4) / 32);
-      ACNL.setColor(x, y, myIndex(imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]));
-    }
-    for (var i = 0; i < 15; i++){
-      $("#col"+i).css("background-color", ACNL.getColor(i));
-    }
-    chosen_color = 0;
-    $(".col_pal").attr("class", "col_pal").each(function(){
-      if ($(this).data("color") == ACNL.getIndex(chosen_color)){
-        $(this).attr("class", "col_pal picked");
-      }
-    });
+    draw.onLoad();
   };
 
-  function palette_lowest(imgdata){
-    var palette = [];
-    var prepixels = [];
-    for (var i = 0; i < 256; i++){palette.push({"n":i, "c":0});}
-    function myPal(pixel, r, g, b){
-      var matches = {};
-      var best = 120;//there's no worse best score than 119
-      var bestno = 0;
-      for (var i = 0; i < 256; i++){
-        var toMatch = ACNL.getPal(i);
-        if (toMatch.length < 7){continue;}
-        var x = parseInt(toMatch.substr(1, 2), 16);
-        var y = parseInt(toMatch.substr(3, 2), 16);
-        var z = parseInt(toMatch.substr(5, 2), 16);
-        var match = Math.abs(x - r) + Math.abs(y - g) + Math.abs(z - b);
-        if (match < best){
-          best = match;
-          bestno = i;
-        }
-        if (match < 120){//this way, we get 1 or more matches, guaranteed
-          matches[i.toString()] = match;
-        }
-      }
-      palette[bestno].c++;
-      prepixels[pixel] = matches;
-    };
-    for (var i = 0; i < 4096; i+=4){myPal(i/4, imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);}
+  //Sets the palette to the top-15 closest YUV colors
+  function image_yuv(imgdata){
+    let palette = [];
+    for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
+    let pixelCount = draw.pixelCount * 4;
+    for (let i = 0; i < pixelCount; i+=4){
+      palette[draw.findYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
+    }
     palette.sort(function(a, b){
       if (a.c > b.c){return -1;}
       if (a.c < b.c){return 1;}
       return 0;
     });
-    while (palette.length > 40){palette.pop();}
-    var best_chosen = [];
-    var scor_chosen = 0x200000;//we can always do better than this
-    alert("Optimizing happens after you click ok - please stand by as this might take a while.");
-    for (var z = 0; z < 4000 && palette.length > 16; z++){
-      var chosen_ones = [];
-      //pick random colors out of the top 40
-      while (chosen_ones.length < 15 && chosen_ones.length < palette.length){
-        var next = palette[Math.floor(Math.random()*palette.length)].n;
-        if ($.inArray(next, chosen_ones) != -1){continue;}
-        chosen_ones.push(next);
-      }
-      //score this random selection
-      var curr_score = 0;
-      for (var p in prepixels){
-        var low_pixel = 750;
-        for (var m in prepixels[p]){
-          if ($.inArray(parseInt(m), chosen_ones) == -1){continue;}
-          if (prepixels[p][m] < low_pixel){low_pixel = prepixels[p][m];}
-        }
-        curr_score += low_pixel;
-        if (curr_score >= scor_chosen){break;}
-      }
-      if (curr_score < scor_chosen){
-        scor_chosen = curr_score;
-        best_chosen = chosen_ones;
-      }
+    for (let i = 0; i < 15; i++){draw.setPalette(i, palette[i].n);}
+
+    //Set each pixel to the nearest color from the palette
+    for (let i = 0; i < pixelCount; i+=4){
+      let x = (i >> 2) % draw.width;
+      let y = Math.floor((i >> 2) / draw.width);
+      draw.setPixel(x, y, draw.findPalYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]));
     }
-    
-    for (var i = 0; i < 15 && i < best_chosen.length; i++){
-      ACNL.setIndex(i, best_chosen[i]);
-    }
+    draw.onLoad();
   };
   
-  function palette_grey(imgdata){
+  //Set palette to greyscale
+  function image_grey(imgdata){
     for (var i = 0; i < 15; i++){
-      ACNL.setIndex(i, 0x10*i + 0xF);
+      draw.setPalette(i, 0x10*i + 0xF);
     }
+
+    function TripleY(rgb){
+      return [rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000, rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000,rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000];
+    }
+    //Set each pixel to the nearest color from the palette
+    let pixelCount = draw.pixelCount * 4;
+    for (let i = 0; i < pixelCount; i+=4){
+      let x = (i >> 2) % draw.width;
+      let y = Math.floor((i >> 2) / draw.width);
+      draw.setPixel(x, y, TripleY([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]));
+    }
+    draw.onLoad();
   };
 
-  function palette_sepia(imgdata){
+  //Set palette to sepia
+  function image_sepia(imgdata){
     for (var i = 0; i < 9; i++){
-      ACNL.setIndex(i, 0x30 + i);
+      draw.setPalette(i, 0x30+i);
     }
     for (var i = 9; i < 15; i++){
-      ACNL.setIndex(i, 0x60 + i - 6);
+      draw.setPalette(i, 0x60+i-6);
     }
+
+    //Set each pixel to the nearest color from the palette
+    let pixelCount = draw.pixelCount * 4;
+    for (let i = 0; i < pixelCount; i+=4){
+      let x = (i >> 2) % draw.width;
+      let y = Math.floor((i >> 2) / draw.width);
+      draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+    }
+    draw.onLoad();
   };
   
+  //Do not set palette at all
+  function image_keep(imgdata){
+    //Set each pixel to the nearest color from the palette
+    let pixelCount = draw.pixelCount * 4;
+    for (let i = 0; i < pixelCount; i+=4){
+      let x = (i >> 2) % draw.width;
+      let y = Math.floor((i >> 2) / draw.width);
+      draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+    }
+    draw.onLoad();
+  };
+  
+  //Convert uploaded image to pattern
   $("#img_files").change(function(e){
     if (e.target.files[0].type.match('image.*')){
       var r = new FileReader();
@@ -482,19 +397,18 @@ $(function(){
         var img = new Image();
         img.onload = function(){
           var canvas_convert = document.createElement('canvas');
-          canvas_convert.width = 32;
-          canvas_convert.height = 32;
+          canvas_convert.width = draw.width;
+          canvas_convert.height = draw.height;
           var ctx_convert = canvas_convert.getContext("2d");
-          ctx_convert.drawImage(img,0,0,32,32);
-          var imgdata = ctx_convert.getImageData(0, 0, 32, 32);
+          ctx_convert.drawImage(img,0,0,draw.width,draw.height);
+          var imgdata = ctx_convert.getImageData(0, 0, draw.width, draw.height);
           switch ($("#conv_meth").val()){
-            case "top": palette_top(imgdata); break;
-            case "lowest": palette_lowest(imgdata); break;
-            case "grey": palette_grey(imgdata); break;
-            case "sepia": palette_sepia(imgdata); break;
+            case "rgb": image_rgb(imgdata); break;
+            case "yuv": image_yuv(imgdata); break;
+            case "grey": image_grey(imgdata); break;
+            case "sepia": image_sepia(imgdata); break;
+            case "keep": image_keep(imgdata); break;
           }
-          reColorize(imgdata);
-          triggerRefresh();
         }
         img.src = re.target.result;
       }
@@ -503,26 +417,6 @@ $(function(){
     $("#img_files").val("");
   });
   
-  $("#zoomin").click(function(){
-    var s = Math.floor($("#acnl_icon_zoomier")[0].width / 64)*64;
-    $("#acnl_icon_zoomier")[0].width = s+64;
-    $("#acnl_icon_zoomier")[0].height = s+64;
-    ACNL.draw($("#acnl_icon_zoomier")[0]);
-  });
-  $("#zoomout").click(function(){
-    var s = Math.floor($("#acnl_icon_zoomier")[0].width / 64)*64;
-    if (s < 256){s = 256;}
-    $("#acnl_icon_zoomier")[0].width = s-64;
-    $("#acnl_icon_zoomier")[0].height = s-64;
-    ACNL.draw($("#acnl_icon_zoomier")[0]);
-  });
-
-  //load drag and drop support?
-  //Doesn't work yet, for unknown reasons.
-  // TODO: Look into this sometime.
-  //$("#qr, #acnl_icon_zoomier").bind("dragenter dragover", function(e){e.originalEvent.dataTransfer.dropEffect = 'copy';console.log(e);}, false).bind("drop", function(e){console.log("drop", e);parseFiles(e.originalEvent.dataTransfer.files);}, false);
-
-
 
 });
 

@@ -191,7 +191,8 @@
     <script src="jquery.qrcode.js"></script>
     <script src="filesaver.js"></script>
     <script src="jsqrcode.min.js"></script>
-    <script src="acnl.js"></script>
+    <script src="acnl_format.js"></script>
+    <script src="drawtools.js"></script>
     <script src="three.js"></script>
     <script src="GLTFLoader.js"></script>
     <script src="page.js"></script>
@@ -202,7 +203,7 @@
     <div class="header">
       <h1>Animal Crossing: New Leaf Pattern Tool</h1>
       <h4 title="thulinma@thulinma.com">By Thulinma</h4>
-      <i>Last updated: December 14, 2018</i><br>
+      <i>Last updated: February 23, 2020</i><br>
       <p>Questions / remarks / cookies? Please read the <b>FAQ</b> on the bottom of the page!</p>
     </div>
     <hr>
@@ -282,13 +283,16 @@
       <label for="icon_creator">Convert image:</label>
       <input type="file" id="img_files">
       <select id="conv_meth">
-        <option value="top">Use the top 15 most-used nearest colors (ugly, fast)</option>
-        <option value="lowest">Optimize out of top 40 most-used nearest colors (best, slow)</option>
+        <option value="rgb">Use the top 15 most-used nearest RGB colors (default)</option>
+        <option value="yuv">Use the top 15 most-used nearest YUV colors</option>
         <option value="grey">Convert to greyscale (fast and good, but no colors)</option>
         <option value="sepia">Convert to sepia (fast and good, but no colors)</option>
+        <option value="keep">Use current palette</option>
       </select>
 
       <div class="qr_code_container">
+        <div>Click the below button to create/update the QR code(s) for your pattern.<br>QR codes will <u>not</u> auto-update, so push it again if you made any changes!.</div>
+        <input type="button" id="qr_gen" value="Convert to QR!">
         <div id="qr" class="qr_code"></div>
       </div>
 
@@ -369,6 +373,7 @@
             <li>June 30, 2013: Support for pro patterns (both import and export), added pixel grid, added zoom buttons, added offline version download link in FAQ, added a selection box with 4 different image conversion optimizers</li>
             <li>May 24, 2014: Still alive! Fixed a bug causing drawing to get stuck in several browsers. Fixed bug of having 16 shades of grey instead of the 15 from in-game. Updated jsqrcode for better QR code recognition. Added support for automatically attempting to recover from some corrupt QR codes. Special thanks to "Kiddiecat" for pointing out the drawing bug. Special thanks to "Michael New" for pointing out the 16 shades of grey bug. Special thanks to "Edel Fern&aacute;ndez" for supplying a corrupt QR code.</li>
             <li>December 14, 2018: A special update in honor of an important day exactly three years ago. Spit-shine and polish, CSS improvements and some minor typos corrected by "Myumi Kalinowski". Added 3D render for shirt and dress modes. Added ability to change pattern type as well as create other types than the standard type from scratch. More updates coming soon. Maybe. We'll see!</li>
+            <li>February 23, 2020: Modernized ACNL format into a class, modernized drawing tool into a class. This can only mean one thing: more modernization coming soon...? Also, fixes a ton of long-standing bugs and added/improved the image conversion for patterns. Whoop!</li>
           </ul>
         </div>
         <div class="question">
