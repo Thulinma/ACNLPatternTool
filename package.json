@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "clean": "node scripts/clean.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,21 @@
   "bugs": {
     "url": "https://github.com/Thulinma/ACNLPatternTool/issues"
   },
-  "homepage": "https://github.com/Thulinma/ACNLPatternTool#readme"
+  "homepage": "https://github.com/Thulinma/ACNLPatternTool#readme",
+  "dependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
+    "babel-loader": "^8.0.6",
+    "file-loader": "^5.1.0",
+    "fs-extra": "^8.1.0",
+    "signale": "^1.4.0",
+    "webpack": "^4.41.6",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.10.3"
+  }
 }
