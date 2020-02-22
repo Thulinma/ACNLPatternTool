@@ -1,0 +1,8 @@
+# Ignore dependencies
+**/node_modules
+
+# Ignore build
+**/build
+
+# Ignore OS Metadata
+**/.DS_Store
