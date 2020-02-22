@@ -3,6 +3,7 @@
 
 # Ignore build
 **/build
+**/.env
 
 # Ignore OS Metadata
 **/.DS_Store
