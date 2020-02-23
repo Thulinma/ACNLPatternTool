@@ -14,7 +14,8 @@ const pathToEnv = path.resolve(pathToRoot, ".env");
 const pathToBabelConfig = path.resolve(pathToConfig, "babel.config.js");
 const pathToEnvConfig = path.resolve(pathToConfig, "env.config.js");
 const pathToWebpackConfig = path.resolve(pathToConfig, "webpack.config.js");
-const pathToConditionalJs = path.resolve(pathToEtc, "conditional.js");
+const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
+const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
 const pathToEnvJs = path.resolve(pathToEtc, "env.js");
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
 
@@ -31,7 +32,8 @@ module.exports = {
   pathToBabelConfig,
   pathToEnvConfig,
   pathToWebpackConfig,
-  pathToConditionalJs,
+  pathToPublicIndex,
+  pathToClientSrcIndex,
   pathToEnvJs,
   pathToPathsJs,
 };
