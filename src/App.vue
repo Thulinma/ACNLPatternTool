@@ -7,7 +7,7 @@
 
 <script>
 import HelloWorld from '/components/HelloWorld.vue'
-import logo from '/assets/logo.png';
+import logo from '/assets/images/logo.png';
 
 export default {
   name: 'App',

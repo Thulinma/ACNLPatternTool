@@ -7,12 +7,15 @@ const {
   webpackDevConfig,
   webpackProdConfig,
 } = require('../config/webpack.config');
+const { NODE_ENV } = process.env;
 
 // check process args, allow build with forced settings
 let selectedWebpackConfig;
 let devSetting = process.argv[2]; // 0 is node, 1 is the script
-if (!["development", "production"].includes(devSetting))
+if (!["development", "production"].includes(devSetting)) {
   selectedWebpackConfig = webpackConfig; // w/e is in NODE_ENV
+  devSetting = NODE_ENV;
+}
 else
   if (devSetting === "development") selectedWebpackConfig = webpackDevConfig;
   else selectedWebpackConfig = webpackProdConfig;
@@ -27,7 +30,7 @@ compiler.hooks.done.tap('done', (stats) => {
   const messages = webpackFormatMessages(stats);
 
   if (!messages.errors.length && !messages.warnings.length) {
-    signale.success('Application compiled!');
+    signale.success(`Application compiled in ${devSetting} mode!`);
   }
 
   if (messages.errors.length) {

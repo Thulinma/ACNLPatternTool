@@ -112,7 +112,7 @@ const webpackDevConfig = {
       alwaysWriteToDisk: false,
       filename: "index.html",
     }),
-    new HtmlWebpackHarddiskPlugin(), // ^ allows more options on top line
+    new HtmlWebpackHarddiskPlugin(), // ^ allows more options
   ]
 };
 
@@ -135,7 +135,9 @@ const webpackProdConfig = {
   },
   plugins: [
     ...baseConfig.plugins,
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      ...baseHtmlWebpackOptions,
+    }),
   ]
 };
 
