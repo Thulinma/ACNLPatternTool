@@ -15,6 +15,16 @@
           v-on:mousemove="onColorMousemove($event, color)">
         </div>
       </div>
+      <div class="swatch-mono-block">
+        <div
+          v-for="color in monoBlock"
+          v-bind:key="color"
+          class="swatch-color"
+          v-bind:style="{ backgroundColor: color }"
+          v-on:click="onColorClick($event, color)"
+          v-on:mousemove="onColorMousemove($event, color)">
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -39,13 +49,13 @@ export default {
     const monoBlock = [];
     for (let i = 0x0F; i < 0xFF; i += 0x10)
       monoBlock.push(ACNLFormat.paletteColors[i]);
-    colorBlocks.push(monoBlock);
 
     const dt = this.drawingTool;
     const currentColorHex = dt.getPalette(dt.currentColor);
 
     return {
       colorBlocks,
+      monoBlock,
       currentColorHex,
     };
   },
@@ -64,15 +74,24 @@ export default {
 <style scoped>
 .swatch {
   user-select: none;
-  border: 2px solid white;
-	display: inline-block;
-	width: 160px;
-	height: 200px;
+  border: 2px solid #888;
+  background: white;
+  display: inline-block;
+  width: 160px;
+  height: 180px;
 }
 
 .swatch-color-block {
   height: 30px;
   width: 30px;
+  float: left;
+  overflow: hidden;
+  margin: 5px;
+}
+
+.swatch-mono-block {
+  height: 10px;
+  width: 150px;
   float: left;
   overflow: hidden;
   margin: 5px;

@@ -7,8 +7,8 @@
       <div
         class="palette-color"
         v-for="j in 3"
-        v-bind:key="i + j - 2"
-        v-bind:style="{ backgroundColor: paletteColors[i + j - 2] }"
+        v-bind:key="(i-1)*3 + j-1"
+        v-bind:style="{ backgroundColor: paletteColors[(i-1)*3 + j-1] }"
         v-on:click="onColorClick($event, (i - 1) * 3 + (j -1))"
         v-on:mousemove="onColorMousemove($event, (i - 1) * 3 + (j -1))">
       </div>
