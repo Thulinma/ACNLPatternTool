@@ -12,7 +12,7 @@ function setup3DRender(){
   var renderCanvas = document.createElement('canvas');
   renderCanvas.width = 32;
   renderCanvas.height = 128;
-  draw.addCanvas(renderCanvas);
+  draw.addCanvas(renderCanvas, {tall:true});
 
   var renderContext = renderCanvas.getContext('2d');
   renderContext.fillStyle = "rgba(255,255,255,1)";
