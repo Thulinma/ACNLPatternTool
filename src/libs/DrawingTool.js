@@ -1,6 +1,9 @@
 import ACNLFormat from '/libs/ACNLFormat';
 
 class RenderTarget{
+  //Valid options for RenderTargets:
+  // - tall: If true, will assume 1x4 layout for 3D texture use
+  // - grid: If true, will draw a pixel grid on top
   constructor(c, opt = {}){
     this.canvas = c;
     this.context = c.getContext("2d");
@@ -14,7 +17,7 @@ class RenderTarget{
   /// Should be called every time the pattern (or canvas) changes width
   calcZoom(pWidth){
     this.context.imageSmoothingEnabled = false;
-    if (this.width && this.height && this.width == this.height/4){
+    if (this.opt.tall){
       this.zoom = this.width/32;
     }else if (this.width < this.height){
       this.zoom = Math.floor(this.width / pWidth);
@@ -26,7 +29,7 @@ class RenderTarget{
   /// Draws the given pixel with the given HTML color
   drawPixel(x, y, color){
     //If we've gone under 64 pixels, assume we meant the right side instead.
-    if (y > 63 && (this.zoom > 1 || this.canvas.width == this.canvas.height)){
+    if (y > 63 && !this.opt.tall){
       y -= 64; x += 32;
     }
     //draw the pixel
@@ -43,7 +46,12 @@ class RenderTarget{
   /// Renders a whole image by copying from another RenderTarget (must be grid-less).
   /// Draws grid on top if needed.
   blitFrom(c){
-    this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height)
+    if (this.opt.tall){
+      this.context.drawImage(c.canvas, 0, 0, c.canvas.width/2, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height/2);
+      this.context.drawImage(c.canvas, c.canvas.width/2, 0, c.canvas.width/2, c.canvas.height, 0, this.canvas.height/2, this.canvas.width, this.canvas.height/2);
+    }else{
+      this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height)
+    }
     if (this.opt.grid){
       this.context.fillStyle = "#AAAAAA";
       for (let x = 0; x < this.canvas.width/this.zoom; ++x){
@@ -85,7 +93,7 @@ class DrawingTool{
     this.currentColor = 0;
     this.onLoad();
   }
-
+  
   /// Gets this.currentColor translated into a HTML color
   get color(){
     return this.getPalette(this.currentColor);
@@ -109,7 +117,7 @@ class DrawingTool{
   set town(n){this.pattern.town = n;}
   get patternType(){return this.pattern.patternType;}
   set patternType(n){if (this.pattern.patternType != n){this.pattern.patternType = n; this.onLoad();}}
-
+  
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
   findRGB(c){
@@ -277,7 +285,7 @@ class DrawingTool{
       let y = Math.floor(i / 32);
       this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
     }
-
+    
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width);

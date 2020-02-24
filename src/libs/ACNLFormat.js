@@ -30,7 +30,7 @@
 // 0x08 = Standee (pro)
 // 0x09 = Plain pattern (easel)
 
-class ACNLFormat {
+class ACNLFormat{
   ///Either transfers an existing ArrayBuffer, or creates a new pattern, optionally using the passed pattern type.
   constructor(qr_buffer = null){
     this.b = null;
@@ -104,8 +104,8 @@ class ACNLFormat {
 
   ///Converts to a "normal" string
   toString(){
-    let str;
-    for (let i = 0; i < this.b.byteLength; i++){str += String.fromCharCode(i);}
+    let str = "";
+    for (let i = 0; i < this.b.byteLength; i++){str += String.fromCharCode(this.dataBytes[i]);}
     return str;
   }
 
@@ -152,7 +152,7 @@ class ACNLFormat {
     if (i < 0 || i > 15){return 0;}
     return this.dataBytes[0x58 + i];
   }
-
+  
   setPalette(i, newVal){
     if (i < 0 || i > 15){return;}
     this.dataBytes[0x58 + i] = newVal;
@@ -337,3 +337,4 @@ for (let i = 0; i < 256; i++){
 
 
 export default ACNLFormat;
+
