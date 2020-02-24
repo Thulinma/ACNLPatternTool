@@ -1,17 +1,13 @@
 <template v-for="i in 1">
   <div>
-    <div>
-      <ColorPicker
-        ref="colorPicker"
-        v-bind:drawing-tool="drawingTool"
-        v-on:color-picked="onColorPicked"/>
-    </div>
-    <div>
-      <Palette
-        ref="palette"
-        v-bind:drawing-tool="drawingTool"
-        v-on:changed-current-color="onChangedCurrentColor"/>
-    </div>
+    <Palette
+      ref="palette"
+      v-bind:drawing-tool="drawingTool"
+      v-on:changed-current-color="onChangedCurrentColor"/>
+    <ColorPicker
+      ref="colorPicker"
+      v-bind:drawing-tool="drawingTool"
+      v-on:color-picked="onColorPicked"/>
     <div>
       <canvas ref="canvas1" width="512" height="512"/>
       <canvas ref="canvas2" width="128" height="128"/>

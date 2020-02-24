@@ -48,13 +48,19 @@ export default {
 
 <style scoped>
 .palette {
-	user-select: none;
-  border: 2px solid white;
-  margin-top: 20px;
-  margin-bottom: 20px;
-	display: inline-block;
-	margin-right: 5px;
-	vertical-align: top;
+  user-select: none;
+  border-radius: 35px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ebbccd,
+    #ebbccd 6px,
+    #c38399 6px,
+    #c38399 12px
+  );
+  display: inline-block;
+  padding:15px;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .palette-color-row {

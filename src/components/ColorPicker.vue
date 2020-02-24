@@ -51,7 +51,7 @@ export default {
       monoBlock.push(ACNLFormat.paletteColors[i]);
 
     const dt = this.drawingTool;
-    const currentColorHex = dt.getPalette(dt.currentColor);
+    const currentColorHex = dt.color;
 
     return {
       colorBlocks,
@@ -74,9 +74,16 @@ export default {
 <style scoped>
 .swatch {
   user-select: none;
-  border: 2px solid #888;
-  background: white;
+  border-radius: 35px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ebbccd,
+    #ebbccd 6px,
+    #c38399 6px,
+    #c38399 12px
+  );
   display: inline-block;
+  padding:10px;
   width: 160px;
   height: 180px;
 }
