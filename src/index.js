@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueI18n from 'vue-i18n';
+import 'reset-css';
 import App from 'App.vue';
-import Editor from '/pages/Editor.vue';
 import router from '/routers';
 import {
   ifDevExec,

@@ -11,5 +11,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+body {
+  background-color: black;
+}
 </style>

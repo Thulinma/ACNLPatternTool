@@ -1,4 +1,4 @@
-import ACNLFormat from '/libs/acnl-format'
+import ACNLFormat from '/libs/ACNLFormat';
 
 class RenderTarget{
   constructor(c, opt = {}){
