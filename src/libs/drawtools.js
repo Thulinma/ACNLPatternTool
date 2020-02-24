@@ -1,4 +1,4 @@
-import ACNLFormat from '/libs/acnl-format.js'
+import ACNLFormat from '/libs/acnl-format'
 
 class RenderTarget{
   constructor(c, opt = {}){
@@ -85,7 +85,7 @@ class DrawingTool{
     this.currentColor = 0;
     this.onLoad();
   }
-  
+
   /// Gets this.currentColor translated into a HTML color
   get color(){
     return this.getPalette(this.currentColor);
@@ -109,7 +109,7 @@ class DrawingTool{
   set town(n){this.pattern.town = n;}
   get patternType(){return this.pattern.patternType;}
   set patternType(n){if (this.pattern.patternType != n){this.pattern.patternType = n; this.onLoad();}}
-  
+
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
   findRGB(c){
@@ -277,7 +277,7 @@ class DrawingTool{
       let y = Math.floor(i / 32);
       this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
     }
-    
+
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width);

@@ -2,7 +2,12 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueI18n from 'vue-i18n';
 import App from 'App.vue';
-import { ifDevExec, ifProdExec } from '/utils/if-env';
+import Editor from '/pages/Editor.vue';
+import router from '/routers';
+import {
+  ifDevExec,
+  ifProdExec
+} from '/utils/if-env';
 import logger from '/utils/logger';
 
 // config vue global before mount
@@ -18,6 +23,7 @@ ifProdExec(() => {
 
 // mount
 new Vue({
+  router: router,
   render: (h) => h(App),
 }).$mount("#app");
 
