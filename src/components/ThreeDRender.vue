@@ -35,6 +35,7 @@ export default {
       if (this.model){
         this.scene.remove(this.model);
         this.model = false;
+        this.texture = false;
       }
       let path;
       switch (d.patternType){
@@ -46,6 +47,11 @@ export default {
         case 5: path = model_shirt_none; break;
         default: return;
       }
+      this.texture = new THREE.Texture(this.renderCanvas) 
+      this.texture.needsUpdate = true;
+      this.texture.encoding = THREE.sRGBEncoding;
+      this.texture.flipY = false;
+      this.texture.magFilter = THREE.NearestFilter;
       let loader = new GLTFLoader();
       loader.load(path, (gltf) => {
         this.model = gltf.scene.children[0];
@@ -53,7 +59,7 @@ export default {
           if (child instanceof THREE.Mesh){child.material = new THREE.MeshBasicMaterial({map:this.texture});}
         });
         this.scene.add(this.model);
-      }, undefined, function(){ });
+      });
     },
     animate: function(){
       if (this.model){this.model.rotation.y += 0.01;}
@@ -71,18 +77,9 @@ export default {
     renderContext.fillStyle = "rgba(255,255,255,1)";
     renderContext.fillRect(0, 0, 32, 128);
 
-    //this.renderer.outputEncoding = THREE.GammaEncoding;
-    //this.renderer.gammaFactor = 2.2;
-    //this.renderer.setSize(128, 128);
     this.camera.position.z = 15;
     this.camera.position.y = 30;
     this.camera.rotation.x = 5.6;
-
-    this.texture = new THREE.Texture(this.renderCanvas) 
-    this.texture.needsUpdate = true;
-    this.texture.encoding = THREE.sRGBEncoding;
-    this.texture.flipY = false;
-    this.texture.magFilter = THREE.NearestFilter;
 
     this.animate();
 
