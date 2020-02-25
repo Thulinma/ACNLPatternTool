@@ -33,15 +33,10 @@ export default {
     drawingTool: DrawingTool,
   },
   data: function() {
-    return {};
-  },
-  computed: {
-    paletteColors: function() {
-      const paletteColors = [];
-      for (let i = 0; i < 15; ++i)
-        paletteColors.push(this.drawingTool.getPalette(i));
-      return paletteColors;
-    },
+    const paletteColors = [];
+    for (let i = 0; i < 15; ++i)
+      paletteColors.push(this.drawingTool.getPalette(i));
+    return {paletteColors};
   },
   watch: {
     drawingTool: function(after, before) {
@@ -55,6 +50,12 @@ export default {
     onColorMousemove: function(event, idx) {
       if (event.buttons === 1)
         this.$emit('changed-current-color', idx);
+    },
+    palChange: function(){
+      let paletteColors = [];
+      for (let i = 0; i < 15; ++i)
+        paletteColors[i] = this.drawingTool.getPalette(i);
+      this.$data.paletteColors = paletteColors;
     }
   },
   updated: function() {
@@ -80,8 +81,14 @@ export default {
 }
 
 .palette-color-row {
-	height: 32px;
-	background-color: black;
+  height: 32px;
+  background: repeating-linear-gradient(
+    45deg,
+    black,
+    black 2px,
+    white 2px,
+    white 4px
+  );
 }
 
 .palette-color {

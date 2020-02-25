@@ -35,17 +35,12 @@ export default {
   },
   methods: {
     onColorPicked: function(color) {
-      // this won't trigger because vue can't detect it
-      // and assumes the drawingTool hasn't changed
-      // Editor not notified about change, can't tell
-      // Palette about the change
-      const colorIdx = this.drawingTool.currentColor;
-      this.drawingTool.setPalette(colorIdx, color);
+      this.drawingTool.setPalette(this.drawingTool.currentColor, color);
+      this.$refs.palette.palChange();
     },
     onChangedCurrentColor: function(idx) {
-      // this triggers update just fine
-      // Vue listening to this change but will
       this.drawingTool.currentColor = idx;
+      this.$refs.colorPicker.forceCheck();
     }
   },
   mounted: function() {

@@ -8,7 +8,7 @@
         v-bind:key="index">
         <div
           v-for="color in block"
-          v-if="drawingTool.color !== color"
+          v-if="currColor !== color"
           v-bind:key="color"
           class="swatch-color"
           v-bind:style="{ backgroundColor: color }"
@@ -27,7 +27,7 @@
       <div class="swatch-mono-block">
         <div
           v-for="color in monoBlock"
-          v-if="drawingTool.color !== color"
+          v-if="currColor !== color"
           v-bind:key="color"
           class="swatch-color"
           v-bind:style="{ backgroundColor: color }"
@@ -70,16 +70,22 @@ export default {
     return {
       colorBlocks,
       monoBlock,
+      currColor: 0
     };
   },
   methods: {
     onColorClick: function(event, color) {
       this.$emit("color-picked", color);
+      this.$data.currColor = this.drawingTool.color;
     },
     onColorMousemove: function(event, color) {
-      if (event.buttons === 1)
+      if (event.buttons === 1 && this.$data.currColor != this.drawingTool.color)
         this.$emit("color-picked", color);
+        this.$data.currColor = this.drawingTool.color;
     },
+    forceCheck: function(){
+      this.$data.currColor = this.drawingTool.color;
+    }
   },
 }
 </script>
@@ -102,6 +108,13 @@ export default {
 }
 
 .swatch-color-block {
+  background: repeating-linear-gradient(
+    45deg,
+    black,
+    black 2px,
+    white 2px,
+    white 4px
+  );
   height: 30px;
   width: 30px;
   float: left;
@@ -110,8 +123,15 @@ export default {
 }
 
 .swatch-mono-block {
+  background: repeating-linear-gradient(
+    45deg,
+    black,
+    black 2px,
+    white 2px,
+    white 4px
+  );
   height: 10px;
-  width: 160px;
+  width: 150px;
   float: left;
   overflow: hidden;
   margin: 5px;
