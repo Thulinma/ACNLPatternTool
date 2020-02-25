@@ -13,6 +13,8 @@
       <canvas ref="canvas2" width="128" height="128"/>
       <canvas ref="canvas3" width="64" height="64"/>
     </div>
+    <label for="files" style="color:white;">Load ACNL file:</label>
+    <input type="file" name="files" id="files" v-on:change="onFile">
   </div>
 </template>
 
@@ -41,12 +43,23 @@ export default {
     onChangedCurrentColor: function(idx) {
       this.drawingTool.currentColor = idx;
       this.$refs.colorPicker.forceCheck();
+    },
+    onFile: function(e){
+      console.log(e);
+      var readNew = new FileReader();
+      readNew.onload = (re) => {this.drawingTool.load(re.target.result);}
+      readNew.readAsArrayBuffer(e.target.files[0]);
+    },
+    onLoad: function(t){
+      this.$refs.palette.palChange();
+      this.$refs.colorPicker.forceCheck();
     }
   },
   mounted: function() {
     this.drawingTool.addCanvas(this.$refs.canvas1);
     this.drawingTool.addCanvas(this.$refs.canvas2);
     this.drawingTool.addCanvas(this.$refs.canvas3);
+    this.drawingTool.onLoad(this.onLoad);
     this.drawingTool.render();
   }
 }
