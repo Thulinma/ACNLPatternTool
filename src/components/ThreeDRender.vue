@@ -1,5 +1,5 @@
 <template>
-  <canvas v-show="model" ref="canvas3d" v-bind:width="width" v-bind:height="height"/>
+  <canvas v-show="model" ref="canvas3d" :width="width" :height="height"/>
 </template>
 
 <script>
@@ -15,13 +15,9 @@ import model_shirt_none from "/assets/resources/shirt_none.gltf";
 
 export default {
   name: "ThreeDRender",
-  props: {
-    drawingTool: DrawingTool,
-  },
+  props: ["drawingTool", "width", "height"],
   data: function() {
     return {
-      width:0,
-      height:0,
       scene: new THREE.Scene(),
       camera: new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 ),
       renderer: null,

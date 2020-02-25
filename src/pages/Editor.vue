@@ -74,7 +74,7 @@ export default {
     }
   },
   mounted: function() {
-    this.drawingTool.addCanvas(this.$refs.canvas1);
+    this.drawingTool.addCanvas(this.$refs.canvas1, {grid:true});
     this.drawingTool.addCanvas(this.$refs.canvas2);
     this.drawingTool.addCanvas(this.$refs.canvas3);
     this.drawingTool.onLoad(this.onLoad);
