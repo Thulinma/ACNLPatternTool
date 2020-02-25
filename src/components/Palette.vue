@@ -38,11 +38,6 @@ export default {
       paletteColors.push(this.drawingTool.getPalette(i));
     return {paletteColors};
   },
-  watch: {
-    drawingTool: function(after, before) {
-      console.log("color changed");
-    }
-  },
   methods: {
     onColorClick: function(event, idx) {
       this.$emit('changed-current-color', idx);
@@ -58,8 +53,6 @@ export default {
       this.$data.paletteColors = paletteColors;
     }
   },
-  updated: function() {
-  }
 }
 </script>
 

@@ -260,7 +260,11 @@ class DrawingTool{
   addCanvas(c, opt = {}){
     let rTarget = new RenderTarget(c, opt);
     rTarget.calcZoom(this.pattern.width);
-    this.renderTargets.push(rTarget);
+    if (!opt.tall && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.tall || this.renderTargets[0].opt.grid)){
+      this.renderTargets.unshift(rTarget);
+    }else{
+      this.renderTargets.push(rTarget);
+    }
     c.addEventListener("mousedown", () => {this.drawing = true;});
     c.addEventListener("mouseup", () => {this.drawing = false;});
     c.addEventListener("click", (e) => {this.handleCanvasClick(e);});
