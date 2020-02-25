@@ -16,7 +16,6 @@ const pathToEnvConfig = path.resolve(pathToConfig, "env.config.js");
 const pathToWebpackConfig = path.resolve(pathToConfig, "webpack.config.js");
 const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
 const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
-const pathToEnvJs = path.resolve(pathToEtc, "env.js");
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
 
 
@@ -34,6 +33,5 @@ module.exports = {
   pathToWebpackConfig,
   pathToPublicIndex,
   pathToClientSrcIndex,
-  pathToEnvJs,
   pathToPathsJs,
 };

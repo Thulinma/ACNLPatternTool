@@ -27,5 +27,5 @@ new Vue({
   render: (h) => h(App),
 }).$mount("#app");
 
-// .env LOG=INFO to view this
+// add this query string to url to see: '?log=info'
 logger.info("Application mounted.");

@@ -1,12 +1,10 @@
-// list of required env variables strings
-const clientEnvConfig = [
-  // e.g.
-  // "SOME_API_KEY"
-];
+// list of env strings, and if required
+const clientEnvConfig = {
+  NODE_ENV: false,
+}
 
-// multiple layers of correction exist
+// multiple layers of correction exist for NODE_ENV
 const defaultEnv = {
-  NODE_ENV: "development", // technically not needed, just in case
   HOST: "localhost",
   PORT: "3000",
 };

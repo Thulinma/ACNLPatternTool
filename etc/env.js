@@ -7,7 +7,9 @@ const {
 } = require('../config/env.config');
 const { pathToEnv } = require('./paths');
 
-const distinctReqEnvConfig = [...new Set(clientEnvConfig)].sort();
+const clientEnvReqConfig = Object.keys(clientEnvConfig)
+  .filter((key) => { return clientEnvConfig[key]; });
+const distinctReqEnvConfig = [...new Set(clientEnvReqConfig)].sort();
 
 const errorMessages = [];
 
@@ -39,15 +41,21 @@ if (errorMessages.length > 0) {
   process.exit(1);
 }
 
+
+// a, b, union
+const clientEnvVars = Object.keys(clientEnvConfig);
+const processEnvVars = new Set(Object.keys(process.env));
+const clientAvailEnvVars = [...clientEnvVars].filter(envVar => processEnvVars.has(envVar));
+
 // merge clientEnv with defaultEnv
-const clientEnv = clientEnvConfig.reduce((env, envVar) => {
-  env[envVar] = process.env[envVar];
-  return env;
-}, {...defaultEnv})
+const clientEnv = clientAvailEnvVars
+  .reduce((env, envVar) => {
+    env[envVar] = process.env[envVar];
+    return env;
+  }, {...defaultEnv});
 
 // process.env variables available to external (inside build process)
 // process.env variables available to internal (inside built process)
-
 module.exports = {
   clientEnv
 }
