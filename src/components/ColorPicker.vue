@@ -5,11 +5,20 @@
       <div
         class="swatch-color-block"
         v-for="(block, index) in colorBlocks"
-        v-bind:key="`${index}`">
+        v-bind:key="index">
         <div
           v-for="color in block"
+          v-if="drawingTool.color !== color"
           v-bind:key="color"
           class="swatch-color"
+          v-bind:style="{ backgroundColor: color }"
+          v-on:click="onColorClick($event, color)"
+          v-on:mousemove="onColorMousemove($event, color)">
+        </div>
+        <div
+          v-else
+          v-bind:key="color"
+          class="swatch-color picked"
           v-bind:style="{ backgroundColor: color }"
           v-on:click="onColorClick($event, color)"
           v-on:mousemove="onColorMousemove($event, color)">
@@ -18,8 +27,17 @@
       <div class="swatch-mono-block">
         <div
           v-for="color in monoBlock"
+          v-if="drawingTool.color !== color"
           v-bind:key="color"
           class="swatch-color"
+          v-bind:style="{ backgroundColor: color }"
+          v-on:click="onColorClick($event, color)"
+          v-on:mousemove="onColorMousemove($event, color)">
+        </div>
+        <div
+          v-else
+          v-bind:key="color"
+          class="swatch-color picked"
           v-bind:style="{ backgroundColor: color }"
           v-on:click="onColorClick($event, color)"
           v-on:mousemove="onColorMousemove($event, color)">
@@ -49,14 +67,9 @@ export default {
     const monoBlock = [];
     for (let i = 0x0F; i < 0xFF; i += 0x10)
       monoBlock.push(ACNLFormat.paletteColors[i]);
-
-    const dt = this.drawingTool;
-    const currentColorHex = dt.color;
-
     return {
       colorBlocks,
       monoBlock,
-      currentColorHex,
     };
   },
   methods: {
@@ -98,7 +111,7 @@ export default {
 
 .swatch-mono-block {
   height: 10px;
-  width: 150px;
+  width: 160px;
   float: left;
   overflow: hidden;
   margin: 5px;
@@ -114,8 +127,8 @@ export default {
 }
 
 .swatch-color.picked {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   margin: 2px;
 }
 </style>

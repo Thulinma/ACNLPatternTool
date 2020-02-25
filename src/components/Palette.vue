@@ -7,10 +7,18 @@
       <div
         class="palette-color"
         v-for="j in 3"
+        v-if="drawingTool.currentColor !== (i-1)*3 + j-1"
         v-bind:key="(i-1)*3 + j-1"
         v-bind:style="{ backgroundColor: paletteColors[(i-1)*3 + j-1] }"
-        v-on:click="onColorClick($event, (i - 1) * 3 + (j -1))"
-        v-on:mousemove="onColorMousemove($event, (i - 1) * 3 + (j -1))">
+        v-on:click="onColorClick($event, (i-1)*3 + (j-1))"
+        v-on:mousemove="onColorMousemove($event, (i-1)*3 + (j-1))">
+      </div>
+      <div
+        class="palette-color picked"
+        v-else
+        v-bind:style="{ backgroundColor: paletteColors[(i-1)*3 + j-1] }"
+        v-on:click="onColorClick($event, (i-1)*3 + (j-1))"
+        v-on:mousemove="onColorMousemove($event, (i-1)*3 + (j-1))">
       </div>
     </div>
   </div>
@@ -25,12 +33,20 @@ export default {
     drawingTool: DrawingTool,
   },
   data: function() {
-    const paletteColors = new Array(15).fill(null).map((_, idx) => {
-      return this.drawingTool.getPalette(idx);
-    });
-    return {
-      paletteColors,
-    };
+    return {};
+  },
+  computed: {
+    paletteColors: function() {
+      const paletteColors = [];
+      for (let i = 0; i < 15; ++i)
+        paletteColors.push(this.drawingTool.getPalette(i));
+      return paletteColors;
+    },
+  },
+  watch: {
+    drawingTool: function(after, before) {
+      console.log("color changed");
+    }
   },
   methods: {
     onColorClick: function(event, idx) {

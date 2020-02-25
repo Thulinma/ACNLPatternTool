@@ -1,5 +1,5 @@
 <template v-for="i in 1">
-  <div>
+  <div class="editor">
     <Palette
       ref="palette"
       v-bind:drawing-tool="drawingTool"
@@ -35,11 +35,16 @@ export default {
   },
   methods: {
     onColorPicked: function(color) {
-      const currentColor = this.drawingTool.currentColor;
-      this.drawingTool.setPalette(currentColor, color);
-      // this.$refs.palette.$forceUpdate();
+      // this won't trigger because vue can't detect it
+      // and assumes the drawingTool hasn't changed
+      // Editor not notified about change, can't tell
+      // Palette about the change
+      const colorIdx = this.drawingTool.currentColor;
+      this.drawingTool.setPalette(colorIdx, color);
     },
     onChangedCurrentColor: function(idx) {
+      // this triggers update just fine
+      // Vue listening to this change but will
       this.drawingTool.currentColor = idx;
     }
   },
@@ -53,5 +58,7 @@ export default {
 </script>
 
 <style scoped>
-
+.editor {
+  user-select: none;
+}
 </style>
