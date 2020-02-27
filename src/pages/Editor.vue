@@ -23,12 +23,10 @@
 import ColorPicker from "/components/ColorPicker.vue";
 import Palette from "/components/Palette.vue";
 import ThreeDRender from "/components/ThreeDRender.vue";
-import FileLoader from "components/FileLoader.vue";
+import FileLoader from "/components/FileLoader.vue";
 import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 import lzString from 'lz-string';
-
-import { BrowserQRCodeReader, BrowserQRCodeSvgWriter } from '@zxing/library';
 
 export default {
   name: "Editor",
