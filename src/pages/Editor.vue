@@ -14,10 +14,8 @@
       <canvas ref="canvas3" width="64" height="64"/>
       <ThreeDRender width="128" height="128" v-bind:drawing-tool="drawingTool"/>
     </div>
-    <label for="files" style="color:white;">Load ACNL file or QR code image:</label>
-    <input type="file" name="files" id="files" multiple v-on:change="onFile">
+    <FileLoader v-on:qr-load="qrLoad" />
     <!-- <img ref="decodeimg"> -->
-    <div style="background-color:white;" ref="qrholder"></div>
   </div>
 </template>
 
@@ -25,6 +23,7 @@
 import ColorPicker from "/components/ColorPicker.vue";
 import Palette from "/components/Palette.vue";
 import ThreeDRender from "/components/ThreeDRender.vue";
+import FileLoader from "components/FileLoader.vue";
 import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 import lzString from 'lz-string';
@@ -36,12 +35,13 @@ export default {
   components: {
     ColorPicker,
     Palette,
-    ThreeDRender
+    ThreeDRender,
+    FileLoader
   },
-  beforeRouteUpdate (to, from, next) {
-    if (to.hash.length > 1){
+  beforeRouteUpdate: function (to, from, next) {
+    if (to.hash.length > 1) {
       let newHash = lzString.compressToEncodedURIComponent(this.drawingTool.toString());
-      if (to.hash != "#"+newHash){
+      if (to.hash !== "#" + newHash) {
         this.drawingTool.load(lzString.decompressFromEncodedURIComponent(to.hash.substring(1)));
       }
     }
@@ -58,78 +58,33 @@ export default {
   },
   methods: {
     onColorPicked: function(color) {
+      const currentColor = this.drawingTool.currentColor;
+      if (this.drawingTool.getPalette(currentColor) === color) return;
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
       this.$refs.palette.palChange();
+      logger.info(`color picked: ${color}`);
     },
     onChangedCurrentColor: function(idx) {
+      if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.$refs.colorPicker.forceCheck();
-    },
-    tryQRDecode(iUrl){
-      const codeReader = new BrowserQRCodeReader();
-      const result = codeReader.decodeFromImageUrl(iUrl).then((r) => {
-        console.log(r);
-        //Check for multi-part code
-        if (r.resultMetadata.has(9) && r.resultMetadata.has(10)){
-          let sequence_info = r.resultMetadata.get(9);
-          if ((sequence_info & 0x0F) != 3){
-            console.log("Multipart code is not 4 parts");
-            return;
-          }
-          if (this.currParity != r.resultMetadata.get(10)){
-            console.log("Resetting parser: new code");
-            this.currParity = r.resultMetadata.get(10);
-            this.currRead = [false, false, false, false];
-          }
-          let currNum = (sequence_info >> 4);
-          if (!this.currRead[currNum]){
-            const inArr = r.resultMetadata.get(2)[0];
-            const offset = currNum*540;
-            for (let i = 0; i < 540 && i < inArr.byteLength; ++i){
-              this.currDataBuffer[i + offset] = inArr[i];
-            }
-            this.currRead[currNum] = true;
-          }
-          if (this.currRead[0]){// && this.currRead[1] && this.currRead[2] && this.currRead[3]){
-            this.drawingTool.load(this.currDataBuffer);//data bytes
-          }
-          return;
-        }
-        this.drawingTool.load(r.resultMetadata.get(2)[0]);//data bytes
-        this.drawingTool.render();
-      }).catch((r) => {
-        console.log("Decode failed");
-        //Stupid attempt to help codes scan - didn't work.
-        //this.$refs.decodeimg.width += 5;
-        //setTimeout(this.tryQRDecode, 100);
-      });
-    },
-    onFile: function(e){
-      for (let i = 0; i < e.target.files.length; ++i){
-        if (e.target.files[i].type && e.target.files[i].type.match('image.*')){
-          var r = new FileReader();
-          r.onload = (re) => {
-            //this.$refs.decodeimg.src = re.target.result;
-            this.tryQRDecode(re.target.result);
-          }
-          r.readAsDataURL(e.target.files[i]);
-        }else{
-          var readNew = new FileReader();
-          readNew.onload = (re) => {this.drawingTool.load(re.target.result);}
-          readNew.readAsArrayBuffer(e.target.files[i]);
-        }
-      }
+      logger.info(`changed current color: ${idx}`);
     },
     onLoad: function(t){
       this.$refs.palette.palChange();
       this.$refs.colorPicker.forceCheck();
       let patStr = this.drawingTool.toString();
       let newHash = lzString.compressToEncodedURIComponent(patStr);
-      if (this.$router.currentRoute.hash != "#"+newHash){
-        this.$router.push({hash:newHash});
+      if (this.$router.currentRoute.hash !== "#" + newHash) {
+        this.$router.push({ hash: newHash });
       }
       //let writer = new BrowserQRCodeSvgWriter();
       //writer.writeToDom(this.$refs.qrholder, patStr, 300, 300);
+    },
+    qrLoad: function(data) {
+      // only takes valid data, FileLoader determines
+      this.drawingTool.load(data);
+      this.drawingTool.render();
     }
   },
   mounted: function() {
@@ -139,10 +94,11 @@ export default {
     this.drawingTool.onLoad(this.onLoad);
     if (this.$router.currentRoute.hash.length > 1){
       this.drawingTool.load(lzString.decompressFromEncodedURIComponent(this.$router.currentRoute.hash.substring(1)));
-    }else{
+    }
+    else{
       this.drawingTool.render();
     }
-  }
+  },
 }
 </script>
 

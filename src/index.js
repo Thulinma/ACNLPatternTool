@@ -5,7 +5,6 @@ import 'reset-css';
 import App from 'App.vue';
 import router from '/routers';
 import {
-  ifDevExec,
   ifProdExec
 } from '/utils/if-env';
 import logger from '/utils/logger';
@@ -16,7 +15,6 @@ Vue
   .use(VueI18n);
 
 Vue.config.productionTip = false;
-ifDevExec(() => {});
 ifProdExec(() => {
   Vue.config.devtools = false;
 });

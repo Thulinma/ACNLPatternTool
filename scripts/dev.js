@@ -40,6 +40,7 @@ webpackDevServer.listen(PORT, HOST, (error) => {
 
   ["SIGINT", "SIGTERM"].forEach((signal) => {
     process.on(signal, () => {
+      console.log("");
       webpackDevServer.close();
       process.exit();
     });

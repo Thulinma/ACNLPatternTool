@@ -75,13 +75,16 @@ export default {
   },
   methods: {
     onColorClick: function(event, color) {
+      // if color is the same, gets blocked at parent
       this.$emit("color-picked", color);
       this.$data.currColor = this.drawingTool.color;
     },
     onColorMousemove: function(event, color) {
-      if (event.buttons === 1 && this.$data.currColor != this.drawingTool.color)
+      // if color is the same, gets blocked at parent
+      if (event.buttons === 1) {
         this.$emit("color-picked", color);
         this.$data.currColor = this.drawingTool.color;
+      }
     },
     forceCheck: function(){
       this.$data.currColor = this.drawingTool.color;

@@ -49,6 +49,7 @@ compiler.run((error, stats) => {
   if (error) console.log(error);
   ["SIGINT", "SIGTERM"].forEach((signal) => {
     process.on(signal, () => {
+      console.log("");
       process.exit();
     });
   });
