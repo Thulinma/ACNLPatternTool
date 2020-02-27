@@ -48,6 +48,18 @@ class ACNLFormat{
       }
     }
 
+    //If we were passed an uint8array, copy it.
+    if (qr_buffer instanceof Uint8Array){
+      //Create new buffer
+      this.b = new ArrayBuffer(qr_buffer.byteLength > 620 ? 2160 : 620);
+      this.dataView = new DataView(this.b, 0, this.b.byteLength);
+      this.dataBytes = new Uint8Array(this.b, 0, this.b.byteLength);
+      //Copy contents from input
+      for (let i = 0; i < qr_buffer.byteLength && i < this.b.byteLength; ++i){
+        this.dataBytes[i] = qr_buffer[i];
+      }
+    }
+
     //If we were passed a string that is long enough, convert and copy it.
     if ((typeof qr_buffer) == "string" && qr_buffer.length >= 620){
       //Create new buffer
