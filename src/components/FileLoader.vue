@@ -11,12 +11,16 @@
 </template>
 
 <script>
-import { BrowserQRCodeReader, BrowserQRCodeSvgWriter } from '@zxing/library';
+import { BrowserQRCodeReader } from '@zxing/library';
 import logger from "/utils/logger";
 
 export default {
   name: "FileLoader",
-  data: function() {return {};},
+  data: function() {return {
+    currParity: 0,
+    currDataBuffer: new Uint8Array(2160),
+    currRead: [false, false, false, false]
+  };},
   methods: {
     onFile: function(e) {
       for (let i = 0; i < e.target.files.length; ++i){
@@ -50,11 +54,12 @@ export default {
             return;
           }
           if (this.currParity != r.resultMetadata.get(10)) {
-            logger.info("Resetting parser: new code");
+            logger.info("Resetting parser: new multipart parity number "+this.currParity+" -> "+r.resultMetadata.get(10));
             this.currParity = r.resultMetadata.get(10);
             this.currRead = [false, false, false, false];
           }
           let currNum = (sequence_info >> 4);
+          logger.info("Multipart code #"+currNum);
           if (!this.currRead[currNum]) {
             const inArr = r.resultMetadata.get(2)[0];
             const offset = currNum * 540;

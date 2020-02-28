@@ -15,7 +15,7 @@
       <ThreeDRender width="128" height="128" v-bind:drawing-tool="drawingTool"/>
     </div>
     <FileLoader v-on:qr-load="qrLoad" />
-    <!-- <img ref="decodeimg"> -->
+    <div style="background-color:white;" ref="qrout"></div>
   </div>
 </template>
 
@@ -27,6 +27,7 @@ import FileLoader from "/components/FileLoader.vue";
 import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 import lzString from 'lz-string';
+import { BrowserQRCodeSvgWriter } from '@zxing/library';
 
 export default {
   name: "Editor",
@@ -48,10 +49,7 @@ export default {
   data: function() {
     return {
       drawingTool: new DrawingTool(),
-      fragment: "",
-      currParity: 0,
-      currDataBuffer: new Uint8Array(2160),
-      currRead: [false, false, false, false]
+      fragment: ""
     };
   },
   methods: {
@@ -76,8 +74,10 @@ export default {
       if (this.$router.currentRoute.hash !== "#" + newHash) {
         this.$router.push({ hash: newHash });
       }
-      //let writer = new BrowserQRCodeSvgWriter();
-      //writer.writeToDom(this.$refs.qrholder, patStr, 300, 300);
+
+      this.$refs.qrout.innerHTML = "";
+      let writer = new BrowserQRCodeSvgWriter();
+      writer.writeToDom(this.$refs.qrout, this.drawingTool.pattern.dataBytes, 300, 300);
     },
     qrLoad: function(data) {
       // only takes valid data, FileLoader determines
