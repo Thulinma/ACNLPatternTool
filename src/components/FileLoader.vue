@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { BrowserQRCodeReader } from '@zxing/library';
+import { BrowserQRCodeReader, ResultMetadataType } from '@zxing/library';
 import logger from "/utils/logger";
 
 export default {
@@ -47,21 +47,23 @@ export default {
       try {
         // check for multi-part qr code
         const r = await codeReader.decodeFromImageUrl(iUrl);
-        if (r.resultMetadata.has(9) && r.resultMetadata.has(10)) {
-          let sequence_info = r.resultMetadata.get(9);
+        console.log(r);
+        if (r.resultMetadata.has(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE)
+            && r.resultMetadata.has(ResultMetadataType.BYTE_SEGMENTS)){
+          let sequence_info = r.resultMetadata.get(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE);
           if ((sequence_info & 0x0F) != 3) {
             logger.info('Multipart code is not 4 parts.');
             return;
           }
-          if (this.currParity != r.resultMetadata.get(10)) {
+          if (this.currParity != r.resultMetadata.get(ResultMetadataType.STRUCTURED_APPEND_PARITY)) {
             logger.info("Resetting parser: new multipart parity number "+this.currParity+" -> "+r.resultMetadata.get(10));
-            this.currParity = r.resultMetadata.get(10);
+            this.currParity = r.resultMetadata.get(ResultMetadataType.STRUCTURED_APPEND_PARITY);
             this.currRead = [false, false, false, false];
           }
           let currNum = (sequence_info >> 4);
           logger.info("Multipart code #"+currNum);
           if (!this.currRead[currNum]) {
-            const inArr = r.resultMetadata.get(2)[0];
+            const inArr = r.resultMetadata.get(ResultMetadataType.BYTE_SEGMENTS)[0];
             const offset = currNum * 540;
             for (let i = 0; i < 540 && i < inArr.byteLength; ++i) {
               this.currDataBuffer[i + offset] = inArr[i];

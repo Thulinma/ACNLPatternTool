@@ -27,7 +27,7 @@ import FileLoader from "/components/FileLoader.vue";
 import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 import lzString from 'lz-string';
-import { BrowserQRCodeSvgWriter } from '@zxing/library';
+import { BrowserQRCodeSvgWriter, EncodeHintType } from '@zxing/library';
 
 export default {
   name: "Editor",
@@ -77,7 +77,21 @@ export default {
 
       this.$refs.qrout.innerHTML = "";
       let writer = new BrowserQRCodeSvgWriter();
-      writer.writeToDom(this.$refs.qrout, this.drawingTool.pattern.dataBytes, 300, 300);
+      let bytes = this.drawingTool.toBytes();
+      if (bytes.byteLength == 620){
+        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes), 300, 300);
+      }else{
+        const hints = new Map();
+        const parityByte = Math.round(Math.random()*255);
+        hints.set(EncodeHintType.STRUCTURED_APPEND, [0, 3, parityByte]);
+        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 0, 540), 300, 300, hints);
+        hints.set(EncodeHintType.STRUCTURED_APPEND, [1, 3, parityByte]);
+        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 540, 540), 300, 300, hints);
+        hints.set(EncodeHintType.STRUCTURED_APPEND, [2, 3, parityByte]);
+        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 1080, 540), 300, 300, hints);
+        hints.set(EncodeHintType.STRUCTURED_APPEND, [3, 3, parityByte]);
+        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 1620, 540), 300, 300, hints);
+      }
     },
     qrLoad: function(data) {
       // only takes valid data, FileLoader determines
