@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "clean": "node scripts/clean.js",
-    "build": "node scripts/build.js"
+    "build": "cd zxing-js-library && npm run build:es5 && cd .. && node scripts/build.js",
+    "build:app": "node scripts/build.js",
+    "build:submodule": "cd zxing-js-library && npm run build:es5"
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,6 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/runtime": "^7.8.4",
-    "@zxing/library": "^0.15.2",
     "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^4.0.0",
     "css-loader": "^3.4.2",

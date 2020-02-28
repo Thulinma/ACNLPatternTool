@@ -1,6 +1,9 @@
 // DO NOT EVEN TRY TO USE BABEL-NODE CLI
 // THIS FILE IS MEANT TO BE PASSED TO WEBPACK
-const { pathToClientSrc } = require('../etc/paths');
+const {
+  pathToClientSrc,
+  pathToZxingBuild
+} = require('../etc/paths');
 
 // USE WEBPACK FORMAT, NOT BABEL.CONFIG.JS FORMAT
 const babelDevConfig = {
@@ -10,7 +13,9 @@ const babelDevConfig = {
       'babel-plugin-module-resolver',
       {
         root: [pathToClientSrc],
-        alias: {} // tbd, likely env conditional functions
+        alias: {
+          "^@zxing/library$" :  pathToZxingBuild
+        }
       }
     ],
     ["@babel/plugin-transform-runtime", {}],

@@ -8,6 +8,7 @@ const pathToPublic = path.resolve(pathToRoot, "public");
 const pathToClientSrc = path.resolve(pathToRoot, "src");
 const pathToBuild = path.resolve(pathToRoot, "build");
 const pathToNodeModules = path.resolve(pathToRoot, "node_modules");
+const pathToZxingSubmodule = path.resolve(pathToRoot, "zxing-js-library");
 
 // paths to specific files
 const pathToEnv = path.resolve(pathToRoot, ".env");
@@ -17,7 +18,7 @@ const pathToWebpackConfig = path.resolve(pathToConfig, "webpack.config.js");
 const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
 const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
-
+const pathToZxingBuild = path.resolve(pathToZxingSubmodule, "esm5");
 
 module.exports = {
   pathToRoot,
@@ -34,4 +35,5 @@ module.exports = {
   pathToPublicIndex,
   pathToClientSrcIndex,
   pathToPathsJs,
+  pathToZxingBuild
 };
