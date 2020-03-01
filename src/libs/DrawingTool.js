@@ -45,6 +45,7 @@ class RenderTarget{
       this.context.fillRect(x*this.zoom+this.zoom-1,y*this.zoom,1,this.zoom);
       this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-1,this.zoom,1);
     }
+    if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
   }
 
   /// Renders a whole image by copying from another RenderTarget (must be grid-less).
@@ -66,6 +67,7 @@ class RenderTarget{
         this.context.fillRect(0,(y+1)*this.zoom-1,this.canvas.width,1);
       }
     }
+    if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
   }
 };
 
