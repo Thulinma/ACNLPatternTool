@@ -231,7 +231,7 @@ export default {
 
       //Write QR code to canvas
       if (bytes.byteLength > 620){
-        const spc = 8;//spacing
+        const spc = 12;//spacing
         const QRx = Math.round(this.width*0.75);//center x for QR codes
         const QRy = Math.round(this.height/2);//center y for QR codes
         //Draw helpful numbers
