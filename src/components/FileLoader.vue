@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { BrowserQRCodeReader, ResultMetadataType } from '@zxing/library';
+import { BrowserQRCodeReader, ResultMetadataType, DecodeHintType } from '@zxing/library';
 import logger from "/utils/logger";
 
 export default {
@@ -46,7 +46,9 @@ export default {
       const codeReader = new BrowserQRCodeReader();
       try {
         // check for multi-part qr code
-        const r = await codeReader.decodeFromImageUrl(iUrl);
+        const hints = new Map();
+        hints.set(DecodeHintType.TRY_HARDER, true);
+        const r = await codeReader.decodeFromImageUrl(iUrl, hints);
         console.log(r);
         if (r.resultMetadata.has(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE)
             && r.resultMetadata.has(ResultMetadataType.BYTE_SEGMENTS)){
