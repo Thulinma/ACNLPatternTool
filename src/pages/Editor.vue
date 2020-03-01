@@ -15,6 +15,7 @@
       <ThreeDRender width="128" height="128" v-bind:drawing-tool="drawingTool"/>
     </div>
     <FileLoader v-on:qr-load="qrLoad" />
+    <input type="button" value="Download ACNL file" v-on:click="downACNL" />
     <ACNLQRGenerator ref="qrgen" :width="qrCode.size[0]" :height="qrCode.size[1]" :pattern="qrCode.pattern" />
   </div>
 </template>
@@ -28,7 +29,7 @@ import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
 import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 import lzString from 'lz-string';
-import { BrowserQRCodeSvgWriter, EncodeHintType } from '@zxing/library';
+import { saveAs } from 'file-saver';
 
 export default {
   name: "Editor",
@@ -59,6 +60,10 @@ export default {
     };
   },
   methods: {
+    downACNL(){
+      var blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
+      saveAs(blob, this.drawingTool.title+".acnl");
+    },
     onColorPicked: function(color) {
       const currentColor = this.drawingTool.currentColor;
       if (this.drawingTool.getPalette(currentColor) === color) return;
