@@ -64,7 +64,8 @@ export default {
     }
   },
   mounted: function() {
-    this.renderer = new THREE.WebGLRenderer({"canvas":this.$refs.canvas3d})
+    this.renderer = new THREE.WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d})
+    this.renderer.setClearColor( 0x000000, 0 );
     this.renderCanvas.width = 32;
     this.renderCanvas.height = 128;
     this.drawingTool.addCanvas(this.renderCanvas, {tall:true});
