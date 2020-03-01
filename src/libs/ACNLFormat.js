@@ -90,6 +90,7 @@ class ACNLFormat{
       this.patternType = create_pat_type;
     }
 
+    this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
   }
 
   ///UTF16 decode helper
@@ -147,6 +148,22 @@ class ACNLFormat{
     for (let i = offset; i < this.b.byteLength && pixel < ab.byteLength; i++){
       ab[pixel++] = (this.dataBytes[i] & 0x0F);
       ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+    }
+
+    /* Used to generate the masks
+    let mask = [];
+    for (let i = 0; i < 128; ++i){mask[i] = 0;}
+    for (let i = 0; i < ab.byteLength; ++i){
+      if (ab[i] == 12){mask[i >> 5] += (1 << (i&0x1f));}
+    }
+    console.log(mask);
+    */
+
+    //If any pixels are masked, give them a special value
+    if (this.currMask){
+      for (let i = 0; i < ab.byteLength; i++){
+        if (this.currMask[i >> 5] & (1 << (i&0x1f))){ab[i] = 0xFC;}
+      }
     }
   }
 
@@ -227,23 +244,16 @@ class ACNLFormat{
       this.b = nb;
     }
     this.dataBytes[0x69] = newVal;
+    this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
   };
   get patternType(){
     return this.dataBytes[0x69];
   };
   static getTypeStr(val){
-    switch (val){
-      case 0: return "Long sleeves dress";
-      case 1: return "Short sleeves dress";
-      case 2: return "Sleeveless dress";
-      case 3: return "Long sleeves shirt";
-      case 4: return "Short sleeves shirt";
-      case 5: return "Sleeveless shirt";
-      case 7: return "Hat";
-      case 8: return "Standee";
-      case 9: return "Normal pattern (Easel)";
-      default: return "Unimplemented pattern type";
+    if (ACNLFormat.typeInfo[val] && ACNLFormat.typeInfo[val].name){
+      return ACNLFormat.typeInfo[val].name;
     }
+    return "Unimplemented pattern type";
   };
   set unknown_d(newVal){
     this.dataView.setUint16(0x6A, newVal, true);
@@ -331,6 +341,27 @@ ACNLFormat.paletteColors = [
   "","","","","","",//0xF9-0xFE unused / unknown
   "", //0xFF unused (white in-game, editing freezes the game)
 ];
+
+//General info about the various types of patterns in ACNL
+//Masks define areas that cannot be drawn to (true = masked, false = normal).
+//Masks use a compact notation of 32-bit masks, otherwise we'd have a giant list of true/false here.
+ACNLFormat.typeInfo = [];
+
+ACNLFormat.typeInfo[0] = {name:"Dress, long sleeves", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[1] = {name:"Dress, short sleeves", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[2] = {name:"Dress, sleeveless", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[3] = {name:"Shirt, long sleeves", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[4] = {name:"Shirt, short sleeves", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[5] = {name:"Shirt, sleeveless", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[6] = {name:"Hat with horns", size:32, sections:[0, 0, 32, 32]};
+ACNLFormat.typeInfo[7] = {name:"Hat without horns", size:32, sections:[0, 0, 32, 32]};
+ACNLFormat.typeInfo[8] = {
+  name: "Standee",
+  size: 64,
+  sections: [0, 0, 52, 64],
+  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,1069547520,-524288,-131072,-65536,-32768,-16384,-16384,-8192,-8192,-8192,-8192,-8192,-16384,-16384,-32768,-65536,-262144,-1048576,528482304,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048575,-1048569,-1048561,-1048545,-1048513,-1048513,-1048449,-1048449,-1048449,-1048449,-1048449,-1048513,-1048545,-1048545,-1048561,-1048573,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576]
+};
+ACNLFormat.typeInfo[9] = {name:"Normal pattern (easel)", size:32, sections:[0, 0, 32, 32]};
 
 //Generate global lookup table
 ACNLFormat.RGBLookup = [];

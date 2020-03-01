@@ -33,8 +33,12 @@ class RenderTarget{
       y -= 64; x += 32;
     }
     //draw the pixel
-    this.context.fillStyle = color;
-    this.context.fillRect(x*this.zoom,y*this.zoom,this.zoom,this.zoom);
+    if (color.length){
+      this.context.fillStyle = color;
+      this.context.fillRect(x*this.zoom,y*this.zoom,this.zoom,this.zoom);
+    }else{
+      this.context.clearRect(x*this.zoom,y*this.zoom,this.zoom,this.zoom);
+    }
     //if zoom > 5, draw a line
     if (this.opt.grid){
       this.context.fillStyle = "#AAAAAA";
@@ -46,6 +50,7 @@ class RenderTarget{
   /// Renders a whole image by copying from another RenderTarget (must be grid-less).
   /// Draws grid on top if needed.
   blitFrom(c){
+    this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
     if (this.opt.tall){
       this.context.drawImage(c.canvas, 0, 0, c.canvas.width/2, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height/2);
       this.context.drawImage(c.canvas, c.canvas.width/2, 0, c.canvas.width/2, c.canvas.height, 0, this.canvas.height/2, this.canvas.width, this.canvas.height/2);
@@ -68,11 +73,12 @@ class RenderTarget{
 function basicDrawing(x, y, tool){tool.drawPixel(x, y);}
 
 class DrawingTool{
-  constructor(){
+  constructor(data = null){
     this.renderTargets = []; //TODO: Should this be a map, perhaps? How do maps work in JS? Can we de-duplicate..?
     this.drawing = false;
     this.handleOnLoad = [() => {this.render()}];//setup default onLoad handler
     this.reset();
+    if (data != null){this.load(data);}
   }
 
   ///Clears all data (except render targets and onLoad handlers) to defaults
@@ -117,6 +123,7 @@ class DrawingTool{
   set town(n){this.pattern.town = n;}
   get patternType(){return this.pattern.patternType;}
   set patternType(n){if (this.pattern.patternType != n){this.pattern.patternType = n; this.onLoad();}}
+  get typeInfo(){return ACNLFormat.typeInfo[this.pattern.patternType];}
   
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
@@ -287,7 +294,11 @@ class DrawingTool{
     for (let i = 0; i < pixCount; i++){
       let x = (i % 32);
       let y = Math.floor(i / 32);
-      this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
+      if (this.pixels[i] == 0xFC){
+        this.renderTargets[0].drawPixel(x, y, "");
+      }else{
+        this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
+      }
     }
     
     //Finally, copy to all others
@@ -322,7 +333,7 @@ class DrawingTool{
       y += 64;
     }
     let offset = x + y*32;
-    if (this.pixels[offset] == color){return false;}
+    if (this.pixels[offset] == color || this.pixels[offset] == 0xFC){return false;}
     return this.pixels[offset] = color;
   }
 
