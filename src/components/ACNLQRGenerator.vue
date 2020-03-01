@@ -27,9 +27,9 @@ export default {
     //Makes a suggestion as to what would be a good size for the QR code for this pattern
     suggestSizeFor(data){
       if (((typeof data) == "string" && data.length > 620) || data.byteLength > 620){
-        return [800, 450];
+        return [760, 460];
       }else{
-        return [480, 250];
+        return [440, 260];
       }
     }
   },
@@ -95,6 +95,7 @@ export default {
       }
 
       //Calculate sizes for various bits
+      const spc = 8;
       let sQR = 0;
       codes.forEach((c) => {if (c.getMatrix().getWidth()*2 > sQR){sQR = c.getMatrix().getWidth()*2;}});
       let pattHeight = 0; //is calculated later
@@ -104,6 +105,9 @@ export default {
         sPw = tInfo.sections[2];//custom width
         sPh = tInfo.sections[3];//custom height
       }
+      let qrWidth = (sQR+spc*4)*2-6;
+      if (bytes.byteLength <= 620){qrWidth = this.width/2;}
+      const pattCenter = (this.width - qrWidth)/2;
 
 
       //Create pretty background pattern on temp canvas
@@ -126,11 +130,11 @@ export default {
 
       //Draw the pattern itself to canvas
       if (!path3D){
-        const pattSize = Math.floor((this.height-45)/sPh);
+        const pattSize = Math.floor((this.height-60)/sPh);
         pattHeight = pattSize*sPh;
-        ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, (this.width/2-sPw*pattSize)/2, (this.height-pattHeight)/2, pattSize*sPw, pattHeight);
+        ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, pattCenter-(sPw*pattSize)/2, (this.height-pattHeight)/2, pattSize*sPw, pattHeight);
       }else{
-        pattHeight = this.height-45;
+        pattHeight = this.height-60;
         //3D render!
         let threeCanvas = document.createElement("canvas");
         threeCanvas.width = this.width;
@@ -159,17 +163,26 @@ export default {
         camera.position.y = 25;
         camera.rotation.x = 5.85;
         renderer.render(scene, camera);
-        ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, -this.width/4, (this.height-pattHeight)/2, threeCanvas.width, threeCanvas.height);
+        ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-this.width/2, (this.height-pattHeight)/2, threeCanvas.width, threeCanvas.height);
         model.rotation.y = Math.PI;
         renderer.render(scene, camera);
-        ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, -this.width/4, (this.height-pattHeight)/2+threeCanvas.height, threeCanvas.width, threeCanvas.height);
+        ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-this.width/2, (this.height-pattHeight)/2+threeCanvas.height, threeCanvas.width, threeCanvas.height);
       }
 
-      function drawTxtWithBg(x, y, txt, ctx, fore, back){
+      //Prepare background pattern for text
+      bgCanvas.width=1;
+      bgCanvas.height=2;
+      bgCtx.fillStyle = "#792e58";
+      bgCtx.fillRect(0, 0, 1, 1);
+      bgCtx.fillStyle = "#883e5f";
+      bgCtx.fillRect(0, 1, 1, 1);
+      const txtBg = ctx.createPattern(bgCanvas, "repeat");
+
+      const drawTxtWithBg = (x, y, txt, fore) => {
         const txtProps = ctx.measureText(txt);
         var h = txtProps.fontBoundingBoxAscent + txtProps.fontBoundingBoxDescent+4;
         var w = txtProps.width-h/2;
-        ctx.fillStyle=back;
+        ctx.fillStyle=txtBg;
         ctx.strokeStyle=fore;
         //Calculate background
         ctx.beginPath();
@@ -187,22 +200,31 @@ export default {
         ctx.fillText(txt, x, y);
       }
 
-      //Prepare background pattern for text
-      bgCanvas.width=1;
-      bgCanvas.height=2;
-      bgCtx.fillStyle = "#792e58";
-      bgCtx.fillRect(0, 0, 1, 1);
-      bgCtx.fillStyle = "#883e5f";
-      bgCtx.fillRect(0, 1, 1, 1);
-      let txtBg = ctx.createPattern(bgCanvas, "repeat");
 
       //Write text
       ctx.textBaseline = "middle";
       ctx.textAlign = 'center';
-      ctx.font = '15pt Calibri';
-      drawTxtWithBg(this.width*0.25, (this.height-pattHeight)/4, drawingTool.title, ctx, "#FFFFFF", txtBg);
-      ctx.font = '12pt Calibri';
-      drawTxtWithBg(this.width*0.25, this.height-(this.height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], ctx, "#FFFFFF", txtBg);
+
+      if (bytes.byteLength > 620){
+        ctx.font = '15pt Calibri';
+        drawTxtWithBg(pattCenter, (this.height-pattHeight)/4+(path3D?4:0), drawingTool.title, "#FFFFFF");
+        ctx.font = '10pt Calibri';
+        drawTxtWithBg(pattCenter, this.height-(this.height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
+      }else{
+        ctx.font = '15pt Calibri';
+        drawTxtWithBg(this.width/2, (this.height-pattHeight)/4, drawingTool.title, "#FFFFFF");
+        ctx.font = '10pt Calibri';
+        drawTxtWithBg(this.width/2, this.height-2-(this.height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
+      }
+
+      //Prepare pretty side decoration
+      bgCanvas.width=3;
+      bgCanvas.height=6;
+      bgCtx.fillStyle = "#FFFFFF";
+      bgCtx.fillRect(0, 0, 3, 6);
+      bgCtx.fillStyle = "#c7b98c";
+      bgCtx.fillRect(0.5, 0, 2, 4);
+      const borderDeco = ctx.createPattern(bgCanvas, "repeat")
 
       //Draws the passed QRCode with top left corner on the x/y location.
       //We access the encoder directly and use a custom drawing implementation, because going through a SVG is blergh.
@@ -210,6 +232,13 @@ export default {
         const pixelSize = 2;
         const input = QR.getMatrix();
         const qrSize = input.getWidth();//We assume width==height. It should be...
+        //Draw white background
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(x-spc, y-spc, qrSize*pixelSize+2*spc, qrSize*pixelSize+2*spc);
+        //Draw border decorations
+        ctx.fillStyle = borderDeco;
+        ctx.fillRect(x-3-spc, y-spc, 3, qrSize*pixelSize+2*spc);
+        ctx.fillRect(x+qrSize*pixelSize+spc, y-spc, 3, qrSize*pixelSize+2*spc);
         //Draw all black blocks (BG is already white, after all!)
         ctx.fillStyle = "#000000";
         for (let inputY = 0; inputY < qrSize; inputY++) {
@@ -221,56 +250,28 @@ export default {
         }
       };
 
-      //Prepare pretty side decoration
-      bgCanvas.width=3;
-      bgCanvas.height=6;
-      bgCtx.fillStyle = "#FFFFFF";
-      bgCtx.fillRect(0, 0, 3, 6);
-      bgCtx.fillStyle = "#c7b98c";
-      bgCtx.fillRect(0.5, 0, 2, 4);
 
       //Write QR code to canvas
       if (bytes.byteLength > 620){
-        const spc = 12;//spacing
-        const QRx = Math.round(this.width*0.75);//center x for QR codes
+        const QRx = this.width - (sQR+spc*4);//center x for QR codes
         const QRy = Math.round(this.height/2);//center y for QR codes
+        qrToCanvas(codes[0], QRx-spc*2-sQR, QRy-spc*2-sQR);
+        qrToCanvas(codes[1], QRx+spc*2,     QRy-spc*2-sQR);
+        qrToCanvas(codes[2], QRx-spc*2-sQR, QRy+spc*2);
+        qrToCanvas(codes[3], QRx+spc*2,     QRy+spc*2);
         //Draw helpful numbers
         ctx.font = '15pt Calibri';
-        drawTxtWithBg(QRx-spc/2-sQR/2, QRy-spc*1.5-sQR-12, "1", ctx, "#FFFFFF", txtBg);
-        drawTxtWithBg(QRx+spc/2+sQR/2, QRy-spc*1.5-sQR-12, "2", ctx, "#FFFFFF", txtBg);
-        drawTxtWithBg(QRx-spc/2-sQR/2, QRy+spc*1.5+sQR+12, "3", ctx, "#FFFFFF", txtBg);
-        drawTxtWithBg(QRx+spc/2+sQR/2, QRy+spc*1.5+sQR+12, "4", ctx, "#FFFFFF", txtBg);
-        //Draw white background
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(QRx-sQR-spc*1.5, QRy-sQR-spc*1.5, sQR*2+spc*3, sQR*2+spc*3);
-        //Draw side decorations to main canvas
-        ctx.fillStyle = ctx.createPattern(bgCanvas, "repeat");
-        ctx.fillRect(QRx-sQR-spc*1.5-3, QRy-sQR-spc*1.5, 3, sQR*2+spc*3);
-        ctx.fillRect(QRx+sQR+spc*1.5,   QRy-sQR-spc*1.5, 3, sQR*2+spc*3);
-
-        qrToCanvas(codes[0], QRx-spc/2-sQR, QRy-spc/2-sQR);
-        qrToCanvas(codes[1], QRx+spc/2, QRy-spc/2-sQR);
-        qrToCanvas(codes[2], QRx-spc/2-sQR, QRy+spc/2);
-        qrToCanvas(codes[3], QRx+spc/2, QRy+spc/2);
+        drawTxtWithBg(QRx-spc*2-sQR/2, QRy-spc*2-sQR-18, "1", "#FFFFFF");
+        drawTxtWithBg(QRx+spc*2+sQR/2, QRy-spc*2-sQR-18, "2", "#FFFFFF");
+        drawTxtWithBg(QRx-spc*2-sQR/2, QRy+spc*2+sQR+18, "3", "#FFFFFF");
+        drawTxtWithBg(QRx+spc*2+sQR/2, QRy+spc*2+sQR+18, "4", "#FFFFFF");
       }else{
-        const spc = 8;//spacing
         const QRx = Math.round(this.width*0.75);//center x for QR codes
         const QRy = Math.round(this.height/2);//center y for QR codes
-        //Draw white background
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(QRx-sQR/2-spc/2, QRy-sQR/2-spc/2, sQR+spc, sQR+spc);
-        //Draw side decorations to main canvas
-        ctx.fillStyle = ctx.createPattern(bgCanvas, "repeat");
-        ctx.fillRect(QRx-sQR/2-spc/2-3, QRy-sQR/2-spc/2, 3, sQR+spc);
-        ctx.fillRect(QRx+sQR/2+spc/2,   QRy-sQR/2-spc/2, 3, sQR+spc);
-
         qrToCanvas(codes[0], QRx-sQR/2, QRy-sQR/2);
       }
     }
-  },
-  mounted: function() {
-    if (this.pattern){draw(pattern);}
-  },
+  }
 }
 </script>
 
