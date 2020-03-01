@@ -49,7 +49,6 @@ export default {
         const hints = new Map();
         hints.set(DecodeHintType.TRY_HARDER, true);
         const r = await codeReader.decodeFromImageUrl(iUrl, hints);
-        console.log(r);
         if (r.resultMetadata.has(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE)
             && r.resultMetadata.has(ResultMetadataType.BYTE_SEGMENTS)){
           let sequence_info = r.resultMetadata.get(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE);
