@@ -15,7 +15,7 @@
       <ThreeDRender width="128" height="128" v-bind:drawing-tool="drawingTool"/>
     </div>
     <FileLoader v-on:qr-load="qrLoad" />
-    <div style="background-color:white;" ref="qrout"></div>
+    <ACNLQRGenerator ref="qrgen" :width="qrCode.size[0]" :height="qrCode.size[1]" :pattern="qrCode.pattern" />
   </div>
 </template>
 
@@ -24,6 +24,7 @@ import ColorPicker from "/components/ColorPicker.vue";
 import Palette from "/components/Palette.vue";
 import ThreeDRender from "/components/ThreeDRender.vue";
 import FileLoader from "/components/FileLoader.vue";
+import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
 import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 import lzString from 'lz-string';
@@ -35,7 +36,8 @@ export default {
     ColorPicker,
     Palette,
     ThreeDRender,
-    FileLoader
+    FileLoader,
+    ACNLQRGenerator
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
@@ -49,6 +51,10 @@ export default {
   data: function() {
     return {
       drawingTool: new DrawingTool(),
+      qrCode: {
+        size: [240, 480],
+        pattern: ""
+      },
       fragment: ""
     };
   },
@@ -70,28 +76,13 @@ export default {
       this.$refs.palette.palChange();
       this.$refs.colorPicker.forceCheck();
       let patStr = this.drawingTool.toString();
+      this.qrCode.size = this.$refs.qrgen.suggestSizeFor(patStr);
+      this.qrCode.pattern = patStr;
       let newHash = lzString.compressToEncodedURIComponent(patStr);
       if (this.$router.currentRoute.hash !== "#" + newHash) {
         this.$router.push({ hash: newHash });
       }
 
-      this.$refs.qrout.innerHTML = "";
-      let writer = new BrowserQRCodeSvgWriter();
-      let bytes = this.drawingTool.toBytes();
-      if (bytes.byteLength == 620){
-        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes), 300, 300);
-      }else{
-        const hints = new Map();
-        const parityByte = Math.round(Math.random()*255);
-        hints.set(EncodeHintType.STRUCTURED_APPEND, [0, 3, parityByte]);
-        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 0, 540), 300, 300, hints);
-        hints.set(EncodeHintType.STRUCTURED_APPEND, [1, 3, parityByte]);
-        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 540, 540), 300, 300, hints);
-        hints.set(EncodeHintType.STRUCTURED_APPEND, [2, 3, parityByte]);
-        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 1080, 540), 300, 300, hints);
-        hints.set(EncodeHintType.STRUCTURED_APPEND, [3, 3, parityByte]);
-        writer.writeToDom(this.$refs.qrout, new Uint8Array(bytes, 1620, 540), 300, 300, hints);
-      }
     },
     qrLoad: function(data) {
       // only takes valid data, FileLoader determines
