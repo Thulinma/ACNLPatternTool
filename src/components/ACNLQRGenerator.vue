@@ -29,7 +29,7 @@ export default {
       if (((typeof data) == "string" && data.length > 620) || data.byteLength > 620){
         return [760, 460];
       }else{
-        return [440, 260];
+        return [440, 270];
       }
     }
   },
@@ -212,7 +212,7 @@ export default {
         drawTxtWithBg(pattCenter, this.height-(this.height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
       }else{
         ctx.font = '15pt Calibri';
-        drawTxtWithBg(this.width/2, (this.height-pattHeight)/4, drawingTool.title, "#FFFFFF");
+        drawTxtWithBg(this.width/2, (this.height-pattHeight)/4-2, drawingTool.title, "#FFFFFF");
         ctx.font = '10pt Calibri';
         drawTxtWithBg(this.width/2, this.height-2-(this.height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
       }
@@ -261,10 +261,10 @@ export default {
         qrToCanvas(codes[3], QRx+spc*2,     QRy+spc*2);
         //Draw helpful numbers
         ctx.font = '15pt Calibri';
-        drawTxtWithBg(QRx-spc*2-sQR/2, QRy-spc*2-sQR-18, "1", "#FFFFFF");
-        drawTxtWithBg(QRx+spc*2+sQR/2, QRy-spc*2-sQR-18, "2", "#FFFFFF");
-        drawTxtWithBg(QRx-spc*2-sQR/2, QRy+spc*2+sQR+18, "3", "#FFFFFF");
-        drawTxtWithBg(QRx+spc*2+sQR/2, QRy+spc*2+sQR+18, "4", "#FFFFFF");
+        drawTxtWithBg(QRx-spc*2-sQR/2, QRy-spc*2-sQR-22, "1", "#FFFFFF");
+        drawTxtWithBg(QRx+spc*2+sQR/2, QRy-spc*2-sQR-22, "2", "#FFFFFF");
+        drawTxtWithBg(QRx-spc*2-sQR/2, QRy+spc*2+sQR+22, "3", "#FFFFFF");
+        drawTxtWithBg(QRx+spc*2+sQR/2, QRy+spc*2+sQR+22, "4", "#FFFFFF");
       }else{
         const QRx = Math.round(this.width*0.75);//center x for QR codes
         const QRy = Math.round(this.height/2);//center y for QR codes
