@@ -1,5 +1,7 @@
-<template v-for="i in 1">
-  <canvas ref="qrcanvas"/>
+<template>
+  <div>
+    <canvas ref="qrcanvas"/>
+  </div>
 </template>
 
 <script>
@@ -21,21 +23,25 @@ import model_shirt_none from "/assets/resources/shirt_none.gltf";
 
 export default {
   name: "ACNLQRGenerator",
-  props: ["pattern", "width", "height"],
+  props: {
+    pattern: String,
+    width: Number,
+    height: Number
+  },
   data: function(){return {};},
   methods: {
     //Makes a suggestion as to what would be a good size for the QR code for this pattern
     suggestSizeFor(data){
       if (((typeof data) == "string" && data.length > 620) || data.byteLength > 620){
         return [760, 460];
-      }else{
+      } else{
         return [440, 270];
       }
     }
   },
   watch: {
     //Whenever pattern changes, draw it!
-    async pattern(data){
+    async pattern (newData, oldData) {
       //Update internal canvas size to width/height
       //Only happens right before redraw
       this.$refs.qrcanvas.width = this.width;
@@ -44,11 +50,8 @@ export default {
       let ctx = this.$refs.qrcanvas.getContext('2d');
       ctx.imageSmoothingEnabled = false;
 
-
-
-
       //Load pattern, prepare render canvas
-      const drawingTool = new DrawingTool(data);
+      const drawingTool = new DrawingTool(newData);
       const tInfo = drawingTool.typeInfo;
       const bytes = drawingTool.toBytes();
       const renderCanvas = document.createElement("canvas");
@@ -69,7 +72,8 @@ export default {
         drawingTool.addCanvas(renderCanvas, {tall:true});
         drawingTool.render();
         renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
-      }else{
+      }
+      else {
         //Regualar render
         renderCanvas.width = tInfo.size;
         renderCanvas.height = tInfo.size;
@@ -144,7 +148,7 @@ export default {
         let camera = new THREE.PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
         let model = false;
         renderer.setClearColor( 0x000000, 0 );
-        let texture = new THREE.Texture(renderCanvas) 
+        let texture = new THREE.Texture(renderCanvas)
         texture.needsUpdate = true;
         texture.encoding = THREE.sRGBEncoding;
         texture.flipY = false;
@@ -210,7 +214,8 @@ export default {
         drawTxtWithBg(pattCenter, (this.height-pattHeight)/4+(path3D?4:0), drawingTool.title, "#FFFFFF");
         ctx.font = '10pt Calibri';
         drawTxtWithBg(pattCenter, this.height-(this.height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
-      }else{
+      }
+      else {
         ctx.font = '15pt Calibri';
         drawTxtWithBg(this.width/2, (this.height-pattHeight)/4-2, drawingTool.title, "#FFFFFF");
         ctx.font = '10pt Calibri';
@@ -265,7 +270,8 @@ export default {
         drawTxtWithBg(QRx+spc*2+sQR/2, QRy-spc*2-sQR-22, "2", "#FFFFFF");
         drawTxtWithBg(QRx-spc*2-sQR/2, QRy+spc*2+sQR+22, "3", "#FFFFFF");
         drawTxtWithBg(QRx+spc*2+sQR/2, QRy+spc*2+sQR+22, "4", "#FFFFFF");
-      }else{
+      }
+      else {
         const QRx = Math.round(this.width*0.75);//center x for QR codes
         const QRy = Math.round(this.height/2);//center y for QR codes
         qrToCanvas(codes[0], QRx-sQR/2, QRy-sQR/2);

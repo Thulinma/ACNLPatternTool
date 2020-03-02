@@ -1,23 +1,22 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
 import 'reset-css';
 import App from '/App.vue';
-import router from '/routers';
-import i18n from '/i18n';
+import router from '/routers'; // use router
+import i18n from '/i18n'; // use i18n
+import PortalVue from "portal-vue";
 import { ifProdExec } from '/utils/if-env';
 import logger from '/utils/logger';
 
-// config vue global before mount
-Vue
-  //.use(VueI18n) in i18n
-  .use(VueRouter);
-
+// vue global config
 Vue.config.productionTip = false;
 ifProdExec(() => {
   Vue.config.devtools = false;
 });
 
-// mount
+// More Vue plugins
+Vue.use(PortalVue);
+
+// mount the application
 new Vue({
   router,
   i18n,

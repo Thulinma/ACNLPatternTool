@@ -1,5 +1,9 @@
 <template>
-  <canvas v-show="model" ref="canvas3d" :width="width" :height="height"/>
+  <canvas
+    v-show="model"
+    ref="canvas3d"
+    :width="width"
+    :height="height"/>
 </template>
 
 <script>
@@ -15,7 +19,11 @@ import model_shirt_none from "/assets/resources/shirt_none.gltf";
 
 export default {
   name: "ThreeDRender",
-  props: ["drawingTool", "width", "height"],
+  props: {
+    drawingTool: DrawingTool,
+    width: Number,
+    height: Number,
+  },
   data: function() {
     return {
       scene: new THREE.Scene(),
@@ -44,7 +52,7 @@ export default {
         default: return;
       }
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
-      this.texture = new THREE.Texture(this.renderCanvas) 
+      this.texture = new THREE.Texture(this.renderCanvas)
       this.texture.needsUpdate = true;
       this.texture.encoding = THREE.sRGBEncoding;
       this.texture.flipY = false;

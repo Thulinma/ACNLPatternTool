@@ -1,13 +1,18 @@
 <template>
   <div id=app>
     <router-view></router-view>
+    <ModalManager/>
   </div>
 </template>
 
 <script>
-// home page renders based on
+import ModalManager from '/components/ModalManager.vue';
+
 export default {
-  name: "App"
+  name: "App",
+  components: {
+    ModalManager
+  },
 }
 </script>
 

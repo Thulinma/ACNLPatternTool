@@ -38,6 +38,7 @@
     "html-webpack-harddisk-plugin": "^1.0.1",
     "html-webpack-plugin": "^3.2.0",
     "lz-string": "^1.4.4",
+    "portal-vue": "^2.1.7",
     "reset-css": "^5.0.1",
     "signale": "^1.4.0",
     "three": "^0.113.2",

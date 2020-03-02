@@ -2,7 +2,7 @@
   <div class="editor">
     <Palette
       ref="palette"
-      v-bind:drawing-tool="drawingTool"
+      :drawing-tool="drawingTool"
       v-on:changed-current-color="onChangedCurrentColor"/>
     <ColorPicker
       ref="colorPicker"
@@ -12,22 +12,38 @@
       <canvas ref="canvas1" width="512" height="512"/>
       <canvas ref="canvas2" width="128" height="128"/>
       <canvas ref="canvas3" width="64" height="64"/>
-      <ThreeDRender width="128" height="128" v-bind:drawing-tool="drawingTool"/>
+      <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
     </div>
     <FileLoader v-on:qr-load="qrLoad" />
-    <input type="button" v-bind:value="$tc('editor.load')" v-on:click="downACNL" />
-    <ACNLQRGenerator ref="qrgen" :width="qrCode.size[0]" :height="qrCode.size[1]" :pattern="qrCode.pattern" />
+    <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
+    <button v-on:click="onModalOpen">Toggle Modal</button>
+
+    <!-- using ref inside a v-if -->
+    <ModalContainer
+      v-if="isModalOpen"
+      v-on:modal-close="onModalClose"
+      v-on:modal-open="" >
+      <!-- must provide a window for modal container -->
+      <div class="modal-window">
+        <ACNLQRGenerator
+          ref="qrgen"
+          :pattern="qrCode.pattern"
+          :width="qrCode.size[0]"
+          :height="qrCode.size[1]" />
+      </div>
+    </ModalContainer>
   </div>
 </template>
 
 <script>
-import ColorPicker from "/components/ColorPicker.vue";
-import Palette from "/components/Palette.vue";
-import ThreeDRender from "/components/ThreeDRender.vue";
-import FileLoader from "/components/FileLoader.vue";
-import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
-import DrawingTool from "/libs/DrawingTool";
-import logger from "/utils/logger";
+import ColorPicker from '/components/ColorPicker.vue';
+import Palette from '/components/Palette.vue';
+import ThreeDRender from '/components/ThreeDRender.vue';
+import FileLoader from '/components/FileLoader.vue';
+import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
+import ModalContainer from '/components/ModalContainer.vue';
+import DrawingTool from '/libs/DrawingTool';
+import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
 
@@ -38,7 +54,8 @@ export default {
     Palette,
     ThreeDRender,
     FileLoader,
-    ACNLQRGenerator
+    ACNLQRGenerator,
+    ModalContainer
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
@@ -56,7 +73,8 @@ export default {
         size: [240, 480],
         pattern: ""
       },
-      fragment: ""
+      fragment: "",
+      isModalOpen: false,
     };
   },
   methods: {
@@ -77,22 +95,36 @@ export default {
       this.$refs.colorPicker.forceCheck();
       logger.info(`changed current color: ${idx}`);
     },
-    onLoad: function(t){
+    onLoad: async function(t){
       this.$refs.palette.palChange();
       this.$refs.colorPicker.forceCheck();
       let patStr = this.drawingTool.toString();
+
+      // need to wait 2 ticks before access ref in portal
+      // AFTER setting isOpenModal to true
+      // https://portal-vue.linusb.org/guide/caveats.html#provide-inject
+      await this.$nextTick();
+      await this.$nextTick();
+
+      // breaking b/c v-if on modal is false, ref does not exist, error
       this.qrCode.size = this.$refs.qrgen.suggestSizeFor(patStr);
       this.qrCode.pattern = patStr;
       let newHash = lzString.compressToEncodedURIComponent(patStr);
       if (this.$router.currentRoute.hash !== "#" + newHash) {
         this.$router.push({ hash: newHash });
       }
-
+      return;
     },
     qrLoad: function(data) {
       // only takes valid data, FileLoader determines
       this.drawingTool.load(data);
       this.drawingTool.render();
+    },
+    onModalOpen: function() {
+      this.isModalOpen = true;
+    },
+    onModalClose: function() {
+      this.isModalOpen = false;
     }
   },
   mounted: function() {
@@ -113,5 +145,14 @@ export default {
 <style scoped>
 .editor {
   user-select: none;
+}
+
+.modal-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  padding: 10px;
+  transform: translate(-50%, -50%);
+  background-color: #e28e8e;
 }
 </style>
