@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label for="files" >Load ACNL file or QR code image:</label>
+    <label for="files" >{{$tc('editor.load')}}</label>
     <input
       type="file"
       name="files"

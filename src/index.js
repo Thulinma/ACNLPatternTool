@@ -1,18 +1,16 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import VueI18n from 'vue-i18n';
 import 'reset-css';
-import App from 'App.vue';
+import App from '/App.vue';
 import router from '/routers';
-import {
-  ifProdExec
-} from '/utils/if-env';
+import i18n from '/i18n';
+import { ifProdExec } from '/utils/if-env';
 import logger from '/utils/logger';
 
 // config vue global before mount
 Vue
-  .use(VueRouter)
-  .use(VueI18n);
+  //.use(VueI18n) in i18n
+  .use(VueRouter);
 
 Vue.config.productionTip = false;
 ifProdExec(() => {
@@ -21,7 +19,8 @@ ifProdExec(() => {
 
 // mount
 new Vue({
-  router: router,
+  router,
+  i18n,
   render: (h) => h(App),
 }).$mount("#app");
 

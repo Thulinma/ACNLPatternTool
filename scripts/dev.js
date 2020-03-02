@@ -1,6 +1,5 @@
 require('../etc/env'); // always run this first
 const webpack = require('webpack');
-const webpackFormatMessages = require('webpack-format-messages');
 const WebpackDevServer = require('webpack-dev-server');
 const signale = require('signale');
 const { pathToPublic } = require('../etc/paths');

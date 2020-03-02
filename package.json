@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/dev.js",
-    "clean": "node scripts/clean.js",
+    "clean": "cd zxing-js-library && npm run clean && cd .. && node scripts/clean.js",
+    "clean:app": "node scripts/clean.js",
+    "clean:submodule": "cd zxing-js-library && npm run clean",
     "build": "cd zxing-js-library && npm run build:es5 && cd .. && node scripts/build.js",
     "build:app": "node scripts/build.js",
     "build:submodule": "cd zxing-js-library && npm run build:es5"
@@ -46,6 +48,7 @@
     "vue-router": "^3.1.5",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
+    "vuex": "^3.1.2",
     "webpack": "^4.41.6",
     "webpack-format-messages": "^2.0.6"
   },

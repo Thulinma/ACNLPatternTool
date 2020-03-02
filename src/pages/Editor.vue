@@ -15,7 +15,7 @@
       <ThreeDRender width="128" height="128" v-bind:drawing-tool="drawingTool"/>
     </div>
     <FileLoader v-on:qr-load="qrLoad" />
-    <input type="button" value="Download ACNL file" v-on:click="downACNL" />
+    <input type="button" v-bind:value="$tc('editor.load')" v-on:click="downACNL" />
     <ACNLQRGenerator ref="qrgen" :width="qrCode.size[0]" :height="qrCode.size[1]" :pattern="qrCode.pattern" />
   </div>
 </template>
