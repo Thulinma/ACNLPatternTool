@@ -29,19 +29,17 @@ export default {
     height: Number
   },
   data: function(){return {};},
-  methods: {
-    //Makes a suggestion as to what would be a good size for the QR code for this pattern
-    suggestSizeFor(data){
-      if (((typeof data) == "string" && data.length > 620) || data.byteLength > 620){
-        return [760, 460];
-      } else{
-        return [440, 270];
-      }
-    }
-  },
   watch: {
     //Whenever pattern changes, draw it!
-    async pattern (newData, oldData) {
+    pattern (newData, oldData) {
+      this.draw(newdata);
+    }
+  },
+  mounted: function(){
+    this.draw(this.pattern);
+  },
+  methods: {
+    async draw(newData){
       //Update internal canvas size to width/height
       //Only happens right before redraw
       this.$refs.qrcanvas.width = this.width;
@@ -270,8 +268,7 @@ export default {
         drawTxtWithBg(QRx+spc*2+sQR/2, QRy-spc*2-sQR-22, "2", "#FFFFFF");
         drawTxtWithBg(QRx-spc*2-sQR/2, QRy+spc*2+sQR+22, "3", "#FFFFFF");
         drawTxtWithBg(QRx+spc*2+sQR/2, QRy+spc*2+sQR+22, "4", "#FFFFFF");
-      }
-      else {
+      }else{
         const QRx = Math.round(this.width*0.75);//center x for QR codes
         const QRy = Math.round(this.height/2);//center y for QR codes
         qrToCanvas(codes[0], QRx-sQR/2, QRy-sQR/2);

@@ -106,9 +106,6 @@ export default {
       await this.$nextTick();
       await this.$nextTick();
 
-      // breaking b/c v-if on modal is false, ref does not exist, error
-      this.qrCode.size = this.$refs.qrgen.suggestSizeFor(patStr);
-      this.qrCode.pattern = patStr;
       let newHash = lzString.compressToEncodedURIComponent(patStr);
       if (this.$router.currentRoute.hash !== "#" + newHash) {
         this.$router.push({ hash: newHash });
@@ -121,6 +118,13 @@ export default {
       this.drawingTool.render();
     },
     onModalOpen: function() {
+      const patStr = this.drawingTool.toString();
+      this.qrCode.pattern = patStr;
+      if (patStr.length > 620){
+        this.qrCode.size = [760, 460];
+      } else{
+        this.qrCode.size = [440, 270];
+      }
       this.isModalOpen = true;
     },
     onModalClose: function() {
