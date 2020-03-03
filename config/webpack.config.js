@@ -3,6 +3,10 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { clientEnv } = require('../etc/env'); // assume already run
 const {
   pathToBuild,
@@ -36,10 +40,12 @@ const baseConfig = {
         loader: 'vue-loader'
       },
       {
+        // test: /\.s?css$/,
         test: /\.css$/,
         loader: [
           'vue-style-loader',
-          'css-loader'
+          'css-loader',
+          // 'sass-loader'
         ]
       },
       {
@@ -118,6 +124,7 @@ const webpackDevConfig = {
 
 const webpackProdConfig = {
   ...baseConfig,
+  devtool: "",
   // overwrite base config
   mode: "production",
   module: {
@@ -138,7 +145,31 @@ const webpackProdConfig = {
     new HtmlWebpackPlugin({
       ...baseHtmlWebpackOptions,
     }),
-  ]
+    new CompressionPlugin({
+      algorithm: "gzip",
+      deleteOriginalAssets: true,
+      compressionOptions: {
+        level: 9 // max compression
+      }
+    }),
+    // new MiniCssExtractPlugin(),
+  ],
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i,
+        terserOptions: {
+          mangle: true,
+          ie8: false,
+        },
+        extractComments: true,
+      }),
+      // new OptimizeCSSAssetsPlugin({}),
+    ],
+  },
+  // ignore webpack performance warnings
+  // not a good gauge
+  performance: false
 };
 
 let webpackConfig = baseConfig;
