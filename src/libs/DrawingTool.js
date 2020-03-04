@@ -110,14 +110,14 @@ class DrawingTool{
 
   pushUndo(){
     let currPal = [];
-    for (let i = 0; i < 15; ++i){currPal.push(this.getPalette(i));}
+    for (let i = 0; i < 15; ++i){currPal.push(this.pattern.getPalette(i));}
     this.undoHistory.push({pixels: new Uint8Array(this.pixels), palette: currPal});
     if (this.undoHistory.length > 25){this.undoHistory.splice(1, this.undoHistory.length-25);}
   }
 
   pushRedo(){
     let currPal = [];
-    for (let i = 0; i < 15; ++i){currPal.push(this.getPalette(i));}
+    for (let i = 0; i < 15; ++i){currPal.push(this.pattern.getPalette(i));}
     this.redoHistory.push({pixels: new Uint8Array(this.pixels), palette: currPal});
     if (this.redoHistory.length > 25){this.redoHistory.splice(1, this.redoHistory.length-25);}
   }
@@ -127,7 +127,9 @@ class DrawingTool{
     this.pushRedo();
     let pState = this.undoHistory.pop();
     for (let i = 0; i < 4096; ++i){this.pixels[i] = pState.pixels[i];}
-    for (let i = 0; i < 15; ++i){this.setPalette(i, pState.palette[i]);}
+    for (let i = 0; i < 15; ++i){this.pattern.setPalette(i, pState.palette[i]);}
+    this.onColorChange();
+    this.render();
     return true;
   }
   
@@ -136,7 +138,9 @@ class DrawingTool{
     this.pushUndo();
     let pState = this.redoHistory.pop();
     for (let i = 0; i < 4096; ++i){this.pixels[i] = pState.pixels[i];}
-    for (let i = 0; i < 15; ++i){this.setPalette(i, pState.palette[i]);}
+    for (let i = 0; i < 15; ++i){this.pattern.setPalette(i, pState.palette[i]);}
+    this.onColorChange();
+    this.render();
     return true;
   }
   
