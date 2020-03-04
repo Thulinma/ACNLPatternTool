@@ -8,6 +8,7 @@
       ref="colorPicker"
       v-bind:drawing-tool="drawingTool"
       v-on:color-picked="onColorPicked"/>
+    <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
     <div>
       <canvas ref="canvas1" width="512" height="512"/>
       <canvas ref="canvas2" width="128" height="128"/>
@@ -42,6 +43,7 @@ import ThreeDRender from '/components/ThreeDRender.vue';
 import FileLoader from '/components/FileLoader.vue';
 import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
+import ToolSelector from '/components/ToolSelector.vue';
 import DrawingTool from '/libs/DrawingTool';
 import logger from '/utils/logger';
 import lzString from 'lz-string';
@@ -55,7 +57,8 @@ export default {
     ThreeDRender,
     FileLoader,
     ACNLQRGenerator,
-    ModalContainer
+    ModalContainer,
+    ToolSelector
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
@@ -78,6 +81,12 @@ export default {
     };
   },
   methods: {
+    toolChange(newTool){
+      this.drawingTool.drawHandler = newTool;
+    },
+    toolChangeAlt(newTool){
+      this.drawingTool.drawHandlerAlt = newTool;
+    },
     downACNL(){
       var blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
       saveAs(blob, this.drawingTool.title+".acnl");
@@ -85,6 +94,7 @@ export default {
     onColorPicked: function(color) {
       const currentColor = this.drawingTool.currentColor;
       if (this.drawingTool.getPalette(currentColor) === color) return;
+      this.drawingTool.pushUndo();
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
       this.$refs.palette.palChange();
       logger.info(`color picked: ${color}`);
@@ -94,6 +104,10 @@ export default {
       this.drawingTool.currentColor = idx;
       this.$refs.colorPicker.forceCheck();
       logger.info(`changed current color: ${idx}`);
+    },
+    onColorChanges(){
+      this.$refs.palette.palChange();
+      this.$refs.colorPicker.forceCheck();
     },
     onLoad: async function(t){
       this.$refs.palette.palChange();
@@ -136,12 +150,27 @@ export default {
     this.drawingTool.addCanvas(this.$refs.canvas2);
     this.drawingTool.addCanvas(this.$refs.canvas3);
     this.drawingTool.onLoad(this.onLoad);
+    this.drawingTool.onColorChange(this.onColorChanges);
     if (this.$router.currentRoute.hash.length > 1){
       this.drawingTool.load(lzString.decompressFromEncodedURIComponent(this.$router.currentRoute.hash.substring(1)));
     }
     else{
       this.drawingTool.render();
     }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'Z'){
+        this.drawingTool.redo();
+        e.preventDefault();
+        return;
+      }
+      if (e.ctrlKey && e.key === 'z'){
+        this.drawingTool.undo();
+        e.preventDefault();
+        return;
+      }
+    });
+
   },
 }
 </script>

@@ -78,8 +78,11 @@ class DrawingTool{
   constructor(data = null){
     this.renderTargets = []; //TODO: Should this be a map, perhaps? How do maps work in JS? Can we de-duplicate..?
     this.drawing = false;
-    this.handleOnLoad = [() => {this.render()}];//setup default onLoad handler
+    this.handleOnLoad = [() => {this.render(); this.pushUndo();}];//setup default onLoad handler
+    this.handleColorChange = [];
     this.reset();
+    this.undoHistory = [];
+    this.redoHistory = [];
     if (data != null){this.load(data);}
   }
 
@@ -89,7 +92,10 @@ class DrawingTool{
     this.pixels_buffer = new ArrayBuffer(4096);
     this.pixels = new Uint8Array(this.pixels_buffer);
     this.drawHandler = basicDrawing;
+    this.drawHandlerAlt = basicDrawing;
     this.currentColor = 0;
+    this.undoHistory = [];
+    this.redoHistory = [];
     this.onLoad();
   }
 
@@ -100,6 +106,38 @@ class DrawingTool{
     this.pattern.toPixels(this.pixels);
     this.currentColor = 0;
     this.onLoad();
+  }
+
+  pushUndo(){
+    let currPal = [];
+    for (let i = 0; i < 15; ++i){currPal.push(this.getPalette(i));}
+    this.undoHistory.push({pixels: new Uint8Array(this.pixels), palette: currPal});
+    if (this.undoHistory.length > 25){this.undoHistory.splice(1, this.undoHistory.length-25);}
+  }
+
+  pushRedo(){
+    let currPal = [];
+    for (let i = 0; i < 15; ++i){currPal.push(this.getPalette(i));}
+    this.redoHistory.push({pixels: new Uint8Array(this.pixels), palette: currPal});
+    if (this.redoHistory.length > 25){this.redoHistory.splice(1, this.redoHistory.length-25);}
+  }
+
+  undo(){
+    if (!this.undoHistory.length){return false};
+    this.pushRedo();
+    let pState = this.undoHistory.pop();
+    for (let i = 0; i < 4096; ++i){this.pixels[i] = pState.pixels[i];}
+    for (let i = 0; i < 15; ++i){this.setPalette(i, pState.palette[i]);}
+    return true;
+  }
+  
+  redo(){
+    if (!this.redoHistory.length){return false};
+    this.pushUndo();
+    let pState = this.redoHistory.pop();
+    for (let i = 0; i < 4096; ++i){this.pixels[i] = pState.pixels[i];}
+    for (let i = 0; i < 15; ++i){this.setPalette(i, pState.palette[i]);}
+    return true;
   }
   
   /// Gets this.currentColor translated into a HTML color
@@ -242,6 +280,7 @@ class DrawingTool{
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a color palette index.
   setPalette(idx, c){
     this.pattern.setPalette(idx, this.findRGB(c));
+    this.onColorChange();
     this.render();
   }
 
@@ -262,7 +301,8 @@ class DrawingTool{
     }
     let x = Math.floor(xpos / (e.target.width / this.pattern.width));
     let y = Math.floor(ypos / (e.target.height / this.pattern.width));
-    this.drawHandler(x, y, this);
+    if (e.which == 1){this.drawHandler(x, y, this);}
+    if (e.which == 3){this.drawHandlerAlt(x, y, this);}
   }
 
   /// Adds a canvas to the internal list of render targets.
@@ -274,10 +314,11 @@ class DrawingTool{
     }else{
       this.renderTargets.push(rTarget);
     }
-    c.addEventListener("mousedown", () => {this.drawing = true;});
+    c.addEventListener("mousedown", () => {this.drawing = true; this.pushUndo();});
     c.addEventListener("mouseup", () => {this.drawing = false;});
     c.addEventListener("click", (e) => {this.handleCanvasClick(e);});
-    c.addEventListener("mousemove", (e) => {if (this.drawing && e.which == 1){this.handleCanvasClick(e);}});
+    c.addEventListener("mousemove", (e) => {if (this.drawing && (e.which == 1 || e.which == 3)){this.handleCanvasClick(e);}});
+    c.addEventListener("contextmenu", (e) => {this.handleCanvasClick(e); e.preventDefault();});
   }
 
   /// Renders a full image to all internally stored render targets
@@ -312,7 +353,7 @@ class DrawingTool{
 
   /// Returns the color (palette index) of the given pixel
   getPixel(x, y){
-    if (x < 0 || y < 0 || color < 0 || color > 15 || x > 63 || y > 63 || isNaN(x) || isNaN(y)){return false;}
+    if (x < 0 || y < 0 || x > 63 || y > 63 || isNaN(x) || isNaN(y)){return false;}
     if (this.pattern.width == 32 && (x > 31 || y > 31)){return false;}
     if (x > 31){
       x -= 32;
@@ -359,6 +400,19 @@ class DrawingTool{
       }
     }else if ((typeof f) == "function"){
       this.handleOnLoad.push(f);
+    }
+  }
+
+  /// When called with a function as parameter, adds an event handler for color changes.
+  /// When called without parameter (or with null), calls all onColorChange event handlers in sequence.
+  /// Called automatically whenever colors in the palette change, or a new pattern is loaded.
+  onColorChange(f = null){
+    if (f === null){
+      for (let i in this.handleColorChange){
+        this.handleColorChange[i](this);
+      }
+    }else if ((typeof f) == "function"){
+      this.handleColorChange.push(f);
     }
   }
 
