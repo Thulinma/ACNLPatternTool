@@ -106,6 +106,7 @@ class DrawingTool{
     this.pattern.toPixels(this.pixels);
     this.currentColor = 0;
     this.onLoad();
+    this.onColorChange();
   }
 
   pushUndo(){

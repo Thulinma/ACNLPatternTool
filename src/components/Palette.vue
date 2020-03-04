@@ -46,13 +46,15 @@ export default {
       if (event.buttons === 1)
         this.$emit('changed-current-color', idx);
     },
-    palChange: function(){
+  },
+  mounted: function(){
+    this.drawingTool.onColorChange(() => {
       let paletteColors = [];
       for (let i = 0; i < 15; ++i)
         paletteColors[i] = this.drawingTool.getPalette(i);
       this.$data.paletteColors = paletteColors;
-    }
-  },
+    });
+  }
 }
 </script>
 

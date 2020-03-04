@@ -96,22 +96,15 @@ export default {
       if (this.drawingTool.getPalette(currentColor) === color) return;
       this.drawingTool.pushUndo();
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-      this.$refs.palette.palChange();
       logger.info(`color picked: ${color}`);
     },
     onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
-      this.$refs.colorPicker.forceCheck();
+      this.drawingTool.onColorChange();
       logger.info(`changed current color: ${idx}`);
     },
-    onColorChanges(){
-      this.$refs.palette.palChange();
-      this.$refs.colorPicker.forceCheck();
-    },
     onLoad: async function(t){
-      this.$refs.palette.palChange();
-      this.$refs.colorPicker.forceCheck();
       let patStr = this.drawingTool.toString();
 
       // need to wait 2 ticks before access ref in portal
@@ -150,7 +143,6 @@ export default {
     this.drawingTool.addCanvas(this.$refs.canvas2);
     this.drawingTool.addCanvas(this.$refs.canvas3);
     this.drawingTool.onLoad(this.onLoad);
-    this.drawingTool.onColorChange(this.onColorChanges);
     if (this.$router.currentRoute.hash.length > 1){
       this.drawingTool.load(lzString.decompressFromEncodedURIComponent(this.$router.currentRoute.hash.substring(1)));
     }
