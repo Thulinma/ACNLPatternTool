@@ -1,8 +1,8 @@
 <template>
   <div class="palette">
-    <button v-on:click="pickToolPencil" v-on:contextmenu="pickToolPencil">Pencil</button>
-    <button v-on:click="pickToolFloodFill" v-on:contextmenu="pickToolFloodFill">Flood fill</button>
-    <button v-on:click="pickToolColorPicker" v-on:contextmenu="pickToolColorPicker">Color picker</button>
+    <button v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">Pencil</button>
+    <button v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">Flood fill</button>
+    <button v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">Color picker</button>
   </div>
 </template>
 
@@ -17,7 +17,6 @@ export default {
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
         tool.drawPixel(x, y);
       });
-      e.preventDefault();
     },
     pickToolFloodFill(e) {
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
@@ -41,7 +40,6 @@ export default {
         //Render changed version
         tool.render();
       });
-      e.preventDefault();
     },
     pickToolColorPicker(e) {
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
@@ -51,7 +49,6 @@ export default {
           tool.onColorChange();
         }
       });
-      e.preventDefault();
     },
   }
 }
