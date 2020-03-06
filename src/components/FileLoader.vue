@@ -78,7 +78,7 @@ export default {
             }
             return;
           }
-          this.$emit('qr-load', r.resultMetadata.get(2)[0]) // data bytes
+          this.$emit('qr-load', code.resultMetadata.get(ResultMetadataType.BYTE_SEGMENTS)[0]) // data bytes
         })
       }
       catch (err) {
