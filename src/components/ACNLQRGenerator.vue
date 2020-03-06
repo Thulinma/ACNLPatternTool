@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="qrcanvas"/>
+    <canvas ref="qrcanvas" v-on:click="pattClick" />
   </div>
 </template>
 
@@ -23,11 +23,7 @@ import model_shirt_none from "/assets/resources/shirt_none.gltf";
 
 export default {
   name: "ACNLQRGenerator",
-  props: {
-    pattern: String,
-    width: Number,
-    height: Number
-  },
+  props: ["pattern"],
   data: function(){return {};},
   watch: {
     //Whenever pattern changes, draw it!
@@ -39,15 +35,10 @@ export default {
     this.draw(this.pattern);
   },
   methods: {
+    pattClick(){
+      this.$emit('pattclick', this.pattern);
+    },
     async draw(newData){
-      //Update internal canvas size to width/height
-      //Only happens right before redraw
-      this.$refs.qrcanvas.width = this.width;
-      this.$refs.qrcanvas.height = this.height;
-      //Ensure blitted images are not smoothed ( = keep pixel look!)
-      let ctx = this.$refs.qrcanvas.getContext('2d');
-      ctx.imageSmoothingEnabled = false;
-
       //Load pattern, prepare render canvas
       const drawingTool = new DrawingTool(newData);
       const tInfo = drawingTool.typeInfo;
@@ -78,6 +69,22 @@ export default {
         drawingTool.addCanvas(renderCanvas);
         drawingTool.render();
       }
+
+      //Update internal canvas size to width/height
+      //Only happens right before redraw
+      if (drawingTool.width > 32){
+        this.width = 760;
+        this.height = 460;
+      } else{
+        this.width = 440;
+        this.height = 270;
+      }
+      this.$refs.qrcanvas.width = this.width;
+      this.$refs.qrcanvas.height = this.height;
+      //Ensure blitted images are not smoothed ( = keep pixel look!)
+      let ctx = this.$refs.qrcanvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+
 
       //Create QR code(s) in memory
       let codes = [];

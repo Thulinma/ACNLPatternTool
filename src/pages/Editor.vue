@@ -15,22 +15,28 @@
       <canvas ref="canvas3" width="64" height="64"/>
       <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
     </div>
-    <FileLoader v-on:qr-load="qrLoad" />
+    <FileLoader v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad" />
     <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
-    <button v-on:click="onModalOpen">Toggle Modal</button>
+    <button v-on:click="onModalOpen">Generate QR code(s)</button>
 
-    <!-- using ref inside a v-if -->
     <ModalContainer
-      v-if="isModalOpen"
-      v-on:modal-close="onModalClose"
-      v-on:modal-open="" >
+      v-if="qrCode"
+      v-on:modal-close="closeQr">
+      <!-- must provide a window for modal container -->
+      <div class="modal-window">
+        <ACNLQRGenerator :pattern="qrCode" />
+      </div>
+    </ModalContainer>
+
+    <ModalContainer
+      v-if="pickPatterns"
+      v-on:modal-close="closePicks">
       <!-- must provide a window for modal container -->
       <div class="modal-window">
         <ACNLQRGenerator
-          ref="qrgen"
-          :pattern="qrCode.pattern"
-          :width="qrCode.size[0]"
-          :height="qrCode.size[1]" />
+          v-for="opt in pickPatterns"
+          v-on:pattclick="pickPattern"
+          :pattern="opt" />
       </div>
     </ModalContainer>
   </div>
@@ -72,12 +78,9 @@ export default {
   data: function() {
     return {
       drawingTool: new DrawingTool(),
-      qrCode: {
-        size: [240, 480],
-        pattern: ""
-      },
+      qrCode: false,
       fragment: "",
-      isModalOpen: false,
+      pickPatterns: false
     };
   },
   methods: {
@@ -119,23 +122,26 @@ export default {
       }
       return;
     },
-    qrLoad: function(data) {
-      // only takes valid data, FileLoader determines
+    extLoad: function(data) {
       this.drawingTool.load(data);
       this.drawingTool.render();
     },
+    extMultiLoad: function(data) {
+      this.pickPatterns = data;
+    },
     onModalOpen: function() {
       const patStr = this.drawingTool.toString();
-      this.qrCode.pattern = patStr;
-      if (patStr.length > 620){
-        this.qrCode.size = [760, 460];
-      } else{
-        this.qrCode.size = [440, 270];
-      }
-      this.isModalOpen = true;
+      this.qrCode = patStr;
     },
-    onModalClose: function() {
-      this.isModalOpen = false;
+    closeQr: function() {
+      this.qrCode = false;
+    },
+    pickPattern: function(p){
+      this.extLoad(p);
+      this.pickPatterns = false;
+    },
+    closePicks: function() {
+      this.pickPatterns = false;
     }
   },
   mounted: function() {
