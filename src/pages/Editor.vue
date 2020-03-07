@@ -32,8 +32,8 @@
       v-if="pickPatterns"
       v-on:modal-close="closePicks">
       <!-- must provide a window for modal container -->
-      <div class="modal-window">
-        <ACNLQRGenerator
+      <div class="modal-window pattern-list">
+        <IconGenerator
           v-for="(opt, idx) in pickPatterns"
           :key="idx"
           v-on:pattclick="pickPattern"
@@ -49,6 +49,7 @@ import Palette from '/components/Palette.vue';
 import ThreeDRender from '/components/ThreeDRender.vue';
 import FileLoader from '/components/FileLoader.vue';
 import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
+import IconGenerator from '/components/IconGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
 import ToolSelector from '/components/ToolSelector.vue';
 import DrawingTool from '/libs/DrawingTool';
@@ -64,6 +65,7 @@ export default {
     ThreeDRender,
     FileLoader,
     ACNLQRGenerator,
+    IconGenerator,
     ModalContainer,
     ToolSelector
   },
@@ -187,4 +189,13 @@ export default {
   transform: translate(-50%, -50%);
   background-color: #e28e8e;
 }
+
+.pattern-list {
+  width:80%;
+  height:80%;
+  overflow:scroll;
+}
+
+
+
 </style>
