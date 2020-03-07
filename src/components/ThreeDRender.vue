@@ -1,5 +1,6 @@
 <template>
   <canvas
+    class="threeD"
     v-show="model"
     ref="canvas3d"
     :width="width"
@@ -97,4 +98,3 @@ export default {
   }
 }
 </script>
-

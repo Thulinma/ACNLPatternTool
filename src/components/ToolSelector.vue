@@ -1,8 +1,8 @@
 <template>
-  <div class="palette">
+  <div class="tool-selector">
     <button v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">Pencil</button>
-    <button v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">Flood fill</button>
-    <button v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">Color picker</button>
+    <button v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">Flood Fill</button>
+    <button v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">Color Picker</button>
   </div>
 </template>
 
@@ -55,4 +55,20 @@ export default {
 </script>
 
 <style scoped>
+  .tool-selector {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 0 35px 35px 0;
+    height: 200px;
+    width: 75px;
+    background-color: #8DBCFC;
+  }
+
+  .tool-selector button {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+  }
 </style>

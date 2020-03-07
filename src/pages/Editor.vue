@@ -1,20 +1,33 @@
 <template v-for="i in 1">
   <div class="editor">
-    <Palette
-      ref="palette"
-      :drawing-tool="drawingTool"
-      v-on:changed-current-color="onChangedCurrentColor"/>
-    <ColorPicker
-      ref="colorPicker"
-      v-bind:drawing-tool="drawingTool"
-      v-on:color-picked="onColorPicked"/>
-    <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
-    <div>
-      <canvas ref="canvas1" width="512" height="512"/>
-      <canvas ref="canvas2" width="128" height="128"/>
-      <canvas ref="canvas3" width="64" height="64"/>
-      <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
+
+    <div class="topbar">
+      <Palette
+        ref="palette"
+        :drawing-tool="drawingTool"
+        v-on:changed-current-color="onChangedCurrentColor"/>
     </div>
+
+    <main>
+      <div class="previews">
+        <div class="2D">
+          <canvas ref="canvas2" width="128" height="128"/>
+          <canvas ref="canvas3" width="64" height="64"/>
+        </div>
+        <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
+      </div>
+
+      <canvas ref="canvas1" width="512" height="512"/>
+      
+      <div class="tools-and-colors">
+        <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
+        <ColorPicker
+          ref="colorPicker"
+          v-bind:drawing-tool="drawingTool"
+          v-on:color-picked="onColorPicked"/>
+      </div>
+    </main>
+
     <FileLoader v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad" />
     <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
     <button v-on:click="onModalOpen">Generate QR code(s)</button>
@@ -179,6 +192,7 @@ export default {
 <style scoped>
 .editor {
   user-select: none;
+  text-align: center;
 }
 
 .modal-window {
@@ -196,6 +210,33 @@ export default {
   overflow:scroll;
 }
 
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 
+.previews {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 512px;
+  padding: 0 40px;
+}
+
+.tools-and-colors {
+  height: 512px;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 0 35px 35px 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #ebbccd,
+    #ebbccd 6px,
+    #c38399 6px,
+    #c38399 12px
+  );
+}
 
 </style>

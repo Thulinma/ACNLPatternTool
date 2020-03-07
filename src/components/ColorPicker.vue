@@ -94,18 +94,11 @@ export default {
 <style scoped>
 .swatch {
   user-select: none;
-  border-radius: 35px;
-  background: repeating-linear-gradient(
-    45deg,
-    #ebbccd,
-    #ebbccd 6px,
-    #c38399 6px,
-    #c38399 12px
-  );
-  display: inline-block;
-  padding:10px;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px;
   width: 160px;
-  height: 180px;
 }
 
 .swatch-color-block {
@@ -116,11 +109,10 @@ export default {
     white 2px,
     white 4px
   );
-  height: 30px;
-  width: 30px;
-  float: left;
-  overflow: hidden;
+  height: 45px;
+  width: 45px;
   margin: 5px;
+  display: inline-block;
 }
 
 .swatch-mono-block {
@@ -139,8 +131,8 @@ export default {
 }
 
 .swatch-color {
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   border: 0;
   float: left;
   margin: 0;

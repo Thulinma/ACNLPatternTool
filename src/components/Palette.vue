@@ -1,24 +1,21 @@
 <template>
   <div class="palette">
-    <div
-      class="palette-color-row"
-      v-for="i in 5"
-      v-bind:key="i - 1">
+    <div class="palette-color-row">
       <div
         class="palette-color"
-        v-for="j in 3"
-        v-if="drawingTool.currentColor !== (i-1)*3 + j-1"
-        v-bind:key="(i-1)*3 + j-1"
-        v-bind:style="{ backgroundColor: paletteColors[(i-1)*3 + j-1] }"
-        v-on:click="onColorClick($event, (i-1)*3 + (j-1))"
-        v-on:mousemove="onColorMousemove($event, (i-1)*3 + (j-1))">
+        v-for="i in 15"
+        v-if="drawingTool.currentColor !== i-1"
+        v-bind:key="i-1"
+        v-bind:style="{ backgroundColor: paletteColors[i-1] }"
+        v-on:click="onColorClick($event, i-1)"
+        v-on:mousemove="onColorMousemove($event, i)-1">
       </div>
       <div
         class="palette-color picked"
         v-else
-        v-bind:style="{ backgroundColor: paletteColors[(i-1)*3 + j-1] }"
-        v-on:click="onColorClick($event, (i-1)*3 + (j-1))"
-        v-on:mousemove="onColorMousemove($event, (i-1)*3 + (j-1))">
+        v-bind:style="{ backgroundColor: paletteColors[i-1] }"
+        v-on:click="onColorClick($event, i-1)"
+        v-on:mousemove="onColorMousemove($event, i-1)">
       </div>
     </div>
   </div>
@@ -61,7 +58,7 @@ export default {
 <style scoped>
 .palette {
   user-select: none;
-  border-radius: 35px;
+  border-radius: 0 0 35px 35px;
   background: repeating-linear-gradient(
     45deg,
     #ebbccd,
@@ -70,9 +67,16 @@ export default {
     #c38399 12px
   );
   display: inline-block;
-  padding:15px;
+  padding: 15px;
+  width: 480px;
+}
+.palette-color {
+  width: 32px;
+  height: 32px;
   display: inline-block;
-  vertical-align: top;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
 }
 
 .palette-color-row {
@@ -84,15 +88,6 @@ export default {
     white 2px,
     white 4px
   );
-}
-
-.palette-color {
-  width: 32px;
-  height: 32px;
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  font-size: 0;
 }
 
 .palette-color.picked {
