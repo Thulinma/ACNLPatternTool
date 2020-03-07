@@ -65,7 +65,8 @@ export default {
                   this.currRead[currNum] = true;
                 }
                 if (this.currRead[0] && this.currRead[1] && this.currRead[2] && this.currRead[3]){
-                  results.push(this.currDataBuffer);
+                  results.push(new Uint8Array(this.currDataBuffer));
+                  this.currRead = [false, false, false, false];
                 }
                 return;
               }
@@ -73,7 +74,7 @@ export default {
             });
           }
           catch (err) {
-            throw err; // throw instead of log, get warning
+            console.warn(err);
           }
         } else {
           const pattern = await new Promise((resolve, reject) => {
