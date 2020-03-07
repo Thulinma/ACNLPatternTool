@@ -1,4 +1,15 @@
-require('../etc/env'); // always run this first
+// preamble before any imports
+const env = require('../etc/env');
+
+env.load();
+// overload with NODE_ENV option
+let buildSetting = process.argv[2];
+if (!["development", "production"].includes(buildSetting))
+  buildSetting = null;
+else
+  process.env.NODE_ENV = buildSetting
+env.check();
+
 const webpack = require('webpack');
 const webpackFormatMessages = require('webpack-format-messages');
 const signale = require('signale');
@@ -11,13 +22,12 @@ const { NODE_ENV } = process.env;
 
 // check process args, allow build with forced settings
 let selectedWebpackConfig;
-let devSetting = process.argv[2]; // 0 is node, 1 is the script
-if (!["development", "production"].includes(devSetting)) {
-  selectedWebpackConfig = webpackConfig; // w/e is in NODE_ENV
-  devSetting = NODE_ENV;
+if (!["development", "production"].includes(buildSetting)) {
+  selectedWebpackConfig = webpackConfig; // w/e the default is in .env
+  buildSetting = NODE_ENV;
 }
 else
-  if (devSetting === "development") selectedWebpackConfig = webpackDevConfig;
+  if (buildSetting === "development") selectedWebpackConfig = webpackDevConfig;
   else selectedWebpackConfig = webpackProdConfig;
 
 const compiler = webpack(selectedWebpackConfig);
@@ -30,7 +40,7 @@ compiler.hooks.done.tap('done', (stats) => {
   const messages = webpackFormatMessages(stats);
 
   if (!messages.errors.length && !messages.warnings.length) {
-    signale.success(`Application compiled in ${devSetting} mode!`);
+    signale.success(`Application compiled in ${buildSetting} mode!`);
   }
 
   if (messages.errors.length) {

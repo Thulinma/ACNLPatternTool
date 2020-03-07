@@ -13,21 +13,47 @@ git submodule update --init --recursive
 
  ## Available Scripts
 
- ### `npm run dev -- <development|production>`
+ ### `npm run dev`
 
  Runs the application in development mode. Automatically reloads with changes.
  Open [https://localhost:PORT](https://localhost:3000) to view it in the
- browser. By default builds and deploys in the mode specified by the `.env`,
- but can otherwise override with a command line option.
+ browser.
 
  ### `npm run build -- <development|production>`
 
-Builds the project and outputs to a `build` directory at the repository root.
-Can build the the project in development mode or production mode. By default
-builds in the mode specified by the `.env`, but can otherwise override with a
-command line option.
 
- ### `npm run clean`
+Builds the submodules, app, and then outputs to a `build` directory at the
+repository root. Can build the the project in development mode or production
+mode. By default builds in the mode specified by the `.env`, but can otherwise
+override with a command line option.
 
- Cleans the build directory. Recursively removes files located in the build
- directory.
+ ### `npm run build:app -- <development|production>`
+
+Builds the app and outputs to a `build` directory at the repository root. Can
+build the the project in development mode or production mode. By default builds
+in the mode specified by the `.env`, but can otherwise override with a command
+line option.
+
+### `npm run build:submodule`
+
+Builds the submodules and outputs to a `build` directory at the repository
+root. Can build the the project in development mode or production mode. By
+default builds in the mode specified by the `.env`, but can otherwise override
+with a command line option.
+
+### `npm run clean`
+
+Cleans the submodule and app build directories. Recursively removes files
+located in the build directories.
+
+
+### `npm run clean:app`
+
+Cleans the app build directory. Recursively removes files located in the build
+directory.
+
+
+### `npm run clean:submodule`
+
+Cleans the submodule build directory. Recursively removes files located in the build
+directory.

@@ -7,7 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const { clientEnv } = require('../etc/env'); // assume already run
+const env = require('../etc/env'); // assume already run
 const {
   pathToBuild,
   pathToPublicIndex,
@@ -19,6 +19,7 @@ const {
 } = require('./babel.config');
 const { NODE_ENV } = process.env; // need env already run
 
+const clientEnv = env.buildClient();
 const baseConfig = {
   entry: [pathToClientSrcIndex],
   output: {
@@ -173,7 +174,7 @@ const webpackProdConfig = {
 };
 
 let webpackConfig = baseConfig;
-if (NODE_ENV === "development")
+if (NODE_ENV !== "production")
   webpackConfig = webpackDevConfig;
 else
   webpackConfig = webpackProdConfig;

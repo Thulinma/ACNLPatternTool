@@ -1,36 +1,28 @@
-require('../etc/env'); // always run this first
+// preamble before any imports
+const env = require('../etc/env');
+env.load();
+env.check();
+
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const signale = require('signale');
 const { pathToPublic } = require('../etc/paths');
+const { webpackDevConfig } = require('../config/webpack.config');
 const {
-  webpackConfig,
-  webpackDevConfig,
-  webpackProdConfig,
-} = require('../config/webpack.config');
-const {
-  NODE_ENV,
   HOST,
   PORT
 } = process.env;
 
-// check process args, allow dev with forced settings
-let selectedWebpackConfig;
-let devSetting = process.argv[2]; // 0 is node, 1 is the script
-if (!["development", "production"].includes(devSetting)) {
-  selectedWebpackConfig = webpackConfig; // w/e is in NODE_ENV
-  devSetting = NODE_ENV;
-}
-else
-  if (devSetting === "production") selectedWebpackConfig = webpackProdConfig;
-  else selectedWebpackConfig = webpackDevConfig; // go for default
-
-const compiler = webpack(selectedWebpackConfig);
+const compiler = webpack(webpackDevConfig);
 
 const webpackDevServer = new WebpackDevServer(compiler, {
   stats: false,
   open: true,
   contentBase: pathToPublic, // technically nonexistent, exists in memory
+  overlay: {
+    warnings: true,
+    errors: true,
+  }
 });
 
 webpackDevServer.listen(PORT, HOST, (error) => {
@@ -46,4 +38,4 @@ webpackDevServer.listen(PORT, HOST, (error) => {
   });
 })
 
-signale.success(`Development server deployed in ${devSetting} mode!`);
+signale.success(`Development server deployed in ${"development"} mode!`);

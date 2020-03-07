@@ -35,6 +35,7 @@
       <div class="modal-window">
         <ACNLQRGenerator
           v-for="opt in pickPatterns"
+          v-bind:key="opt"
           v-on:pattclick="pickPattern"
           :pattern="opt" />
       </div>
