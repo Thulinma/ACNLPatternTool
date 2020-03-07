@@ -34,8 +34,8 @@
       <!-- must provide a window for modal container -->
       <div class="modal-window">
         <ACNLQRGenerator
-          v-for="opt in pickPatterns"
-          v-bind:key="opt"
+          v-for="(opt, idx) in pickPatterns"
+          :key="idx"
           v-on:pattclick="pickPattern"
           :pattern="opt" />
       </div>

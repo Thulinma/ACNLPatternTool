@@ -12,7 +12,7 @@ import logger from "/utils/logger";
 import { QRCodeEncoder, QRCodeDecoderErrorCorrectionLevel, EncodeHintType } from '@zxing/library';
 
 //for 3D renders
-import * as THREE from 'three';
+import { Scene, Texture, sRGBEncoding, NearestFilter, PerspectiveCamera, Mesh, MeshBasicMaterial, WebGLRenderer} from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import model_dress_long from "/assets/resources/dress_long.gltf";
 import model_dress_half from "/assets/resources/dress_half.gltf";
@@ -148,16 +148,16 @@ export default {
         let threeCanvas = document.createElement("canvas");
         threeCanvas.width = this.width;
         threeCanvas.height = pattHeight/2;
-        let renderer = new THREE.WebGLRenderer({alpha:true, canvas:threeCanvas});
-        let scene = new THREE.Scene();
-        let camera = new THREE.PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
+        let renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas});
+        let scene = new Scene();
+        let camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
         let model = false;
         renderer.setClearColor( 0x000000, 0 );
-        let texture = new THREE.Texture(renderCanvas)
+        let texture = new Texture(renderCanvas)
         texture.needsUpdate = true;
-        texture.encoding = THREE.sRGBEncoding;
+        texture.encoding = sRGBEncoding;
         texture.flipY = false;
-        texture.magFilter = THREE.NearestFilter;
+        texture.magFilter = NearestFilter;
         let loadModel = (x) => {return new Promise(resolve => {
           let loader = new GLTFLoader();
           loader.load(x, (gltf) => {resolve(gltf);});
@@ -165,7 +165,7 @@ export default {
         let gltf = await loadModel(path3D);
         model = gltf.scene.children[0];
         model.traverse((child) => {
-          if (child instanceof THREE.Mesh){child.material = new THREE.MeshBasicMaterial({map:texture});}
+          if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:texture});}
         });
         scene.add(model);
         camera.position.z = 15;

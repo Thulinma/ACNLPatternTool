@@ -8,7 +8,7 @@
 
 <script>
 import DrawingTool from "/libs/DrawingTool";
-import * as THREE from 'three';
+import { Scene, Texture, sRGBEncoding, NearestFilter, PerspectiveCamera, Mesh, MeshBasicMaterial, WebGLRenderer} from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import model_dress_long from "/assets/resources/dress_long.gltf";
 import model_dress_half from "/assets/resources/dress_half.gltf";
@@ -26,8 +26,8 @@ export default {
   },
   data: function() {
     return {
-      scene: new THREE.Scene(),
-      camera: new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 ),
+      scene: new Scene(),
+      camera: new PerspectiveCamera( 75, 1, 0.1, 1000 ),
       renderer: null,
       renderCanvas: document.createElement('canvas'),
       texture: null,
@@ -52,16 +52,16 @@ export default {
         default: return;
       }
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
-      this.texture = new THREE.Texture(this.renderCanvas)
+      this.texture = new Texture(this.renderCanvas)
       this.texture.needsUpdate = true;
-      this.texture.encoding = THREE.sRGBEncoding;
+      this.texture.encoding = sRGBEncoding;
       this.texture.flipY = false;
-      this.texture.magFilter = THREE.NearestFilter;
+      this.texture.magFilter = NearestFilter;
       let loader = new GLTFLoader();
       loader.load(path, (gltf) => {
         this.model = gltf.scene.children[0];
         this.model.traverse((child) => {
-          if (child instanceof THREE.Mesh){child.material = new THREE.MeshBasicMaterial({map:this.texture});}
+          if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:this.texture});}
         });
         this.scene.add(this.model);
       });
@@ -73,7 +73,7 @@ export default {
     }
   },
   mounted: function() {
-    this.renderer = new THREE.WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d})
+    this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d})
     this.renderer.setClearColor( 0x000000, 0 );
     this.renderCanvas.width = 128;
     this.renderCanvas.height = 512;
