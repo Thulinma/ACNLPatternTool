@@ -3,6 +3,11 @@
     class="threeD"
     v-show="model"
     ref="canvas3d"
+    v-on:mousemove.prevent="onRotate"
+    v-on:mousedown.prevent="onRotateStart"
+    v-on:mouseup.prevent="onRotateStop"
+    v-on:mouseout="onRotateStop"
+    v-on:wheel.prevent="onZoom"
     :width="width"
     :height="height"/>
 </template>
@@ -28,15 +33,49 @@ export default {
   data: function() {
     return {
       scene: new Scene(),
-      camera: new PerspectiveCamera( 75, 1, 0.1, 1000 ),
+      camera: new PerspectiveCamera( 75, this.width/this.height, 0.1, 1000 ),
       renderer: null,
       renderCanvas: document.createElement('canvas'),
       texture: null,
       model: false,
+      adjusting: false,
+      rotating: true,
+      animating: false,
+      rotx: 0,
+      roty: 0,
+      rotstart: 0
     };
   },
   methods: {
-    loadModel: function(d){
+    onRotate(e){
+      if (this.adjusting){
+        this.model.rotation.y = this.rotstart - (this.rotx - e.offsetX)/100;
+        this.animate();
+      }
+    },
+    onRotateStart(e){
+      this.adjusting = true;
+      this.rotating = false;
+      this.rotx = e.offsetX;
+      this.roty = e.offsetY;
+      this.rotstart = this.model.rotation.y;
+    },
+    onRotateStop(e){
+      this.adjusting = false;
+      if (this.rotx == e.offsetX && this.roty == e.offsetY){this.rotating=true;}
+      this.animate();
+    },
+    onZoom(e){
+      if (this.model && e.deltaY != 0){
+        const d = (e.deltaMode == 0)?e.deltaY/20:e.deltaY;
+        this.camera.position.z += d/5;
+        if (this.camera.position.z < 12){this.camera.position.z = 12;}
+        if (this.camera.position.z > 35){this.camera.position.z = 35;}
+        this.camera.position.y = this.camera.position.z + 15;
+        this.animate();
+      }
+    },
+    loadModel(d){
       if (this.model){
         this.scene.remove(this.model);
         this.model = false;
@@ -65,12 +104,20 @@ export default {
           if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:this.texture});}
         });
         this.scene.add(this.model);
+        this.animate();
       });
     },
-    animate: function(){
-      if (this.model){this.model.rotation.y += 0.01;}
-      requestAnimationFrame(this.animate);
+    animate(){
+      if (this.model && this.rotating){this.model.rotation.y += 0.01;}
+      if ((!this.rotating || !this.model) && this.animating){
+        this.animating = false;
+        return;
+      }
       this.renderer.render(this.scene, this.camera);
+      if (this.rotating){
+        this.animating = true;
+        requestAnimationFrame(this.animate);
+      }
     }
   },
   mounted: function() {

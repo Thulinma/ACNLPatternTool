@@ -7,7 +7,7 @@
             <canvas ref="canvas2" width="128" height="128"/>
             <canvas ref="canvas3" width="64" height="64"/>
           </div>
-          <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
+          <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
         </div>
       </div>
 
