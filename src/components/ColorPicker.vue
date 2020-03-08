@@ -1,7 +1,6 @@
 <template>
   <div class="swatch">
     <!-- non-grays -->
-    <div>
       <div
         class="swatch-color-block"
         v-for="(block, index) in colorBlocks"
@@ -43,7 +42,6 @@
           v-on:mousemove="onColorMousemove($event, color)">
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -95,7 +93,7 @@ export default {
 .swatch {
   user-select: none;
   display: inline-flex;
-  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   padding: 10px;
   width: 160px;
@@ -123,7 +121,7 @@ export default {
     white 2px,
     white 4px
   );
-  height: 10px;
+  height: 12px;
   width: 150px;
   float: left;
   overflow: hidden;
@@ -140,8 +138,8 @@ export default {
 }
 
 .swatch-color.picked {
-  width: 6px;
-  height: 6px;
-  margin: 2px;
+  width: 7.5px;
+  height: 7.5px;
+  margin: 3.75px;
 }
 </style>

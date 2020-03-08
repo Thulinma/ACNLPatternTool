@@ -1,30 +1,36 @@
 <template v-for="i in 1">
   <div class="editor">
-
-    <div class="topbar">
-      <Palette
-        ref="palette"
-        :drawing-tool="drawingTool"
-        v-on:changed-current-color="onChangedCurrentColor"/>
-    </div>
-
     <main>
-      <div class="previews">
-        <div class="2D">
-          <canvas ref="canvas2" width="128" height="128"/>
-          <canvas ref="canvas3" width="64" height="64"/>
+      <div class="left">
+        <div class="previews">
+          <div class="2D">
+            <canvas ref="canvas2" width="128" height="128"/>
+            <canvas ref="canvas3" width="64" height="64"/>
+          </div>
+          <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
         </div>
-        <ThreeDRender :width="128" :height="128" :drawing-tool="drawingTool"/>
       </div>
 
-      <canvas ref="canvas1" width="512" height="512"/>
+      <div class="center">
+        <Palette
+          ref="palette"
+          :drawing-tool="drawingTool"
+          v-on:changed-current-color="onChangedCurrentColor"/>
+        <canvas ref="canvas1" width="512" height="512"/>
+      </div>
       
-      <div class="tools-and-colors">
-        <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
-        <ColorPicker
-          ref="colorPicker"
-          v-bind:drawing-tool="drawingTool"
-          v-on:color-picked="onColorPicked"/>
+      <div class="right">
+        <div class="topbar-buttons">
+          <button>Scan QR</button>
+          <button>Open Storage</button>
+        </div>
+        <div class="tools-and-colors">
+          <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
+          <ColorPicker
+            ref="colorPicker"
+            v-bind:drawing-tool="drawingTool"
+            v-on:color-picked="onColorPicked"/>
+        </div>
       </div>
     </main>
 
@@ -190,9 +196,11 @@ export default {
 </script>
 
 <style scoped>
+button, input[type="button"] {
+  border-radius: 35px;
+}
 .editor {
   user-select: none;
-  text-align: center;
 }
 
 .modal-window {
@@ -210,18 +218,38 @@ export default {
   overflow:scroll;
 }
 
+.palette-container{
+  flex: 66;
+}
+
+.topbar-buttons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 62px;
+}
+
 main {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
+main .left, .center, .right {
+  display: flex;
+  flex-direction: column;
+}
+
+main .left{
+  padding-right: 40px;
+}
+
 .previews {
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-top: 62px;
   height: 512px;
-  padding: 0 40px;
 }
 
 .tools-and-colors {

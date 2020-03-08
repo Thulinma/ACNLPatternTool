@@ -66,9 +66,9 @@ export default {
     #c38399 6px,
     #c38399 12px
   );
-  display: inline-block;
   padding: 15px;
   width: 480px;
+  float: right;
 }
 .palette-color {
   width: 32px;
