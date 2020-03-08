@@ -104,6 +104,16 @@ export default {
             results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*7, 2160)));
             results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*8, 2160)));
             results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*9, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*0, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*1, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*2, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*3, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*4, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*5, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*5, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*7, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*8, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*9, 2160)));
           }
         }
       }
