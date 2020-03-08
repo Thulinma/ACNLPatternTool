@@ -23,7 +23,7 @@
         <div class="topbar-buttons">
           <button v-on:click="$refs.fileloader.open()">Scan QR / load file</button>
           <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
-          <button>Open Storage</button>
+          <button v-on:click="convertImage = true">Convert image</button>
           <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
           <button v-on:click="onModalOpen">Generate QR code(s)</button>
         </div>
@@ -40,7 +40,6 @@
     <ModalContainer
       v-if="qrCode"
       v-on:modal-close="closeQr">
-      <!-- must provide a window for modal container -->
       <div class="modal-window">
         <ACNLQRGenerator :pattern="qrCode" />
       </div>
@@ -49,13 +48,20 @@
     <ModalContainer
       v-if="pickPatterns"
       v-on:modal-close="closePicks">
-      <!-- must provide a window for modal container -->
       <div class="modal-window pattern-list">
         <IconGenerator
           v-for="(opt, idx) in pickPatterns"
           :key="idx"
           v-on:pattclick="pickPattern"
           :pattern="opt" />
+      </div>
+    </ModalContainer>
+
+    <ModalContainer
+      v-if="convertImage"
+      v-on:modal-close="convertImage = false">
+      <div class="modal-window">
+        <ImageLoader :pattern-type="pattType" @converted="onConvert" />
       </div>
     </ModalContainer>
   </div>
@@ -66,6 +72,7 @@ import ColorPicker from '/components/ColorPicker.vue';
 import Palette from '/components/Palette.vue';
 import ThreeDRender from '/components/ThreeDRender.vue';
 import FileLoader from '/components/FileLoader.vue';
+import ImageLoader from '/components/ImageLoader.vue';
 import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
 import IconGenerator from '/components/IconGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
@@ -82,6 +89,7 @@ export default {
     Palette,
     ThreeDRender,
     FileLoader,
+    ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
     ModalContainer,
@@ -101,7 +109,9 @@ export default {
       drawingTool: new DrawingTool(),
       qrCode: false,
       fragment: "",
-      pickPatterns: false
+      pattType: 9,
+      pickPatterns: false,
+      convertImage: false,
     };
   },
   methods: {
@@ -130,6 +140,7 @@ export default {
     },
     onLoad: async function(t){
       let patStr = this.drawingTool.toString();
+      this.pattType = this.drawingTool.patternType;
 
       // need to wait 2 ticks before access ref in portal
       // AFTER setting isOpenModal to true
@@ -145,6 +156,13 @@ export default {
     },
     extLoad: function(data) {
       this.drawingTool.load(data);
+    },
+    onConvert: function(sourceTool){
+      let pixelCount = sourceTool.pixelCount * 4;
+      for (let i = 0; i < pixelCount; i++){this.drawingTool.pixels[i] = sourceTool.pixels[i];}
+      for (let i = 0; i < 15; i++){this.drawingTool.setPalette(i, sourceTool.getPalette(i));}
+      this.convertImage = false;
+      this.drawingTool.onColorChange();
       this.drawingTool.render();
     },
     extMultiLoad: function(data) {
