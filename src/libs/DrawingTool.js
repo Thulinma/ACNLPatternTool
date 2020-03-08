@@ -326,10 +326,42 @@ class DrawingTool{
     }else{
       this.renderTargets.push(rTarget);
     }
-    c.addEventListener("mousedown", () => {this.drawing = true; this.pushUndo();});
+    const prevDef = function(e){e.preventDefault();}
+    const touchToMouse = function(e){
+      const t = e.touches[0];
+      const rect = t.target.getBoundingClientRect();
+      return {
+        offsetX: t.clientX - rect.left,
+        offsetY: t.clientY - rect.top,
+        which: 1,
+        target: t.target
+      };
+    };
+    //In case there's no touch support, ignore
+    try{
+      c.addEventListener("touchstart", (e) => {
+        document.body.addEventListener('touchmove', prevDef, {passive:false});
+        this.drawing = true;
+        this.pushUndo();
+        this.handleCanvasClick(touchToMouse(e));
+      });
+      c.addEventListener("touchend", () => {
+        this.drawing = false;
+        document.body.removeEventListener('touchmove', prevDef);
+      });
+      c.addEventListener("touchmove", (e) => {
+        if (this.drawing){this.handleCanvasClick(touchToMouse(e));}
+      });
+    }catch(e){}
+    c.addEventListener("mousedown", () => {
+      this.drawing = true;
+      this.pushUndo();
+    });
     c.addEventListener("mouseup", () => {this.drawing = false;});
+    c.addEventListener("mousemove", (e) => {
+      if (this.drawing && (e.which == 1 || e.which == 3)){this.handleCanvasClick(e);}}
+    );
     c.addEventListener("click", (e) => {this.handleCanvasClick(e);});
-    c.addEventListener("mousemove", (e) => {if (this.drawing && (e.which == 1 || e.which == 3)){this.handleCanvasClick(e);}});
     c.addEventListener("contextmenu", (e) => {this.handleCanvasClick(e); e.preventDefault();});
   }
 

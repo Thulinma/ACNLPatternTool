@@ -244,6 +244,8 @@ input[type="button"].downACNL {
   padding: 10px;
   transform: translate(-50%, -50%);
   background-color: #e28e8e;
+  max-width:90%;
+  max-height:90%;
 }
 
 .pattern-list {
