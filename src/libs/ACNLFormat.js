@@ -262,16 +262,16 @@ class ACNLFormat{
     return this.dataView.getUint16(0x6A, true);
   };
   get width(){
-    return (this.b.byteLength > 620 ? 64 : 32);
+    return ACNLFormat.typeInfo[this.dataBytes[0x69]].size;
   }
   get height(){
-    return (this.b.byteLength > 620 ? 64 : 32);
+    return ACNLFormat.typeInfo[this.dataBytes[0x69]].size;
   }
   static widthForType(t){
-    return (t < 6 || t == 8) ? 64 : 32;
+    return ACNLFormat.typeInfo[t].size;
   }
   static bytesForType(t){
-    return (t < 6 || t == 8) ? 2160 : 620;
+    return this.widthForType(t) > 32 ? 2160 : 620;
   }
 };
 

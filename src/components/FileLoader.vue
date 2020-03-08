@@ -86,7 +86,21 @@ export default {
             fr.onload = (re) => {resolve(re.target.result);};
             fr.readAsArrayBuffer(e.target.files[i]);
           });
-          results.push(pattern);
+          const fName = e.target.files[i].name.toLowerCase();
+          if (fName.endsWith(".acnl")){
+            results.push(new Uint8Array(new Uint8Array(pattern)));
+          }else if (fName.endsWith(".dat")){
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*0, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*1, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*2, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*3, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*4, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*5, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*6, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*7, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*8, 2160)));
+            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*9, 2160)));
+          }
         }
       }
       logger.info("Read "+results.length+" patterns from files!");
