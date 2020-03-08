@@ -276,68 +276,71 @@ class ACNLFormat{
 };
 
 ACNLFormat.paletteColors = [
+  //Back in June 2013 when I first made this list, I worked off of a heavily post-processed PHOTOGRAPH of the 3DS screen.
+  //Now, in 2020, we have emulators. I took an oversampled screenshot of the editor screen and went through and fixed all these colors by hand.
+  //Now, my question to everyone else: why did you all just copy my wrong list of colors, instead of grabbing an emulator and finding the correct values...? Come on guys, put some work in! -_-
   //Pinks (0x00 - 0x08)
-  "#FFEFFF", "#FF9AAD", "#EF559C", "#FF65AD", "#FF0063", "#BD4573", "#CE0052", "#9C0031", "#522031",
+  "#FFEEFF", "#FF99AA", "#EE5599", "#FF66AA", "#FF0066", "#BB4477", "#CC0055", "#990033", "#552233",
   "","","","","","",//0x09-0x0E unused / unknown
   "#FFFFFF", //0x0F: Grey 1
   //Reds (0x10 - 0x18)
-  "#FFBACE", "#FF7573", "#DE3010", "#FF5542", "#FF0000", "#CE6563", "#BD4542", "#BD0000", "#8C2021",
+  "#FFBBCC", "#FF7777", "#DD3210", "#FF5544", "#FF0000", "#CC6666", "#BB4444", "#BB0000", "#882222",
   "","","","","","",//0x19-0x1E unused / unknown
-  "#ECECEC", //0x1F: Grey 2
+  "#EEEEEE", //0x1F: Grey 2
   //Oranges (0x20 - 0x28)
-  "#DECFBD", "#FFCF63", "#DE6521", "#FFAA21", "#FF6500", "#BD8A52", "#DE4500", "#BD4500", "#633010",
+  "#DDCDBB", "#FFCD66", "#DD6622", "#FFAA22", "#FF6600", "#BB8855", "#DD4400", "#BB4400", "#663210",
   "","","","","","",//0x29-0x2E unused / unknown
-  "#DADADA", //0x2F: Grey 3
+  "#DDDDDD", //0x2F: Grey 3
   //Pastels or something, I guess? (0x30 - 0x38)
-  "#FFEFDE", "#FFDFCE", "#FFCFAD", "#FFBA8C", "#FFAA8C", "#DE8A63", "#BD6542", "#9C5531", "#8C4521",
+  "#FFEEDD", "#FFDDCC", "#FFCDAA", "#FFBB88", "#FFAA88", "#DD8866", "#BB6644", "#995533", "#884422",
   "","","","","","",//0x39-0x3E unused / unknown
-  "#C8C8C8", //0x3F: Grey 4
+  "#CCCDCC", //0x3F: Grey 4
   //Purple (0x40 - 0x48)
-  "#FFCFFF", "#EF8AFF", "#CE65DE", "#BD8ACE", "#CE00FF", "#9C659C", "#8C00AD", "#520073", "#310042",
+  "#FFCDFF", "#EE88FF", "#CC66DD", "#BB88CC", "#CC00FF", "#996699", "#8800AA", "#550077", "#330044",
   "","","","","","",//0x49-0x4E unused / unknown
-  "#B6B6B6", //0x4F: Grey 5
+  "#BBBBBB", //0x4F: Grey 5
   //Pink (0x50 - 0x58)
-  "#FFBAFF", "#FF9AFF", "#DE20BD", "#FF55EF", "#FF00CE", "#8C5573", "#BD009C", "#8C0063", "#520042",
+  "#FFBBFF", "#FF99FF", "#DD22BB", "#FF55EE", "#FF00CC", "#885577", "#BB0099", "#880066", "#550044",
   "","","","","","",//0x59-0x5E unused / unknown
-  "#A3A3A3", //0x5F: Grey 6
+  "#AAAAAA", //0x5F: Grey 6
   //Brown (0x60 - 0x68)
-  "#DEBA9C", "#CEAA73", "#734531", "#AD7542", "#9C3000", "#733021", "#522000", "#311000", "#211000",
+  "#DDBB99", "#CCAA77", "#774433", "#AA7744", "#993200", "#773222", "#552200", "#331000", "#221000",
   "","","","","","",//0x69-0x6E unused / unknown
-  "#919191", //0x6F: Grey 7
+  "#999999", //0x6F: Grey 7
   //Yellow (0x70 - 0x78)
-  "#FFFFCE", "#FFFF73", "#DEDF21", "#FFFF00", "#FFDF00", "#CEAA00", "#9C9A00", "#8C7500", "#525500",
+  "#FFFFCC", "#FFFF77", "#DDDD22", "#FFFF00", "#FFDD00", "#CCAA00", "#999900", "#887700", "#555500",
   "","","","","","",//0x79-0x7E unused / unknown
-  "#7F7F7F", //0x7F: Grey 8
+  "#888888", //0x7F: Grey 8
   //Blue (0x80 - 0x88)
-  "#DEBAFF", "#BD9AEF", "#6330CE", "#9C55FF", "#6300FF", "#52458C", "#42009C", "#210063", "#211031",
+  "#DDBBFF", "#BB99EE", "#6632CC", "#9955FF", "#6600FF", "#554488", "#440099", "#220066", "#221033",
   "","","","","","",//0x89-0x8E unused / unknown
-  "#6D6D6D", //0x8F: Grey 9
+  "#777777", //0x8F: Grey 9
   //Ehm... also blue? (0x90 - 0x98)
-  "#BDBAFF", "#8C9AFF", "#3130AD", "#3155EF", "#0000FF", "#31308C", "#0000AD", "#101063", "#000021",
+  "#BBBBFF", "#8899FF", "#3332AA", "#3355EE", "#0000FF", "#333288", "#0000AA", "#101066", "#000022",
   "","","","","","",//0x99-0x9E unused / unknown
-  "#5B5B5B", //0x9F: Grey 10
+  "#666666", //0x9F: Grey 10
   //Green (0xA0 - 0xA8)
-  "#9CEFBD", "#63CF73", "#216510", "#42AA31", "#008A31", "#527552", "#215500", "#103021", "#002010",
+  "#99EEBB", "#66CD77", "#226610", "#44AA33", "#008833", "#557755", "#225500", "#103222", "#002210",
   "","","","","","",//0xA9-0xAE unused / unknown
-  "#484848", //0xAF: Grey 11
+  "#555555", //0xAF: Grey 11
   //Icky greenish yellow (0xB0 - 0xB8)
-  "#DEFFBD", "#CEFF8C", "#8CAA52", "#ADDF8C", "#8CFF00", "#ADBA9C", "#63BA00", "#529A00", "#316500",
+  "#DDFFBB", "#CCFF88", "#88AA55", "#AADD88", "#88FF00", "#AABB99", "#66BB00", "#559900", "#336600",
   "","","","","","",//0xB9-0xBE unused / unknown
-  "#363636", //0xBF: Grey 12
+  "#444444", //0xBF: Grey 12
   //Wtf? More blue? (0xC0 - 0xC8)
-  "#BDDFFF", "#73CFFF", "#31559C", "#639AFF", "#1075FF", "#4275AD", "#214573", "#002073", "#001042",
+  "#BBDDFF", "#77CDFF", "#335599", "#6699FF", "#1077FF", "#4477AA", "#224477", "#002277", "#001044",
   "","","","","","",//0xC9-0xCE unused / unknown
-  "#242424", //0xCF: Grey 13
+  "#333233", //0xCF: Grey 13
   //Gonna call this cyan (0xD0 - 0xD8)
-  "#ADFFFF", "#52FFFF", "#008ABD", "#52BACE", "#00CFFF", "#429AAD", "#00658C", "#004552", "#002031",
+  "#AAFFFF", "#55FFFF", "#0088BB", "#55BBCC", "#00CDFF", "#4499AA", "#006688", "#004455", "#002233",
   "","","","","","",//0xD9-0xDE unused / unknown
-  "#121212", //0xDF: Grey 14
+  "#222222", //0xDF: Grey 14
   //More cyan, because we didn't have enough blue-like colors yet (0xE0 - 0xE8)
-  "#CEFFEF", "#ADEFDE", "#31CFAD", "#52EFBD", "#00FFCE", "#73AAAD", "#00AA9C", "#008A73", "#004531",
+  "#CCFFEE", "#AAEEDD", "#33CDAA", "#55EEBB", "#00FFCC", "#77AAAA", "#00AA99", "#008877", "#004433",
   "","","","","","",//0xE9-0xEE unused / unknown
   "#000000", //0xEF: Grey 15
   //Also green. Fuck it, whatever. (0xF0 - 0xF8)
-  "#ADFFAD", "#73FF73", "#63DF42", "#00FF00", "#21DF21", "#52BA52", "#00BA00", "#008A00", "#214521",
+  "#AAFFAA", "#77FF77", "#66DD44", "#00FF00", "#22DD22", "#55BB55", "#00BB00", "#008800", "#224422",
   "","","","","","",//0xF9-0xFE unused / unknown
   "", //0xFF unused (white in-game, editing freezes the game)
 ];
