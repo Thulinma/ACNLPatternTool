@@ -220,6 +220,9 @@ button, input[type="button"] {
   text-transform: uppercase;
   padding: 10px 14px;
   border: none;
+  background-color: #eff1d8;
+  color: #7e7261;
+  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
 }
 
 .editor {
@@ -260,13 +263,14 @@ main .left, .center, .right {
   flex-direction: column;
 }
 
-main .left{
+main .left {
   padding-right: 40px;
 }
 
 main .center canvas, main .left canvas {
   box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
 }
+
 .previews {
   display: inline-flex;
   flex-direction: column;
@@ -283,5 +287,4 @@ main .center canvas, main .left canvas {
   border-radius: 0 35px 35px 0;
   background-color: #f1b5c1;
 }
-
 </style>

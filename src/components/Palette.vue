@@ -59,17 +59,11 @@ export default {
 .palette {
   user-select: none;
   border-radius: 0 0 35px 35px;
-  /* background: repeating-linear-gradient(
-    45deg,
-    #ebbccd,
-    #ebbccd 6px,
-    #c38399 6px,
-    #c38399 12px
-  ); */
   background-color: #f1b5c1;
   padding: 15px;
   width: 480px;
   float: right;
+  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
 }
 .palette-color {
   width: 32px;
