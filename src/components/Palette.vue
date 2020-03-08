@@ -59,13 +59,14 @@ export default {
 .palette {
   user-select: none;
   border-radius: 0 0 35px 35px;
-  background: repeating-linear-gradient(
+  /* background: repeating-linear-gradient(
     45deg,
     #ebbccd,
     #ebbccd 6px,
     #c38399 6px,
     #c38399 12px
-  );
+  ); */
+  background-color: #f1b5c1;
   padding: 15px;
   width: 480px;
   float: right;
@@ -73,6 +74,7 @@ export default {
 .palette-color {
   width: 32px;
   height: 32px;
+  border-radius: 70% 30% 70% 30% / 60% 30% 70% 40%;
   display: inline-block;
   margin: 0;
   padding: 0;
@@ -81,13 +83,6 @@ export default {
 
 .palette-color-row {
   height: 32px;
-  background: repeating-linear-gradient(
-    45deg,
-    black,
-    black 2px,
-    white 2px,
-    white 4px
-  );
 }
 
 .palette-color.picked {

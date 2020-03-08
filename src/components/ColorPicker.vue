@@ -100,13 +100,6 @@ export default {
 }
 
 .swatch-color-block {
-  background: repeating-linear-gradient(
-    45deg,
-    black,
-    black 2px,
-    white 2px,
-    white 4px
-  );
   height: 45px;
   width: 45px;
   margin: 5px;

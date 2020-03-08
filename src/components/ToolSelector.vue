@@ -1,6 +1,6 @@
 <template>
   <div class="tool-selector">
-    <button v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">Pencil</button>
+    <button class="selected" v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">Pencil</button>
     <button v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">Flood Fill</button>
     <button v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">Color Picker</button>
   </div>
@@ -63,12 +63,18 @@ export default {
     border-radius: 0 35px 35px 0;
     height: 200px;
     width: 75px;
-    background-color: #8DBCFC;
+    background-color: #fae4dc;
+    box-shadow: rgba(0,0,0,0.2) 0 0 8px;
   }
 
   .tool-selector button {
     height: 50px;
     width: 50px;
     border-radius: 100%;
+  }
+
+  .tool-selector button.selected {  
+    background-color: #57B7A8;
+    color: #ffffff;
   }
 </style>

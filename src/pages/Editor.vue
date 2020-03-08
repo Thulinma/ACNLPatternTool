@@ -23,9 +23,13 @@
         <div class="topbar-buttons">
           <button v-on:click="$refs.fileloader.open()">Scan QR / load file</button>
           <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
+<<<<<<< HEAD
           <button v-on:click="convertImage = true">Convert image</button>
+=======
+          <!-- <button>Open Storage</button>
+>>>>>>> more styling!
           <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
-          <button v-on:click="onModalOpen">Generate QR code(s)</button>
+          <button v-on:click="onModalOpen">Generate QR code(s)</button> -->
         </div>
         <div class="tools-and-colors">
           <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
@@ -36,6 +40,10 @@
         </div>
       </div>
     </main>
+
+    <button>Open Storage</button>
+    <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
+    <button v-on:click="onModalOpen">Generate QR code(s)</button>
 
     <ModalContainer
       v-if="qrCode"
@@ -215,9 +223,14 @@ export default {
 <style scoped>
 button, input[type="button"] {
   border-radius: 35px;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border: none;
 }
+
 .editor {
   user-select: none;
+  color: #7e7261;
 }
 
 .modal-window {
@@ -233,10 +246,6 @@ button, input[type="button"] {
   width:80%;
   height:80%;
   overflow:scroll;
-}
-
-.palette-container{
-  flex: 66;
 }
 
 .topbar-buttons {
@@ -261,6 +270,9 @@ main .left{
   padding-right: 40px;
 }
 
+main .center canvas, main .left canvas {
+  box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
+}
 .previews {
   display: inline-flex;
   flex-direction: column;
@@ -275,13 +287,7 @@ main .left{
   flex-direction: row;
   align-items: center;
   border-radius: 0 35px 35px 0;
-  background: repeating-linear-gradient(
-    45deg,
-    #ebbccd,
-    #ebbccd 6px,
-    #c38399 6px,
-    #c38399 12px
-  );
+  background-color: #f1b5c1;
 }
 
 </style>

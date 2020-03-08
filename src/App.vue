@@ -17,8 +17,12 @@ export default {
 </script>
 
 <style>
-body {
-  background-color: black;
-  color: white;
-}
+  html {
+    height: 100%;
+  }
+  body {
+    min-height: 100%;
+    background-image: url('./assets/images/bg1.png');
+    background-size: cover;
+  }
 </style>
