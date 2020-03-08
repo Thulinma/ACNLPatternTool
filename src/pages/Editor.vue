@@ -36,7 +36,7 @@
 
     <button v-on:click="convertImage = true">Convert image</button>
     <button>Open Storage</button>
-    <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
+    <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
     <button v-on:click="onModalOpen">Generate QR code(s)</button>
 
     <ModalContainer
@@ -223,6 +223,13 @@ button, input[type="button"] {
   background-color: #eff1d8;
   color: #7e7261;
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+input[type="button"].downACNL {
+  background-color: #57b7a8;
+  color: #ffffff;
 }
 
 .editor {
