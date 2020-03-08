@@ -167,7 +167,14 @@ class DrawingTool{
   get town(){return this.pattern.town;}
   set town(n){this.pattern.town = n;}
   get patternType(){return this.pattern.patternType;}
-  set patternType(n){if (this.pattern.patternType != n){this.pattern.patternType = n; this.onLoad();}}
+  set patternType(n){
+    if (this.pattern.patternType != n){
+      this.pattern.patternType = n;
+      this.pattern.fromPixels(this.pixels);
+      this.pattern.toPixels(this.pixels);
+      this.onLoad();
+    }
+  }
   get typeInfo(){return ACNLFormat.typeInfo[this.pattern.patternType];}
   
   /// Finds the closest global palette index we can find to the color c
