@@ -21,8 +21,11 @@
       
       <div class="right">
         <div class="topbar-buttons">
-          <button>Scan QR</button>
+          <button v-on:click="$refs.fileloader.open()">Scan QR / load file</button>
+          <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
           <button>Open Storage</button>
+          <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
+          <button v-on:click="onModalOpen">Generate QR code(s)</button>
         </div>
         <div class="tools-and-colors">
           <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
@@ -33,10 +36,6 @@
         </div>
       </div>
     </main>
-
-    <FileLoader v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad" />
-    <input type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
-    <button v-on:click="onModalOpen">Generate QR code(s)</button>
 
     <ModalContainer
       v-if="qrCode"

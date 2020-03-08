@@ -4,7 +4,8 @@
     <input
       type="file"
       name="files"
-      id="files"
+      ref="files"
+      accept="image/*,.acnl,.dat"
       multiple
       v-on:change="onFile" />
   </div>
@@ -22,6 +23,9 @@ export default {
     currRead: [false, false, false, false]
   };},
   methods: {
+    open(){
+      this.$refs.files.click();
+    },
     onFile: async function(e) {
       const results = [];
       for (let i = 0; i < e.target.files.length; ++i){
@@ -109,6 +113,7 @@ export default {
       }else if (results.length > 1){
         this.$emit('qr-multiload', results);
       }
+      this.$refs.files.value = null;
     },
   }
 }
