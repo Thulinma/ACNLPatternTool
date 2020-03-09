@@ -25,17 +25,16 @@ const webpackDevServer = new WebpackDevServer(compiler, {
   }
 });
 
-webpackDevServer.listen(PORT, HOST, (error) => {
-  if (error)
-    return console.log(error);
-
-  ["SIGINT", "SIGTERM"].forEach((signal) => {
-    process.on(signal, () => {
-      console.log("");
-      webpackDevServer.close();
-      process.exit();
-    });
+["SIGINT", "SIGTERM"].forEach((signal) => {
+  process.on(signal, () => {
+    console.log("");
+    webpackDevServer.close();
+    process.exit();
   });
+});
+
+webpackDevServer.listen(PORT, HOST, (error) => {
+  if (error) return console.log(error);
 })
 
 signale.success(`Development server deployed in ${"development"} mode!`);

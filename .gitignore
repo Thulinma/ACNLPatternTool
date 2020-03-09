@@ -5,5 +5,7 @@
 **/build
 **/.env
 
+# Ignore stats
+/stats
 # Ignore OS Metadata
 **/.DS_Store

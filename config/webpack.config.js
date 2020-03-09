@@ -7,7 +7,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const env = require('../etc/env'); // assume already run
+const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
+const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToBuild,
   pathToPublicIndex,
@@ -17,9 +18,9 @@ const {
   babelDevConfig,
   babelProdConfig
 } = require('./babel.config');
-const { NODE_ENV } = process.env; // need env already run
 
 const clientEnv = env.buildClient();
+
 const baseConfig = {
   entry: [pathToClientSrcIndex],
   output: {
@@ -148,11 +149,12 @@ const webpackProdConfig = {
     }),
     new CompressionPlugin({
       algorithm: "gzip",
-      deleteOriginalAssets: true,
+      deleteOriginalAssets: false,
       compressionOptions: {
         level: 9 // max compression
       }
     }),
+    new OptimizeThreePlugin(),
     // new MiniCssExtractPlugin(),
   ],
   optimization: {
@@ -173,11 +175,8 @@ const webpackProdConfig = {
   performance: false
 };
 
-let webpackConfig = baseConfig;
-if (NODE_ENV !== "production")
-  webpackConfig = webpackDevConfig;
-else
-  webpackConfig = webpackProdConfig;
+// default setting, set by .env
+let webpackConfig = env.ifProdVal(webpackProdConfig, webpackDevConfig);
 
 module.exports = {
   webpackConfig, // default

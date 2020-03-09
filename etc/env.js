@@ -58,10 +58,44 @@ const buildClient = () => {
   return clientEnv;
 }
 
+// UTILITIES
+const ifDevVal = (devVal, defaultVal) => {
+  const { NODE_ENV } = process.env;
+  const isDev = NODE_ENV === "development";
+  if (isDev) return devVal;
+  else return defaultVal;
+};
+
+const ifDevExec = (devCallback, defaultCallback) => {
+  const { NODE_ENV } = process.env;
+  const isDev = NODE_ENV === "development";
+  if (isDev) devCallback();
+  else if (defaultCallback) defaultCallback();
+};
+
+
+const ifProdVal = (prodVal, defaultVal) => {
+  const { NODE_ENV } = process.env;
+  const isProd = NODE_ENV === "production";
+  if (isProd) return prodVal;
+  else return defaultVal;
+};
+
+const ifProdExec = (prodCallback, defaultCallback) => {
+  const { NODE_ENV } = process.env;
+  const isProd = NODE_ENV === "production";
+  if (isProd) prodCallback();
+  else if (defaultCallback) defaultCallback();
+};
+
 // process.env variables available to external (inside build process)
 // process.env variables available to internal (inside built process)
 module.exports = {
   load,
   check,
   buildClient,
+  ifDevVal,
+  ifDevExec,
+  ifProdVal,
+  ifProdExec
 }

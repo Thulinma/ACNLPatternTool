@@ -28,6 +28,7 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/runtime": "^7.8.4",
+    "@vxna/optimize-three-webpack-plugin": "^3.0.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^4.0.0",
     "compression-webpack-plugin": "^3.1.0",
@@ -58,7 +59,9 @@
     "vue-template-compiler": "^2.6.11",
     "vuex": "^3.1.2",
     "webpack": "^4.41.6",
-    "webpack-format-messages": "^2.0.6"
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-format-messages": "^2.0.6",
+    "yargs": "^15.1.0"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.10.3"

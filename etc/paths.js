@@ -7,6 +7,7 @@ const pathToEtc = path.resolve(pathToRoot, "etc");
 const pathToPublic = path.resolve(pathToRoot, "public");
 const pathToClientSrc = path.resolve(pathToRoot, "src");
 const pathToBuild = path.resolve(pathToRoot, "build");
+const pathToStats = path.resolve(pathToRoot, "stats");
 const pathToNodeModules = path.resolve(pathToRoot, "node_modules");
 const pathToZxingSubmodule = path.resolve(pathToRoot, "zxing-js-library");
 
@@ -19,6 +20,7 @@ const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
 const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
 const pathToZxingBuild = path.resolve(pathToZxingSubmodule, "esm5");
+const pathToBundleStats = path.resolve(pathToStats, "bundle.html");
 
 module.exports = {
   pathToRoot,
@@ -27,6 +29,7 @@ module.exports = {
   pathToPublic,
   pathToClientSrc,
   pathToBuild,
+  pathToStats,
   pathToNodeModules,
   pathToEnv,
   pathToBabelConfig,
@@ -35,5 +38,6 @@ module.exports = {
   pathToPublicIndex,
   pathToClientSrcIndex,
   pathToPathsJs,
-  pathToZxingBuild
+  pathToZxingBuild,
+  pathToBundleStats
 };
