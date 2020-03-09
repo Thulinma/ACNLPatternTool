@@ -100,7 +100,11 @@ class DrawingTool{
   }
 
   load(data){
-    this.pattern = new ACNLFormat(data);
+    if (data instanceof DrawingTool){
+      this.pattern = data.pattern;
+    }else{
+      this.pattern = new ACNLFormat(data);
+    }
     this.pixels_buffer = new ArrayBuffer(4096);
     this.pixels = new Uint8Array(this.pixels_buffer);
     this.pattern.toPixels(this.pixels);
@@ -159,6 +163,8 @@ class DrawingTool{
   get width(){return this.pattern.width;}
   get height(){return this.pattern.height;}
   get pixelCount(){return this.width*this.height;}
+  get fullHash(){return this.pattern.fullHash();}
+  get pixelHash(){return this.pattern.pixelHash();}
 
   get title(){return this.pattern.title;}
   set title(n){this.pattern.title = n;}

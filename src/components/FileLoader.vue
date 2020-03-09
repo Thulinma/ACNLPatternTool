@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import DrawingTool from '/libs/DrawingTool';
 import { BrowserQRCodeReader, ResultMetadataType, DecodeHintType } from '@zxing/library';
 import logger from "/utils/logger";
 
@@ -27,7 +28,13 @@ export default {
       this.$refs.files.click();
     },
     onFile: async function(e) {
-      const results = [];
+      const results = {};
+      const addResult = (r) => {
+        const newPat = new DrawingTool();
+        newPat.load(r);
+        logger.info("Adding pattern: ", newPat);
+        results[newPat.fullHash] = newPat;
+      };
       for (let i = 0; i < e.target.files.length; ++i){
         if (e.target.files[i].type && e.target.files[i].type.match('image.*')){
           const iUrl = await new Promise((resolve, reject) => {
@@ -69,12 +76,12 @@ export default {
                   this.currRead[currNum] = true;
                 }
                 if (this.currRead[0] && this.currRead[1] && this.currRead[2] && this.currRead[3]){
-                  results.push(new Uint8Array(this.currDataBuffer));
+                  addResult(this.currDataBuffer);
                   this.currRead = [false, false, false, false];
                 }
                 return;
               }
-              results.push(code.resultMetadata.get(ResultMetadataType.BYTE_SEGMENTS)[0]);
+              addResult(code.resultMetadata.get(ResultMetadataType.BYTE_SEGMENTS)[0]);
             });
           }
           catch (err) {
@@ -92,35 +99,36 @@ export default {
           });
           const fName = e.target.files[i].name.toLowerCase();
           if (fName.endsWith(".acnl")){
-            results.push(new Uint8Array(new Uint8Array(pattern)));
+            addResult(new Uint8Array(pattern));
           }else if (fName.endsWith(".dat")){
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*0, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*1, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*2, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*3, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*4, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*5, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*6, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*7, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*8, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0xCC+2160*9, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*0, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*1, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*2, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*3, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*4, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*5, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*5, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*7, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*8, 2160)));
-            results.push(new Uint8Array(new Uint8Array(pattern, 0x9FDC+2160*9, 2160)));
+            addResult(new Uint8Array(pattern, 0xCC+2160*0, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*1, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*2, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*3, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*4, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*5, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*6, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*7, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*8, 2160));
+            addResult(new Uint8Array(pattern, 0xCC+2160*9, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*0, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*1, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*2, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*3, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*4, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*7, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*8, 2160));
+            addResult(new Uint8Array(pattern, 0x9FDC+2160*9, 2160));
           }
         }
       }
-      logger.info("Read "+results.length+" patterns from files!");
-      if (results.length == 1){
+      logger.info(results);
+      logger.info("Read "+Object.keys(results).length+" patterns from files!");
+      if (Object.keys(results).length == 1){
         this.$emit('qr-load', results[0]);
-      }else if (results.length > 1){
+      }else if (Object.keys(results).length > 1){
         this.$emit('qr-multiload', results);
       }
       this.$refs.files.value = null;

@@ -37,8 +37,14 @@ export default {
       const width=this.$refs.iCanvas.width;
       const height=this.$refs.iCanvas.height;
       //Load pattern, prepare render canvas
-      const drawingTool = new DrawingTool(newData);
-      const tInfo = drawingTool.typeInfo;
+      let drawingTool;
+      if (newData instanceof DrawingTool){
+        drawingTool = newData;
+      }else{
+        drawingTool = new DrawingTool(newData);
+      }
+      let tInfo = drawingTool.typeInfo;
+      if (!tInfo || !tInfo.size){tInfo = {size: 32};}
       const bytes = drawingTool.toBytes();
       const renderCanvas = document.createElement("canvas");
       //Check if we should 3D render or not

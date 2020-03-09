@@ -30,6 +30,8 @@
 // 0x08 = Standee (pro)
 // 0x09 = Plain pattern (easel)
 
+import fnv1a128 from "./fnv1a.js";
+
 class ACNLFormat{
   ///Either transfers an existing ArrayBuffer, or creates a new pattern, optionally using the passed pattern type.
   constructor(qr_buffer = null){
@@ -90,7 +92,11 @@ class ACNLFormat{
       this.patternType = create_pat_type;
     }
 
-    this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
+    if (ACNLFormat.typeInfo[this.patternType]){
+      this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
+    }else{
+      this.currMask = null;
+    }
   }
 
   ///UTF16 decode helper
@@ -118,7 +124,8 @@ class ACNLFormat{
   ///Converts to a "normal" string
   toString(){
     let str = "";
-    for (let i = 0; i < this.b.byteLength; i++){str += String.fromCharCode(this.dataBytes[i]);}
+    const l = Math.min(this.byteLength, this.b.byteLength);
+    for (let i = 0; i < l; i++){str += String.fromCharCode(this.dataBytes[i]);}
     return str;
   }
 
@@ -244,7 +251,11 @@ class ACNLFormat{
       this.b = nb;
     }
     this.dataBytes[0x69] = newVal;
-    this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
+    if (ACNLFormat.typeInfo[this.patternType]){
+      this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
+    }else{
+      this.currMask = null;
+    }
   };
   get patternType(){
     return this.dataBytes[0x69];
@@ -262,10 +273,23 @@ class ACNLFormat{
     return this.dataView.getUint16(0x6A, true);
   };
   get width(){
+    if (!ACNLFormat.typeInfo[this.dataBytes[0x69]]){return 32;}
     return ACNLFormat.typeInfo[this.dataBytes[0x69]].size;
   }
   get height(){
+    if (!ACNLFormat.typeInfo[this.dataBytes[0x69]]){return 32;}
     return ACNLFormat.typeInfo[this.dataBytes[0x69]].size;
+  }
+  get byteLength(){
+    return (this.width > 32) ? 2160 : 620;
+  }
+  ///Returns FNV-1a 128-bit hash of the pixel data only
+  pixelHash(){
+    return fnv1a128(this.b, 0x58, (this.width > 32) ? (20+512*4) : (20+512));
+  }
+  ///Returns FNV-1a 128-bit hash of the whole pattern
+  fullHash(){
+    return fnv1a128(this.b, 0, this.byteLength);
   }
   static widthForType(t){
     return ACNLFormat.typeInfo[t].size;

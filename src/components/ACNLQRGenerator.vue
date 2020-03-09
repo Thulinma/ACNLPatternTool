@@ -88,7 +88,7 @@ export default {
 
       //Create QR code(s) in memory
       let codes = [];
-      if (bytes.byteLength > 620){
+      if (tInfo.size > 32){
         const hints = new Map();
         const parityByte = Math.round(Math.random()*255);
         hints.set(EncodeHintType.STRUCTURED_APPEND, [0, 3, parityByte]);
@@ -100,7 +100,7 @@ export default {
         hints.set(EncodeHintType.STRUCTURED_APPEND, [3, 3, parityByte]);
         codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 1620, 540), QRCodeDecoderErrorCorrectionLevel.M, hints));
       }else{
-        codes.push(QRCodeEncoder.encode(new Uint8Array(bytes), QRCodeDecoderErrorCorrectionLevel.M, null));
+        codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 0, 620), QRCodeDecoderErrorCorrectionLevel.M, null));
       }
 
       //Calculate sizes for various bits
