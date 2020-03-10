@@ -38,7 +38,10 @@
     <button v-on:click="onOpenLocal">Open Storage</button>
     <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
     <button v-on:click="onModalOpen">Generate QR code(s)</button>
-    <button v-on:click="onLocalSave">Save to local storage</button>
+    <button v-on:click="onLocalSave">
+      <object type="image/svg+xml" data="../assests/icons/bxs-save.svg">
+      Save to local storage
+    </button>
 
     <ModalContainer
       v-if="qrCode"
