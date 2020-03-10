@@ -9,12 +9,7 @@ import logger from "/utils/logger";
 //for 3D renders
 import { Scene, Texture, sRGBEncoding, NearestFilter, PerspectiveCamera, Mesh, MeshBasicMaterial, WebGLRenderer} from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
-import model_dress_long from "/assets/resources/dress_long.gltf";
-import model_dress_half from "/assets/resources/dress_half.gltf";
-import model_dress_none from "/assets/resources/dress_none.gltf";
-import model_shirt_long from "/assets/resources/shirt_long.gltf";
-import model_shirt_half from "/assets/resources/shirt_half.gltf";
-import model_shirt_none from "/assets/resources/shirt_none.gltf";
+import injected from "/utils/injected";
 
 export default {
   name: "IconGenerator",
@@ -50,12 +45,12 @@ export default {
       //Check if we should 3D render or not
       let path3D;
       switch (drawingTool.patternType){
-        case 0: path3D = model_dress_long; break;
-        case 1: path3D = model_dress_half; break;
-        case 2: path3D = model_dress_none; break;
-        case 3: path3D = model_shirt_long; break;
-        case 4: path3D = model_shirt_half; break;
-        case 5: path3D = model_shirt_none; break;
+        case 0: path3D = injected.dress_long; break;
+        case 1: path3D = injected.dress_half; break;
+        case 2: path3D = injected.dress_none; break;
+        case 3: path3D = injected.shirt_long; break;
+        case 4: path3D = injected.shirt_half; break;
+        case 5: path3D = injected.shirt_none; break;
       }
       if (path3D){
         //We need to 3D render!

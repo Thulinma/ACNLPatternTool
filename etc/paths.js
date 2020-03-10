@@ -8,6 +8,7 @@ const pathToPublic = path.resolve(pathToRoot, "public");
 const pathToClientSrc = path.resolve(pathToRoot, "src");
 const pathToBuild = path.resolve(pathToRoot, "build");
 const pathToStats = path.resolve(pathToRoot, "stats");
+const pathToInjected = path.resolve(pathToRoot, "injected");
 const pathToNodeModules = path.resolve(pathToRoot, "node_modules");
 const pathToZxingSubmodule = path.resolve(pathToRoot, "zxing-js-library");
 
@@ -30,6 +31,7 @@ module.exports = {
   pathToClientSrc,
   pathToBuild,
   pathToStats,
+  pathToInjected,
   pathToNodeModules,
   pathToEnv,
   pathToBabelConfig,

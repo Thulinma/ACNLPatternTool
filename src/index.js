@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import App from '/App.vue';
-import router from '/routers'; // use router
 import i18n from '/i18n'; // use i18n
 import PortalVue from "portal-vue";
 import { ifProdExec } from '/utils/if-env';
 import logger from '/utils/logger';
+import router from '/routers'; // use router
+import "/style.scss"; // top-level styles
 
 // vue global config
 Vue.config.productionTip = false;

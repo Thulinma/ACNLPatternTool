@@ -12,13 +12,13 @@ const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToBuild,
   pathToPublicIndex,
-  pathToClientSrcIndex,
-  pathToClientSrc
+  pathToClientSrcIndex
 } = require('../etc/paths');
 const {
   babelDevConfig,
   babelProdConfig
 } = require('./babel.config');
+const injection = require('../etc/injection');
 
 const clientEnv = env.buildClient();
 
@@ -47,21 +47,22 @@ const baseConfig = {
         test: /\.scss$/,
         use: [
           'vue-style-loader',
+          // MiniCssExtractPlugin.loader,
           'css-loader',
           {
             loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-              sassOptions: {
-                outputStyle: 'compressed',
-              },
-            }
+            // options: {
+            //   sourceMap: true,
+            //   sassOptions: {
+            //     outputStyle: 'compressed',
+            //   },
+            // }
           }
         ]
       },
       {
       // file-loader for image assets
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         use: {
           loader: "file-loader",
           options: {
@@ -90,17 +91,15 @@ const baseConfig = {
         }
       },
       // file-loaders for svgs
-      {
-        test: /\.svg$/,
-        use: [
-          'vue-svg-loader'
-        ]
-      }
     ],
   },
   plugins: [
     new VueLoaderPlugin(),
     new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
+    new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
+    // new MiniCssExtractPlugin({
+    //   filename: "styles/style.css"
+    // })
   ],
 };
 
@@ -171,9 +170,6 @@ const webpackProdConfig = {
       }
     }),
     new OptimizeThreePlugin(),
-    new MiniCssExtractPlugin({
-      filename: "styles/style.css"
-    }),
   ],
   optimization: {
     minimizer: [

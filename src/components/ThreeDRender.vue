@@ -16,12 +16,7 @@
 import DrawingTool from "/libs/DrawingTool";
 import { Scene, Texture, sRGBEncoding, NearestFilter, PerspectiveCamera, Mesh, MeshBasicMaterial, WebGLRenderer} from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
-import model_dress_long from "/assets/resources/dress_long.gltf";
-import model_dress_half from "/assets/resources/dress_half.gltf";
-import model_dress_none from "/assets/resources/dress_none.gltf";
-import model_shirt_long from "/assets/resources/shirt_long.gltf";
-import model_shirt_half from "/assets/resources/shirt_half.gltf";
-import model_shirt_none from "/assets/resources/shirt_none.gltf";
+import injected from "/utils/injected";
 
 export default {
   name: "ThreeDRender",
@@ -83,12 +78,12 @@ export default {
       }
       let path;
       switch (d.patternType){
-        case 0: path = model_dress_long; break;
-        case 1: path = model_dress_half; break;
-        case 2: path = model_dress_none; break;
-        case 3: path = model_shirt_long; break;
-        case 4: path = model_shirt_half; break;
-        case 5: path = model_shirt_none; break;
+        case 0: path = injected.dress_long; break;
+        case 1: path = injected.dress_half; break;
+        case 2: path = injected.dress_none; break;
+        case 3: path = injected.shirt_long; break;
+        case 4: path = injected.shirt_half; break;
+        case 5: path = injected.shirt_none; break;
         default: return;
       }
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
