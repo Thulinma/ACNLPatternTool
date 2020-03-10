@@ -109,7 +109,7 @@ export default {
       }
       this.draw.onLoad();
     },
-    
+
     //Set palette to greyscale
     image_grey(imgdata){
       for (var i = 0; i < 15; i++){
@@ -204,7 +204,7 @@ export default {
           best_chosen = chosen_ones;
         }
       }
-      
+
       for (var i = 0; i < 15 && i < best_chosen.length; i++){
         this.draw.setPalette(i, best_chosen[i]);
       }
@@ -232,5 +232,5 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 </style>

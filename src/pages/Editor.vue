@@ -18,7 +18,7 @@
           v-on:changed-current-color="onChangedCurrentColor"/>
         <canvas ref="canvas1" width="512" height="512"/>
       </div>
-      
+
       <div class="right">
         <div class="topbar-buttons">
           <button v-on:click="$refs.fileloader.open()">Scan QR / load file</button>
@@ -214,7 +214,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 button, input[type="button"] {
   border-radius: 35px;
   text-transform: uppercase;

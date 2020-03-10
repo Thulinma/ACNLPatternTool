@@ -56,7 +56,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .palette {
   user-select: none;
   border-radius: 0 0 35px 35px;

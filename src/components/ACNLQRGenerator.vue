@@ -285,7 +285,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .editor {
   user-select: none;
 }

@@ -188,7 +188,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 canvas {
   margin:20px;
   display:inline-block;

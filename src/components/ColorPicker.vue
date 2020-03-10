@@ -89,7 +89,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .swatch {
   user-select: none;
   display: inline-flex;

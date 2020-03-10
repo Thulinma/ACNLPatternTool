@@ -16,7 +16,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "reset-css";
+
   html {
     height: 100%;
   }

@@ -12,7 +12,8 @@ const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToBuild,
   pathToPublicIndex,
-  pathToClientSrcIndex
+  pathToClientSrcIndex,
+  pathToClientSrc
 } = require('../etc/paths');
 const {
   babelDevConfig,
@@ -43,16 +44,24 @@ const baseConfig = {
       },
       {
         // test: /\.s?css$/,
-        test: /\.css$/,
-        loader: [
+        test: /\.scss$/,
+        use: [
           'vue-style-loader',
           'css-loader',
-          // 'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              sassOptions: {
+                outputStyle: 'compressed',
+              },
+            }
+          }
         ]
       },
       {
       // file-loader for image assets
-        test: /\.(png|jpe?g|gif|svg)$/i,
+        test: /\.(png|jpe?g|gif)$/i,
         use: {
           loader: "file-loader",
           options: {
@@ -80,6 +89,13 @@ const baseConfig = {
           },
         }
       },
+      // file-loaders for svgs
+      {
+        test: /\.svg$/,
+        use: [
+          'vue-svg-loader'
+        ]
+      }
     ],
   },
   plugins: [
@@ -155,7 +171,9 @@ const webpackProdConfig = {
       }
     }),
     new OptimizeThreePlugin(),
-    // new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "styles/style.css"
+    }),
   ],
   optimization: {
     minimizer: [

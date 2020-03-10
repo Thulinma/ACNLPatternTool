@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import 'reset-css';
 import App from '/App.vue';
 import router from '/routers'; // use router
 import i18n from '/i18n'; // use i18n

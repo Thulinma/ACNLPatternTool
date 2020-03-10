@@ -54,7 +54,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .tool-selector {
     display: flex;
     flex-direction: column;
@@ -73,7 +73,7 @@ export default {
     border-radius: 100%;
   }
 
-  .tool-selector button.picked {  
+  .tool-selector button.picked {
     background-color: #57B7A8;
     color: #ffffff;
   }
