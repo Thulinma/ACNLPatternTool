@@ -35,9 +35,10 @@
     </main>
 
     <button v-on:click="convertImage = true">Convert image</button>
-    <button>Open Storage</button>
+    <button v-on:click="onOpenLocal">Open Storage</button>
     <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
     <button v-on:click="onModalOpen">Generate QR code(s)</button>
+    <button v-on:click="onLocalSave">Save to local storage</button>
 
     <ModalContainer
       v-if="qrCode"
@@ -51,6 +52,7 @@
       v-if="pickPatterns"
       v-on:modal-close="closePicks">
       <div class="modal-window pattern-list">
+        <button v-if="allowMoveToLocal" v-on:click="picksToLocal">Store all in local storage</button>
         <IconGenerator
           v-for="(opt, idx) in pickPatterns"
           :key="idx"
@@ -113,10 +115,29 @@ export default {
       fragment: "",
       pattType: 9,
       pickPatterns: false,
+      allowMoveToLocal: true,
       convertImage: false,
     };
   },
   methods: {
+    onOpenLocal(){
+      let tmp = {};
+      for (const i in localStorage){
+        if (i.startsWith("acnl_")){
+          tmp[i] = new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(i)));
+        }
+      }
+      this.pickPatterns = tmp;
+      this.allowMoveToLocal = false;
+    },
+    onLocalSave(){
+      localStorage.setItem("acnl_"+this.drawingTool.fullHash, lzString.compressToUTF16(this.drawingTool.toString()));
+    },
+    picksToLocal(){
+      for (const i in this.pickPatterns){
+        localStorage.setItem("acnl_"+this.pickPatterns[i].fullHash, lzString.compressToUTF16(this.pickPatterns[i].toString()));
+      }
+    },
     toolChange(newTool){
       this.drawingTool.drawHandler = newTool;
     },
@@ -169,6 +190,7 @@ export default {
     },
     extMultiLoad: function(data) {
       this.pickPatterns = data;
+      this.allowMoveToLocal = true;
     },
     onModalOpen: function() {
       const patStr = this.drawingTool.toString();
