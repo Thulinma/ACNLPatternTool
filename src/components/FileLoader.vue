@@ -127,7 +127,7 @@ export default {
       logger.info(results);
       logger.info("Read "+Object.keys(results).length+" patterns from files!");
       if (Object.keys(results).length == 1){
-        this.$emit('qr-load', results[0]);
+        this.$emit('qr-load', results[Object.keys(results)[0]]);
       }else if (Object.keys(results).length > 1){
         this.$emit('qr-multiload', results);
       }
