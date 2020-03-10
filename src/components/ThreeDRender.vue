@@ -40,7 +40,7 @@ export default {
       model: false,
       adjusting: false,
       rotating: true,
-      animating: false,
+      hasAnimReq: false,
       rotx: 0,
       roty: 0,
       rotstart: 0
@@ -63,7 +63,7 @@ export default {
     onRotateStop(e){
       this.adjusting = false;
       if (this.rotx == e.offsetX && this.roty == e.offsetY){this.rotating=true;}
-      this.animate();
+      if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
     },
     onZoom(e){
       if (this.model && e.deltaY != 0){
@@ -72,7 +72,7 @@ export default {
         if (this.camera.position.z < 12){this.camera.position.z = 12;}
         if (this.camera.position.z > 35){this.camera.position.z = 35;}
         this.camera.position.y = this.camera.position.z + 15;
-        this.animate();
+        if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
       }
     },
     loadModel(d){
@@ -104,19 +104,16 @@ export default {
           if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:this.texture});}
         });
         this.scene.add(this.model);
-        this.animate();
+        if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
       });
     },
     animate(){
-      if (this.model && this.rotating){this.model.rotation.y += 0.01;}
-      if ((!this.rotating || !this.model) && this.animating){
-        this.animating = false;
-        return;
-      }
       this.renderer.render(this.scene, this.camera);
-      if (this.rotating){
-        this.animating = true;
-        requestAnimationFrame(this.animate);
+      if (!this.rotating || !this.model){
+        this.hasAnimReq = false;
+      }else{
+        this.model.rotation.y += 0.01;
+        this.hasAnimReq = requestAnimationFrame(this.animate);
       }
     }
   },
@@ -137,7 +134,7 @@ export default {
     this.camera.position.y = 30;
     this.camera.rotation.x = 5.6;
 
-    this.animate();
+    this.hasAnimReq = requestAnimationFrame(this.animate);
 
 
     //If the type of pattern changes, change the model too
