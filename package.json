@@ -28,6 +28,7 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/runtime": "^7.8.4",
+    "@beyonk/google-fonts-webpack-plugin": "^1.2.3",
     "@vxna/optimize-three-webpack-plugin": "^3.0.1",
     "axios": "^0.19.2",
     "babel-loader": "^8.0.6",

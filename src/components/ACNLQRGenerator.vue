@@ -167,7 +167,7 @@ export default {
         texture.magFilter = NearestFilter;
         let loadModel = (x) => {return new Promise(resolve => {
           let loader = new GLTFLoader();
-          loader.load(x, (gltf) => {resolve(gltf);});
+          loader.parse(JSON.stringify(x), "", (gltf) => {resolve(gltf);});
         });};
         let gltf = await loadModel(path3D);
         model = gltf.scene.children[0];

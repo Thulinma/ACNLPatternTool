@@ -104,7 +104,7 @@ export default {
       this.texture.flipY = false;
       this.texture.magFilter = NearestFilter;
       let loader = new GLTFLoader();
-      loader.load(path, (gltf) => {
+      loader.parse(JSON.stringify(path), "", (gltf) => {
         this.model = gltf.scene.children[0];
         this.model.traverse((child) => {
           if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:this.texture});}

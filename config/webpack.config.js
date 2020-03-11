@@ -5,14 +5,14 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
 const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToBuild,
   pathToPublicIndex,
-  pathToClientSrcIndex
+  pathToClientSrcIndex,
 } = require('../etc/paths');
 const {
   babelDevConfig,
@@ -43,21 +43,11 @@ const baseConfig = {
         loader: 'vue-loader'
       },
       {
-        // test: /\.s?css$/,
         test: /\.scss$/,
         use: [
           'vue-style-loader',
-          // MiniCssExtractPlugin.loader,
           'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: false,
-              sassOptions: {
-                outputStyle: 'compressed',
-              },
-            }
-          }
+          // add sass-loader 'options' babel config prod/dev when defining webpackConfig
         ]
       },
       {
@@ -66,6 +56,7 @@ const baseConfig = {
         use: {
           loader: "file-loader",
           options: {
+            emitFile: true,
             outputPath: "images" // relative to output dir
           },
         },
@@ -97,9 +88,13 @@ const baseConfig = {
     new OptimizeThreePlugin(),
     new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
     new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
-    // new MiniCssExtractPlugin({
-    //   filename: "styles/style.css"
-    // })
+    new GoogleFontsPlugin({
+      local: false,
+      fonts: [
+        // Nunito ExtraBold
+        { family: "Nunito", variants: ["800"] },
+      ]
+    }),
   ],
 };
 
@@ -125,7 +120,20 @@ const webpackDevConfig = {
           options: babelDevConfig
         },
       },
-      ...baseConfig.module.rules.slice(1)
+      baseConfig.module.rules[1],
+      {
+        ...baseConfig.module.rules[2],
+        use: [
+          ...baseConfig.module.rules[2].use,
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            }
+          }
+        ]
+      },
+      ...baseConfig.module.rules.slice(3)
     ]
   },
   plugins: [
@@ -141,7 +149,7 @@ const webpackDevConfig = {
 
 const webpackProdConfig = {
   ...baseConfig,
-  devtool: "",
+  devtool: false,
   // overwrite base config
   mode: "production",
   module: {
@@ -154,7 +162,23 @@ const webpackProdConfig = {
           options: babelProdConfig
         },
       },
-      ...baseConfig.module.rules.slice(1)
+      baseConfig.module.rules[1],
+      {
+        ...baseConfig.module.rules[2],
+        use: [
+          ...baseConfig.module.rules[2].use,
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: false,
+              sassOptions: {
+                outputStyle: 'compressed',
+              },
+            }
+          }
+        ]
+      },
+      ...baseConfig.module.rules.slice(3)
     ]
   },
   plugins: [
@@ -180,7 +204,7 @@ const webpackProdConfig = {
         },
         extractComments: true,
       }),
-      // new OptimizeCSSAssetsPlugin({}),
+      new OptimizeCSSAssetsPlugin({}),
     ],
   },
   // ignore webpack performance warnings

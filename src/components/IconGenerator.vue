@@ -20,7 +20,7 @@ import {
 import {
   GLTFLoader
 } from '@three/loaders/GLTFLoader';
-import injected from "/utils/injected";
+import injected from "../utils/injected";
 
 export default {
   name: "IconGenerator",
@@ -32,8 +32,8 @@ export default {
       this.draw(newdata);
     }
   },
-  mounted: function(){
-    this.draw(this.pattern);
+  mounted: async function(){
+    await this.draw(this.pattern);
   },
   methods: {
     pattClick(){
@@ -135,7 +135,7 @@ export default {
         texture.magFilter = NearestFilter;
         let loadModel = (x) => {return new Promise(resolve => {
           let loader = new GLTFLoader();
-          loader.load(x, (gltf) => {resolve(gltf);});
+          loader.parse(JSON.stringify(x), "", (gltf) => {resolve(gltf);});
         });};
         let gltf = await loadModel(path3D);
         model = gltf.scene.children[0];
