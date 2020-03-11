@@ -37,25 +37,26 @@
       </div>
     </main>
 
-    <button v-on:click="convertImage = true">
-      <object class="svg nav brown-circle" :data=imageAddSvg></object>
-      Convert image
+    <button v-on:click="onLocalSave">
+      <object class="svg nav brown-circle" :data=storageAddSvg></object>
+      Save to storage
     </button>
     <button v-on:click="onOpenLocal">
       <object class="svg nav brown-circle" :data=storageSvg></object>
       Open Storage
     </button>
+    <button v-on:click="convertImage = true">
+      <object class="svg nav brown-circle" :data=imageAddSvg></object>
+      Convert image
+    </button>
+    <button v-on:click="onModalOpen">
+      <object class="svg nav brown-circle" :data=barcodeSvg></object>
+      Generate QR code(s)
+    </button>
     <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
     <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
       <object class="svg nav white-circle" :data=saveSvg></object>
       Download ACNL File
-    </button>
-    <button v-on:click="onModalOpen">
-      <object class="svg nav brown-circle" :data=barcodeSvg></object>
-      Generate QR code(s)</button>
-    <button v-on:click="onLocalSave">
-      <object class="svg nav brown-circle" :data=storageAddSvg></object>
-      Save to local storage
     </button>
 
     <ModalContainer
@@ -106,8 +107,6 @@ import { saveAs } from 'file-saver';
 import saveSvg from '/assets/icons/bxs-save.svg';
 import scanSvg from '/assets/icons/bx-scan.svg';
 import userSvg from '/assets/icons/bx-user-circle.svg';
-import fillSvg from '/assets/icons/bxs-color-fill.svg';
-import dropperSvg from '/assets/icons/bxs-eyedropper.svg';
 import paintSvg from '/assets/icons/bxs-paint.svg';
 import paletteSvg from '/assets/icons/bxs-palette.svg';
 import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
@@ -149,8 +148,6 @@ export default {
       saveSvg,
       scanSvg,
       userSvg,
-      fillSvg,
-      dropperSvg,
       paintSvg,
       paletteSvg,
       barcodeSvg,
@@ -309,6 +306,7 @@ input[type="button"].downACNL, button.downACNL {
   background-color: #e28e8e;
   max-width:90%;
   max-height:90%;
+  border-radius: 35px;
 }
 
 .pattern-list {
@@ -344,14 +342,19 @@ main .center canvas, main .left canvas {
 }
 
 .svg {
-  height: 25px;
-  width: 25px;
+  padding: 5px;
 }
 
 .svg.nav {
   border-radius: 100%;
-  padding: 5px;
   margin-right: 5px;
+  height: 25px;
+  width: 25px;
+}
+
+.svg.toolbar{
+  height: 50px;
+  width: 50px;
 }
 
 .svg.white-circle {

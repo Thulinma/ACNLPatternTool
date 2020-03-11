@@ -1,23 +1,25 @@
 <template>
-  <div>
+  <div class="modal">
     <input v-show="false" type="file" ref="files" accept="image/*" v-on:change="onFile" />
-    <div style="width:50%;height:100%;display:inline-block;">
+    <div class="cropper-container">
       <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
     </div>
-    <div style="width:50%;height:100%;display:inline-block;">
+    <div class="preview-and-options">
       <canvas v-show="false" ref="preview" />
       <canvas ref="postview" width=128, height=128 />
-      <select v-model="convert_method" @change="onCrop($refs.cropper.getResult())">
-        <option value="rgb">Most-used nearest 15 RGB colors</option>
-        <option value="yuv">Most-used nearest 15 YUV colors</option>
-        <option value="grey">Convert to greyscale</option>
-        <option value="sepia">Convert to sepia</option>
-        <!--
-        <option value="keep">Keep existing palette</option>
-        <option value="lowest">Optimize for lowest distance out of top 40 most used colors</option>
-        -->
-      </select>
-      <button @click="$emit('converted', draw)">Convert!</button>
+      <div class="options">
+        <select v-model="convert_method" @change="onCrop($refs.cropper.getResult())">
+          <option value="rgb">Most-used nearest 15 RGB colors</option>
+          <option value="yuv">Most-used nearest 15 YUV colors</option>
+          <option value="grey">Convert to greyscale</option>
+          <option value="sepia">Convert to sepia</option>
+          <!--
+          <option value="keep">Keep existing palette</option>
+          <option value="lowest">Optimize for lowest distance out of top 40 most used colors</option>
+          -->
+        </select>
+        <button @click="$emit('converted', draw)">Convert!</button>
+      </div>
     </div>
   </div>
 </template>
@@ -233,4 +235,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  button {
+    border-radius: 35px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    border: none;
+    background-color: #6db17a;
+    color: #ffffff;
+    box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+    cursor: pointer;
+    font-weight: 800;
+  }
+  canvas {
+    border: 1px solid gray;
+  }
+  .modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cropper-container {
+    width: 50%;
+    height: 100%;
+    min-height: 100px;
+    padding-bottom: 10px;
+  }
+  .preview-and-options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 20px;
+  }
+  .options select {
+    margin-bottom: 10px;
+  }
 </style>

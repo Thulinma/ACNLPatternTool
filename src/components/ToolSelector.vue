@@ -1,16 +1,30 @@
 <template>
   <div class="tool-selector">
-    <button class="tool picked" v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">Pencil</button>
-    <button class="tool" v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">Flood Fill</button>
-    <button class="tool" v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">Color Picker</button>
+    <button class="tool picked" v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">
+      <object class="svg nav brown-circle" :data=pencilSvg></object>
+    </button>
+    <button class="tool" v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">
+      <object class="svg nav brown-circle" :data=fillSvg></object>
+    </button>
+    <button class="tool" v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">
+      <object class="svg nav brown-circle" :data=dropperSvg></object>
+    </button>
   </div>
 </template>
 
 <script>
+import pencilSvg from '/assets/icons/bxs-pencil.svg'
+import fillSvg from '/assets/icons/bxs-color-fill.svg';
+import dropperSvg from '/assets/icons/bxs-eyedropper.svg';
+
 export default {
   name: "ToolSelector",
   data: function() {
-    return {};
+    return {
+      pencilSvg,
+      fillSvg,
+      dropperSvg,
+    };
   },
   methods: {
     pickToolPencil(e) {
