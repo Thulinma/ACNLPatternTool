@@ -22,7 +22,8 @@ const webpackDevServer = new WebpackDevServer(compiler, {
   overlay: {
     warnings: true,
     errors: true,
-  }
+  },
+  historyApiFallback: true,
 });
 
 ["SIGINT", "SIGTERM"].forEach((signal) => {

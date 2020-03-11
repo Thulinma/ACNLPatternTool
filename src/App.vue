@@ -17,4 +17,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#app {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
 </style>
