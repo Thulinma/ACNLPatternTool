@@ -21,7 +21,10 @@
 
       <div class="right">
         <div class="topbar-buttons">
-          <button v-on:click="$refs.fileloader.open()">Scan QR / load file</button>
+          <button v-on:click="$refs.fileloader.open()">
+            <object class="svg nav brown-circle" :data=scanSvg></object>
+            Scan QR / load file
+            </button>
           <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
         </div>
         <div class="tools-and-colors">
@@ -34,12 +37,24 @@
       </div>
     </main>
 
-    <button v-on:click="convertImage = true">Convert image</button>
-    <button v-on:click="onOpenLocal">Open Storage</button>
-    <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
-    <button v-on:click="onModalOpen">Generate QR code(s)</button>
+    <button v-on:click="convertImage = true">
+      <object class="svg nav brown-circle" :data=imageAddSvg></object>
+      Convert image
+    </button>
+    <button v-on:click="onOpenLocal">
+      <object class="svg nav brown-circle" :data=storageSvg></object>
+      Open Storage
+    </button>
+    <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
+    <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
+      <object class="svg nav white-circle" :data=saveSvg></object>
+      Download ACNL File
+    </button>
+    <button v-on:click="onModalOpen">
+      <object class="svg nav brown-circle" :data=barcodeSvg></object>
+      Generate QR code(s)</button>
     <button v-on:click="onLocalSave">
-      <object class="svg" v-bind:data=saveSvg></object>
+      <object class="svg nav brown-circle" :data=storageAddSvg></object>
       Save to local storage
     </button>
 
@@ -95,6 +110,10 @@ import fillSvg from '/assets/icons/bxs-color-fill.svg';
 import dropperSvg from '/assets/icons/bxs-eyedropper.svg';
 import paintSvg from '/assets/icons/bxs-paint.svg';
 import paletteSvg from '/assets/icons/bxs-palette.svg';
+import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
+import imageAddSvg from '/assets/icons/bxs-image-add.svg';
+import storageSvg from '/assets/icons/bxs-folder-open.svg';
+import storageAddSvg from '/assets/icons/bxs-folder-plus.svg';
 
 export default {
   name: "Editor",
@@ -134,6 +153,10 @@ export default {
       dropperSvg,
       paintSvg,
       paletteSvg,
+      barcodeSvg,
+      imageAddSvg,
+      storageSvg,
+      storageAddSvg,
     };
   },
   methods: {
@@ -162,7 +185,7 @@ export default {
       this.drawingTool.drawHandlerAlt = newTool;
     },
     downACNL(){
-      var blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
+      const blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
       saveAs(blob, this.drawingTool.title+".acnl");
     },
     onColorPicked: function(color) {
@@ -248,7 +271,6 @@ export default {
         return;
       }
     });
-
   },
 }
 </script>
@@ -268,7 +290,7 @@ button, input[type="button"] {
   align-items: center;
 }
 
-input[type="button"].downACNL {
+input[type="button"].downACNL, button.downACNL {
   background-color: #57b7a8;
   color: #ffffff;
 }
@@ -324,6 +346,20 @@ main .center canvas, main .left canvas {
 .svg {
   height: 25px;
   width: 25px;
+}
+
+.svg.nav {
+  border-radius: 100%;
+  padding: 5px;
+  margin-right: 5px;
+}
+
+.svg.white-circle {
+  background-color: #ffffff;
+}
+
+.svg.brown-circle {
+  background-color: #7E7261;
 }
 
 .previews {
