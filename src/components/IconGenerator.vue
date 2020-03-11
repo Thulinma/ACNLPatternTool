@@ -7,8 +7,19 @@ import DrawingTool from "/libs/DrawingTool";
 import logger from "/utils/logger";
 
 //for 3D renders
-import { Scene, Texture, sRGBEncoding, NearestFilter, PerspectiveCamera, Mesh, MeshBasicMaterial, WebGLRenderer} from 'three';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import {
+  Scene,
+  Texture,
+  sRGBEncoding,
+  NearestFilter,
+  PerspectiveCamera,
+  Mesh,
+  MeshBasicMaterial,
+  WebGLRenderer
+} from '@three/core';
+import {
+  GLTFLoader
+} from '@three/loaders/GLTFLoader';
 import injected from "/utils/injected";
 
 export default {

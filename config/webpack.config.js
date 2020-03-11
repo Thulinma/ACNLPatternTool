@@ -51,12 +51,12 @@ const baseConfig = {
           'css-loader',
           {
             loader: 'sass-loader',
-            // options: {
-            //   sourceMap: true,
-            //   sassOptions: {
-            //     outputStyle: 'compressed',
-            //   },
-            // }
+            options: {
+              sourceMap: false,
+              sassOptions: {
+                outputStyle: 'compressed',
+              },
+            }
           }
         ]
       },
@@ -90,11 +90,11 @@ const baseConfig = {
           },
         }
       },
-      // file-loaders for svgs
     ],
   },
   plugins: [
     new VueLoaderPlugin(),
+    new OptimizeThreePlugin(),
     new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
     new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
     // new MiniCssExtractPlugin({
@@ -169,7 +169,6 @@ const webpackProdConfig = {
         level: 9 // max compression
       }
     }),
-    new OptimizeThreePlugin(),
   ],
   optimization: {
     minimizer: [

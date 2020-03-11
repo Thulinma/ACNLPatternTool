@@ -12,8 +12,19 @@ import logger from "/utils/logger";
 import { QRCodeEncoder, QRCodeDecoderErrorCorrectionLevel, EncodeHintType } from '@zxing/library';
 
 //for 3D renders
-import { Scene, Texture, sRGBEncoding, NearestFilter, PerspectiveCamera, Mesh, MeshBasicMaterial, WebGLRenderer} from 'three';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import {
+  Scene,
+  Texture,
+  sRGBEncoding,
+  NearestFilter,
+  PerspectiveCamera,
+  Mesh,
+  MeshBasicMaterial,
+  WebGLRenderer
+} from '@three/core';
+import {
+  GLTFLoader
+} from '@three/loaders/GLTFLoader';
 import injected from "/utils/injected";
 
 
