@@ -39,7 +39,7 @@
     <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" />
     <button v-on:click="onModalOpen">Generate QR code(s)</button>
     <button v-on:click="onLocalSave">
-      <object type="image/svg+xml" data="../assests/icons/bxs-save.svg">
+      <object class="svg" v-bind:data=saveSvg></object>
       Save to local storage
     </button>
 
@@ -88,6 +88,13 @@ import DrawingTool from '/libs/DrawingTool';
 import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
+import saveSvg from '/assets/icons/bxs-save.svg';
+import scanSvg from '/assets/icons/bx-scan.svg';
+import userSvg from '/assets/icons/bx-user-circle.svg';
+import fillSvg from '/assets/icons/bxs-color-fill.svg';
+import dropperSvg from '/assets/icons/bxs-eyedropper.svg';
+import paintSvg from '/assets/icons/bxs-paint.svg';
+import paletteSvg from '/assets/icons/bxs-palette.svg';
 
 export default {
   name: "Editor",
@@ -120,6 +127,13 @@ export default {
       pickPatterns: false,
       allowMoveToLocal: true,
       convertImage: false,
+      saveSvg,
+      scanSvg,
+      userSvg,
+      fillSvg,
+      dropperSvg,
+      paintSvg,
+      paletteSvg,
     };
   },
   methods: {
@@ -250,6 +264,8 @@ button, input[type="button"] {
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
   cursor: pointer;
   font-weight: 800;
+  display: inline-flex;
+  align-items: center;
 }
 
 input[type="button"].downACNL {
@@ -303,6 +319,11 @@ main .left {
 
 main .center canvas, main .left canvas {
   box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
+}
+
+.svg {
+  height: 25px;
+  width: 25px;
 }
 
 .previews {
