@@ -253,6 +253,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 15px;
   }
   .cropper-container {
     width: 50%;
@@ -264,7 +265,6 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 10px;
   }
   .options {
     display: flex;

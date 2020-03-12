@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="modal">
     <canvas ref="qrcanvas" v-on:click="pattClick" />
   </div>
 </template>
@@ -293,7 +293,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.editor {
-  user-select: none;
+.modal {
+  padding: 10px;
 }
 </style>
