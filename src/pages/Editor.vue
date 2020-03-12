@@ -41,6 +41,14 @@
       <object class="svg nav brown-circle" :data=storageAddSvg></object>
       Save to storage
     </button>
+    <button v-on:click="onPublish">
+      <object class="svg nav brown-circle" :data=storageAddSvg></object>
+      Publish
+    </button>
+    <button v-on:click="onOpenDB">
+      <object class="svg nav brown-circle" :data=storageSvg></object>
+      Open published DB
+    </button>
     <button v-on:click="onOpenLocal">
       <object class="svg nav brown-circle" :data=storageSvg></object>
       Open Storage
@@ -101,6 +109,7 @@ import IconGenerator from '/components/IconGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
 import ToolSelector from '/components/ToolSelector.vue';
 import DrawingTool from '/libs/DrawingTool';
+import * as API from '/libs/origin';
 import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
@@ -157,6 +166,9 @@ export default {
     };
   },
   methods: {
+    onPublish(){
+      API.upload(btoa(this.drawingTool.toString()));
+    },
     onOpenLocal(){
       let tmp = {};
       for (const i in localStorage){
@@ -166,6 +178,10 @@ export default {
       }
       this.pickPatterns = tmp;
       this.allowMoveToLocal = false;
+    },
+    async onOpenDB(){
+      this.pickPatterns = await API.search();
+      this.allowMoveToLocal = true;
     },
     onLocalSave(){
       localStorage.setItem("acnl_"+this.drawingTool.fullHash, lzString.compressToUTF16(this.drawingTool.toString()));

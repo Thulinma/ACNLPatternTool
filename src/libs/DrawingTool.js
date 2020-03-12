@@ -1,4 +1,5 @@
 import ACNLFormat from '/libs/ACNLFormat';
+import lzString from 'lz-string';
 
 class RenderTarget{
   //Valid options for RenderTargets:
@@ -100,7 +101,11 @@ class DrawingTool{
   }
 
   load(data){
-    if (data instanceof DrawingTool){
+    if ((typeof data) == "string" && data.startsWith("LZ|")){
+      this.pattern = new ACNLFormat(lzString.decompressFromBase64(data.substr(3)));
+    }else if ((typeof data) == "string" && data.startsWith("B6|")){
+      this.pattern = new ACNLFormat(atob(data.substr(3)));
+    }else if (data instanceof DrawingTool){
       this.pattern = data.pattern;
     }else{
       this.pattern = new ACNLFormat(data);

@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/",
+  baseURL: "https://thulinma.com/acnh/",
   timeout: 10000,
 });
 
@@ -21,24 +21,21 @@ const encodeQueryParams = (params) => {
   }, "?");
 };
 
-// front end api should be actions, not single api calls
-// example, to be deleted
-const actionName = async (parameters) => {
-  // examples
-  const response = await api.get(`/target_url${encodeQueryParams({})}`);
-  // const response = await api.post(`target_url`, {
-  //   // json data
-  // });
-  const {
-    // unpack response data json fields
-  } = response.data;
-  // do stuff
-  return {
-    // relevant stuff
-  }
+// Upload
+const upload = async (pattData) => {
+  const response = await api.post('api.php', {pattern:pattData});
+  return response.data;
+};
+
+// Search
+const search = async () => {
+  const response = await api.get('api.php');
+  return response.data;
 };
 
 
 export {
-  // all function names
+  upload,
+  search
 }
+

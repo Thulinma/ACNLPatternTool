@@ -26,7 +26,8 @@
 // 0x03 = Fullsleeve shirt (pro)
 // 0x04 = Halfsleeve shirt (pro)
 // 0x05 = Sleeveless shirt (pro)
-// 0x07 = Plain pattern (hat)
+// 0x06 = Hat with horns
+// 0x07 = Hat
 // 0x08 = Standee (pro)
 // 0x09 = Plain pattern (easel)
 
