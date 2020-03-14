@@ -34,7 +34,6 @@ export default {
     IconGenerator
   },
   data: function(){
-<<<<<<< HEAD
     return {};
   },
   computed: {
@@ -43,12 +42,6 @@ export default {
       'query',
       'results',
     ]),
-=======
-    return {
-      results: false, 
-      query: "",
-    };
->>>>>>> matching modals to prototype
   },
   methods: {
     // map using store module search
@@ -66,13 +59,8 @@ export default {
     }
   },
   mounted: async function(){
-<<<<<<< HEAD
     const results = await API.recent();
     this.updateResults({ results });
-=======
-      this.results = await API.recent();
-      console.log(results)
->>>>>>> matching modals to prototype
   }
 }
 </script>
