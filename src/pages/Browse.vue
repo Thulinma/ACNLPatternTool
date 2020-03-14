@@ -6,7 +6,7 @@
     <div class="patterns">
       <div class="pattern-container" v-for="opt in results" :key="opt.bytes">
         <h3>{{opt.title}}</h3>
-        <IconGenerator v-on:pattclick="pickPattern" :pattern="opt.bytes" />
+        <IconGenerator v-on:pattclick="pickPattern" :pattern="opt.bytes" width=150 height=150 />
         <div class="pattern-details">
           <span>by {{opt.author}}</span>
           <span>from {{opt.town}}</span>

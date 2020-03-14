@@ -87,6 +87,7 @@
         <IconGenerator
           v-for="(opt, idx) in pickPatterns"
           :key="idx"
+          width=150 height=150 text="true" decoration="true"
           v-on:pattclick="pickPattern"
           :pattern="opt" />
       </div>
