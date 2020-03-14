@@ -101,9 +101,9 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-show="false">
+    <ModalContainer v-if="false">
       <div class="modal-info">
-        <div class="info-container">
+        <div class="info-text">
           <p>Please select files with the <span>.acnl</span> extension.</p>
         </div>
       </div>
@@ -371,7 +371,7 @@ input[type="button"].downACNL, button.downACNL {
   font-size: 32px;
   text-align: center;
 }
-.info-container {
+.info-text {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -384,12 +384,12 @@ input[type="button"].downACNL, button.downACNL {
   max-width: 60%;
   max-height: 60%;
 }
-.info-container p {
+.info-text p {
   width: 350px;
   display: inline-block;
   line-height: 40px;
 }
-.info-container span{
+.info-text span{
   color: #00C3C9;
 }
 .pattern-list {
