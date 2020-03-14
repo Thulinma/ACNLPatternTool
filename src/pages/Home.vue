@@ -21,6 +21,9 @@
     <div class="button changelog" @click="goToChanges">
       <div class="text">Changelog</div>
     </div>
+    <div class="button discord">
+      <a href="https://discord.gg/UVgMK2h" class="text">Discord</a>
+    </div>
   </div>
 </template>
 
@@ -76,8 +79,11 @@ h1{
 .button.editor {background-color: #1083cd;}
 .button.faq {background-color: #f16060;}
 .button.changelog {background-color: #cdb610;}
+.button.discord {background-color: #7289da;}
 
 .text {
   font-size: 2rem;
+  color:#fff;
+  text-decoration:none;
 }
 </style>
