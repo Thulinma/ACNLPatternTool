@@ -72,16 +72,14 @@
     <ModalContainer v-if="qrCode" v-on:modal-close="closeQr">
       <div class="modal">
         <div class="modal-header">
-          <object class="svg nav" :data="imageAddSvg"></object>
+          <object class="svg nav" :data="barcodeSvg"></object>
           Generate QR Code(s)
         </div>
         <ACNLQRGenerator class="modal-window" :pattern="qrCode" />
       </div>
     </ModalContainer>
 
-    <ModalContainer
-      v-if="pickPatterns"
-      v-on:modal-close="closePicks">
+    <ModalContainer v-if="pickPatterns" v-on:modal-close="closePicks">
       <div class="modal-window pattern-list">
         <button v-if="allowMoveToLocal" v-on:click="picksToLocal">Store all in local storage</button>
         <IconGenerator
@@ -103,6 +101,13 @@
       </div>
     </ModalContainer>
 
+    <ModalContainer v-show="false">
+      <div class="modal-info">
+        <div class="info-container">
+          <p>Please select files with the <span>.acnl</span> extension.</p>
+        </div>
+      </div>
+    </ModalContainer>
   </div>
 </template>
 
@@ -339,7 +344,7 @@ input[type="button"].downACNL, button.downACNL {
 }
 .modal-header {
   background-color: rgba(47, 31, 14, 0.9);
-  border-radius: 45px 55px 0 0;
+  border-radius: 45px 45px 0 0;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -355,6 +360,37 @@ input[type="button"].downACNL, button.downACNL {
   min-height: 400px;
   max-width: 90%;
   max-height: 90%;
+}
+.modal-info {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: fixed;
+  top: 55%;
+  color: #ffffff;
+  font-size: 32px;
+  text-align: center;
+}
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(21, 50, 69, 0.7);
+  border-radius: 35px;
+  padding: 40px;
+  min-width: 800px;
+  min-height: 150px;
+  max-width: 60%;
+  max-height: 60%;
+}
+.info-container p {
+  width: 350px;
+  display: inline-block;
+  line-height: 40px;
+}
+.info-container span{
+  color: #00C3C9;
 }
 .pattern-list {
   width: 80%;
