@@ -1,7 +1,11 @@
 <template>
   <div>
+    <div class="cropper-container" v-show="isCropping">
+      <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
+      <button @click="toggleView()">Next</button>
+    </div>
     <input v-show="false" type="file" ref="files" accept="image/*" v-on:change="onFile" />
-    <div class="preview-and-options" v-show="isPreview">
+    <div class="preview-and-options" v-show="!isCropping">
       <h3>Please select your conversion type.</h3>
       <div class="preview">
         <canvas v-show="false" ref="preview" />
@@ -18,11 +22,6 @@
         <button @click="toggleView()">Edit Crop</button>
         <button @click="$emit('converted', draw)">Convert!</button>
       </div>
-    </div>
-
-    <div class="cropper-container" v-show="!isPreview">
-      <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
-      <button @click="toggleView()">Next</button>
     </div>
   </div>
 </template>
@@ -45,7 +44,7 @@ export default {
       dataurl: "",
       convert_method: "rgb",
       draw: new DrawingTool(),
-      isPreview: true,
+      isCropping: true,
     };
   },
   mounted(){
@@ -243,7 +242,7 @@ export default {
     },
 
     toggleView(){
-      this.isPreview = !this.isPreview;
+      this.isCropping = !this.isCropping;
     },
   }
 }
@@ -269,16 +268,18 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    height: 400px;
+    min-height: 400px;
     color: #ffffff;
   }
   .cropper-container.hidden, .preview-and-options.hidden {
     display: none;
   }
-  .cropper-container Cropper {
+  .cropper-container Cropper{
     width: 50%;
-    height: 100%;
-    min-height: 300px;
+    height: 50%;
+  }
+  .cropper-container button {
+    margin: 20px 0 0 0;
   }
   .preview-and-options .preview {
     display: flex;
