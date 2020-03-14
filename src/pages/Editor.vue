@@ -63,7 +63,7 @@
     </button>
     <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
     <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
-      <object class="svg nav white-circle" :data=saveSvg></object>
+      <object class="svg nav white-circle" :data="saveSvg"></object>
       Download ACNL File
     </button>
 
