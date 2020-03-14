@@ -5,7 +5,7 @@
       type="file"
       name="files"
       ref="files"
-      accept="image/*,.acnl,.dat"
+      accept="image/*,.acnl,.dat,.zip"
       multiple
       v-on:change="onFile" />
   </div>
@@ -13,8 +13,14 @@
 
 <script>
 import DrawingTool from '/libs/DrawingTool';
+import JSZip from 'jszip';
 import { BrowserQRCodeReader, ResultMetadataType, DecodeHintType } from '@zxing/library';
 import logger from "/utils/logger";
+
+function parseACNL(){
+}
+
+
 
 export default {
   name: "FileLoader",
@@ -35,8 +41,14 @@ export default {
         logger.info("Adding pattern: ", newPat);
         results[newPat.fullHash] = newPat;
       };
-      for (let i = 0; i < e.target.files.length; ++i){
-        if (e.target.files[i].type && e.target.files[i].type.match('image.*')){
+      const attemptFile = async (f, fName) => {
+        if (fName.endsWith(".zip")){
+          let zip = await JSZip.loadAsync(f);
+          for (const efName in zip.files){
+            const fileData = await zip.files[efName].async("blob");
+            await attemptFile(fileData, efName.toLowerCase());
+          }
+        } else if (fName.endsWith(".png") || fName.endsWith(".jpg") || fName.endsWith(".jpeg") || fName.endsWith(".gif") || fName.endsWith(".bmp")){
           const iUrl = await new Promise((resolve, reject) => {
             let fr = new FileReader();
             fr.onerror = () => {
@@ -44,7 +56,7 @@ export default {
               reject(new DOMException("Problem parsing input file."));
             };
             fr.onload = (re) => {resolve(re.target.result);};
-            fr.readAsDataURL(e.target.files[i]);
+            fr.readAsDataURL(f);
           });
           const codeReader = new BrowserQRCodeReader();
           try {
@@ -85,9 +97,9 @@ export default {
             });
           }
           catch (err) {
-            console.warn(err);
+            logger.warn(err);
           }
-        } else {
+        } else if (fName.endsWith(".acnl")){
           const pattern = await new Promise((resolve, reject) => {
             let fr = new FileReader();
             fr.onerror = () => {
@@ -95,34 +107,45 @@ export default {
               reject(new DOMException("Problem parsing input file."));
             };
             fr.onload = (re) => {resolve(re.target.result);};
-            fr.readAsArrayBuffer(e.target.files[i]);
+            fr.readAsArrayBuffer(f);
           });
-          const fName = e.target.files[i].name.toLowerCase();
-          if (fName.endsWith(".acnl")){
-            addResult(new Uint8Array(pattern));
-          }else if (fName.endsWith(".dat")){
-            addResult(new Uint8Array(pattern, 0xCC+2160*0, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*1, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*2, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*3, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*4, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*5, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*6, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*7, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*8, 2160));
-            addResult(new Uint8Array(pattern, 0xCC+2160*9, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*0, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*1, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*2, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*3, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*4, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*7, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*8, 2160));
-            addResult(new Uint8Array(pattern, 0x9FDC+2160*9, 2160));
-          }
+          addResult(new Uint8Array(pattern));
+        } else if (fName.endsWith(".dat")){
+          const pattern = await new Promise((resolve, reject) => {
+            let fr = new FileReader();
+            fr.onerror = () => {
+              fr.abort();
+              reject(new DOMException("Problem parsing input file."));
+            };
+            fr.onload = (re) => {resolve(re.target.result);};
+            fr.readAsArrayBuffer(f);
+          });
+          addResult(new Uint8Array(pattern, 0xCC+2160*0, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*1, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*2, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*3, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*4, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*5, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*6, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*7, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*8, 2160));
+          addResult(new Uint8Array(pattern, 0xCC+2160*9, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*0, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*1, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*2, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*3, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*4, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*7, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*8, 2160));
+          addResult(new Uint8Array(pattern, 0x9FDC+2160*9, 2160));
+        }else{
+          logger.warn("Unknown file type: "+fName);
         }
+      };
+      for (let i = 0; i < e.target.files.length; ++i){
+        await attemptFile(e.target.files[i], e.target.files[i].name.toLowerCase());
       }
       logger.info(results);
       logger.info("Read "+Object.keys(results).length+" patterns from files!");
