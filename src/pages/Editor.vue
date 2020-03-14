@@ -338,7 +338,7 @@ input[type="button"].downACNL, button.downACNL {
   top: 8%;
 }
 .modal-header {
-  background-color: rgba(47, 31, 14, 0.8);
+  background-color: rgba(47, 31, 14, 0.9);
   border-radius: 45px 55px 0 0;
   color: #FFFFFF;
   display: flex;
@@ -348,7 +348,7 @@ input[type="button"].downACNL, button.downACNL {
   min-width: 300px;
 }
 .modal-window {
-  background-color: rgba(47, 31, 14, 0.8);
+  background-color: rgba(47, 31, 14, 0.9);
   border-radius: 35px;
   padding: 10px;
   min-width: 800px;

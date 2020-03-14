@@ -1,25 +1,28 @@
 <template>
-  <div class="imageloader-modal">
+  <div>
     <input v-show="false" type="file" ref="files" accept="image/*" v-on:change="onFile" />
-    <div class="cropper-container">
-      <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
-    </div>
-    <div class="preview-and-options">
-      <canvas v-show="false" ref="preview" />
-      <canvas ref="postview" width=128, height=128 />
-      <div class="options">
-        <select v-model="convert_method" @change="onCrop($refs.cropper.getResult())">
-          <option value="rgb">Most-used nearest 15 RGB colors</option>
-          <option value="yuv">Most-used nearest 15 YUV colors</option>
-          <option value="grey">Convert to greyscale</option>
-          <option value="sepia">Convert to sepia</option>
-          <!--
-          <option value="keep">Keep existing palette</option>
-          <option value="lowest">Optimize for lowest distance out of top 40 most used colors</option>
-          -->
-        </select>
+    <div class="preview-and-options" v-show="isPreview">
+      <h3>Please select your conversion type.</h3>
+      <div class="preview">
+        <canvas v-show="false" ref="preview" />
+        <canvas ref="postview" width=256, height=256 />
+
+        <ul class="options">
+          <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
+          <li :class="{active: convert_method === 'yuv'}" @click="changeConversion('yuv')">Nearest YUV Colors</li>
+          <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
+          <li :class="{active: convert_method === 'sepia'}" @click="changeConversion('sepia')">To Sepia</li>
+        </ul>
+      </div>
+      <div class="buttons">
+        <button @click="toggleView()">Edit Crop</button>
         <button @click="$emit('converted', draw)">Convert!</button>
       </div>
+    </div>
+
+    <div class="cropper-container" v-show="!isPreview">
+      <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
+      <button @click="toggleView()">Next</button>
     </div>
   </div>
 </template>
@@ -37,11 +40,14 @@ export default {
   props:{
     patternType: Number,
   },
-  data: function() {return {
-    dataurl: "",
-    convert_method: "rgb",
-    draw: new DrawingTool(),
-  };},
+  data: function() {
+    return {
+      dataurl: "",
+      convert_method: "rgb",
+      draw: new DrawingTool(),
+      isPreview: true,
+    };
+  },
   mounted(){
     this.draw.patternType = this.patternType;
     this.draw.addCanvas(this.$refs.postview);
@@ -52,9 +58,9 @@ export default {
       if (!(canvas instanceof HTMLCanvasElement)){return;}
       this.$refs.preview.width = this.draw.width;
       this.$refs.preview.height = this.draw.height;
-      let ctx = this.$refs.preview.getContext('2d');
-      ctx.drawImage(canvas,0,0,this.draw.width,this.draw.height);
-      var imgdata = ctx.getImageData(0, 0, this.draw.width, this.draw.height);
+      const ctx = this.$refs.preview.getContext('2d');
+      ctx.drawImage(canvas, 0, 0,this.draw.width, this.draw.height);
+      const imgdata = ctx.getImageData(0, 0, this.draw.width, this.draw.height);
       switch (this.convert_method){
         case "rgb": this.image_rgb(imgdata); break;
         case "yuv": this.image_yuv(imgdata); break;
@@ -68,11 +74,11 @@ export default {
     image_rgb(imgdata){
       let palette = [];
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
-      let pixelCount = this.draw.pixelCount * 4;
+      const pixelCount = this.draw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
         palette[this.draw.findRGB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
-      palette.sort(function(a, b){
+      palette.sort((a, b) => {
         if (a.c > b.c){return -1;}
         if (a.c < b.c){return 1;}
         return 0;
@@ -230,6 +236,15 @@ export default {
         fr.readAsDataURL(e.target.files[0]);
       });
     },
+
+    changeConversion(val){
+      this.convert_method = val;
+      this.onCrop(this.$refs.cropper.getResult());
+    },
+
+    toggleView(){
+      this.isPreview = !this.isPreview;
+    },
   }
 }
 </script>
@@ -240,7 +255,7 @@ export default {
     text-transform: uppercase;
     padding: 10px 14px;
     border: none;
-    background-color: #6db17a;
+    background-color: #00B6A7;
     color: #ffffff;
     box-shadow: rgba(0,0,0,0.2) 0 0 8px;
     cursor: pointer;
@@ -249,31 +264,44 @@ export default {
   canvas {
     border: 1px solid gray;
   }
-  .imageloader-modal {
+  .cropper-container, .preview-and-options {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px;
+    justify-content: space-around;
+    height: 400px;
+    color: #ffffff;
   }
-  .cropper-container {
+  .cropper-container.hidden, .preview-and-options.hidden {
+    display: none;
+  }
+  .cropper-container Cropper {
     width: 50%;
     height: 100%;
-    min-height: 100px;
-    padding-bottom: 10px;
+    min-height: 300px;
   }
-  .preview-and-options {
+  .preview-and-options .preview {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
   }
-  .options {
+  .preview-and-options .options {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding-left: 20px;
   }
-  .options select {
-    margin-bottom: 10px;
+  .preview-and-options .options li{
+    cursor: pointer;
+    padding: 10px;
+    min-width: 200px;
+  }
+  .preview-and-options .options li.active {
+    background-color: teal;
+  }
+  .preview-and-options .buttons {
+    display: flex;
+    justify-content: space-between;
+    min-width: 220px;
   }
 </style>
