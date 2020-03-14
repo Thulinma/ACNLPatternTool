@@ -1,11 +1,13 @@
 // api
 import axios from "axios";
+const { ORIGIN_URL } = process.env;
 
-const api = axios.create({
-  baseURL: "https://thulinma.com/acnh/",
-  timeout: 10000,
-});
-
+const api = (() => {
+  return axios.create({
+    baseURL: `${ORIGIN_URL}`,
+    timeout: 10000,
+  });
+})();
 // 'get' api method helper
 const encodeQueryParams = (params) => {
   const keys = Object.keys(params);
@@ -29,13 +31,13 @@ const upload = async (pattData) => {
 
 // Search
 const search = async (q) => {
-  const response = await api.get('api.php?q='+encodeURIComponent(q));
+  const response = await api.get(`api.php${encodeQueryParams({q})}`);
   return response.data;
 };
 
 // Open single pattern
 const view = async (hash) => {
-  const response = await api.get('api.php?view='+encodeURIComponent(hash));
+  const response = await api.get(`api.php${encodeQueryParams({view: hash})}`);
   return response.data;
 };
 
@@ -52,5 +54,4 @@ export {
   search,
   recent,
   view
-}
-
+};

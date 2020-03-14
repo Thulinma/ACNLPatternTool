@@ -10,20 +10,32 @@ const { pathToEnv } = require('./paths');
 const clientEnvReqConfig = Object.keys(clientEnvConfig)
   .filter((key) => { return clientEnvConfig[key]; });
 const distinctReqEnvConfig = [...new Set(clientEnvReqConfig)].sort();
+const includedEnvConfig = [
+  ... new Set([
+    ...clientEnvReqConfig,
+    ...Object.keys(defaultEnv)
+  ])
+].sort();
 
 const load = () => {
-  // load default first
-  for (let [key, value] of Object.entries(defaultEnv))
-    process.env[key] = value;
+  // dot env skips ones that are already set, use it first
   if (fs.existsSync(pathToEnv))
     dotenv.config({ path: pathToEnv });
-  if (!["development", "production"].includes(process.env.NODE_ENV))
+  // fill in gaps with default
+  for (let [key, value] of Object.entries(defaultEnv))
+    if (!(key in process.env)) process.env[key] = value;
+};
+
+const correct = () => {
+  const {
+    NODE_ENV,
+  } = process.env;
+
+  if (!["development", "production"].includes(NODE_ENV))
     process.env.NODE_ENV = "development";
-}
+};
 
 const check = () => {
-  if (!["development", "production"].includes(process.env.NODE_ENV))
-    process.env.NODE_ENV = "development";
   const errorMessages = [];
   if (!fs.existsSync(pathToEnv))
     if (Object.keys(distinctReqEnvConfig).length > 0)
@@ -31,7 +43,17 @@ const check = () => {
   // checks for missing environment variables
   distinctReqEnvConfig.forEach((envVar) => {
     if (envVar in process.env === false)
-      errorMessages.push(`Environment variable: '${envVar} could not be found.`);
+      errorMessages.push(`Environment variable: '${envVar}' could not be found.`);
+  });
+
+  includedEnvConfig.forEach((envVar) => {
+    if (envVar == "ORIGIN_URL") {
+      try { new URL(process.env.ORIGIN_URL) }
+      catch (error) {
+        errorMessages
+          .push(`Environment variable: '${envVar}' is not valid.`);
+      }
+    }
   });
 
   // reports all errors else continue
@@ -41,7 +63,7 @@ const check = () => {
     });
     process.exit(1);
   }
-}
+};
 
 const buildClient = () => {
   // a, b, intersection
@@ -56,7 +78,7 @@ const buildClient = () => {
       return env;
     }, {});
   return clientEnv;
-}
+};
 
 // UTILITIES
 const ifDevVal = (devVal, defaultVal) => {
@@ -92,6 +114,7 @@ const ifProdExec = (prodCallback, defaultCallback) => {
 // process.env variables available to internal (inside built process)
 module.exports = {
   load,
+  correct,
   check,
   buildClient,
   ifDevVal,

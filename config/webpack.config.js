@@ -26,6 +26,7 @@ const baseConfig = {
   entry: [pathToClientSrcIndex],
   output: {
     filename: "scripts/bundle.js",
+    publicPath: "/",
     path: pathToBuild,
   },
   module: {

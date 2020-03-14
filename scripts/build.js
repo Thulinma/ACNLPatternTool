@@ -37,6 +37,7 @@ else {
   else if (argv.production) buildSetting = "production";
   process.env.NODE_ENV = buildSetting
 }
+env.correct();
 env.check();
 
 const signale = require('signale');

@@ -22,7 +22,7 @@
       <div class="right">
         <div class="topbar-buttons">
           <button v-on:click="$refs.fileloader.open()">
-            <object class="svg nav brown-circle" :data=scanSvg></object>
+            <object class="svg nav brown-circle" :data="scanSvg"></object>
             Scan QR / load file
             </button>
           <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
@@ -38,27 +38,27 @@
     </main>
 
     <button v-on:click="onLocalSave">
-      <object class="svg nav brown-circle" :data=storageAddSvg></object>
+      <object class="svg nav brown-circle" :data="storageAddSvg"></object>
       Save to storage
     </button>
     <button v-on:click="onPublish">
-      <object class="svg nav brown-circle" :data=storageAddSvg></object>
+      <object class="svg nav brown-circle" :data="storageAddSvg"></object>
       Publish
     </button>
     <button v-on:click="onOpenDB">
-      <object class="svg nav brown-circle" :data=storageSvg></object>
+      <object class="svg nav brown-circle" :data="storageSvg"></object>
       Open published DB
     </button>
     <button v-on:click="onOpenLocal">
-      <object class="svg nav brown-circle" :data=storageSvg></object>
+      <object class="svg nav brown-circle" :data="storageSvg"></object>
       Open Storage
     </button>
     <button v-on:click="convertImage = true">
-      <object class="svg nav brown-circle" :data=imageAddSvg></object>
+      <object class="svg nav brown-circle" :data="imageAddSvg"></object>
       Convert image
     </button>
     <button v-on:click="onModalOpen">
-      <object class="svg nav brown-circle" :data=barcodeSvg></object>
+      <object class="svg nav brown-circle" :data="barcodeSvg"></object>
       Generate QR code(s)
     </button>
     <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
