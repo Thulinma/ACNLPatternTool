@@ -1,16 +1,35 @@
 <template>
   <div class="dummy-nav">
-    <div class="dummy" @click="goToBrowse">
+    <div class="title">
+      <div class="logo">
+        <object class="svg" :data="logoSvg"></object>
+      </div><div class="heading">
+        <h1>Animal Crossing Pattern Tool</h1>
+        <h2>Compatible with Animal Crossing: New Leaf, Animal Crossing: Happy Home Designer and Animal Crossing: New Horizons</h2>
+        <h2>By <a href="https://thulinma.com">Thulinma</a>, <a href="https://github.com/DamSenViet">DamSenViet</a> and <a href="https://github.com/myumi">Myumi</a></h2>
+      </div>
+    </div>
+    <div class="button browse" @click="goToBrowse">
       <div class="text">Browse</div>
     </div>
-    <div class="dummy" @click="goToEditor">
+    <div class="button editor" @click="goToEditor">
       <div class="text">Editor</div>
+    </div>
+    <div class="button faq" @click="goToFAQ">
+      <div class="text">FAQ</div>
+    </div>
+    <div class="button changelog" @click="goToChanges">
+      <div class="text">Changelog</div>
     </div>
   </div>
 </template>
 
 <script>
+import logoSvg from '/assets/images/ac_easel_opt.svg';
 export default {
+  data: function(){
+    return {logoSvg};
+  },
   methods: {
     goToBrowse: function() {
       this.$router.push({ path: `/browse` });
@@ -18,40 +37,47 @@ export default {
     goToEditor: function() {
       this.$router.push({ path: `/editor` });
     },
+    goToFAQ: function() {
+      this.$router.push({ path: `/faq` });
+    },
+    goToChanges: function() {
+      this.$router.push({ path: `/changelog` });
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
+
+.title .logo{
+  float:left;
+}
+.title{
+  color:black;
+  min-height:380px;
+}
+h1{
+  font-size:80px;
+}
+
 .dummy-nav {
-  height: 100%;
   font-family: Nunito;
   color: white;
 }
 
-.dummy {
+.button {
   position: relative;
   cursor: pointer;
-  width: 50%;
-  height: 100%;
+  padding:10px;
   box-sizing: border-box;
 }
 
-.dummy:nth-child(1) {
-  float: left;
-  background-color: #f16060;
-}
-
-.dummy:nth-child(2) {
-  float: right;
-  background-color: #1083cd;
-}
+.button.browse {background-color: rgb(52, 171, 109);}
+.button.editor {background-color: #1083cd;}
+.button.faq {background-color: #f16060;}
+.button.changelog {background-color: #cdb610;}
 
 .text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   font-size: 2rem;
 }
 </style>
