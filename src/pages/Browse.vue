@@ -1,6 +1,11 @@
 <template>
   <div>
-    Search: <input type="text" v-on:keyup.enter="search" v-model="query">
+    Search:
+    <input
+      type="text"
+      v-on:keyup.enter="search"
+      v-bind:value="query"
+      v-on:input="updateQuery({query: $event.target.value})">
     <table>
     <tr>
       <th>Title</th>
@@ -21,10 +26,11 @@
 </template>
 
 <script>
+import lzString from 'lz-string';
+import { mapState, mapMutations } from 'vuex';
 import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
 import * as API from '/libs/origin';
-import lzString from 'lz-string';
 
 export default {
   name: "Browse",
@@ -32,11 +38,24 @@ export default {
     IconGenerator
   },
   data: function(){
-    return {results: false, query:""};
+    return {};
+  },
+  computed: {
+    // map using store module search
+    ...mapState('search', [
+      'query',
+      'results',
+    ]),
   },
   methods: {
+    // map using store module search
+    ...mapMutations('search', [
+      'updateQuery',
+      'updateResults',
+    ]),
     async search(){
-      this.results = await API.search(this.query);
+      const results = await API.search(this.query);
+      this.updateResults({ results });
     },
     pickPattern(p){
       const dt = new DrawingTool(p);
@@ -44,7 +63,8 @@ export default {
     }
   },
   mounted: async function(){
-      this.results = await API.recent();
+    const results = await API.recent();
+    this.updateResults({ results });
   }
 }
 </script>

@@ -5,6 +5,7 @@ import PortalVue from "portal-vue";
 import { ifProdExec } from '/utils/if-env';
 import logger from '/utils/logger';
 import router from '/routers'; // use router
+import store from '/store'; // use vuex
 import "/style.scss"; // top-level styles
 
 // vue global config
@@ -18,6 +19,7 @@ Vue.use(PortalVue);
 
 // mount the application
 new Vue({
+  store,
   router,
   i18n,
   render: (h) => h(App),
