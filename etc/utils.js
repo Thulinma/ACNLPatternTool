@@ -22,7 +22,7 @@ const removeUncompressedBuild = () => {
     }
   }
   // non-compressed formats, license formats
-  recursiveDelete(pathToBuild, /.*\.(html|js|txt|LICENSE\.txt\.gz|gltf|svg|)$/i);
+  recursiveDelete(pathToBuild, /.*\.(html|js|txt|LICENSE\.txt\.gz|gltf|svg|woff|css|eot|ttf)$/i);
 }
 
 module.exports = {

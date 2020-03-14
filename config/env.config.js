@@ -1,14 +1,14 @@
 // list of env strings, and if required
+// only .env variables that the client should access here
+// available internally to the build
 const clientEnvConfig = {
   NODE_ENV: false,
   ORIGIN_URL: false,
   API_URL: false,
-  DEV_HOST: false,
-  DEV_PORT: false
 }
 
 // multiple layers of correction exist for NODE_ENV
-// default settings must past validation by default
+// default settings must pass validation by default
 const defaultEnv = {
   DEV_HOST: "localhost",
   DEV_PORT: "3000",

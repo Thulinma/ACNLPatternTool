@@ -18,6 +18,7 @@ const pathToBabelConfig = path.resolve(pathToConfig, "babel.config.js");
 const pathToEnvConfig = path.resolve(pathToConfig, "env.config.js");
 const pathToWebpackConfig = path.resolve(pathToConfig, "webpack.config.js");
 const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
+const pathToFavicon = path.resolve(pathToPublic, "favicon.svg");
 const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
 const pathToZxingBuild = path.resolve(pathToZxingSubmodule, "esm5");
@@ -38,6 +39,7 @@ module.exports = {
   pathToEnvConfig,
   pathToWebpackConfig,
   pathToPublicIndex,
+  pathToFavicon,
   pathToClientSrcIndex,
   pathToPathsJs,
   pathToZxingBuild,

@@ -2,6 +2,7 @@ const webpack = require('webpack');
 // auto-generate the index.html file
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -12,6 +13,7 @@ const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToBuild,
   pathToPublicIndex,
+  pathToFavicon,
   pathToClientSrcIndex,
 } = require('../etc/paths');
 const {
@@ -90,7 +92,9 @@ const baseConfig = {
     new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
     new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
     new GoogleFontsPlugin({
-      local: false,
+      local: true,
+      filename: "styles/font.css",
+      path: "../fonts/",
       fonts: [
         // Nunito ExtraBold
         { family: "Nunito", variants: ["800"] },
@@ -145,6 +149,11 @@ const webpackDevConfig = {
       filename: "index.html",
     }),
     new HtmlWebpackHarddiskPlugin(), // ^ allows more options
+    new FaviconsWebpackPlugin({
+      logo: pathToFavicon,
+      inject: true,
+      prefix: "favicons",
+    }),
   ]
 };
 
@@ -187,8 +196,15 @@ const webpackProdConfig = {
     new HtmlWebpackPlugin({
       ...baseHtmlWebpackOptions,
     }),
+    new FaviconsWebpackPlugin({
+      logo: pathToFavicon,
+      inject: true,
+      prefix: "favicons",
+    }),
     new CompressionPlugin({
       algorithm: "gzip",
+      // threshold: 0,
+      // minRatio: 0,
       deleteOriginalAssets: false,
       compressionOptions: {
         level: 9 // max compression
