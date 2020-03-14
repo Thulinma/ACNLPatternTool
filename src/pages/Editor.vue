@@ -180,8 +180,7 @@ export default {
       this.allowMoveToLocal = false;
     },
     async onOpenDB(){
-      this.pickPatterns = await API.search();
-      this.allowMoveToLocal = true;
+      this.$router.push("/browse");
     },
     onLocalSave(){
       localStorage.setItem("acnl_"+this.drawingTool.fullHash, lzString.compressToUTF16(this.drawingTool.toString()));
@@ -224,9 +223,10 @@ export default {
       await this.$nextTick();
       await this.$nextTick();
 
-      let newHash = lzString.compressToEncodedURIComponent(patStr);
-      if (this.$router.currentRoute.hash !== "#" + newHash) {
-        this.$router.push({ hash: newHash });
+      const newHash = lzString.compressToEncodedURIComponent(patStr);
+      const newPixHash = "#H:"+this.drawingTool.pixelHash;
+      if (this.$router.currentRoute.hash !== "#" + newHash && this.$router.currentRoute.hash !== newPixHash) {
+        //this.$router.push({ hash: newHash });
       }
       return;
     },
@@ -266,7 +266,14 @@ export default {
     this.drawingTool.addCanvas(this.$refs.canvas3);
     this.drawingTool.onLoad(this.onLoad);
     if (this.$router.currentRoute.hash.length > 1){
-      this.drawingTool.load(lzString.decompressFromEncodedURIComponent(this.$router.currentRoute.hash.substring(1)));
+      const hash = this.$router.currentRoute.hash.substring(1);
+      if (hash.startsWith("H:")){
+        API.view(hash.substring(2)).then((r)=>{
+          this.drawingTool.load(r);
+        });
+      }else{
+        this.drawingTool.load(lzString.decompressFromEncodedURIComponent(hash));
+      }
     }
     else{
       this.drawingTool.render();

@@ -28,14 +28,29 @@ const upload = async (pattData) => {
 };
 
 // Search
-const search = async () => {
+const search = async (q) => {
+  const response = await api.get('api.php?q='+encodeURIComponent(q));
+  return response.data;
+};
+
+// Open single pattern
+const view = async (hash) => {
+  const response = await api.get('api.php?view='+encodeURIComponent(hash));
+  return response.data;
+};
+
+// Recent uploads
+const recent = async () => {
   const response = await api.get('api.php');
   return response.data;
 };
 
 
+
 export {
   upload,
-  search
+  search,
+  recent,
+  view
 }
 
