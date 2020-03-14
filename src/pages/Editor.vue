@@ -4,8 +4,8 @@
       <div class="left">
         <div class="previews">
           <div class="2D">
-            <canvas ref="canvas2" width="128" height="128"/>
-            <canvas ref="canvas3" width="64" height="64"/>
+            <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
+            <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
           </div>
           <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
         </div>
@@ -16,7 +16,7 @@
           ref="palette"
           :drawing-tool="drawingTool"
           v-on:changed-current-color="onChangedCurrentColor"/>
-        <canvas ref="canvas1" width="512" height="512"/>
+        <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
       </div>
 
       <div class="right">
@@ -404,4 +404,9 @@ main .center canvas, main .left canvas {
   border-radius: 0 35px 35px 0;
   background-color: #f1b5c1;
 }
+
+canvas.fordrawing{
+  background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
+}
+
 </style>

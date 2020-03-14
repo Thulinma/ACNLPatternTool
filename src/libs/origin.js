@@ -1,12 +1,12 @@
 // api
 import axios from "axios";
-const { ORIGIN_URL } = process.env;
+const { API_URL } = process.env;
 
 const api = (() => {
   return axios.create({
-    baseURL: `${ORIGIN_URL}`,
-    timeout: 10000,
-  });
+    baseURL: `${API_URL}`,
+  timeout: 10000,
+});
 })();
 // 'get' api method helper
 const encodeQueryParams = (params) => {
@@ -47,11 +47,15 @@ const recent = async () => {
   return response.data;
 };
 
-
+const tags_style = ['Natural','Cute','Sporty','Cool','Rustic','Hip','Harmonious','Elegant','Modern','Historical','Civic','Silly','Spooky','Sci-Fi','Aquatic','Floral','Animal','Holiday','Food','Brand'];
+const tags_type = ['Path','Clothing','Hat','Wallpaper','Carpet','Furniture','Flag','Sign','Logo'];
 
 export {
   upload,
   search,
   recent,
-  view
+  view,
+  tags_style,
+  tags_type
 };
+

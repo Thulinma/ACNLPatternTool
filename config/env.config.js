@@ -1,7 +1,10 @@
 // list of env strings, and if required
 const clientEnvConfig = {
   NODE_ENV: false,
-  ORIGIN_URL: false
+  ORIGIN_URL: false,
+  API_URL: false,
+  DEV_HOST: false,
+  DEV_PORT: false
 }
 
 // multiple layers of correction exist for NODE_ENV
@@ -10,6 +13,7 @@ const defaultEnv = {
   DEV_HOST: "localhost",
   DEV_PORT: "3000",
   ORIGIN_URL: "http://localhost:3000/",
+  API_URL: "https://acpatterns.com/",
 };
 
 const validateEnv = {
@@ -30,6 +34,11 @@ const validateEnv = {
   ORIGIN_URL: () => {
     const { ORIGIN_URL } = process.env;
     try { new URL(ORIGIN_URL); return true; }
+    catch (error) { return false; }
+  },
+  API_URL: () => {
+    const { API_URL } = process.env;
+    try { new URL(API_URL); return true; }
     catch (error) { return false; }
   }
 }
