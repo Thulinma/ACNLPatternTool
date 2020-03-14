@@ -37,41 +37,45 @@
       </div>
     </main>
 
-    <button v-on:click="onLocalSave">
-      <object class="svg nav brown-circle" :data="storageAddSvg"></object>
-      Save to storage
-    </button>
-    <button v-on:click="onPublish">
-      <object class="svg nav brown-circle" :data="storageAddSvg"></object>
-      Publish
-    </button>
-    <button v-on:click="onOpenDB">
-      <object class="svg nav brown-circle" :data="storageSvg"></object>
-      Open published DB
-    </button>
-    <button v-on:click="onOpenLocal">
-      <object class="svg nav brown-circle" :data="storageSvg"></object>
-      Open Storage
-    </button>
-    <button v-on:click="convertImage = true">
-      <object class="svg nav brown-circle" :data="imageAddSvg"></object>
-      Convert image
-    </button>
-    <button v-on:click="onModalOpen">
-      <object class="svg nav brown-circle" :data="barcodeSvg"></object>
-      Generate QR code(s)
-    </button>
-    <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
-    <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
-      <object class="svg nav white-circle" :data="saveSvg"></object>
-      Download ACNL File
-    </button>
+    <div class="bottom-buttons">
+      <!-- <button v-on:click="onLocalSave">
+        <object class="svg nav brown-circle" :data="storageAddSvg"></object>
+        Save to storage
+      </button>
+      <button v-on:click="onPublish">
+        <object class="svg nav brown-circle" :data="storageAddSvg"></object>
+        Publish
+      </button>
+      <button v-on:click="onOpenDB">
+        <object class="svg nav brown-circle" :data="storageSvg"></object>
+        Open published DB
+      </button>
+      <button v-on:click="onOpenLocal">
+        <object class="svg nav brown-circle" :data="storageSvg"></object>
+        Open Storage
+      </button> -->
+      <button v-on:click="convertImage = true">
+        <object class="svg nav brown-circle" :data="imageAddSvg"></object>
+        Convert
+      </button>
+      <button v-on:click="onModalOpen">
+        <object class="svg nav brown-circle" :data="barcodeSvg"></object>
+        Generate QR code(s)
+      </button>
+      <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
+      <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
+        <object class="svg nav white-circle" :data="saveSvg"></object>
+        Save
+      </button>
+    </div>
 
-    <ModalContainer
-      v-if="qrCode"
-      v-on:modal-close="closeQr">
-      <div class="modal-window">
-        <ACNLQRGenerator :pattern="qrCode" />
+    <ModalContainer v-if="qrCode" v-on:modal-close="closeQr">
+      <div class="modal">
+        <div class="modal-header">
+          <object class="svg nav" :data="imageAddSvg"></object>
+          Generate QR Code(s)
+        </div>
+        <ACNLQRGenerator class="modal-window" :pattern="qrCode" />
       </div>
     </ModalContainer>
 
@@ -88,13 +92,16 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer
-      v-if="convertImage"
-      v-on:modal-close="convertImage = false">
-      <div class="modal-window">
-        <ImageLoader :pattern-type="pattType" @converted="onConvert" />
+    <ModalContainer v-if="convertImage" v-on:modal-close="convertImage=false">
+      <div class="modal">
+        <div class="modal-header">
+          <object class="svg nav" :data="imageAddSvg"></object>
+          Convert Image
+        </div>
+        <ImageLoader class="modal-window" :pattern-type="pattType" @converted="onConvert" />
       </div>
     </ModalContainer>
+
   </div>
 </template>
 
@@ -297,98 +304,107 @@ export default {
 
 <style lang="scss" scoped>
 button, input[type="button"] {
-  border-radius: 35px;
-  text-transform: uppercase;
-  padding: 10px 14px;
-  border: none;
+  align-items: center;
   background-color: #eff1d8;
-  color: #7e7261;
+  border: none;
+  border-radius: 35px;
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+  color: #7e7261;
   cursor: pointer;
-  font-weight: 800;
   display: inline-flex;
   align-items: center;
+  font-weight: 800;
+  text-transform: uppercase;
+  min-width: 120px;
+  padding: 10px 14px;
 }
-
 input[type="button"].downACNL, button.downACNL {
   background-color: #57b7a8;
   color: #ffffff;
 }
-
 .editor {
   user-select: none;
   color: #7e7261;
 }
-
-.modal-window {
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  padding: 10px;
-  transform: translate(-50%, -50%);
-  background-color: #e28e8e;
-  max-width:90%;
-  max-height:90%;
+  top: 8%;
+}
+.modal-header {
+  background-color: rgba(47, 31, 14, 0.8);
+  border-radius: 45px 55px 0 0;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 30px 0;
+  min-width: 300px;
+}
+.modal-window {
+  background-color: rgba(47, 31, 14, 0.8);
   border-radius: 35px;
+  padding: 10px;
+  min-width: 800px;
+  min-height: 400px;
+  max-width: 90%;
+  max-height: 90%;
 }
-
 .pattern-list {
-  width:80%;
-  height:80%;
-  overflow:scroll;
+  width: 80%;
+  height: 80%;
+  overflow: hidden;
 }
-
 .topbar-buttons {
   display: inline-flex;
   align-items: center;
   justify-content: space-evenly;
   height: 62px;
 }
-
 main {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
-
 main .left, .center, .right {
   display: flex;
   flex-direction: column;
 }
-
 main .left {
   padding-right: 40px;
 }
-
 main .center canvas, main .left canvas {
   box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
 }
-
+.bottom-buttons {
+  padding: 20px 10% 0 0;
+  text-align: right;
+}
 .svg {
   padding: 5px;
   pointer-events: none;
 }
-
 .svg.nav {
   border-radius: 100%;
   margin-right: 5px;
   height: 25px;
   width: 25px;
 }
-
 .svg.toolbar{
   height: 50px;
   width: 50px;
 }
-
 .svg.white-circle {
   background-color: #ffffff;
 }
-
 .svg.brown-circle {
   background-color: #7E7261;
 }
-
 .previews {
   display: inline-flex;
   flex-direction: column;
@@ -396,7 +412,6 @@ main .center canvas, main .left canvas {
   padding-top: 62px;
   height: 512px;
 }
-
 .tools-and-colors {
   height: 512px;
   display: inline-flex;
@@ -405,9 +420,7 @@ main .center canvas, main .left canvas {
   border-radius: 0 35px 35px 0;
   background-color: #f1b5c1;
 }
-
 canvas.fordrawing{
   background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
 }
-
 </style>

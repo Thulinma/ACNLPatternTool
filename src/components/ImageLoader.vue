@@ -1,5 +1,5 @@
 <template>
-  <div class="modal">
+  <div class="imageloader-modal">
     <input v-show="false" type="file" ref="files" accept="image/*" v-on:change="onFile" />
     <div class="cropper-container">
       <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
@@ -249,7 +249,7 @@ export default {
   canvas {
     border: 1px solid gray;
   }
-  .modal {
+  .imageloader-modal {
     display: flex;
     flex-direction: column;
     align-items: center;

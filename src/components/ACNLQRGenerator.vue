@@ -1,5 +1,5 @@
 <template>
-  <div class="modal">
+  <div class="qrgen-modal">
     <canvas ref="qrcanvas" v-on:click="pattClick" />
   </div>
 </template>
@@ -293,7 +293,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal {
-  padding: 10px;
+.qrgen-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
 }
 </style>
