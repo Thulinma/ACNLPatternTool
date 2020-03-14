@@ -1,12 +1,12 @@
 <template>
   <div class="tool-selector">
-    <button class="tool picked" v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">
+    <button class="tool" :class="{picked: pickedPencil}" v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">
       <object class="svg nav brown-circle" :data=pencilSvg></object>
     </button>
-    <button class="tool" v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">
+    <button class="tool" :class="{picked: pickedFloodFill}" v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">
       <object class="svg nav brown-circle" :data=fillSvg></object>
     </button>
-    <button class="tool" v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">
+    <button class="tool" :class="{picked: pickedColorPicker}" v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">
       <object class="svg nav brown-circle" :data=dropperSvg></object>
     </button>
   </div>
@@ -21,6 +21,9 @@ export default {
   name: "ToolSelector",
   data: function() {
     return {
+      pickedPencil: true,
+      pickedFloodFill: false,
+      pickedColorPicker: false,
       pencilSvg,
       fillSvg,
       dropperSvg,
@@ -28,11 +31,14 @@ export default {
   },
   methods: {
     pickToolPencil(e) {
+      this.setToolClass('pickedPencil');
+      console.log(this.pickedPencil);
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
         tool.drawPixel(x, y);
       });
     },
     pickToolFloodFill(e) {
+      this.setToolClass('pickedFloodFill');
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
         let newColor = tool.currentColor;
         let preColor = tool.getPixel(x, y);
@@ -56,6 +62,7 @@ export default {
       });
     },
     pickToolColorPicker(e) {
+      this.setToolClass('pickedColorPicker');
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
         let newCol = tool.getPixel(x, y);
         if (newCol !== false){
@@ -63,6 +70,12 @@ export default {
           tool.onColorChange();
         }
       });
+    },
+    setToolClass(tool) {
+      this.pickedPencil = false;
+      this.pickedFloodFill = false;
+      this.pickedColorPicker =  false;
+      this.$data[tool] = true;
     },
   }
 }
@@ -89,6 +102,5 @@ export default {
 
   .tool-selector button.picked {
     background-color: #57B7A8;
-    color: #ffffff;
   }
 </style>

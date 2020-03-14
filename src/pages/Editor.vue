@@ -366,6 +366,7 @@ main .center canvas, main .left canvas {
 
 .svg {
   padding: 5px;
+  pointer-events: none;
 }
 
 .svg.nav {
