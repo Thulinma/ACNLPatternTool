@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 const signale = require('signale');
 const {
   clientEnvConfig,
-  defaultEnv
+  defaultEnv,
+  validateEnv
 } = require('../config/env.config');
 const { pathToEnv } = require('./paths');
 
@@ -47,12 +48,9 @@ const check = () => {
   });
 
   includedEnvConfig.forEach((envVar) => {
-    if (envVar == "ORIGIN_URL") {
-      try { new URL(process.env.ORIGIN_URL) }
-      catch (error) {
-        errorMessages
-          .push(`Environment variable: '${envVar}' is not valid.`);
-      }
+    if (envVar in validateEnv) {
+      if (!validateEnv[envVar]())
+        errorMessages.push(`Environment variable: '${envVar}' was not valid.`);
     }
   });
 
