@@ -121,13 +121,9 @@ import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
 import saveSvg from '/assets/icons/bxs-save.svg';
 import scanSvg from '/assets/icons/bx-scan.svg';
-import userSvg from '/assets/icons/bx-user-circle.svg';
 import paintSvg from '/assets/icons/bxs-paint.svg';
 import paletteSvg from '/assets/icons/bxs-palette.svg';
-import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
 import imageAddSvg from '/assets/icons/bxs-image-add.svg';
-import storageSvg from '/assets/icons/bxs-folder-open.svg';
-import storageAddSvg from '/assets/icons/bxs-folder-plus.svg';
 import phoneSvg from '/assets/icons/bxs-mobile.svg';
 import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
 import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
@@ -167,13 +163,9 @@ export default {
       mainMenu: false,
       saveSvg,
       scanSvg,
-      userSvg,
       paintSvg,
       paletteSvg,
-      barcodeSvg,
       imageAddSvg,
-      storageSvg,
-      storageAddSvg,
       phoneSvg,
       downArrowSvg,
       upArrowSvg,
@@ -315,11 +307,11 @@ export default {
 <style lang="scss" scoped>
 button, input[type="button"] {
   align-items: center;
-  background-color: #eff1d8;
+  background-color: #7e7261;
   border: none;
   border-radius: 35px;
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-  color: #7e7261;
+  color: #eff1d8;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -455,7 +447,7 @@ main .center canvas, main .left canvas {
   background-color: #ffffff;
 }
 .svg.brown-circle {
-  background-color: #7E7261;
+  background-color: #EFF1D8;
 }
 .previews {
   display: inline-flex;

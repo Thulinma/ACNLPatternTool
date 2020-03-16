@@ -12,17 +12,17 @@
         <canvas ref="postview" width=256, height=256 />
 
         <ul class="options">
-          <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by median-cut</li>
+          <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
           <li :class="{active: convert_method === 'yuv'}" @click="changeConversion('yuv')">Nearest YUV Colors</li>
           <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
           <li :class="{active: convert_method === 'sepia'}" @click="changeConversion('sepia')">To Sepia</li>
         </ul>
         <ul class="options">
-          <li :class="{active: convert_quality === 'high'}" @click="changeQuality('high')">High quality</li>
-          <li :class="{active: convert_quality === 'medium'}" @click="changeQuality('medium')">Medium quality</li>
-          <li :class="{active: convert_quality === 'low'}" @click="changeQuality('low')">Low quality</li>
-          <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp pixels</li>
+          <li :class="{active: convert_quality === 'high'}" @click="changeQuality('high')">High Quality</li>
+          <li :class="{active: convert_quality === 'medium'}" @click="changeQuality('medium')">Medium Quality</li>
+          <li :class="{active: convert_quality === 'low'}" @click="changeQuality('low')">Low Quality</li>
+          <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp Pixels</li>
         </ul>
       </div>
       <div class="buttons">
@@ -451,6 +451,7 @@ export default {
   }
   .preview-and-options .options li.active {
     background-color: teal;
+    border-radius: 20px;
   }
   .preview-and-options .buttons {
     display: flex;

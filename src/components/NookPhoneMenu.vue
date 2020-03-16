@@ -7,27 +7,27 @@
     <div class="nook-buttons">
         <!-- <button v-on:click="onLocalSave"> -->
         <button>
-            <!-- <object class="svg nav brown-circle" :data="storageAddSvg"></object> -->
+            <object class="svg nav brown-circle" :data="storageAddSvg"></object>
             Save to Personal Storage
         </button>
         <!-- <button v-on:click="onPublish"> -->
         <button>
-            <!-- <object class="svg nav brown-circle" :data="storageAddSvg"></object> -->
+            <object class="svg nav brown-circle" :data="storageAddSvg"></object>
             Publish
         </button>
         <!-- <button v-on:click="onOpenDB"> -->
         <button>
-            <!-- <object class="svg nav brown-circle" :data="storageSvg"></object> -->
+            <object class="svg nav brown-circle" :data="storageSvg"></object>
             Open DB
         </button>
         <!-- <button v-on:click="onOpenLocal"> -->
         <button>
-            <!-- <object class="svg nav brown-circle" :data="storageSvg"></object> -->
+            <object class="svg nav brown-circle" :data="storageSvg"></object>
             Open Storage
         </button>
         <!-- <button v-on:click="onModalOpen"> -->
         <button>
-            <!-- <object class="svg nav brown-circle" :data="barcodeSvg"></object> -->
+            <object class="svg nav brown-circle" :data="barcodeSvg"></object>
             Generate QR code(s)
         </button>
     </div>
@@ -35,12 +35,18 @@
 </template>
 
 <script>
+import storageSvg from '/assets/icons/bxs-folder-open.svg';
+import storageAddSvg from '/assets/icons/bxs-folder-plus.svg';
+import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
 export default {
   name: "NookPhoneMenu",
   data: function() {
     return {
         dateObj: new Date(),
         time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', timeStyle: 'short'}),
+        storageSvg,
+        storageAddSvg,
+        barcodeSvg,
     };
   },
   created() {
@@ -82,6 +88,11 @@ export default {
     flex-wrap: wrap;
 }
 .nook-buttons button {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 100px;
     width: 100px;
     margin: 6px 3px 0;
