@@ -108,6 +108,12 @@
         </div>
       </div>
     </ModalContainer>
+
+    <ModalContainer v-if="false">
+      <div class="modal">
+        <NookPhoneMenu />
+      </div>
+    </ModalContainer>
   </div>
 </template>
 
@@ -121,6 +127,7 @@ import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
 import IconGenerator from '/components/IconGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
 import ToolSelector from '/components/ToolSelector.vue';
+import NookPhoneMenu from '/components/NookPhoneMenu.vue';
 import DrawingTool from '/libs/DrawingTool';
 import * as API from '/libs/origin';
 import logger from '/utils/logger';
@@ -147,7 +154,8 @@ export default {
     ACNLQRGenerator,
     IconGenerator,
     ModalContainer,
-    ToolSelector
+    ToolSelector,
+    NookPhoneMenu,
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
