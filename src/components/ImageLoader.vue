@@ -18,6 +18,12 @@
           <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
           <li :class="{active: convert_method === 'sepia'}" @click="changeConversion('sepia')">To Sepia</li>
         </ul>
+        <ul class="options">
+          <li :class="{active: convert_quality === 'high'}" @click="changeQuality('high')">High quality</li>
+          <li :class="{active: convert_quality === 'medium'}" @click="changeQuality('medium')">Medium quality</li>
+          <li :class="{active: convert_quality === 'low'}" @click="changeQuality('low')">Low quality</li>
+          <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp pixels</li>
+        </ul>
       </div>
       <div class="buttons">
         <button @click="toggleView()">Edit Crop</button>
@@ -44,6 +50,7 @@ export default {
     return {
       dataurl: "",
       convert_method: "quantize",
+      convert_quality: "high",
       draw: new DrawingTool(),
       isCropping: true,
     };
@@ -59,6 +66,12 @@ export default {
       this.$refs.preview.width = this.draw.width;
       this.$refs.preview.height = this.draw.height;
       const ctx = this.$refs.preview.getContext('2d');
+      if (this.convert_quality != "sharp"){
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = this.convert_quality;
+      }else{
+        ctx.imageSmoothingEnabled = false;
+      }
       ctx.drawImage(canvas, 0, 0,this.draw.width, this.draw.height);
       const imgdata = ctx.getImageData(0, 0, this.draw.width, this.draw.height);
       switch (this.convert_method){
@@ -372,6 +385,11 @@ export default {
 
     changeConversion(val){
       this.convert_method = val;
+      this.onCrop(this.$refs.cropper.getResult());
+    },
+
+    changeQuality(val){
+      this.convert_quality = val;
       this.onCrop(this.$refs.cropper.getResult());
     },
 
