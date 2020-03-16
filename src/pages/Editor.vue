@@ -21,11 +21,11 @@
 
       <div class="right">
         <div class="topbar-buttons">
-          <button v-on:click="$refs.fileloader.open()">
-            <object class="svg nav brown-circle" :data="scanSvg"></object>
-            Scan QR / load file
-            </button>
-          <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
+          <button class="menu-button" @click="onMainMenu">
+            <object class="svg nav white-circle" :data="phoneSvg"></object>
+            Menu
+            <object class="svg-small" :data="downArrowSvg"></object>
+          </button>
         </div>
         <div class="tools-and-colors">
           <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
@@ -38,34 +38,20 @@
     </main>
 
     <div class="bottom-buttons">
-      <!-- <button v-on:click="onLocalSave">
-        <object class="svg nav brown-circle" :data="storageAddSvg"></object>
-        Save to storage
-      </button>
-      <button v-on:click="onPublish">
-        <object class="svg nav brown-circle" :data="storageAddSvg"></object>
-        Publish
-      </button>
-      <button v-on:click="onOpenDB">
-        <object class="svg nav brown-circle" :data="storageSvg"></object>
-        Open published DB
-      </button>
-      <button v-on:click="onOpenLocal">
-        <object class="svg nav brown-circle" :data="storageSvg"></object>
-        Open Storage
-      </button> -->
       <button v-on:click="convertImage = true">
         <object class="svg nav brown-circle" :data="imageAddSvg"></object>
         Convert
       </button>
-      <button v-on:click="onModalOpen">
-        <object class="svg nav brown-circle" :data="barcodeSvg"></object>
-        Generate QR code(s)
+      <button v-on:click="$refs.fileloader.open()">
+          <object class="svg nav brown-circle" :data="scanSvg"></object>
+          Scan QR / load file
       </button>
+      <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
       <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
       <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
         <object class="svg nav white-circle" :data="saveSvg"></object>
         Save
+        <object class="svg-small" :data="upArrowSvg"></object>
       </button>
     </div>
 
@@ -109,7 +95,7 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="false">
+    <ModalContainer v-if="mainMenu" v-on:modal-close="mainMenu=false">
       <div class="modal">
         <NookPhoneMenu />
       </div>
@@ -142,6 +128,9 @@ import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
 import imageAddSvg from '/assets/icons/bxs-image-add.svg';
 import storageSvg from '/assets/icons/bxs-folder-open.svg';
 import storageAddSvg from '/assets/icons/bxs-folder-plus.svg';
+import phoneSvg from '/assets/icons/bxs-mobile.svg';
+import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
+import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
 
 export default {
   name: "Editor",
@@ -175,6 +164,7 @@ export default {
       pickPatterns: false,
       allowMoveToLocal: true,
       convertImage: false,
+      mainMenu: false,
       saveSvg,
       scanSvg,
       userSvg,
@@ -184,6 +174,9 @@ export default {
       imageAddSvg,
       storageSvg,
       storageAddSvg,
+      phoneSvg,
+      downArrowSvg,
+      upArrowSvg,
     };
   },
   methods: {
@@ -279,6 +272,9 @@ export default {
     },
     closePicks: function() {
       this.pickPatterns = false;
+    },
+    onMainMenu: function() {
+      this.mainMenu = true;
     }
   },
   mounted: function() {
@@ -327,6 +323,7 @@ button, input[type="button"] {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
   min-width: 120px;
@@ -411,6 +408,10 @@ input[type="button"].downACNL, button.downACNL {
   justify-content: space-evenly;
   height: 62px;
 }
+.topbar-buttons .menu-button {
+  background-color: #DC8D69;
+  color: #FFFFFF;
+}
 main {
   display: flex;
   flex-direction: row;
@@ -431,6 +432,12 @@ main .center canvas, main .left canvas {
   text-align: right;
 }
 .svg {
+  padding: 5px;
+  pointer-events: none;
+}
+.svg-small {
+  height: 10px;
+  width: 10px;
   padding: 5px;
   pointer-events: none;
 }
