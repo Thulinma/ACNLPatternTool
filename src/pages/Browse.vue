@@ -1,7 +1,13 @@
 <template>
   <div class="container">
     <nav> 
-      Search: <input type="text" v-on:keyup.enter="search" v-model="query">
+      <div class="search-bar">
+        Search: <input type="text" v-on:keyup.enter="search" v-model="query">
+      </div>
+      <button class="create-button" @click="goToEditor">
+        Create
+        <object class="svg" :data="addSvg"></object>
+      </button>
     </nav>
     <div class="patterns">
       <div class="pattern-container" v-for="opt in results" :key="opt.bytes">
@@ -27,6 +33,7 @@ import { mapState, mapMutations } from 'vuex';
 import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
 import * as API from '/libs/origin';
+import addSvg from '/assets/icons/bxs-plus-circle.svg';
 
 export default {
   name: "Browse",
@@ -34,7 +41,7 @@ export default {
     IconGenerator
   },
   data: function(){
-    return {};
+    return {addSvg};
   },
   computed: {
     // map using store module search
@@ -56,7 +63,10 @@ export default {
     pickPattern(p){
       const dt = new DrawingTool(p);
       this.$router.push({hash:"H:"+dt.pixelHash, path:"/editor"});
-    }
+    },
+    goToEditor() {
+      this.$router.push({ path: `/editor` });
+    },
   },
   mounted: async function(){
     const results = await API.recent();
@@ -96,12 +106,38 @@ export default {
   color: #7e7261;
 }
 nav {
-  padding: 10px 20px;
+  max-width: 80%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 nav input[type=text] {
   padding: 10px;
   min-width: 300px;
   border: none;
+}
+nav .create-button {
+  background-color: #57AB35;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  border: none;
+  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  min-width: 120px;
+  padding: 10px 18px;
+  justify-content: space-between;
+  border-radius: 35px;
+  cursor: pointer;
+}
+nav .create-button .svg {
+  height: 25px;
+  width: 25px;
+  pointer-events: none;
 }
 .patterns {
   display: flex;

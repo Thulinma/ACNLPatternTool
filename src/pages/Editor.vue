@@ -306,7 +306,6 @@ export default {
 
 <style lang="scss" scoped>
 button, input[type="button"] {
-  align-items: center;
   background-color: #7e7261;
   border: none;
   border-radius: 35px;
