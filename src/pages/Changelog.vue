@@ -20,6 +20,8 @@
         <li>Generated QR images now include a preview of the pattern (2D/3D depending on type), and look much more appealing</li>
         <li>Fixed color accuracy to match in-game colors</li>
         <li>3D models can now be rotated and zoomed using the mouse/mousewheel</li>
+        <li>Undo/redo support</li>
+        <li>Added quantize through median cut conversion mode</li>
       </ul>
     </dd>
     <dt>March 1, 2020</dt>

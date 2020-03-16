@@ -12,6 +12,7 @@
         <canvas ref="postview" width=256, height=256 />
 
         <ul class="options">
+          <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by median-cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
           <li :class="{active: convert_method === 'yuv'}" @click="changeConversion('yuv')">Nearest YUV Colors</li>
           <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
@@ -42,7 +43,7 @@ export default {
   data: function() {
     return {
       dataurl: "",
-      convert_method: "rgb",
+      convert_method: "quantize",
       draw: new DrawingTool(),
       isCropping: true,
     };
@@ -61,6 +62,7 @@ export default {
       ctx.drawImage(canvas, 0, 0,this.draw.width, this.draw.height);
       const imgdata = ctx.getImageData(0, 0, this.draw.width, this.draw.height);
       switch (this.convert_method){
+        case "quantize": this.image_quantize(imgdata); break;
         case "rgb": this.image_rgb(imgdata); break;
         case "yuv": this.image_yuv(imgdata); break;
         case "grey": this.image_grey(imgdata); break;
@@ -119,7 +121,7 @@ export default {
 
     //Set palette to greyscale
     image_grey(imgdata){
-      for (var i = 0; i < 15; i++){
+      for (let i = 0; i < 15; i++){
         this.draw.setPalette(i, 0x10*i + 0xF);
       }
 
@@ -138,10 +140,10 @@ export default {
 
     //Set palette to sepia
     image_sepia(imgdata){
-      for (var i = 0; i < 9; i++){
+      for (let i = 0; i < 9; i++){
         this.draw.setPalette(i, 0x30+i);
       }
-      for (var i = 9; i < 15; i++){
+      for (let i = 9; i < 15; i++){
         this.draw.setPalette(i, 0x60+i-6);
       }
 
@@ -154,17 +156,149 @@ export default {
       }
       this.draw.onLoad();
     },
+    image_quantize(imgdata){
+      let pixelCount = this.draw.pixelCount * 4;
+      let pixels = [];
+      for (let i = 0; i < pixelCount; i+=4){pixels.push({r:imgdata.data[i], g:imgdata.data[i+1], b:imgdata.data[i+2]});}
+      const medianCut = (pixels) => {
+        let l = Math.floor(pixels.length/2);
+        let r_min = null; let r_max = null;
+        let g_min = null; let g_max = null;
+        let b_min = null; let b_max = null;
+        for (let i in pixels){
+          if (pixels[i].r < r_min || r_min === null){r_min = pixels[i].r;}
+          if (pixels[i].r > r_max || r_max === null){r_max = pixels[i].r;}
+          if (pixels[i].g < g_min || g_min === null){g_min = pixels[i].g;}
+          if (pixels[i].g > g_max || g_max === null){g_max = pixels[i].g;}
+          if (pixels[i].b < b_min || b_min === null){b_min = pixels[i].b;}
+          if (pixels[i].b > b_max || b_max === null){b_max = pixels[i].b;}
+        }
+        let r_dist = r_max-r_min;
+        let g_dist = g_max-g_min;
+        let b_dist = b_max-b_min;
+        if (r_dist >= g_dist && r_dist >= b_dist){
+          //Sort on red
+          pixels.sort((a,b)=>(a.r-b.r));
+        }else if(g_dist >= r_dist && g_dist >= b_dist){
+          //Sort on green
+          pixels.sort((a,b)=>(a.g-b.g));
+        }else{
+          //Sort on blue
+          pixels.sort((a,b)=>(a.b-b.b));
+        }
+        return [pixels.slice(0, l),pixels.slice(l)];
+      };
+      const medianMultiCut = (buckets) => {
+        let res = [];
+        for (let i in buckets){
+          const newBuck = medianCut(buckets[i]);
+          if (newBuck[0].length){res.push(newBuck[0]);}
+          if (newBuck[1].length){res.push(newBuck[1]);}
+        }
+        return res;
+      };
+      let buckets = medianCut(pixels);//creates 2 buckets
+      buckets = medianMultiCut(buckets);//splits into 4
+      buckets = medianMultiCut(buckets);//splits into 8
+      buckets = medianMultiCut(buckets);//splits into 16
 
+      //Now we have 16 buckets.
+      let colors = [];
+      let uniqCol = new Set();
+
+      //Pushes average color of given bucket onto colors.
+      const pushAvg = (b) => {
+        let r_avg = 0;
+        let g_avg = 0;
+        let b_avg = 0;
+        for (let i in b){
+          r_avg += b[i].r;
+          g_avg += b[i].g;
+          b_avg += b[i].b;
+        }
+        let rgb = [Math.round(r_avg/b.length), Math.round(g_avg/b.length), Math.round(b_avg/b.length)];
+        let idx = this.draw.findRGB(rgb);
+        if (!uniqCol.has(idx)){
+          colors.push(idx);
+          uniqCol.add(idx);
+        }
+      };
+
+      //Average the insides for colors.
+      for (let i in buckets){pushAvg(buckets[i]);}
+      console.log("Unique colors: "+uniqCol.size);
+
+      if (uniqCol.size < 15){
+        //We could add more colors. Quantize some more and cross fingers!
+        buckets = medianMultiCut(buckets);//splits into 32
+        for (let i in buckets){pushAvg(buckets[i]);}
+        console.log("Unique colors after further quantize: "+uniqCol.size);
+        if (uniqCol.size < 15){
+          buckets = medianMultiCut(buckets);//splits into 64
+          for (let i in buckets){pushAvg(buckets[i]);}
+          console.log("Unique colors after further quantize: "+uniqCol.size);
+          if (uniqCol.size < 15){
+            buckets = medianMultiCut(buckets);//splits into 128
+            for (let i in buckets){pushAvg(buckets[i]);}
+            console.log("Unique colors after further quantize: "+uniqCol.size);
+          }
+        }
+      }else if (uniqCol.size > 15){
+        //We have 16 colors (one for each bucket)
+        //Find the closest two colors and merge them
+        let minDist = 255*255*3;
+        let bucketA = null;
+        let bucketB = null;
+        for (let i in colors){
+          for (let j in colors){
+            if (i >= j){continue;}
+            let rD = (colors[i][0] - colors[j][0]);
+            let gD = (colors[i][1] - colors[j][1]);
+            let bD = (colors[i][2] - colors[j][2]);
+            let match = (rD*rD + gD*gD + bD*bD);
+            if (match < minDist){
+              minDist = match;
+              bucketA = i;
+              bucketB = j;
+            }
+          }
+        }
+        //Merge bucket A and B into C
+        let bucketC = buckets[bucketA].concat(buckets[bucketB]);
+        colors.splice(bucketB);//Must remove B first, since B is guaranteed to be the latter entry
+        colors.splice(bucketA);//Now we can remove A too, since it was before B and thus couldn't have shifted
+        pushAvg(bucketC);
+        uniqcol = new Set(colors);
+        console.log("Unique colors after merge of closest two: "+uniqCol.size);
+      }
+
+      //Set palette to chosen colors
+      let cNum = 0;
+      for (let c of uniqCol){
+        if (cNum > 14){break;}
+        console.log("Setting color "+cNum+" to "+c);
+        this.draw.setPalette(cNum, c);
+        cNum++;
+      }
+
+      //Set each pixel to the nearest color from the palette
+      for (let i = 0; i < pixelCount; i+=4){
+        let x = (i >> 2) % this.draw.width;
+        let y = Math.floor((i >> 2) / this.draw.width);
+        this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+      }
+      this.draw.onLoad();
+    },
     image_lowestdistance(imgdata){
       var palette = [];
       var prepixels = [];
       let pixelCount = this.draw.pixelCount * 4;
-      for (var i = 0; i < 256; i++){palette.push({"n":i, "c":0});}
+      for (let i = 0; i < 256; i++){palette.push({"n":i, "c":0});}
       function myPal(pixel, r, g, b){
         var matches = {};
         var best = 16581375;//there's no worse best score
         var bestno = 0;
-        for (var i = 0; i < 256; i++){
+        for (let i = 0; i < 256; i++){
           if (ACNLFormat.RGBLookup[i] === null){continue;}
           let rgb = ACNLFormat.RGBLookup[i];
           var match = (rgb[0] - r)*(rgb[0] - r) + (rgb[1] - g)*(rgb[1] - g) + (rgb[2] - b)*(rgb[2] - b);
@@ -177,7 +311,7 @@ export default {
         palette[bestno].c++;
         prepixels[pixel] = matches;
       };
-      for (var i = 0; i < pixelCount; i+=4){myPal(i/4, imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);}
+      for (let i = 0; i < pixelCount; i+=4){myPal(i/4, imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);}
       palette.sort(function(a, b){
         if (a.c > b.c){return -1;}
         if (a.c < b.c){return 1;}
@@ -212,7 +346,7 @@ export default {
         }
       }
 
-      for (var i = 0; i < 15 && i < best_chosen.length; i++){
+      for (let i = 0; i < 15 && i < best_chosen.length; i++){
         this.draw.setPalette(i, best_chosen[i]);
       }
       //Set each pixel to the nearest color from the palette
@@ -268,7 +402,7 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    min-height: 400px;
+    height: 400px;
     color: #ffffff;
   }
   .cropper-container.hidden, .preview-and-options.hidden {
