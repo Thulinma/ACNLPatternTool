@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="cropper-container" v-show="isCropping">
+      <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
       <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
       <button @click="toggleView()">Next</button>
     </div>
@@ -53,6 +54,7 @@ export default {
       convert_quality: "high",
       draw: new DrawingTool(),
       isCropping: true,
+      fileLoaded: false,
     };
   },
   mounted(){
@@ -107,7 +109,6 @@ export default {
       }
       this.draw.onLoad();
     },
-
     //Sets the palette to the top-15 closest YUV colors
     image_yuv(imgdata){
       let palette = [];
@@ -131,7 +132,6 @@ export default {
       }
       this.draw.onLoad();
     },
-
     //Set palette to greyscale
     image_grey(imgdata){
       for (let i = 0; i < 15; i++){
@@ -150,7 +150,6 @@ export default {
       }
       this.draw.onLoad();
     },
-
     //Set palette to sepia
     image_sepia(imgdata){
       for (let i = 0; i < 9; i++){
@@ -370,7 +369,6 @@ export default {
       }
       this.draw.onLoad();
     },
-
     onFile: async function(e) {
       this.dataurl = await new Promise((resolve, reject) => {
         let fr = new FileReader();
@@ -381,21 +379,22 @@ export default {
         fr.onload = (re) => {resolve(re.target.result);};
         fr.readAsDataURL(e.target.files[0]);
       });
+      this.fileLoaded = true;
     },
-
     changeConversion(val){
       this.convert_method = val;
       this.onCrop(this.$refs.cropper.getResult());
     },
-
     changeQuality(val){
       this.convert_quality = val;
       this.onCrop(this.$refs.cropper.getResult());
     },
-
     toggleView(){
       this.isCropping = !this.isCropping;
     },
+    tryAgain(){
+      this.$refs.files.click();
+    }
   }
 }
 </script>
@@ -420,7 +419,7 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    height: 400px;
+    min-height: 400px;
     color: #ffffff;
   }
   .cropper-container.hidden, .preview-and-options.hidden {
