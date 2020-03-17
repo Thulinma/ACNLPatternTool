@@ -27,7 +27,11 @@ async function generateACNLQR(newData){
   const tInfo = drawingTool.typeInfo;
   const bytes = drawingTool.toBytes();
   const renderCanvas = document.createElement("canvas");
+  renderCanvas.width = tInfo.size;
+  renderCanvas.height = tInfo.size;
+  drawingTool.addCanvas(renderCanvas);
   const qrCanvas = document.createElement("canvas");
+  const textureCanvas = document.createElement("canvas");
   let width = 440;
   let height = 270;
   //Check if we should 3D render or not
@@ -42,17 +46,12 @@ async function generateACNLQR(newData){
   }
   if (path3D){
     //We need to 3D render!
-    renderCanvas.width = 128;
-    renderCanvas.height = 512;
-    drawingTool.addCanvas(renderCanvas, {tall:true});
+    textureCanvas.width = 128;
+    textureCanvas.height = 512;
+    drawingTool.addCanvas(textureCanvas, {tall:true});
     drawingTool.render();
-    renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
-  }
-  else {
-    //Regular render
-    renderCanvas.width = tInfo.size;
-    renderCanvas.height = tInfo.size;
-    drawingTool.addCanvas(renderCanvas);
+    textureCanvas.getContext("2d").clearRect(0, 0, 128, 1);
+  }else{
     drawingTool.render();
   }
 
@@ -136,7 +135,7 @@ async function generateACNLQR(newData){
     const camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
     let model = false;
     renderer.setClearColor( 0x000000, 0 );
-    let texture = new Texture(renderCanvas)
+    let texture = new Texture(textureCanvas)
     texture.needsUpdate = true;
     texture.encoding = sRGBEncoding;
     texture.flipY = false;
