@@ -53,6 +53,8 @@
         Save
         <object class="svg-small" :data="upArrowSvg"></object>
       </button>
+      <button @click="onOpenLocal">Open storage</button>
+      <button @click="onModalOpen">Gen QR</button>
     </div>
 
     <ModalContainer v-if="qrCode" v-on:modal-close="closeQr">
@@ -66,14 +68,20 @@
     </ModalContainer>
 
     <ModalContainer v-if="pickPatterns" v-on:modal-close="closePicks">
-      <div class="modal-window pattern-list">
-        <button v-if="allowMoveToLocal" v-on:click="picksToLocal">Store all in local storage</button>
-        <IconGenerator
-          v-for="(opt, idx) in pickPatterns"
-          :key="idx"
-          width=150 height=150 text="true" decoration="true"
-          v-on:pattclick="pickPattern"
-          :pattern="opt" />
+      <div class="modal">
+        <div class="modal-header">Local storage</div>
+        <div class="modal-window pattern-list">
+          <button v-if="allowMoveToLocal" v-on:click="picksToLocal">Store all in local storage</button>
+          <button @click="zipPicksAsACNL">Download ACNL files as .zip file</button>
+          <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
+          <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
+          <IconGenerator
+            v-for="(opt, idx) in pickPatterns"
+            :key="idx"
+            width=150 height=150 text="true" decoration="true"
+            v-on:pattclick="pickPattern"
+            :pattern="opt" />
+        </div>
       </div>
     </ModalContainer>
 
@@ -119,6 +127,7 @@ import * as API from '/libs/origin';
 import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 import saveSvg from '/assets/icons/bxs-save.svg';
 import scanSvg from '/assets/icons/bx-scan.svg';
 import paintSvg from '/assets/icons/bxs-paint.svg';
@@ -127,6 +136,10 @@ import imageAddSvg from '/assets/icons/bxs-image-add.svg';
 import phoneSvg from '/assets/icons/bxs-mobile.svg';
 import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
 import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
+import generateACNLQR from "/libs/ACNLQRGenerator";
+
+
+
 
 export default {
   name: "Editor",
@@ -184,6 +197,36 @@ export default {
       }
       this.pickPatterns = tmp;
       this.allowMoveToLocal = false;
+    },
+    zipPicksAsACNL(){
+      let zip = new JSZip();
+      for (const i in this.pickPatterns){
+        let dt = this.pickPatterns[i];
+        if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
+        zip.file(dt.title+".acnl", dt.toBytes());
+      }
+      zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
+    },
+    async zipPicksAsPNG(){
+      let zip = new JSZip();
+      for (const i in this.pickPatterns){
+        let dt = this.pickPatterns[i];
+        if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
+        const img = await generateACNLQR(dt);
+        zip.file(dt.title+".png", img.substr(22), {base64:true});
+      }
+      zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
+    },
+    async zipPicksAsBoth(){
+      let zip = new JSZip();
+      for (const i in this.pickPatterns){
+        let dt = this.pickPatterns[i];
+        if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
+        zip.file(dt.title+".acnl", dt.toBytes());
+        const img = await generateACNLQR(dt);
+        zip.file(dt.title+".png", img.substr(22), {base64:true});
+      }
+      zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
     async onOpenDB(){
       this.$router.push("/browse");
@@ -337,6 +380,7 @@ input[type="button"].downACNL, button.downACNL {
   margin: 0 auto;
   position: fixed;
   top: 8%;
+  max-height:84%;
 }
 .modal-header {
   background-color: rgba(47, 31, 14, 0.9);
@@ -389,9 +433,7 @@ input[type="button"].downACNL, button.downACNL {
   color: #00C3C9;
 }
 .pattern-list {
-  width: 80%;
-  height: 80%;
-  overflow: hidden;
+  overflow: scroll;
 }
 .topbar-buttons {
   display: inline-flex;
