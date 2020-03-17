@@ -124,7 +124,7 @@ export default {
     }
   },
   mounted: function() {
-    this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d})
+    this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d, antialias:true});
     this.renderer.setClearColor( 0x000000, 0 );
     this.renderCanvas.width = 128;
     this.renderCanvas.height = 512;

@@ -131,7 +131,7 @@ async function generateACNLQR(newData){
     const threeCanvas = document.createElement("canvas");
     threeCanvas.width = width;
     threeCanvas.height = pattHeight/2;
-    const renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas});
+    const renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas, antialias:true});
     const scene = new Scene();
     const camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
     let model = false;
