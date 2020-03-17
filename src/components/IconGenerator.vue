@@ -124,7 +124,7 @@ export default {
         let threeCanvas = document.createElement("canvas");
         threeCanvas.width = width;
         threeCanvas.height = pattHeight;
-        let renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas});
+        let renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas,antialias:true});
         let scene = new Scene();
         let camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
         let model = false;
