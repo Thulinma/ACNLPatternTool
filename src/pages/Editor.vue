@@ -6,6 +6,13 @@
           <div class="2D">
             <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
+            <div class="pattern_info">
+              <div class="pattern_title">{{patTitle}}</div>
+              <div class="pattern_by">by</div>
+              <div class="pattern_author">{{patAuthor}} from {{patTown}}</div>
+              <div class="pattern_typename">{{patTypeName}}</div>
+            </div>
+            <button @click="patInfoModal = true">Change</button>
           </div>
           <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
         </div>
@@ -57,7 +64,7 @@
       <button @click="onModalOpen">Gen QR</button>
     </div>
 
-    <ModalContainer v-if="qrCode" v-on:modal-close="closeQr">
+    <ModalContainer v-if="qrCode" v-on:modal-close="qrCode = false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="barcodeSvg"></object>
@@ -91,7 +98,29 @@
           <object class="svg nav" :data="imageAddSvg"></object>
           Convert Image
         </div>
-        <ImageLoader class="modal-window" :pattern-type="pattType" @converted="onConvert" />
+        <ImageLoader class="modal-window" :pattern-type="patType" @converted="onConvert" />
+      </div>
+    </ModalContainer>
+
+    <ModalContainer v-if="patInfoModal" v-on:modal-close="patInfoSave">
+      <div class="modal">
+        <div class="modal-header">
+          Pattern details
+        </div>
+        <div class="modal-window">
+          <div>Title: <input type="text" v-model="patTitle"></div>
+          <div>Author: <input type="text" v-model="patAuthor"></div>
+          <div>Town: <input type="text" v-model="patTown"></div>
+          <div>Type:
+            <select v-model="patType">
+              <option v-for="(ti, no) in allTypes" :value="no">{{ti.name}}</option>
+            </select>
+          <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
+          <button @click="saveAuthor">Copy author information</button>
+          <button @click="loadAuthor">Load copied author information</button>
+          <button @click="patInfoSave">Save</button>
+          <button @click="patInfoModal=false; onLoad()">Cancel</button>
+        </div>
       </div>
     </ModalContainer>
 
@@ -123,6 +152,7 @@ import ModalContainer from '/components/ModalContainer.vue';
 import ToolSelector from '/components/ToolSelector.vue';
 import NookPhoneMenu from '/components/NookPhoneMenu.vue';
 import DrawingTool from '/libs/DrawingTool';
+import ACNLFormat from '/libs/ACNLFormat';
 import * as API from '/libs/origin';
 import logger from '/utils/logger';
 import lzString from 'lz-string';
@@ -168,8 +198,14 @@ export default {
     return {
       drawingTool: new DrawingTool(),
       qrCode: false,
+      patTitle: "Empty",
+      patAuthor: "Unknown",
+      patTown: "Unknown",
+      allTypes: [],
+      storedAuthorHuman: false,
+      patInfoModal: false,
       fragment: "",
-      pattType: 9,
+      patType: 9,
       pickPatterns: false,
       allowMoveToLocal: true,
       convertImage: false,
@@ -228,6 +264,16 @@ export default {
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
+    patInfoSave(){ 
+      this.drawingTool.title = this.patTitle;
+      if (this.drawingTool.creator[0] != this.patAuthor){this.drawingTool.creator[0] = this.patAuthor;}
+      if (this.drawingTool.town[0] != this.patTown){this.drawingTool.town[0] = this.patTown;}
+      if (this.drawingTool.patternType != this.patType){
+        this.drawingTool.patternType = this.patType;
+        this.patTypeName = this.drawingTool.typeInfo.name;
+      }
+      this.patInfoModal = false;
+    },
     async onOpenDB(){
       this.$router.push("/browse");
     },
@@ -264,7 +310,11 @@ export default {
     },
     onLoad: async function(t){
       let patStr = this.drawingTool.toString();
-      this.pattType = this.drawingTool.patternType;
+      this.patType = this.drawingTool.patternType;
+      this.patTypeName = this.drawingTool.typeInfo.name;
+      this.patTitle = this.drawingTool.title;
+      this.patAuthor = this.drawingTool.creator[0];
+      this.patTown = this.drawingTool.town[0];
 
       // need to wait 2 ticks before access ref in portal
       // AFTER setting isOpenModal to true
@@ -298,9 +348,6 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    closeQr: function() {
-      this.qrCode = false;
-    },
     pickPattern: function(p){
       this.extLoad(p);
       this.pickPatterns = false;
@@ -310,12 +357,26 @@ export default {
     },
     onMainMenu: function() {
       this.mainMenu = true;
+    },
+    saveAuthor(){
+      this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
+      localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
+    },
+    loadAuthor(){
+      this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
+      this.patAuthor = this.drawingTool.creator[0];
+      this.patTown = this.drawingTool.town[0];
     }
   },
   mounted: function() {
+    if (localStorage.getItem("author_acnl")){
+      this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
+      this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
+    }
     this.drawingTool.addCanvas(this.$refs.canvas1, {grid:true});
     this.drawingTool.addCanvas(this.$refs.canvas2);
     this.drawingTool.addCanvas(this.$refs.canvas3);
+    this.allTypes = this.drawingTool.allTypes;
     this.drawingTool.onLoad(this.onLoad);
     if (this.$router.currentRoute.hash.length > 1){
       const hash = this.$router.currentRoute.hash.substring(1);
@@ -507,5 +568,9 @@ main .center canvas, main .left canvas {
 }
 canvas.fordrawing{
   background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
+}
+.pattern_info{
+  max-width:196px;
+  overflow-x:hidden;
 }
 </style>

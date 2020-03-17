@@ -177,6 +177,14 @@ class DrawingTool{
   set creator(n){this.pattern.creator = n;}
   get town(){return this.pattern.town;}
   set town(n){this.pattern.town = n;}
+  get authorStrict(){
+    let copiedCreator = "";
+    for (let i = 0; i < 44; ++i){copiedCreator += String.fromCharCode(this.pattern.dataBytes[0x2A + i]);}
+    return copiedCreator;
+  }
+  set authorStrict(n){
+    for (let i = 0; i < 44; ++i){this.pattern.dataBytes[0x2A + i] = n.charCodeAt(i);}
+  }
   get patternType(){return this.pattern.patternType;}
   set patternType(n){
     if (this.pattern.patternType != n){
@@ -187,6 +195,7 @@ class DrawingTool{
     }
   }
   get typeInfo(){return ACNLFormat.typeInfo[this.pattern.patternType];}
+  get allTypes(){return ACNLFormat.typeInfo;}
   
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
