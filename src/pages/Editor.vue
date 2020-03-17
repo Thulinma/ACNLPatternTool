@@ -116,6 +116,9 @@
               <option v-for="(ti, no) in allTypes" :value="no">{{ti.name}}</option>
             </select>
           <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
+          <div><p>
+            <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console. There is some "invisible" data attached to it that cannot be entered by hand. Use the below copy/load buttons to first "copy" your name/town from one of your own patterns, and then "load" it onto any other pattern and it should become editable for you in-game! The copied author information is stored into your browser, so it'll be there for your future visits as well.
+          </p></div>
           <button @click="saveAuthor">Copy author information</button>
           <button @click="loadAuthor">Load copied author information</button>
           <button @click="patInfoSave">Save</button>
@@ -389,6 +392,7 @@ export default {
       }
     }
     else{
+      this.onLoad();
       this.drawingTool.render();
     }
 
