@@ -12,7 +12,7 @@
     <div class="patterns">
       <div class="pattern-container" v-for="opt in results" :key="opt.bytes">
         <h3>{{opt.title}}</h3>
-        <IconGenerator v-on:pattclick="pickPattern" :pattern="opt.bytes" width=150 height=150 />
+        <IconGenerator class="pickPattern" v-on:pattclick="pickPattern" :pattern="opt.bytes" width=150 height=150 />
         <div class="pattern-details">
           <span>by {{opt.author}}</span>
           <span>from {{opt.town}}</span>
@@ -20,7 +20,7 @@
             <!-- <span v-for="tag in opt.tags" :key="tag">
               {{tag}} need to assign class based on tag
             </span> -->
-          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -107,6 +107,7 @@ export default {
 .container {
   padding: 10px 5px;
   color: #7e7261;
+  font-weight: 600;
 }
 nav {
   max-width: 80%;
@@ -143,10 +144,10 @@ nav .create-button .svg {
   pointer-events: none;
 }
 .patterns {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-gap: 10px;
+  justify-items: center;
 }
 .pattern-container {
   background-color: #A1D4CA;
@@ -168,6 +169,9 @@ nav .create-button .svg {
 }
 .pattern-container canvas {
   margin: 10px;
+}
+.pattern-container .pickPattern{
+  cursor: pointer;
 }
 .pattern-details {
   background-color: #EBE6CD;
