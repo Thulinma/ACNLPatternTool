@@ -10,7 +10,7 @@
       </button>
     </nav>
     <div class="patterns">
-      <div class="pattern-container" v-for="opt in results" :key="opt.bytes">
+      <div class="pattern-container" v-for="opt in results" :key="opt.bytes" @click="pickPattern(opt.bytes)">
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
