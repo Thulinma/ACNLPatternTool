@@ -1,13 +1,13 @@
 <template>
   <div class="tool-selector">
     <button class="tool" :class="{picked: pickedPencil}" v-on:click.prevent="pickToolPencil" v-on:contextmenu.prevent="pickToolPencil">
-      <object class="svg nav brown-circle" :data=pencilSvg></object>
+      <img class="svg nav brown-circle" :src=pencilSvg />
     </button>
     <button class="tool" :class="{picked: pickedFloodFill}" v-on:click.prevent="pickToolFloodFill" v-on:contextmenu.prevent="pickToolFloodFill">
-      <object class="svg nav brown-circle" :data=fillSvg></object>
+      <img class="svg nav brown-circle" :src=fillSvg />
     </button>
     <button class="tool" :class="{picked: pickedColorPicker}" v-on:click.prevent="pickToolColorPicker" v-on:contextmenu.prevent="pickToolColorPicker">
-      <object class="svg nav brown-circle" :data=dropperSvg></object>
+      <img class="svg nav brown-circle" :src=dropperSvg />
     </button>
   </div>
 </template>
