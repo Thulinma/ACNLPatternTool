@@ -1,10 +1,6 @@
 <template>
   <portal to="ModalManager">
-    <div class="modal-container">
-      <div
-        class="modal-overlay"
-        v-on:click="onOverlayClick($event)">
-      </div>
+    <div class="modal-container" @click.self="onOverlayClick($event)">
       <slot></slot>
     </div>
   </portal>
@@ -49,13 +45,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-overlay {
+.modal-container{
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  opacity: 0.8;
-  background-color: black;
+  background-color: rgba(0,0,0,.8);
+  display:table-cell;
+  vertical-align:middle;
+  overflow:auto;
 }
 </style>

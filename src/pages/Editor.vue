@@ -437,15 +437,12 @@ input[type="button"].downACNL, button.downACNL {
   color: #7e7261;
 }
 .modal {
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  margin: 0 auto;
-  position: fixed;
-  top: 8%;
-  max-height:84%;
+  display:flex;
+  margin:50px auto;
+  max-width: 80%;
 }
 .modal-header {
   background-color: rgba(47, 31, 14, 0.9);
@@ -458,13 +455,11 @@ input[type="button"].downACNL, button.downACNL {
   min-width: 300px;
 }
 .modal-window {
+  color: #FFFFFF;
   background-color: rgba(47, 31, 14, 0.9);
   border-radius: 35px;
   padding: 10px;
-  min-width: 800px;
-  min-height: 400px;
-  max-width: 90%;
-  max-height: 90%;
+  min-width: 600px;
 }
 .modal-info {
   display: flex;
@@ -496,9 +491,6 @@ input[type="button"].downACNL, button.downACNL {
 }
 .info-text span{
   color: #00C3C9;
-}
-.pattern-list {
-  overflow: scroll;
 }
 .topbar-buttons {
   display: inline-flex;
