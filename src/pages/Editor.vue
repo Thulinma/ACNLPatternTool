@@ -65,13 +65,13 @@
     </div>
 
     <ModalContainer v-if="qrCode" v-on:modal-close="qrCode = false">
-      <div class="modal">
-        <div class="modal-header">
-          <object class="svg nav" :data="barcodeSvg"></object>
-          Generate QR Code(s)
-        </div>
-        <ACNLQRGenerator class="modal-window" :pattern="qrCode" />
+    <div class="modal">
+      <div class="modal-header">
+        <object class="svg nav" :data="barcodeSvg"></object>
+        Generate QR Code(s)
       </div>
+      <ACNLQRGenerator class="modal-window" :pattern="qrCode" />
+    </div>
     </ModalContainer>
 
     <ModalContainer v-if="pickPatterns" v-on:modal-close="closePicks">
@@ -103,28 +103,29 @@
     </ModalContainer>
 
     <ModalContainer v-if="patInfoModal" v-on:modal-close="patInfoSave">
-      <div class="modal">
-        <div class="modal-header">
-          Pattern details
-        </div>
-        <div class="modal-window">
-          <div>Title: <input type="text" v-model="patTitle"></div>
-          <div>Author: <input type="text" v-model="patAuthor"></div>
-          <div>Town: <input type="text" v-model="patTown"></div>
-          <div>Type:
-            <select v-model="patType">
-              <option v-for="(ti, no) in allTypes" :value="no">{{ti.name}}</option>
-            </select>
-          <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
-          <div><p>
-            <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console. There is some "invisible" data attached to it that cannot be entered by hand. Use the below copy/load buttons to first "copy" your name/town from one of your own patterns, and then "load" it onto any other pattern and it should become editable for you in-game! The copied author information is stored into your browser, so it'll be there for your future visits as well.
-          </p></div>
-          <button @click="saveAuthor">Copy author information</button>
-          <button @click="loadAuthor">Load copied author information</button>
-          <button @click="patInfoSave">Save</button>
-          <button @click="patInfoModal=false; onLoad()">Cancel</button>
-        </div>
+<div class="modal">
+  <div class="modal-header">
+    Pattern details
+  </div>
+  <div class="modal-window">
+      <div>Title: <input type="text" v-model="patTitle"></div>
+      <div>Author: <input type="text" v-model="patAuthor"></div>
+      <div>Town: <input type="text" v-model="patTown"></div>
+      <div>Type:
+        <select v-model="patType">
+          <option v-for="(ti, no) in allTypes" :value="no">{{ti.name}}</option>
+        </select>
       </div>
+      <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
+      <div><p>
+        <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console. There is some "invisible" data attached to it that cannot be entered by hand. Use the below copy/load buttons to first "copy" your name/town from one of your own patterns, and then "load" it onto any other pattern and it should become editable for you in-game! The copied author information is stored into your browser, so it'll be there for your future visits as well.
+      </p></div>
+      <button @click="saveAuthor">Copy author information</button>
+      <button @click="loadAuthor">Load copied author information</button>
+      <button @click="patInfoSave">Save</button>
+      <button @click="patInfoModal=false; onLoad()">Cancel</button>
+  </div>
+</div>
     </ModalContainer>
 
     <ModalContainer v-if="false">
@@ -267,7 +268,7 @@ export default {
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
-    patInfoSave(){ 
+    patInfoSave(){
       this.drawingTool.title = this.patTitle;
       if (this.drawingTool.creator[0] != this.patAuthor){this.drawingTool.creator[0] = this.patAuthor;}
       if (this.drawingTool.town[0] != this.patTown){this.drawingTool.town[0] = this.patTown;}
