@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <nav> 
+    <nav>
       <div class="search-bar">
-        Search: <input type="text" v-on:keyup.enter="search" v-model="query">
+        Search: <input type="text" v-on:keyup.enter="search" @input="updateQuery($event)">
       </div>
       <button class="create-button" @click="goToEditor">
         Create
@@ -53,12 +53,15 @@ export default {
   methods: {
     // map using store module search
     ...mapMutations('search', [
-      'updateQuery',
-      'updateResults',
+      'updateStore',
     ]),
+    updateQuery(event) {
+      const query = event.target.value;
+      this.updateStore({ query });
+    },
     async search(){
       const results = await API.search(this.query);
-      this.updateResults({ results });
+      this.updateStore({ results });
     },
     pickPattern(p){
       const dt = new DrawingTool(p);
@@ -70,7 +73,7 @@ export default {
   },
   mounted: async function(){
     const results = await API.recent();
-    this.updateResults({ results });
+    this.updateStore({ results });
   }
 }
 </script>

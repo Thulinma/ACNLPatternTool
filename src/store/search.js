@@ -28,12 +28,10 @@ const module = {
   mutations: {
     // you only get get ONE payload argument, should ALWAYS be an object
     // convention to tack properties onto payload, EVEN IF REDUNDANT
-    updateQuery: (state, payload) => {
-      state.query = payload.query;
-    },
-    updateResults: (state, payload) => {
-      state.results = payload.results;
-    },
+    updateStore: (state, payload) => {
+      if (payload.query) state.query = payload.query;
+      if (payload.results) state.results = payload.results;
+    }
   },
 };
 
