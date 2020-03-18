@@ -24,6 +24,12 @@
           :drawing-tool="drawingTool"
           v-on:changed-current-color="onChangedCurrentColor"/>
         <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
+        <div class="colorPicker-menu" v-if="colorPickerMenu">
+          <ColorPicker
+            ref="colorPicker"
+            v-bind:drawing-tool="drawingTool"
+            v-on:color-picked="onColorPicked"/>
+        </div>
       </div>
 
       <div class="right">
@@ -36,10 +42,6 @@
         </div>
         <div class="tools-and-colors">
           <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
-          <ColorPicker
-            ref="colorPicker"
-            v-bind:drawing-tool="drawingTool"
-            v-on:color-picked="onColorPicked"/>
         </div>
       </div>
     </main>
@@ -172,9 +174,6 @@ import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
 import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
-
-
-
 export default {
   name: "Editor",
   components: {
@@ -214,6 +213,7 @@ export default {
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
+      colorPickerMenu: false,
       saveSvg,
       scanSvg,
       paintSvg,
@@ -361,6 +361,9 @@ export default {
     },
     onMainMenu: function() {
       this.mainMenu = true;
+    },
+    openColorPicker: function() {
+
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
@@ -517,6 +520,10 @@ main .left {
 }
 main .center canvas, main .left canvas {
   box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
+}
+main .center .colorPicker-menu {
+  height: 0;
+  width: 100%;
 }
 .bottom-buttons {
   padding: 20px 10% 0 0;

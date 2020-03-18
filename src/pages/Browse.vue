@@ -12,15 +12,32 @@
     <div class="patterns">
       <div class="pattern-container" v-for="opt in results" :key="opt.bytes">
         <h3>{{opt.title}}</h3>
+        <div class="type-tags">
+          <span v-if="opt.f_type != null" class="tag type">
+            {{opt.f_type.toUpperCase()}}
+          </span>
+          <span v-if="opt.f_type_a != null" class="tag type">
+            {{opt.f_type_a}}
+          </span>
+          <span v-if="opt.f_type_b != null" class="tag type">
+            {{opt.f_type_b}}
+          </span>
+        </div>
         <IconGenerator class="pickPattern" v-on:pattclick="pickPattern" :pattern="opt.bytes" width=150 height=150 />
         <div class="pattern-details">
           <span>by {{opt.author}}</span>
           <span>from {{opt.town}}</span>
-          <div class="pattern-tags">
-            <!-- <span v-for="tag in opt.tags" :key="tag">
-              {{tag}} need to assign class based on tag
-            </span> -->
         </div>
+        <div class="pattern-tags">
+          <span v-if="opt.style_main != null" class="tag" :style="tagClass(opt.style_main)">
+            {{opt.style_main}}
+          </span>
+          <span v-if="opt.style_sub_a != null" class="tag" :style="tagClass(opt.style_sub_a)">
+            {{opt.style_sub_a}}
+          </span>
+          <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
+            {{opt.style_sub_b}}
+          </span>
         </div>
       </div>
     </div>
@@ -34,6 +51,29 @@ import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
 import * as API from '/libs/origin';
 import addSvg from '/assets/icons/bxs-plus-circle.svg';
+
+const colors = {
+  natural: '#EAC558',
+  cute: '#E96598',
+  sporty: '#5EC299',
+  cool: '#6BB6DC',
+  rustic: '#74940D',
+  hip: '#EB7E32',
+  harmonious: '#DC3D32',
+  elegant: '#D589E8',
+  modern: '#5BC0B3',
+  historical: '#8D2E4B',
+  civic: '#4F57C8',
+  silly: '#E64369',
+  spooky: '#363655',
+  'sci-fi': '#408877',
+  aquatic: '#328BCE',
+  floral: '#EA80DA',
+  animal: '#AF2E33',
+  holiday: '#48903B',
+  food: '#B156FD',
+  brand: '#E93F33',
+};
 
 export default {
   name: "Browse",
@@ -49,6 +89,7 @@ export default {
       'query',
       'results',
     ]),
+    
   },
   methods: {
     // map using store module search
@@ -70,6 +111,9 @@ export default {
     goToEditor() {
       this.$router.push({ path: `/editor` });
     },
+    tagClass(tag){
+      if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase()]}`};
+    },
   },
   mounted: async function(){
     const results = await API.recent();
@@ -79,35 +123,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// maybe a calculated class?
-// TODO: use css grids instead of flexbox
-:root {
-  --type: #858585;
-  --natural: #EAC558;
-  --cute: #E96598;
-  --sporty: #5EC299;
-  --cool: #6BB6DC;
-  --rustic: #74940D;
-  --hip: #EB7E32;
-  --harmonious: #DC3D32;
-  --elegant: #D589E8;
-  --modern: #5BC0B3;
-  --historical: #8D2E4B;
-  --civic: #4F57C8;
-  --silly: #E64369;
-  --spooky: #363655;
-  --sci-fi: #408877;
-  --aquatic: #328BCE;
-  --floral: #EA80DA;
-  --animal: #AF2E33;
-  --holiday: #48903B;
-  --food: #B156FD;
-  --brand: #E93F33;
-}
+$type: #858585;
+
 .container {
   padding: 10px 5px;
   color: #7e7261;
-  font-weight: 600;
 }
 nav {
   max-width: 80%;
@@ -158,9 +178,9 @@ nav .create-button .svg {
   align-items: center;
   justify-content: center;
   width: 220px;
-  height: 280px;
+  height: 300px;
   max-width: 220px;
-  max-height: 280px;
+  max-height: 300px;
   margin: 10px;
   box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
   background-image: radial-gradient(#89C3B9 20%, transparent 20%), radial-gradient(#89C3B9 20%, transparent 20%);
@@ -182,12 +202,22 @@ nav .create-button .svg {
   padding: 8px 12px;
   width: 150px;
 }
-.tags {
-  border-radius: 35px;
-  padding: 2px 3px;
-  color: #FFFFFF;
+.type-tags, .pattern-tags{
+  min-height: 30px;
+  display: flex;
+  align-items: center;
 }
-.tags .type {
-  background-color: #858585;
+.type-tags .type {
+  background-color: $type;
+  text-transform: uppercase;
+}
+.tag {
+  border-radius: 35px;
+  padding: 3px 5px;
+  margin: 0 2px;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  font-size: 11px;
+  background-color: $type;
 }
 </style>
