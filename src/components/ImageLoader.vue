@@ -2,7 +2,7 @@
   <div>
     <div class="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" />
+      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" /></div>
       <button @click="toggleView()">Next</button>
     </div>
     <input v-show="false" type="file" ref="files" accept="image/*" v-on:change="onFile" />
@@ -456,5 +456,9 @@ export default {
     display: flex;
     justify-content: space-between;
     min-width: 220px;
+  }
+  .outercropper{
+    width:400px;
+    height:400px;
   }
 </style>
