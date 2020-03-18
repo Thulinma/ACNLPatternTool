@@ -24,8 +24,8 @@ const encodeQueryParams = (params) => {
 };
 
 // Upload
-const upload = async (pattData) => {
-  const response = await api.post('api.php', {pattern:pattData});
+const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSFW) => {
+  const response = await api.post('api.php', {pattern:pattData, styletag_a:styleA, styletag_b:styleB, styletag_c:styleC, typetag_a:typeA, typetag_b:typeB, typetag_c:typeC, nokids:(NSFW?"Y":"")});
   return response.data;
 };
 
@@ -48,7 +48,7 @@ const recent = async () => {
 };
 
 const tags_style = ['Natural','Cute','Sporty','Cool','Rustic','Hip','Harmonious','Elegant','Modern','Historical','Civic','Silly','Spooky','Sci-Fi','Aquatic','Floral','Animal','Holiday','Food','Brand'];
-const tags_type = ['Path','Clothing','Hat','Wallpaper','Carpet','Furniture','Flag','Sign','Logo'];
+const tags_type = ['Path','Clothing','Hat','Wallpaper','Carpet','Furniture','Flag','Sign','Logo','Poster'];
 
 export {
   upload,

@@ -47,22 +47,23 @@
     </main>
 
     <div class="bottom-buttons">
-      <button v-on:click="convertImage = true">
+      <button @click="convertImage = true">
         <object class="svg nav brown-circle" :data="imageAddSvg"></object>
         Convert
       </button>
-      <button v-on:click="$refs.fileloader.open()">
+      <button @click="$refs.fileloader.open()">
           <object class="svg nav brown-circle" :data="scanSvg"></object>
-          Scan QR / load file
+          Load file / code
       </button>
       <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
-      <!-- <input class="downACNL" type="button" :value="$tc('editor.download')" v-on:click="downACNL" /> -->
-      <button class="downACNL" :value="$tc('editor.download')" v-on:click="downACNL">
+      <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
         <object class="svg nav white-circle" :data="saveSvg"></object>
         Save
         <object class="svg-small" :data="upArrowSvg"></object>
       </button>
       <button @click="onOpenLocal">Open storage</button>
+      <button @click="publishModal=true">Publish</button>
+      <button @click="onLocalSave">Store locally</button>
       <button @click="onModalOpen">Gen QR</button>
     </div>
 
@@ -72,7 +73,10 @@
           <object class="svg nav" :data="barcodeSvg"></object>
           Generate QR Code(s)
         </div>
-        <ACNLQRGenerator class="modal-window" :pattern="qrCode" />
+        <div class="modal-window modal-centered">
+          <ACNLQRGenerator :pattern="qrCode" />
+          <button @click="downPNG">Save image</button>
+        </div>
       </div>
     </ModalContainer>
 
@@ -119,13 +123,81 @@
               </select>
             </div>
             <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
-            <div><p>
+            <div><p style="max-width:40em;">
               <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console. There is some "invisible" data attached to it that cannot be entered by hand. Use the below copy/load buttons to first "copy" your name/town from one of your own patterns, and then "load" it onto any other pattern and it should become editable for you in-game! The copied author information is stored into your browser, so it'll be there for your future visits as well.
             </p></div>
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
             <button @click="patInfoSave">Save</button>
             <button @click="patInfoModal=false; onLoad()">Cancel</button>
+        </div>
+      </div>
+    </ModalContainer>
+
+    <ModalContainer v-if="publishModal" v-on:modal-close="publishModal=false">
+      <div class="modal">
+        <div class="modal-header">
+          Publish to public database
+        </div>
+        <div class="modal-window">
+            <div class="textual"><p style="max-width:40em;">
+              Really cool that you want to publish your pattern! Publishing means everyone will be able to search for and link to your pattern easily, hopefully allowing many others to enjoy your work. Please do keep the following in mind:
+            </p><ul>
+              <li>Published patterns cannot be deleted or edited. So, please don't publish unfinished works.</li>
+              <li>Please try to title and tag your pattern appropriately, so that it can be found easily.</li>
+              <li>If any pattern might be inappropriate for children, please flag it accordingly to protect the innocent.</li>
+              <li>Be nice to authors! It's okay to publish the work of others, but please don't change an existing work's author name/town to your own. Respect their skills!</li>
+            </ul><p>
+              This database is unmoderated and besides the above guidelines, there are no rules. Please play nice, respect the guidelines, and it can stay that way. 👍
+            </p></div>
+            <div>
+              <IconGenerator :pattern="drawingTool" width=150 height=150 />
+            </div>
+            <div class="pattern_title">{{patTitle}}</div>
+            <div class="pattern_by">by</div>
+            <div class="pattern_author">{{patAuthor}} from {{patTown}}</div>
+            <div class="pattern_typename">{{patTypeName}}</div>
+            <div>Main style:
+              <select v-model="pubStyleA">
+                <option value="">-</option>
+                <option v-for="(s, no) in API.tags_style" :value="s">{{s}}</option>
+              </select>
+            </div>
+            <div>Additional style:
+              <select v-model="pubStyleB">
+                <option value="">-</option>
+                <option v-for="(s, no) in API.tags_style" :value="s">{{s}}</option>
+              </select>
+            </div>
+            <div>Additional style:
+              <select v-model="pubStyleC">
+                <option value="">-</option>
+                <option v-for="(s, no) in API.tags_style" :value="s">{{s}}</option>
+              </select>
+            </div>
+            <div>Main type:
+              <select v-model="pubTypeA">
+                <option value="">-</option>
+                <option v-for="(s, no) in API.tags_type" :value="s">{{s}}</option>
+              </select>
+            </div>
+            <div>Additional type:
+              <select v-model="pubTypeB">
+                <option value="">-</option>
+                <option v-for="(s, no) in API.tags_type" :value="s">{{s}}</option>
+              </select>
+            </div>
+            <div>Additional type:
+              <select v-model="pubTypeC">
+                <option value="">-</option>
+                <option v-for="(s, no) in API.tags_type" :value="s">{{s}}</option>
+              </select>
+            </div>
+            <div>
+              <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
+            </div>
+            <button @click="onPublish">Save</button>
+            <button @click="publishModal=false; onLoad()">Cancel</button>
         </div>
       </div>
     </ModalContainer>
@@ -190,6 +262,13 @@ export default {
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
+      if (to.hash.startsWith("#H:")){
+        API.view(to.hash.substring(3)).then((r)=>{
+          this.drawingTool.load(r);
+        });
+        next();
+        return;
+      }
       let newHash = lzString.compressToEncodedURIComponent(this.drawingTool.toString());
       if (to.hash !== "#" + newHash) {
         this.drawingTool.load(lzString.decompressFromEncodedURIComponent(to.hash.substring(1)));
@@ -222,11 +301,24 @@ export default {
       phoneSvg,
       downArrowSvg,
       upArrowSvg,
+      pubStyleA: "",
+      pubStyleB: "",
+      pubStyleC: "",
+      pubTypeA: "",
+      pubTypeB: "",
+      pubTypeC: "",
+      pubNSFW: "",
+      publishModal: false,
+      API:API
     };
   },
   methods: {
-    onPublish(){
-      API.upload(btoa(this.drawingTool.toString()));
+    async onPublish(){
+      let uplStatus = await API.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
+      if (uplStatus["upload"]){
+        this.$router.push({ hash: "H:"+uplStatus["upload"] });
+      }
+      this.publishModal = false;
     },
     onOpenLocal(){
       let tmp = {};
@@ -267,6 +359,10 @@ export default {
         zip.file(dt.title+".png", img.substr(22), {base64:true});
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
+    },
+    async downPNG(){
+      const img = await generateACNLQR(this.drawingTool);
+      saveAs(img, this.drawingTool.title+".png");
     },
     patInfoSave(){
       this.drawingTool.title = this.patTitle;
@@ -326,11 +422,13 @@ export default {
       await this.$nextTick();
       await this.$nextTick();
 
+      /*
       const newHash = lzString.compressToEncodedURIComponent(patStr);
       const newPixHash = "#H:"+this.drawingTool.pixelHash;
       if (this.$router.currentRoute.hash !== "#" + newHash && this.$router.currentRoute.hash !== newPixHash) {
-        //this.$router.push({ hash: newHash });
+        this.$router.push({ hash: newHash });
       }
+      */
       return;
     },
     extLoad: function(data) {
@@ -360,7 +458,8 @@ export default {
       this.pickPatterns = false;
     },
     onMainMenu: function() {
-      this.mainMenu = true;
+      this.$router.push("/");
+      //this.mainMenu = true;
     },
     openColorPicker: function() {
 
@@ -447,6 +546,12 @@ input[type="button"].downACNL, button.downACNL {
   display:flex;
   margin:50px auto;
   max-width: 80%;
+}
+.modal-centered{
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  display:flex;
 }
 .modal-header {
   background-color: rgba(47, 31, 14, 0.9);
@@ -576,5 +681,11 @@ canvas.fordrawing{
 .pattern_info{
   max-width:196px;
   overflow-x:hidden;
+}
+.textual li{
+  margin-left:15px;
+}
+.textual li::before{
+  content: '- '
 }
 </style>

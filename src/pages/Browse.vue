@@ -23,7 +23,7 @@
             {{opt.f_type_b}}
           </span>
         </div>
-        <IconGenerator class="pickPattern" v-on:pattclick="pickPattern" :pattern="opt.bytes" width=150 height=150 />
+        <IconGenerator class="pickPattern" :pattern="opt.bytes" width=150 height=150 />
         <div class="pattern-details">
           <span>by {{opt.author}}</span>
           <span>from {{opt.town}}</span>
