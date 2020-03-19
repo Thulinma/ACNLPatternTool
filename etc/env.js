@@ -4,6 +4,7 @@ const signale = require('signale');
 const {
   clientEnvConfig,
   defaultEnv,
+  transformEnv,
   validateEnv
 } = require('../config/env.config');
 const { pathToEnv } = require('./paths');
@@ -72,7 +73,10 @@ const buildClient = () => {
   // construct client env from what is available
   const clientEnv = clientAvailEnvVars
     .reduce((env, envVar) => {
-      env[envVar] = process.env[envVar];
+      if (envVar in transformEnv)
+        env[envVar] = transformEnv[envVar]();
+      else
+        env[envVar] = process.env[envVar];
       return env;
     }, {});
   return clientEnv;
