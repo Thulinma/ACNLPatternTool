@@ -22,13 +22,13 @@
         <Palette
           ref="palette"
           :drawing-tool="drawingTool"
-          v-on:changed-current-color="onChangedCurrentColor"/>
+          @changed-current-color="onChangedCurrentColor"/>
         <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
         <div class="colorPicker-menu" ref="colorPickerMenu">
           <ColorPicker
             ref="colorPicker"
-            v-bind:drawing-tool="drawingTool"
-            v-on:color-picked="onColorPicked"/>
+            :drawing-tool="drawingTool"
+            @color-picked="onColorPicked"/>
         </div>
       </div>
 
@@ -41,7 +41,7 @@
           </button>
         </div>
         <div class="tools-and-colors">
-          <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
+          <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" />
           <span @click="openColorPicker">Open Color Choices</span>
         </div>
       </div>
@@ -56,7 +56,7 @@
           <object class="svg nav brown-circle" :data="scanSvg"></object>
           Load file / code
       </button>
-      <FileLoader v-show="false" ref="fileloader" v-on:qr-load="extLoad" v-on:qr-multiload="extMultiLoad"  />
+      <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
       <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
         <object class="svg nav white-circle" :data="saveSvg"></object>
         Save
@@ -68,7 +68,7 @@
       <button @click="onModalOpen">Gen QR</button>
     </div>
 
-    <ModalContainer v-if="qrCode" v-on:modal-close="qrCode = false">
+    <ModalContainer v-if="qrCode" @modal-close="qrCode = false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="barcodeSvg"></object>
@@ -81,11 +81,11 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="pickPatterns" v-on:modal-close="closePicks">
+    <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
       <div class="modal">
         <div class="modal-header">Local storage</div>
         <div class="modal-window pattern-list">
-          <button v-if="allowMoveToLocal" v-on:click="picksToLocal">Store all in local storage</button>
+          <button v-if="allowMoveToLocal" @click="picksToLocal">Store all in local storage</button>
           <button @click="zipPicksAsACNL">Download ACNL files as .zip file</button>
           <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
           <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
@@ -93,13 +93,13 @@
             v-for="(opt, idx) in pickPatterns"
             :key="idx"
             width=150 height=150 text="true" decoration="true"
-            v-on:pattclick="pickPattern"
+            @pattclick="pickPattern"
             :pattern="opt" />
         </div>
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="convertImage" v-on:modal-close="convertImage=false">
+    <ModalContainer v-if="convertImage" @modal-close="convertImage=false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="imageAddSvg"></object>
@@ -109,7 +109,7 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="patInfoModal" v-on:modal-close="patInfoSave">
+    <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
       <div class="modal">
         <div class="modal-header">
           Pattern details
@@ -139,7 +139,7 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="publishModal" v-on:modal-close="publishModal=false">
+    <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
       <div class="modal">
         <div class="modal-header">
           Publish to public database
@@ -245,7 +245,7 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="mainMenu" v-on:modal-close="mainMenu=false">
+    <ModalContainer v-if="mainMenu" @modal-close="mainMenu=false">
       <div class="modal">
         <NookPhoneMenu />
       </div>

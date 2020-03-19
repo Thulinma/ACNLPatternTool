@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="iCanvas" v-on:click="pattClick" :width="width" :height="height" />
+  <canvas ref="iCanvas" @click="pattClick" :width="width" :height="height" />
 </template>
 
 <script>

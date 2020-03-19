@@ -5,7 +5,7 @@
       <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" /></div>
       <button @click="toggleView()">Next</button>
     </div>
-    <input v-show="false" type="file" ref="files" accept="image/*" v-on:change="onFile" />
+    <input v-show="false" type="file" ref="files" accept="image/*" @change="onFile" />
     <div class="preview-and-options" v-show="!isCropping">
       <h3>Please select your conversion type.</h3>
       <div class="preview">

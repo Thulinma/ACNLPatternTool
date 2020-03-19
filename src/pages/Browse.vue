@@ -2,7 +2,7 @@
   <div class="container">
     <nav>
       <div class="search-bar">
-        Search: <input type="text" v-on:keyup.enter="search" @input="updateQuery($event)">
+        Search: <input type="text" @keyup.enter="search" @input="updateQuery($event)">
       </div>
       <button class="create-button" @click="goToEditor">
         Create

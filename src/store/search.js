@@ -2,8 +2,8 @@ import origin from "/libs/origin";
 
 // 'data' for stores, when mapping, use computed
 const state = {
-  queryHasChanged: true,
   query: "",
+  queryHasChanged: true,
   results: [],
 };
 

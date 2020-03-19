@@ -1,5 +1,5 @@
 <template>
-  <img :src="image" v-on:click="pattClick" />
+  <img :src="image" @click="pattClick" />
 </template>
 
 <script>

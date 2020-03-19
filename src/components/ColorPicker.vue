@@ -4,42 +4,42 @@
       <div
         class="swatch-color-block"
         v-for="(block, index) in colorBlocks"
-        v-bind:key="index">
+        :key="index">
         <div
           v-for="color in block"
           v-if="currColor !== color"
-          v-bind:key="color"
+          :key="color"
           class="swatch-color"
-          v-bind:style="{ backgroundColor: color }"
-          v-on:click="onColorClick($event, color)"
-          v-on:mousemove="onColorMousemove($event, color)">
+          :style="{ backgroundColor: color }"
+          @click="onColorClick($event, color)"
+          @mousemove="onColorMousemove($event, color)">
         </div>
         <div
           v-else
-          v-bind:key="color"
+          :key="color"
           class="swatch-color picked"
-          v-bind:style="{ backgroundColor: color }"
-          v-on:click="onColorClick($event, color)"
-          v-on:mousemove="onColorMousemove($event, color)">
+          :style="{ backgroundColor: color }"
+          @click="onColorClick($event, color)"
+          @mousemove="onColorMousemove($event, color)">
         </div>
       </div>
       <div class="swatch-mono-block">
         <div
           v-for="color in monoBlock"
           v-if="currColor !== color"
-          v-bind:key="color"
+          :key="color"
           class="swatch-color"
-          v-bind:style="{ backgroundColor: color }"
-          v-on:click="onColorClick($event, color)"
-          v-on:mousemove="onColorMousemove($event, color)">
+          :style="{ backgroundColor: color }"
+          @click="onColorClick($event, color)"
+          @mousemove="onColorMousemove($event, color)">
         </div>
         <div
           v-else
-          v-bind:key="color"
+          :key="color"
           class="swatch-color picked"
-          v-bind:style="{ backgroundColor: color }"
-          v-on:click="onColorClick($event, color)"
-          v-on:mousemove="onColorMousemove($event, color)">
+          :style="{ backgroundColor: color }"
+          @click="onColorClick($event, color)"
+          @mousemove="onColorMousemove($event, color)">
         </div>
       </div>
   </div>

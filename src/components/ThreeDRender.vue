@@ -3,11 +3,11 @@
     class="threeD"
     v-show="model"
     ref="canvas3d"
-    v-on:mousemove.prevent="onRotate"
-    v-on:mousedown.prevent="onRotateStart"
-    v-on:mouseup.prevent="onRotateStop"
-    v-on:mouseout="onRotateStop"
-    v-on:wheel.prevent="onZoom"
+    @mousemove.prevent="onRotate"
+    @mousedown.prevent="onRotateStart"
+    @mouseup.prevent="onRotateStop"
+    @mouseout="onRotateStop"
+    @wheel.prevent="onZoom"
     :width="width"
     :height="height"/>
 </template>

@@ -7,7 +7,7 @@
       ref="files"
       accept="image/*,.acnl,.dat,.zip"
       multiple
-      v-on:change="onFile" />
+      @change="onFile" />
   </div>
 </template>
 

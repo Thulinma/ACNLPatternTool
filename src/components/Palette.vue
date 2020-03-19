@@ -5,18 +5,18 @@
         v-for="i in 15"
         v-if="drawingTool.currentColor !== i-1"
         class="palette-color"
-        v-bind:key="i-1"
-        v-bind:style="{ backgroundColor: paletteColors[i-1] }"
-        v-on:click="onColorClick($event, i-1)"
-        v-on:mousemove="onColorMousemove($event, i-1)">
+        :key="i-1"
+        :style="{ backgroundColor: paletteColors[i-1] }"
+        @click="onColorClick($event, i-1)"
+        @mousemove="onColorMousemove($event, i-1)">
       </div>
       <div
         v-else
-        v-bind:key="i-1"
+        :key="i-1"
         class="palette-color picked"
-        v-bind:style="{ backgroundColor: paletteColors[i-1] }"
-        v-on:click="onColorClick($event, i-1)"
-        v-on:mousemove="onColorMousemove($event, i-1)">
+        :style="{ backgroundColor: paletteColors[i-1] }"
+        @click="onColorClick($event, i-1)"
+        @mousemove="onColorMousemove($event, i-1)">
       </div>
     </div>
   </div>

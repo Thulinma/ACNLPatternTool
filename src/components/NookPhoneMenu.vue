@@ -5,27 +5,27 @@
     </div>
     <h2>Main Menu</h2>
     <div class="nook-buttons">
-        <!-- <button v-on:click="onLocalSave"> -->
+        <!-- <button @click="onLocalSave"> -->
         <button>
             <object class="svg nav brown-circle" :data="storageAddSvg"></object>
             Save to Personal Storage
         </button>
-        <!-- <button v-on:click="onPublish"> -->
+        <!-- <button @click="onPublish"> -->
         <button>
             <object class="svg nav brown-circle" :data="storageAddSvg"></object>
             Publish
         </button>
-        <!-- <button v-on:click="onOpenDB"> -->
+        <!-- <button @click="onOpenDB"> -->
         <button>
             <object class="svg nav brown-circle" :data="storageSvg"></object>
             Open DB
         </button>
-        <!-- <button v-on:click="onOpenLocal"> -->
+        <!-- <button @click="onOpenLocal"> -->
         <button>
             <object class="svg nav brown-circle" :data="storageSvg"></object>
             Open Storage
         </button>
-        <!-- <button v-on:click="onModalOpen"> -->
+        <!-- <button @click="onModalOpen"> -->
         <button>
             <object class="svg nav brown-circle" :data="barcodeSvg"></object>
             Generate QR code(s)
