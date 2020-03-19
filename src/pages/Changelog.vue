@@ -2,7 +2,7 @@
   <div>
   <h1>Changelog</h1>
   <dl>
-    <dt>March 18(?), 2020</dt>
+    <dt>March 19, 2020</dt>
     <dd>
       Massive update in a collaboration with two new main developers (DamSenViet and Myumi):
       <ul>
@@ -22,6 +22,7 @@
         <li>3D models can now be rotated and zoomed using the mouse/mousewheel</li>
         <li>Undo/redo support</li>
         <li>Added quantize through median cut conversion mode</li>
+        <li>Added support for downloading .zips of collections, containing QR images, ACNL files, or both</li>
       </ul>
     </dd>
     <dt>March 1, 2020</dt>

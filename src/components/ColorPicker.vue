@@ -94,14 +94,13 @@ export default {
   user-select: none;
   display: inline-flex;
   flex-wrap: wrap;
-  padding: 10px;
-  width: 512px;
+  width: 240px;
 }
 
 .swatch-color-block {
   height: 45px;
   width: 45px;
-  margin: 5px;
+  margin: 7.5px;
   display: inline-block;
 }
 
@@ -113,7 +112,7 @@ export default {
     white 2px,
     white 4px
   );
-  margin: 5px;
+  margin: 7.5px;
 }
 
 .swatch-color {

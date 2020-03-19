@@ -42,30 +42,32 @@
         </div>
         <div class="tools-and-colors">
           <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" />
-          <span @click="openColorPicker">Open Color Choices</span>
+          <div class="tool-buttons">
+            <button @click="openColorPicker">Open color editor</button>
+            <button @click="convertImage = true">
+              <object class="svg nav brown-circle" :data="imageAddSvg"></object>
+              Convert
+            </button>
+            <button @click="$refs.fileloader.open()">
+                <object class="svg nav brown-circle" :data="scanSvg"></object>
+                Load file / code
+            </button>
+            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
+            <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
+              <object class="svg nav white-circle" :data="saveSvg"></object>
+              Save
+              <object class="svg-small" :data="upArrowSvg"></object>
+            </button>
+            <button @click="onOpenLocal">Open storage</button>
+            <button @click="publishModal=true">Publish</button>
+            <button @click="onLocalSave">Store locally</button>
+            <button @click="onModalOpen">Gen QR</button>
+          </div>
         </div>
       </div>
     </main>
 
     <div class="bottom-buttons">
-      <button @click="convertImage = true">
-        <object class="svg nav brown-circle" :data="imageAddSvg"></object>
-        Convert
-      </button>
-      <button @click="$refs.fileloader.open()">
-          <object class="svg nav brown-circle" :data="scanSvg"></object>
-          Load file / code
-      </button>
-      <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
-      <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
-        <object class="svg nav white-circle" :data="saveSvg"></object>
-        Save
-        <object class="svg-small" :data="upArrowSvg"></object>
-      </button>
-      <button @click="onOpenLocal">Open storage</button>
-      <button @click="publishModal=true">Publish</button>
-      <button @click="onLocalSave">Store locally</button>
-      <button @click="onModalOpen">Gen QR</button>
     </div>
 
     <ModalContainer v-if="qrCode" @modal-close="qrCode = false">
@@ -402,8 +404,8 @@ export default {
     },
     patInfoSave(){
       this.drawingTool.title = this.patTitle;
-      if (this.drawingTool.creator[0] != this.patAuthor){this.drawingTool.creator[0] = this.patAuthor;}
-      if (this.drawingTool.town[0] != this.patTown){this.drawingTool.town[0] = this.patTown;}
+      if (this.drawingTool.creator[0] != this.patAuthor){this.drawingTool.creator = this.patAuthor;}
+      if (this.drawingTool.town[0] != this.patTown){this.drawingTool.town = this.patTown;}
       if (this.drawingTool.patternType != this.patType){
         this.drawingTool.patternType = this.patType;
         this.patTypeName = this.drawingTool.typeInfo.name;
@@ -499,9 +501,7 @@ export default {
     },
     openColorPicker: function() {
       this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-      // close the menu if its open
-      if (!this.$data.colorPickerMenu) return this.$refs.colorPickerMenu.style.height = '0px';
-      this.$refs.colorPickerMenu.style.height = '160px';
+      this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:285)+'px';
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
@@ -667,14 +667,15 @@ main .center canvas, main .left canvas {
 }
 main .center .colorPicker-menu {
   height: 0;
-  width: 512px;
   position: fixed;
   z-index: 1;
-  overflow-x: hidden;
+  overflow: hidden;
   transition: 0.5s;
   top: 60px;
-  border-radius: 35px;
+  border-radius: 0 0 35px 35px;
   background-color: #f1b5c1;
+  left:50%;
+  transform: translate(-50%);
 }
 .bottom-buttons {
   padding: 20px 10% 0 0;
@@ -720,6 +721,14 @@ main .center .colorPicker-menu {
   align-items: center;
   border-radius: 0 35px 35px 0;
   background-color: #f1b5c1;
+}
+.tool-buttons {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: right;
+}
+.tool-buttons button{
+  margin:5px;
 }
 canvas.fordrawing{
   background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
