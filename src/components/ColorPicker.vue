@@ -93,10 +93,9 @@ export default {
 .swatch {
   user-select: none;
   display: inline-flex;
-  justify-content: center;
   flex-wrap: wrap;
   padding: 10px;
-  width: 160px;
+  width: 512px;
 }
 
 .swatch-color-block {
@@ -114,10 +113,6 @@ export default {
     white 2px,
     white 4px
   );
-  height: 12px;
-  width: 150px;
-  float: left;
-  overflow: hidden;
   margin: 5px;
 }
 

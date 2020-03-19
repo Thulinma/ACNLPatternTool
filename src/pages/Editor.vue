@@ -24,7 +24,7 @@
           :drawing-tool="drawingTool"
           v-on:changed-current-color="onChangedCurrentColor"/>
         <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
-        <div class="colorPicker-menu" v-if="colorPickerMenu">
+        <div class="colorPicker-menu" ref="colorPickerMenu">
           <ColorPicker
             ref="colorPicker"
             v-bind:drawing-tool="drawingTool"
@@ -42,6 +42,7 @@
         </div>
         <div class="tools-and-colors">
           <ToolSelector v-on:newtool="toolChange" v-on:newtoolalt="toolChangeAlt" />
+          <span @click="openColorPicker">Open Color Choices</span>
         </div>
       </div>
     </main>
@@ -497,7 +498,10 @@ export default {
       //this.mainMenu = true;
     },
     openColorPicker: function() {
-
+      this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
+      // close the menu if its open
+      if (!this.$data.colorPickerMenu) return this.$refs.colorPickerMenu.style.height = '0px';
+      this.$refs.colorPickerMenu.style.height = '160px';
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
@@ -663,7 +667,14 @@ main .center canvas, main .left canvas {
 }
 main .center .colorPicker-menu {
   height: 0;
-  width: 100%;
+  width: 512px;
+  position: fixed;
+  z-index: 1;
+  overflow-x: hidden;
+  transition: 0.5s;
+  top: 60px;
+  border-radius: 35px;
+  background-color: #f1b5c1;
 }
 .bottom-buttons {
   padding: 20px 10% 0 0;
