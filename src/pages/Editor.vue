@@ -201,7 +201,7 @@
               <select v-model="pubTypeA">
                 <option value="">-</option>
                 <option
-                  v-for="(s, no) in origin.tags_style"
+                  v-for="(s, no) in origin.tags_type"
                   :key="no"
                   :value="s">
                   {{s}}
@@ -212,7 +212,7 @@
               <select v-model="pubTypeB">
                 <option value="">-</option>
                 <option
-                  v-for="(s, no) in origin.tags_style"
+                  v-for="(s, no) in origin.tags_type"
                   :key="no"
                   :value="s">
                   {{s}}
@@ -223,7 +223,7 @@
               <select v-model="pubTypeC">
                 <option value="">-</option>
                 <option
-                  v-for="(s, no) in origin.tags_style"
+                  v-for="(s, no) in origin.tags_type"
                   :key="no"
                   :value="s">
                   {{s}}
