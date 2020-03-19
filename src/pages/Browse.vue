@@ -112,7 +112,10 @@ export default {
     ]),
     async loadFromRoute(route) {
       const query = route.query.q;
-      if (query != null) await this.setOptions({ query });
+      if (query != null) {
+        await this.setOptions({ query });
+        if (query.length == 0) this.$router.replace({ query: {} });
+      }
       else await this.setOptions({ query: "" });
       await this.getQueryResults();
     },
