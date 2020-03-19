@@ -13,8 +13,12 @@ const argv = yargs
   })
   .option("compressed", {
     alias: "c",
-    default: false,
     describe: "produces only compressed files",
+    type: "boolean"
+  })
+  .option("uncompressed", {
+    alias: "u",
+    describe: "produces only uncompressed files",
     type: "boolean"
   })
   .option("analyze", {
@@ -24,6 +28,7 @@ const argv = yargs
     boolean: true
   })
   .conflicts("d", "p")
+  .conflicts("u", "c")
   .parse();
 
 // overload NODE_ENV with command line option
@@ -49,10 +54,11 @@ const {
   webpackDevConfig,
   webpackProdConfig,
 } = require('../config/webpack.config');
-const { pathToBundleStats } = require('../etc/paths');
 const {
-  removeUncompressedBuild
-} = require('../etc/utils');
+  pathToBuild,
+  pathToBundleStats,
+} = require('../etc/paths');
+const compress = require('../etc/compress');
 const { NODE_ENV } = process.env;
 
 // check process args, allow build with forced settings
@@ -102,9 +108,14 @@ compiler.hooks.done.tap('done', (stats) => {
     messages.warnings.forEach(w => console.log(w));
   }
 
+  compress.create(pathToBuild);
   if (argv.compressed) {
-    removeUncompressedBuild();
+    compress.destroy(pathToBuild, false); // remove uncompressed
     signale.success('Uncompressed files removed from build.')
+  }
+  if (argv.uncompressed) {
+    compress.destroy(pathToBuild, true); // remove compressed
+    signale.success('Compressed files removed from build.')
   }
 });
 

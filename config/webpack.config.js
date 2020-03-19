@@ -5,7 +5,6 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
 const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
@@ -206,17 +205,6 @@ const webpackProdConfig = {
       logo: pathToFavicon,
       inject: true,
       prefix: "favicons",
-    }),
-    new CompressionPlugin({
-      algorithm: "gzip",
-      // threshold: 0,
-      // minRatio: 0,
-      // everything but the favicons folder
-      exclude: [/\.(png|jpe?g|ico|webapp|json|xml)$/i],
-      deleteOriginalAssets: false,
-      compressionOptions: {
-        level: 9 // max compression
-      }
     }),
   ],
   optimization: {
