@@ -3,32 +3,39 @@ const yargs = require('yargs');
 const argv = yargs
   .option("development", {
     alias: "d",
-    describe: "forces development environment",
+    describe: "Use development environment",
     type: "boolean"
   })
   .option("production", {
     alias: "p",
-    describe: "forces production environment",
+    describe: "Use production environment",
     type: "boolean"
   })
   .option("uncompressed", {
     alias: "u",
-    describe: "produce only uncompressed files",
+    describe: "Produce only uncompressed",
     type: "boolean"
   })
   .option("compressed", {
     alias: "c",
-    describe: "produce only compressed files",
+    describe: "Produce only compressed",
     type: "boolean"
   })
   .option("analyze", {
     alias: "a",
     default: false,
-    describe: "produce bundle analysis",
-    boolean: true
+    describe: "Analyze bundle",
+    type: "boolean"
+  })
+  .option("test", {
+    alias: "t",
+    default: false,
+    describe: "Test uncompressed",
+    type: "boolean"
   })
   .conflicts("development", "production")
   .conflicts("uncompressed", "compressed")
+  .conflicts("compressed", "test")
   .parse();
 
 // overload NODE_ENV with command line option
@@ -47,6 +54,7 @@ env.check();
 
 const signale = require('signale');
 const webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
 const webpackFormatMessages = require('webpack-format-messages');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const {
@@ -59,7 +67,11 @@ const {
   pathToBundleStats,
 } = require('../etc/paths');
 const compress = require('../etc/compress');
-const { NODE_ENV } = process.env;
+const {
+  NODE_ENV,
+  DEV_HOST,
+  DEV_PORT
+} = process.env;
 
 // check process args, allow build with forced settings
 let selectedWebpackConfig;
@@ -82,6 +94,7 @@ if (argv.analyze) selectedWebpackConfig.plugins.push(
   })
 );
 
+let isCompiled = false;
 const compiler = webpack(selectedWebpackConfig);
 
 compiler.hooks.invalid.tap('invalid', function() {
@@ -92,6 +105,7 @@ compiler.hooks.done.tap('done', (stats) => {
   const messages = webpackFormatMessages(stats);
 
   if (!messages.errors.length && !messages.warnings.length) {
+    isCompiled = true;
     signale.success(`Application compiled in ${buildSetting} mode!`);
     if (argv.analyze)
       signale.success(`Bundle report generated to ${pathToBundleStats}`)
@@ -104,18 +118,9 @@ compiler.hooks.done.tap('done', (stats) => {
   }
 
   if (messages.warnings.length) {
+    isCompiled = true;
     signale.warn('Application compiled with warnings.');
     messages.warnings.forEach(w => console.log(w));
-  }
-
-  compress.create(pathToBuild);
-  if (argv.compressed) {
-    compress.destroy(pathToBuild, false); // remove uncompressed
-    signale.success('Uncompressed files removed from build.')
-  }
-  if (argv.uncompressed) {
-    compress.destroy(pathToBuild, true); // remove compressed
-    signale.success('Compressed files removed from build.')
   }
 });
 
@@ -126,6 +131,41 @@ compiler.hooks.done.tap('done', (stats) => {
   });
 });
 
-compiler.run((error, stats) => {
-  if (error) console.log(error);
-});
+(async () => {
+  await new Promise((resolve, reject) => {
+    compiler.run((error, stats) => {
+      if (error) console.log(error);
+      resolve();
+    });
+  });
+
+  if (!isCompiled) return;
+
+  // compression & compression elimination
+  compress.create(pathToBuild);
+  if (argv.compressed) {
+    compress.destroy(pathToBuild, false); // remove uncompressed
+    signale.success('Uncompressed files removed from build.');
+  }
+  if (argv.uncompressed) {
+    compress.destroy(pathToBuild, true); // remove compressed
+    signale.success('Compressed files removed from build.');
+  }
+
+  // deploy dev server instance on build
+  if (argv.test) {
+    const webpackDevServer = new WebpackDevServer(webpack({}), {
+      stats: false,
+      open: true,
+      noInfo: true,
+      quiet: true,
+      contentBase: pathToBuild,
+      historyApiFallback: true,
+    });
+
+    webpackDevServer.listen(DEV_PORT, DEV_HOST, (error) => {
+      if (error) return console.log(error);
+    });
+    signale.success(`Testing server deployed on build!`);
+  }
+})();
