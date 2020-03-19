@@ -140,6 +140,7 @@ async function generateACNLQR(newData){
     texture.encoding = sRGBEncoding;
     texture.flipY = false;
     texture.magFilter = NearestFilter;
+    const texMat = new MeshBasicMaterial({map:texture});
     const loadModel = (x) => {return new Promise(resolve => {
       let loader = new GLTFLoader();
       loader.parse(JSON.stringify(x), "", (gltf) => {resolve(gltf);});
@@ -147,7 +148,7 @@ async function generateACNLQR(newData){
     const gltf = await loadModel(path3D);
     model = gltf.scene.children[0];
     model.traverse((child) => {
-      if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:texture});}
+      if (child instanceof Mesh){child.material = texMat;}
     });
     scene.add(model);
     camera.position.z = 15;
@@ -158,6 +159,11 @@ async function generateACNLQR(newData){
     model.rotation.y = Math.PI;
     renderer.render(scene, camera);
     ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2+threeCanvas.height, threeCanvas.width, threeCanvas.height);
+    //Free ThreeJS-related resources
+    scene.dispose();
+    texMat.dispose();
+    texture.dispose();
+    renderer.dispose();
   }
 
   //Prepare background pattern for text
