@@ -11,14 +11,14 @@ const argv = yargs
     describe: "forces production environment",
     type: "boolean"
   })
-  .option("compressed", {
-    alias: "c",
-    describe: "produces only compressed files",
-    type: "boolean"
-  })
   .option("uncompressed", {
     alias: "u",
-    describe: "produces only uncompressed files",
+    describe: "produce only uncompressed files",
+    type: "boolean"
+  })
+  .option("compressed", {
+    alias: "c",
+    describe: "produce only compressed files",
     type: "boolean"
   })
   .option("analyze", {
@@ -27,8 +27,8 @@ const argv = yargs
     describe: "produce bundle analysis",
     boolean: true
   })
-  .conflicts("d", "p")
-  .conflicts("u", "c")
+  .conflicts("development", "production")
+  .conflicts("uncompressed", "compressed")
   .parse();
 
 // overload NODE_ENV with command line option

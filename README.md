@@ -19,20 +19,20 @@ git submodule update --init --recursive
  Open [https://localhost:PORT](https://localhost:3000) to view it in the
  browser.
 
- ### `npm run build -- <development|production>`
+ ### `npm run build -- <options>`
 
 
 Builds the submodules, app, and then outputs to a `build` directory at the
 repository root. Can build the the project in development mode or production
 mode. By default builds in the mode specified by the `.env`, but can otherwise
-override with a command line option.
+override with a command line option. Use `--help` option to view options.
 
- ### `npm run build:app -- <development|production>`
+ ### `npm run build:app -- <options>`
 
 Builds the app and outputs to a `build` directory at the repository root. Can
 build the the project in development mode or production mode. By default builds
 in the mode specified by the `.env`, but can otherwise override with a command
-line option.
+line option. Use `--help` option to view options.
 
 ### `npm run build:submodule`
 
