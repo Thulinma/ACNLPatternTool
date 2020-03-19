@@ -46,10 +46,10 @@
 
 <script>
 import lzString from 'lz-string';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
-import * as API from '/libs/origin';
+import origin from '/libs/origin';
 import addSvg from '/assets/icons/bxs-plus-circle.svg';
 
 const colors = {
@@ -89,20 +89,20 @@ export default {
       'query',
       'results',
     ]),
-    
+
   },
   methods: {
     // map using store module search
-    ...mapMutations('search', [
-      'updateStore',
+    ...mapActions('search', [
+      'setOptions',
+      'getQueryResults'
     ]),
-    updateQuery(event) {
+    async updateQuery(event) {
       const query = event.target.value;
-      this.updateStore({ query });
+      await this.setOptions({ query });
     },
     async search(){
-      const results = await API.search(this.query);
-      this.updateStore({ results });
+      await this.getQueryResults();
     },
     pickPattern(p){
       const dt = new DrawingTool(p);
@@ -116,8 +116,7 @@ export default {
     },
   },
   mounted: async function(){
-    const results = await API.recent();
-    this.updateStore({ results });
+    await this.getQueryResults();
   }
 }
 </script>

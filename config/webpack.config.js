@@ -91,15 +91,7 @@ const baseConfig = {
     new OptimizeThreePlugin(),
     new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
     new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
-    new GoogleFontsPlugin({
-      local: true,
-      filename: "styles/font.css",
-      path: "../fonts/",
-      fonts: [
-        // Nunito ExtraBold
-        { family: "Nunito", variants: ["800"] },
-      ]
-    }),
+
   ],
 };
 
@@ -143,6 +135,13 @@ const webpackDevConfig = {
   },
   plugins: [
     ...baseConfig.plugins,
+    new GoogleFontsPlugin({
+      local: false,
+      fonts: [
+        // Nunito ExtraBold
+        { family: "Nunito", variants: ["800"] },
+      ]
+    }),
     new HtmlWebpackPlugin({
       ...baseHtmlWebpackOptions,
       alwaysWriteToDisk: false,
@@ -193,6 +192,15 @@ const webpackProdConfig = {
   },
   plugins: [
     ...baseConfig.plugins,
+    new GoogleFontsPlugin({
+      local: true,
+      filename: "styles/font.css",
+      path: "../fonts/",
+      fonts: [
+        // Nunito ExtraBold
+        { family: "Nunito", variants: ["800"] },
+      ]
+    }),
     new HtmlWebpackPlugin({
       ...baseHtmlWebpackOptions,
     }),

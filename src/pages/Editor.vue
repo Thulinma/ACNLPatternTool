@@ -119,7 +119,11 @@
             <div>Town: <input type="text" v-model="patTown"></div>
             <div>Type:
               <select v-model="patType">
-                <option v-for="(ti, no) in allTypes" :value="no">{{ti.name}}</option>
+                <option
+                  v-for="(ti, no) in allTypes"
+                  :key="no"
+                  :value="no">{{ti.name}}
+                </option>
               </select>
             </div>
             <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
@@ -160,37 +164,67 @@
             <div>Main style:
               <select v-model="pubStyleA">
                 <option value="">-</option>
-                <option v-for="(s, no) in API.tags_style" :value="s">{{s}}</option>
+                <option
+                  v-for="(s, no) in origin.tags_style"
+                  :key="no"
+                  :value="s">
+                  {{s}}
+                </option>
               </select>
             </div>
             <div>Additional style:
               <select v-model="pubStyleB">
                 <option value="">-</option>
-                <option v-for="(s, no) in API.tags_style" :value="s">{{s}}</option>
+                <option
+                  v-for="(s, no) in origin.tags_style"
+                  :key="no"
+                  :value="s">
+                  {{s}}
+                </option>
               </select>
             </div>
             <div>Additional style:
               <select v-model="pubStyleC">
                 <option value="">-</option>
-                <option v-for="(s, no) in API.tags_style" :value="s">{{s}}</option>
+                <option
+                  v-for="(s, no) in origin.tags_style"
+                  :key="no"
+                  :value="s">
+                  {{s}}
+                </option>
               </select>
             </div>
             <div>Main type:
               <select v-model="pubTypeA">
                 <option value="">-</option>
-                <option v-for="(s, no) in API.tags_type" :value="s">{{s}}</option>
+                <option
+                  v-for="(s, no) in origin.tags_style"
+                  :key="no"
+                  :value="s">
+                  {{s}}
+                </option>
               </select>
             </div>
             <div>Additional type:
               <select v-model="pubTypeB">
                 <option value="">-</option>
-                <option v-for="(s, no) in API.tags_type" :value="s">{{s}}</option>
+                <option
+                  v-for="(s, no) in origin.tags_style"
+                  :key="no"
+                  :value="s">
+                  {{s}}
+                </option>
               </select>
             </div>
             <div>Additional type:
               <select v-model="pubTypeC">
                 <option value="">-</option>
-                <option v-for="(s, no) in API.tags_type" :value="s">{{s}}</option>
+                <option
+                  v-for="(s, no) in origin.tags_style"
+                  :key="no"
+                  :value="s">
+                  {{s}}
+                </option>
               </select>
             </div>
             <div>
@@ -231,7 +265,7 @@ import ToolSelector from '/components/ToolSelector.vue';
 import NookPhoneMenu from '/components/NookPhoneMenu.vue';
 import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
-import * as API from '/libs/origin';
+import origin from '/libs/origin';
 import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
@@ -263,7 +297,7 @@ export default {
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")){
-        API.view(to.hash.substring(3)).then((r)=>{
+        origin.view(to.hash.substring(3)).then((r)=>{
           this.drawingTool.load(r);
         });
         next();
@@ -288,6 +322,7 @@ export default {
       patInfoModal: false,
       fragment: "",
       patType: 9,
+      patTypeName: "",
       pickPatterns: false,
       allowMoveToLocal: true,
       convertImage: false,
@@ -309,12 +344,12 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       publishModal: false,
-      API:API
+      origin:origin
     };
   },
   methods: {
     async onPublish(){
-      let uplStatus = await API.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
+      let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
       if (uplStatus["upload"]){
         this.$router.push({ hash: "H:"+uplStatus["upload"] });
       }
@@ -487,7 +522,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1){
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")){
-        API.view(hash.substring(2)).then((r)=>{
+        origin.view(hash.substring(2)).then((r)=>{
           this.drawingTool.load(r);
         });
       }else{
