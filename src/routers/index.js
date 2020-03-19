@@ -6,21 +6,22 @@ import Editor from '/pages/Editor.vue';
 import FAQ from '/pages/FAQ.vue';
 import Changelog from '/pages/Changelog.vue';
 import Missing from "/pages/Missing.vue";
-const { ORIGIN_URL } = process.env;
-
 Vue.use(VueRouter);
 
-export default (() => {
-  const basePath = new URL(ORIGIN_URL).pathname.replace(/[/]$/, "");
-  return new VueRouter({
-    mode: "history",
-    routes: [
-      { path: `${basePath}/`, component: Home },
-      { path: `${basePath}/browse`, component: Browse },
-      { path: `${basePath}/editor`, component: Editor },
-      { path: `${basePath}/faq`, component: FAQ },
-      { path: `${basePath}/changelog`, component: Changelog },
-      { path: `*`, component: Missing }
-    ]
-  });
-})();
+const mode = "history";
+
+const routes = [
+  { path: `/`, component: Home },
+  { path: `/browse`, component: Browse },
+  { path: `/editor`, component: Editor },
+  { path: `/faq`, component: FAQ },
+  { path: `/changelog`, component: Changelog },
+  { path: `*`, component: Missing }
+];
+
+const router = new VueRouter({
+  mode,
+  routes
+});
+
+export default router;
