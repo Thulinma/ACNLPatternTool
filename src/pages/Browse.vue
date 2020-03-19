@@ -2,7 +2,12 @@
   <div class="container">
     <nav>
       <div class="search-bar">
-        Search: <input type="text" @keyup.enter="search" @input="updateQuery($event)">
+        Search:
+        <input
+          type="text"
+          @keyup.enter="search"
+          @input="updateQuery"
+          :value="query">
       </div>
       <button class="create-button" @click="goToEditor">
         Create
@@ -53,26 +58,26 @@ import origin from '/libs/origin';
 import addSvg from '/assets/icons/bxs-plus-circle.svg';
 
 const colors = {
-  natural: '#EAC558',
-  cute: '#E96598',
-  sporty: '#5EC299',
-  cool: '#6BB6DC',
-  rustic: '#74940D',
-  hip: '#EB7E32',
-  harmonious: '#DC3D32',
-  elegant: '#D589E8',
-  modern: '#5BC0B3',
-  historical: '#8D2E4B',
-  civic: '#4F57C8',
-  silly: '#E64369',
-  spooky: '#363655',
+  "natural": '#EAC558',
+  "cute": '#E96598',
+  "sporty": '#5EC299',
+  "cool": '#6BB6DC',
+  "rustic": '#74940D',
+  "hip": '#EB7E32',
+  "harmonious": '#DC3D32',
+  "elegant": '#D589E8',
+  "modern": '#5BC0B3',
+  "historical": '#8D2E4B',
+  "civic": '#4F57C8',
+  "silly": '#E64369',
+  "spooky": '#363655',
   'sci-fi': '#408877',
-  aquatic: '#328BCE',
-  floral: '#EA80DA',
-  animal: '#AF2E33',
-  holiday: '#48903B',
-  food: '#B156FD',
-  brand: '#E93F33',
+  "aquatic": '#328BCE',
+  "floral": '#EA80DA',
+  "animal": '#AF2E33',
+  "holiday": '#48903B',
+  "food": '#B156FD',
+  "brand": '#E93F33',
 };
 
 export default {
@@ -80,29 +85,52 @@ export default {
   components: {
     IconGenerator
   },
+  beforeRouteUpdate: async function(to, from, next) {
+    await this.loadFromRoute(to);
+    next();
+  },
+  beforeRouteLeave: function(to, from, next) {
+    next();
+  },
   data: function(){
-    return {addSvg};
+    return {
+      addSvg,
+    };
   },
   computed: {
     // map using store module search
-    ...mapState('search', [
+    ...mapState('browse', [
       'query',
       'results',
     ]),
-
   },
   methods: {
     // map using store module search
-    ...mapActions('search', [
+    ...mapActions('browse', [
       'setOptions',
       'getQueryResults'
     ]),
+    async loadFromRoute(route) {
+      const query = route.query.q;
+      if (query != null) await this.setOptions({ query });
+      else await this.setOptions({ query: "" });
+      await this.getQueryResults();
+    },
     async updateQuery(event) {
       const query = event.target.value;
       await this.setOptions({ query });
     },
     async search(){
-      await this.getQueryResults();
+      // duplicated history guard
+      let routeOptions = null;
+      const currQuery = this.query;
+      const prevQuery = this.$route.query.q;
+
+      if (currQuery === prevQuery) return;
+      if (currQuery.length === 0) routeOptions = { query: {} };
+      else routeOptions = { query: { q: currQuery }};
+
+      this.$router.push(routeOptions);
     },
     pickPattern(p){
       const dt = new DrawingTool(p);
@@ -116,7 +144,7 @@ export default {
     },
   },
   mounted: async function(){
-    await this.getQueryResults();
+    await this.loadFromRoute(this.$route);
   }
 }
 </script>

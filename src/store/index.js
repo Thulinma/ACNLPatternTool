@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 // aggregate all individual modules
-import search from '/store/search';
+import browse from '/store/browse';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    search
+    browse
   }
 })
 
