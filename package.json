@@ -1,7 +1,7 @@
 {
   "name": "ac-pattern-tool",
-  "version": "0.0.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Pattern tool for ACNL, ACHHD and ACNH",
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/dev.js",
