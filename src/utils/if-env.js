@@ -1,4 +1,8 @@
-const { NODE_ENV } = process.env;
+// SIMPLIFY HANDLING ENV CONDITIONS
+const {
+  NODE_ENV,
+  IS_OFFLINE
+} = process.env;
 
 const isDev = NODE_ENV === "development";
 
@@ -24,6 +28,19 @@ const ifProdExec = (prodCallback, defaultCallback) => {
   else if (defaultCallback) defaultCallback();
 };
 
+const isOffline = IS_OFFLINE;
+
+const ifOfflineVal = (offlineVal, defaultVal) => {
+  if (isOffline) return offlineVal;
+  else return defaultVal;
+}
+
+const ifOfflineExec = (offlineCallback, defaultCallback) => {
+  if (isOffline) offlineCallback();
+  else if (defaultCallback) defaultCallback();
+}
+
+
 
 export {
   isDev,
@@ -33,4 +50,8 @@ export {
   isProd,
   ifProdVal,
   ifProdExec,
+
+  isOffline,
+  ifOfflineVal,
+  ifOfflineExec,
 };
