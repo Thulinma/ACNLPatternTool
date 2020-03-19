@@ -8,8 +8,8 @@
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
             <div class="pattern_info">
               <div class="pattern_title">{{patTitle}}</div>
-              <div class="pattern_by">by</div>
-              <div class="pattern_author">{{patAuthor}} from {{patTown}}</div>
+              <div class="pattern_author">by {{patAuthor}}</div> 
+              <div class="pattern_town">from {{patTown}}</div>
               <div class="pattern_typename">{{patTypeName}}</div>
             </div>
             <button @click="patInfoModal = true">Change</button>
@@ -37,13 +37,16 @@
           <button class="menu-button" @click="onMainMenu">
             <object class="svg nav white-circle" :data="phoneSvg"></object>
             Menu
-            <object class="svg-small" :data="downArrowSvg"></object>
+            <!-- <object class="svg-small" :data="downArrowSvg"></object> -->
           </button>
         </div>
         <div class="tools-and-colors">
           <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" />
           <div class="tool-buttons">
-            <button @click="openColorPicker">Open color editor</button>
+            <button @click="openColorPicker">
+              <object class="svg nav brown-circle" :data="paletteSvg"></object>
+              Open Color Editor
+            </button>
             <button @click="convertImage = true">
               <object class="svg nav brown-circle" :data="imageAddSvg"></object>
               Convert
@@ -56,12 +59,15 @@
             <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
               <object class="svg nav white-circle" :data="saveSvg"></object>
               Save
-              <object class="svg-small" :data="upArrowSvg"></object>
+              <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
             </button>
-            <button @click="onOpenLocal">Open storage</button>
+            <button @click="onOpenLocal">Open Storage</button>
             <button @click="publishModal=true">Publish</button>
-            <button @click="onLocalSave">Store locally</button>
-            <button @click="onModalOpen">Gen QR</button>
+            <button @click="onLocalSave">Store Locally</button>
+            <button @click="onModalOpen">
+              <object class="svg nav brown-circle" :data="barcodeSvg"></object>
+              Generate QR Code
+            </button>
           </div>
         </div>
       </div>
@@ -144,97 +150,113 @@
     <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
       <div class="modal">
         <div class="modal-header">
-          Publish to public database
+          Publish to Public Database
         </div>
-        <div class="modal-window">
-            <div class="textual"><p style="max-width:40em;">
-              Really cool that you want to publish your pattern! Publishing means everyone will be able to search for and link to your pattern easily, hopefully allowing many others to enjoy your work. Please do keep the following in mind:
-            </p><ul>
-              <li>Published patterns cannot be deleted or edited. So, please don't publish unfinished works.</li>
-              <li>Please try to title and tag your pattern appropriately, so that it can be found easily.</li>
-              <li>If any pattern might be inappropriate for children, please flag it accordingly to protect the innocent.</li>
-              <li>Be nice to authors! It's okay to publish the work of others, but please don't change an existing work's author name/town to your own. Respect their skills!</li>
-            </ul><p>
-              This database is unmoderated and besides the above guidelines, there are no rules. Please play nice, respect the guidelines, and it can stay that way. 👍
-            </p></div>
-            <div>
+        <div class="modal-window" id="publish-modal">
+            <div class="left">
+              <p>
+              Really cool that you want to publish your pattern!<br />
+              Publishing means everyone will be able to search for and link to your pattern easily, hopefully allowing many others to enjoy your work.<br />
+              Please do keep the following in mind:
+              </p>
+              <ol>
+                <li>Published patterns cannot be deleted or edited. So, please don't publish unfinished works.</li>
+                <li>Please try to title and tag your pattern appropriately, so that it can be found easily.</li>
+                <li>If any pattern might be inappropriate for children, please flag it accordingly to protect the innocent.</li>
+                <li>Be nice to authors! It's okay to publish the work of others, but please don't change an existing work's author name/town to your own. Respect their skills!</li>
+              </ol>
+              <p>
+                This database is unmoderated and besides the above guidelines, there are no rules.<br /> 
+                Please play nice, respect the guidelines, and it can stay that way. 👍
+              </p>
+            </div>
+            <div class="right">
               <IconGenerator :pattern="drawingTool" width=150 height=150 />
+              <h2 class="pattern-title">{{patTitle}}</h2>
+              <span class="pattern-author">by {{patAuthor}} from {{patTown}}</span>
+              <span class="pattern-typename">{{patTypeName}}</span>
+              <div class="dropdowns">
+                <div class="dropdown">
+                <span>Main Style:</span>
+                <select v-model="pubStyleA">
+                  <option value="">-</option>
+                  <option
+                    v-for="(s, no) in origin.tags_style"
+                    :key="no"
+                    :value="s">
+                    {{s}}
+                  </option>
+                </select>
+                </div>
+                <div class="dropdown">
+                  <span>Additional Style:</span>
+                  <select v-model="pubStyleB">
+                    <option value="">-</option>
+                    <option
+                      v-for="(s, no) in origin.tags_style"
+                      :key="no"
+                      :value="s">
+                      {{s}}
+                    </option>
+                  </select>
+                </div>
+                <div class="dropdown">
+                  <span>Additional Style:</span>
+                  <select v-model="pubStyleC">
+                    <option value="">-</option>
+                    <option
+                      v-for="(s, no) in origin.tags_style"
+                      :key="no"
+                      :value="s">
+                      {{s}}
+                    </option>
+                  </select>
+                </div>
+                <div class="dropdown">
+                  <span>Main Type:</span>
+                  <select v-model="pubTypeA">
+                    <option value="">-</option>
+                    <option
+                      v-for="(s, no) in origin.tags_type"
+                      :key="no"
+                      :value="s">
+                      {{s}}
+                    </option>
+                  </select>
+                </div>
+                <div class="dropdown">
+                  <span>Additional Type:</span>
+                  <select v-model="pubTypeB">
+                    <option value="">-</option>
+                    <option
+                      v-for="(s, no) in origin.tags_type"
+                      :key="no"
+                      :value="s">
+                      {{s}}
+                    </option>
+                  </select>
+                </div>
+                <div class="dropdown">
+                  <span>Additional Type:</span>
+                  <select v-model="pubTypeC">
+                    <option value="">-</option>
+                    <option
+                      v-for="(s, no) in origin.tags_type"
+                      :key="no"
+                      :value="s">
+                      {{s}}
+                    </option>
+                  </select> 
+                </div>   
+              </div>
+              <div>
+                <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
+              </div>
+              <div class="publish-buttons">
+                <button @click="onPublish">Save</button>
+                <button @click="publishModal=false; onLoad()">Cancel</button>
+              </div>
             </div>
-            <div class="pattern_title">{{patTitle}}</div>
-            <div class="pattern_by">by</div>
-            <div class="pattern_author">{{patAuthor}} from {{patTown}}</div>
-            <div class="pattern_typename">{{patTypeName}}</div>
-            <div>Main style:
-              <select v-model="pubStyleA">
-                <option value="">-</option>
-                <option
-                  v-for="(s, no) in origin.tags_style"
-                  :key="no"
-                  :value="s">
-                  {{s}}
-                </option>
-              </select>
-            </div>
-            <div>Additional style:
-              <select v-model="pubStyleB">
-                <option value="">-</option>
-                <option
-                  v-for="(s, no) in origin.tags_style"
-                  :key="no"
-                  :value="s">
-                  {{s}}
-                </option>
-              </select>
-            </div>
-            <div>Additional style:
-              <select v-model="pubStyleC">
-                <option value="">-</option>
-                <option
-                  v-for="(s, no) in origin.tags_style"
-                  :key="no"
-                  :value="s">
-                  {{s}}
-                </option>
-              </select>
-            </div>
-            <div>Main type:
-              <select v-model="pubTypeA">
-                <option value="">-</option>
-                <option
-                  v-for="(s, no) in origin.tags_type"
-                  :key="no"
-                  :value="s">
-                  {{s}}
-                </option>
-              </select>
-            </div>
-            <div>Additional type:
-              <select v-model="pubTypeB">
-                <option value="">-</option>
-                <option
-                  v-for="(s, no) in origin.tags_type"
-                  :key="no"
-                  :value="s">
-                  {{s}}
-                </option>
-              </select>
-            </div>
-            <div>Additional type:
-              <select v-model="pubTypeC">
-                <option value="">-</option>
-                <option
-                  v-for="(s, no) in origin.tags_type"
-                  :key="no"
-                  :value="s">
-                  {{s}}
-                </option>
-              </select>
-            </div>
-            <div>
-              <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
-            </div>
-            <button @click="onPublish">Save</button>
-            <button @click="publishModal=false; onLoad()">Cancel</button>
         </div>
       </div>
     </ModalContainer>
@@ -278,6 +300,7 @@ import scanSvg from '/assets/icons/bx-scan.svg';
 import paintSvg from '/assets/icons/bxs-paint.svg';
 import paletteSvg from '/assets/icons/bxs-palette.svg';
 import imageAddSvg from '/assets/icons/bxs-image-add.svg';
+import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
 import phoneSvg from '/assets/icons/bxs-mobile.svg';
 import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
 import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
@@ -334,6 +357,7 @@ export default {
       saveSvg,
       scanSvg,
       paintSvg,
+      barcodeSvg,
       paletteSvg,
       imageAddSvg,
       phoneSvg,
@@ -567,7 +591,6 @@ button, input[type="button"] {
   font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
-  min-width: 120px;
   padding: 10px 14px;
 }
 input[type="button"].downACNL, button.downACNL {
@@ -737,10 +760,30 @@ canvas.fordrawing{
   max-width:196px;
   overflow-x:hidden;
 }
-.textual li{
-  margin-left:15px;
+#publish-modal.modal-window{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
 }
-.textual li::before{
-  content: '- '
+#publish-modal.modal-window ol {
+  list-style: decimal;
+  margin: 10px 0;
+  padding: 0 0 0 30px;
+}
+#publish-modal.modal-window .left,
+  #publish-modal.modal-window .right {
+  flex: 1 1 0;
+  align-items: center;
+}
+#publish-modal.modal-window .dropdowns{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+#publish-modal.modal-window .dropdown{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 </style>
