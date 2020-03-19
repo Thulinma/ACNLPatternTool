@@ -21,8 +21,8 @@ const removeUncompressedBuild = () => {
       if (filter.test(filename)) fs.unlinkSync(filename);
     }
   }
-  // non-compressed formats, license formats
-  recursiveDelete(pathToBuild, /.*\.(html|js|txt|LICENSE\.txt\.gz|gltf|svg|woff|css|eot|ttf)$/i);
+  // compressed formats, license formats
+  recursiveDelete(pathToBuild, /.*\.(html|css|js|txt|LICENSE\.txt\.gz|svg|ttf)$/i);
 }
 
 module.exports = {

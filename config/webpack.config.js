@@ -102,6 +102,10 @@ const baseHtmlWebpackOptions = {
   title: 'Animal Crossing Pattern Tool',
 };
 
+const fonts = [
+  { family: "Nunito", variants: ["800"] },
+];
+
 const webpackDevConfig = {
   ...baseConfig,
   // overwrite base config
@@ -137,10 +141,7 @@ const webpackDevConfig = {
     ...baseConfig.plugins,
     new GoogleFontsPlugin({
       local: false,
-      fonts: [
-        // Nunito ExtraBold
-        { family: "Nunito", variants: ["800"] },
-      ]
+      fonts,
     }),
     new HtmlWebpackPlugin({
       ...baseHtmlWebpackOptions,
@@ -196,10 +197,7 @@ const webpackProdConfig = {
       local: true,
       filename: "styles/font.css",
       path: "../fonts/",
-      fonts: [
-        // Nunito ExtraBold
-        { family: "Nunito", variants: ["800"] },
-      ]
+      fonts,
     }),
     new HtmlWebpackPlugin({
       ...baseHtmlWebpackOptions,
@@ -213,6 +211,8 @@ const webpackProdConfig = {
       algorithm: "gzip",
       // threshold: 0,
       // minRatio: 0,
+      // everything but the favicons folder
+      exclude: [/\.(png|jpe?g|ico|webapp|json|xml)$/i],
       deleteOriginalAssets: false,
       compressionOptions: {
         level: 9 // max compression
