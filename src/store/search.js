@@ -2,6 +2,7 @@ import origin from "/libs/origin";
 
 // 'data' for stores, when mapping, use computed
 const state = {
+  queryHasChanged: true,
   query: "",
   results: [],
 };
@@ -33,13 +34,18 @@ const mutations = {
       query,
     } = payload;
     // need to do this manually to trigger setters
-    if (query != null) state.query = query;
+    if (query == null) return;
+    if (state.query === query) return;
+    state.query = query;
+    state.queryHasChanged = true;
   },
   setResults: (state, payload) => {
     const {
       results
     } = payload;
-    if (results) state.results = results;
+    if (results == null) return;
+    state.results = results;
+    state.queryHasChanged = false;
   }
 };
 
@@ -53,7 +59,13 @@ const actions = {
   },
   // get results based on query
   getQueryResults: async (context, payload) => {
-    const { query } = context.state;
+    const {
+      query,
+       queryHasChanged
+    } = context.state;
+    // results are still here
+    if (!queryHasChanged) return;
+
     let results;
     if (query.length === 0)
       results = await origin.recent();
