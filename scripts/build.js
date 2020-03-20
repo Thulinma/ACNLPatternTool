@@ -23,13 +23,11 @@ const argv = yargs
   })
   .option("analyze", {
     alias: "a",
-    default: false,
     describe: "Analyze bundle",
     type: "boolean"
   })
   .option("test", {
     alias: "t",
-    default: false,
     describe: "Test uncompressed",
     type: "boolean"
   })
