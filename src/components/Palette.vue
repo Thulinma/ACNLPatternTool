@@ -18,6 +18,20 @@
         @click="onColorClick($event, i-1)"
         @mousemove="onColorMousemove($event, i-1)">
       </div>
+      <div
+        v-if="drawingTool.currentColor !== 15"
+        class="palette-color"
+        :style="{ background: 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px)' }"
+        @click="onColorClick($event, 15)"
+        @mousemove="onColorMousemove($event, 15)">
+      </div>
+      <div
+        v-else
+        class="palette-color picked"
+        :style="{ background: 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px)' }"
+        @click="onColorClick($event, 15)"
+        @mousemove="onColorMousemove($event, 15)">
+      </div>
     </div>
   </div>
 </template>
@@ -67,8 +81,8 @@ export default {
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
 }
 .palette-color {
-  width: 32px;
-  height: 32px;
+  width: 29px;
+  height: 29px;
   border-radius: 70% 30% 70% 30% / 60% 30% 70% 40%;
   display: inline-block;
   margin: 0;
