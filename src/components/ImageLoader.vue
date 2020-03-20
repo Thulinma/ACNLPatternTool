@@ -10,7 +10,7 @@
       <h3>Please select your conversion type.</h3>
       <div class="preview">
         <canvas v-show="false" ref="preview" />
-        <canvas ref="postview" width=256, height=256 />
+        <canvas ref="postview" class="postview" width=256 height=256 />
 
         <ul class="options">
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
@@ -24,6 +24,13 @@
           <li :class="{active: convert_quality === 'medium'}" @click="changeQuality('medium')">Medium Quality</li>
           <li :class="{active: convert_quality === 'low'}" @click="changeQuality('low')">Low Quality</li>
           <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp Pixels</li>
+        </ul>
+        <ul class="options">
+          <li :class="{active: convert_trans === 255}" @click="changeTrans(255)">100%</li>
+          <li :class="{active: convert_trans === 192}" @click="changeTrans(192)">75%</li>
+          <li :class="{active: convert_trans === 127}" @click="changeTrans(127)">50%</li>
+          <li :class="{active: convert_trans === 64}" @click="changeTrans(64)">25%</li>
+          <li :class="{active: convert_trans === 1}" @click="changeTrans(1)">1%</li>
         </ul>
       </div>
       <div class="buttons">
@@ -52,6 +59,7 @@ export default {
       dataurl: "",
       convert_method: "quantize",
       convert_quality: "high",
+      convert_trans: 127,
       draw: new DrawingTool(),
       isCropping: true,
       fileLoaded: false,
@@ -92,6 +100,7 @@ export default {
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
       const pixelCount = this.draw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
+        if (imgdata.data[i+3] < this.convert_trans){continue;}
         palette[this.draw.findRGB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort((a, b) => {
@@ -105,7 +114,11 @@ export default {
       for (let i = 0; i < pixelCount; i+=4){
         let x = (i >> 2) % this.draw.width;
         let y = Math.floor((i >> 2) / this.draw.width);
-        this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        if (imgdata.data[i+3] < this.convert_trans){
+          this.draw.setPixel(x, y, 15);
+        }else{
+          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        }
       }
       this.draw.onLoad();
     },
@@ -115,6 +128,7 @@ export default {
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
       let pixelCount = this.draw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
+        if (imgdata.data[i+3] < this.convert_trans){continue;}
         palette[this.draw.findYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort(function(a, b){
@@ -128,7 +142,11 @@ export default {
       for (let i = 0; i < pixelCount; i+=4){
         let x = (i >> 2) % this.draw.width;
         let y = Math.floor((i >> 2) / this.draw.width);
-        this.draw.setPixel(x, y, this.draw.findPalYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]));
+        if (imgdata.data[i+3] < this.convert_trans){
+          this.draw.setPixel(x, y, 15);
+        }else{
+          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        }
       }
       this.draw.onLoad();
     },
@@ -146,7 +164,11 @@ export default {
       for (let i = 0; i < pixelCount; i+=4){
         let x = (i >> 2) % this.draw.width;
         let y = Math.floor((i >> 2) / this.draw.width);
-        this.draw.setPixel(x, y, TripleY([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]));
+        if (imgdata.data[i+3] < this.convert_trans){
+          this.draw.setPixel(x, y, 15);
+        }else{
+          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        }
       }
       this.draw.onLoad();
     },
@@ -164,14 +186,21 @@ export default {
       for (let i = 0; i < pixelCount; i+=4){
         let x = (i >> 2) % this.draw.width;
         let y = Math.floor((i >> 2) / this.draw.width);
-        this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        if (imgdata.data[i+3] < this.convert_trans){
+          this.draw.setPixel(x, y, 15);
+        }else{
+          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        }
       }
       this.draw.onLoad();
     },
     image_quantize(imgdata){
       let pixelCount = this.draw.pixelCount * 4;
       let pixels = [];
-      for (let i = 0; i < pixelCount; i+=4){pixels.push({r:imgdata.data[i], g:imgdata.data[i+1], b:imgdata.data[i+2]});}
+      for (let i = 0; i < pixelCount; i+=4){
+        if (imgdata.data[i+3] < this.convert_trans){continue;}
+        pixels.push({r:imgdata.data[i], g:imgdata.data[i+1], b:imgdata.data[i+2]});
+      }
       const medianCut = (pixels) => {
         let l = Math.floor(pixels.length/2);
         let r_min = null; let r_max = null;
@@ -238,21 +267,21 @@ export default {
 
       //Average the insides for colors.
       for (let i in buckets){pushAvg(buckets[i]);}
-      console.log("Unique colors: "+uniqCol.size);
+      logger.info("Unique colors: "+uniqCol.size);
 
       if (uniqCol.size < 15){
         //We could add more colors. Quantize some more and cross fingers!
         buckets = medianMultiCut(buckets);//splits into 32
         for (let i in buckets){pushAvg(buckets[i]);}
-        console.log("Unique colors after further quantize: "+uniqCol.size);
+        logger.info("Unique colors after further quantize: "+uniqCol.size);
         if (uniqCol.size < 15){
           buckets = medianMultiCut(buckets);//splits into 64
           for (let i in buckets){pushAvg(buckets[i]);}
-          console.log("Unique colors after further quantize: "+uniqCol.size);
+          logger.info("Unique colors after further quantize: "+uniqCol.size);
           if (uniqCol.size < 15){
             buckets = medianMultiCut(buckets);//splits into 128
             for (let i in buckets){pushAvg(buckets[i]);}
-            console.log("Unique colors after further quantize: "+uniqCol.size);
+            logger.info("Unique colors after further quantize: "+uniqCol.size);
           }
         }
       }else if (uniqCol.size > 15){
@@ -281,14 +310,14 @@ export default {
         colors.splice(bucketA);//Now we can remove A too, since it was before B and thus couldn't have shifted
         pushAvg(bucketC);
         uniqcol = new Set(colors);
-        console.log("Unique colors after merge of closest two: "+uniqCol.size);
+        logger.info("Unique colors after merge of closest two: "+uniqCol.size);
       }
 
       //Set palette to chosen colors
       let cNum = 0;
       for (let c of uniqCol){
         if (cNum > 14){break;}
-        console.log("Setting color "+cNum+" to "+c);
+        logger.info("Setting color "+cNum+" to "+c);
         this.draw.setPalette(cNum, c);
         cNum++;
       }
@@ -297,7 +326,11 @@ export default {
       for (let i = 0; i < pixelCount; i+=4){
         let x = (i >> 2) % this.draw.width;
         let y = Math.floor((i >> 2) / this.draw.width);
-        this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        if (imgdata.data[i+3] < this.convert_trans){
+          this.draw.setPixel(x, y, 15);
+        }else{
+          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        }
       }
       this.draw.onLoad();
     },
@@ -323,7 +356,10 @@ export default {
         palette[bestno].c++;
         prepixels[pixel] = matches;
       };
-      for (let i = 0; i < pixelCount; i+=4){myPal(i/4, imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);}
+      for (let i = 0; i < pixelCount; i+=4){
+        if (imgdata.data[i+3] < this.convert_trans){continue;}
+        myPal(i/4, imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);
+      }
       palette.sort(function(a, b){
         if (a.c > b.c){return -1;}
         if (a.c < b.c){return 1;}
@@ -365,7 +401,11 @@ export default {
       for (let i = 0; i < pixelCount; i+=4){
         let x = (i >> 2) % this.draw.width;
         let y = Math.floor((i >> 2) / this.draw.width);
-        this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        if (imgdata.data[i+3] < this.convert_trans){
+          this.draw.setPixel(x, y, 15);
+        }else{
+          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+        }
       }
       this.draw.onLoad();
     },
@@ -387,6 +427,10 @@ export default {
     },
     changeQuality(val){
       this.convert_quality = val;
+      this.onCrop(this.$refs.cropper.getResult());
+    },
+    changeTrans(val){
+      this.convert_trans = val;
       this.onCrop(this.$refs.cropper.getResult());
     },
     toggleView(){
@@ -460,5 +504,8 @@ export default {
   .outercropper{
     width:400px;
     height:400px;
+  }
+  .postview{
+    background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
   }
 </style>
