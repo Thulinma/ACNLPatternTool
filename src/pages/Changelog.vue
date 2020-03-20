@@ -2,6 +2,13 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>March 20, 2020</dt>
+    <dd>
+      <ul>
+        <li>Added ACNH-style transparency support! Works both for image conversions and regular drawing.</li>
+        <li>Fixed "Error 3999" happening when uploading patterns created from scratch.</li>
+      </ul>
+    </dd>
     <dt>March 19, 2020</dt>
     <dd>
       Massive update in a collaboration with two new main developers (DamSenViet and Myumi):
@@ -64,7 +71,7 @@ h1{
   font-size:300%;
 }
 dt{
-  font-weight:bold;
+  font-size:150%;
   margin-top:20px;
 }
 li{
