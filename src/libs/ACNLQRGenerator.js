@@ -24,6 +24,8 @@ import injected from "/utils/injected";
 async function generateACNLQR(newData){
   //Load pattern, prepare render canvas
   const drawingTool = (newData instanceof DrawingTool) ? newData : new DrawingTool(newData);
+  if (!drawingTool.creator[1]){drawingTool.creator = 60598;}
+  if (!drawingTool.town[1]){drawingTool.town = 50500;}
   const tInfo = drawingTool.typeInfo;
   const bytes = drawingTool.toBytes();
   const renderCanvas = document.createElement("canvas");
