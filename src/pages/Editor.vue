@@ -6,15 +6,17 @@
           <div class="2D">
             <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
-            <div class="pattern_info">
+            <div class="pattern-info">
               <div class="pattern_title">{{patTitle}}</div>
               <div class="pattern_author">by {{patAuthor}}</div> 
               <div class="pattern_town">from {{patTown}}</div>
               <div class="pattern_typename">{{patTypeName}}</div>
             </div>
-            <button @click="patInfoModal = true">Change</button>
+            <button class="editInfo" @click="patInfoModal=true">Change</button>
           </div>
-          <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
+          <div class="render-preview">
+            <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
+          </div>
         </div>
       </div>
 
@@ -76,7 +78,7 @@
     <div class="bottom-buttons">
     </div>
 
-    <ModalContainer v-if="qrCode" @modal-close="qrCode = false">
+    <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="barcodeSvg"></object>
@@ -120,29 +122,37 @@
     <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
       <div class="modal">
         <div class="modal-header">
-          Pattern details
+          Edit Pattern Details
         </div>
-        <div class="modal-window">
-            <div>Title: <input type="text" v-model="patTitle"></div>
-            <div>Author: <input type="text" v-model="patAuthor"></div>
-            <div>Town: <input type="text" v-model="patTown"></div>
-            <div>Type:
-              <select v-model="patType">
-                <option
-                  v-for="(ti, no) in allTypes"
-                  :key="no"
-                  :value="no">{{ti.name}}
-                </option>
-              </select>
-            </div>
-            <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
-            <div><p style="max-width:40em;">
-              <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console. There is some "invisible" data attached to it that cannot be entered by hand. Use the below copy/load buttons to first "copy" your name/town from one of your own patterns, and then "load" it onto any other pattern and it should become editable for you in-game! The copied author information is stored into your browser, so it'll be there for your future visits as well.
-            </p></div>
+        <div class="modal-window" id="change-info-modal">
+          <div class="edit-info">
+              <span>Title: <input type="text" v-model="patTitle"></span>
+              <span>Author: <input type="text" v-model="patAuthor"></span>
+              <span>Town: <input type="text" v-model="patTown"></span>
+              <span>Type:
+                <select v-model="patType">
+                  <option
+                    v-for="(ti, no) in allTypes"
+                    :key="no"
+                    :value="no">{{ti.name}}
+                  </option>
+                </select>
+              </span>
+          </div>
+          <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
+          <p class="edit-notice">
+            <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console.<br>
+            There is some "invisible" data attached to it that cannot be entered by hand.<br>
+            Use the below copy/load buttons to first "copy" your name/town from one of your own patterns from AC:NL.<br>
+            Then, "load" it onto any other pattern and it should become editable for you in-game!<br>
+            The copied author information is stored into your browser, so it'll be there for your future visits as well.
+          </p>
+          <div class="edit-buttons">
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
             <button @click="patInfoSave">Save</button>
             <button @click="patInfoModal=false; onLoad()">Cancel</button>
+          </div>
         </div>
       </div>
     </ModalContainer>
@@ -597,6 +607,10 @@ input[type="button"].downACNL, button.downACNL {
   background-color: #57b7a8;
   color: #ffffff;
 }
+button.editInfo {
+  background-color: #60BB55;
+  margin: 0 0 5px;
+}
 .editor {
   user-select: none;
   color: #7e7261;
@@ -629,7 +643,7 @@ input[type="button"].downACNL, button.downACNL {
   color: #FFFFFF;
   background-color: rgba(47, 31, 14, 0.9);
   border-radius: 35px;
-  padding: 10px;
+  padding: 25px;
   min-width: 600px;
 }
 .modal-info {
@@ -756,15 +770,44 @@ main .center .colorPicker-menu {
 canvas.fordrawing{
   background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
 }
-.pattern_info{
-  max-width:196px;
-  overflow-x:hidden;
+.pattern-info{
+  margin: 10px 0;
+  max-width: 196px;
+  overflow: hidden;
+}
+.render-preview{
+  border: 3px solid #7e7261;;
+  width: 196px;
+  height: 300px;
+  border-radius: 5px;
+}
+#change-info-modal.modal-window{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#change-info-modal.modal-window .edit-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 500px;
+  max-width: 60%;
+}
+#change-info-modal.modal-window .edit-info span{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 60%;
+}
+#change-info-modal.modal-window .edit-notice{
+  max-width: 600px;
+  margin: 20px;
 }
 #publish-modal.modal-window{
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 20px;
 }
 #publish-modal.modal-window ol {
   list-style: decimal;
@@ -775,6 +818,7 @@ canvas.fordrawing{
   #publish-modal.modal-window .right {
   flex: 1 1 0;
   align-items: center;
+  max-width: 400px;
 }
 #publish-modal.modal-window .dropdowns{
   display: flex;
