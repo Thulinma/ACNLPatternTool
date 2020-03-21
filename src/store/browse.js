@@ -1,15 +1,18 @@
 import origin from "/libs/origin";
 
+const PAGE_SIZE_MIN = 30;
+
 // 'data' for stores, when mapping, use computed
 const state = {
   query: "",
-  queryHasChanged: true,
+  pageSize: 50,
+  pageNumber: 0,
+  initResultsRetrieved: false,
   results: [],
 };
 
-// non trivial calculations based on state
-// all computations here cached until next state change
 // 'computed' for stores, when mapping, use computed
+// (state, getters)
 const getters = {
   // e.g. get filtered results by options, can store options in state
   // can access state and other getters
@@ -17,60 +20,95 @@ const getters = {
     // do the thing
     // return this.state.results.filter()
   // },
-  // need a payload?, return a function instead
-  // this.$store.getPage(10)
-  // getPage: () => (pageNumber) => {
-    // return "";
-  // }
+  page: (state) => {
+    // compute current page from state.results
+    const { pageSize, pageNumber, results } = state;
+    const start = pageSize * pageNumber;
+    const end = pageSize * (pageNumber + 1);
+    return results.slice(start, end);
+  },
 };
 
 // SYNCHRONOUS ONLY
-// when mapping, use methods
+// COMPONENTS SHOULD NEVER MUTATE DIRECTLY
+// assume all payloads and thier contents are valid
+// (state, payload)
 const mutations = {
   // you only get get ONE payload argument, should ALWAYS be an object
-  // convention to tack properties onto payload, EVEN IF REDUNDANT
-  setOptions: (state, payload) => {
+  // convention to tack properties onto payload, even if redundant
+  setViewOptions: (state, payload) => {
     const {
-      query,
+      pageSize,
+      pageNumber
+    } = payload;
+    if (pageSize != null) state.pageSize = pageSize;
+    if (pageNumber != null) state.pageNumber = pageNumber;
+  },
+  setSearchOptions: (state, payload) => {
+    const {
+      query
     } = payload;
     // need to do this manually to trigger setters
-    if (query == null) return;
-    if (state.query === query) return;
-    state.query = query;
-    state.queryHasChanged = true;
+    if (query != null && state.query !== query) {
+      state.query = query;
+      state.initResultsRetrieved = false;
+    }
   },
-  setResults: (state, payload) => {
-    const {
-      results
-    } = payload;
-    if (results == null) return;
+  setSearchResults: (state, payload) => {
+    const { results } = payload;
+    state.initResultsRetrieved = true;
     state.results = results;
-    state.queryHasChanged = false;
   }
 };
 
-// aggregates mutations, can be async
-// when mapping, use methods
+// 'aggregate methods' for stores, when mapping, use methods
+// component's interface, sanitize payloads
+// (context, payload)
+// ({ state, getters, commit, dispatch }, payload)
 const actions = {
-  // (context, payload)
-  // wrapper
-  setOptions: async(context, payload) => {
-    context.commit('setOptions', payload);
-  },
-  // get results based on query
-  getQueryResults: async (context, payload) => {
+  setViewOptions: async ({ state, commit }, payload) => {
     const {
-      query,
-       queryHasChanged
-    } = context.state;
-    // results are still here
-    if (!queryHasChanged) return;
-
+      pageSize,
+      pageNumber
+    } = payload;
+    // cannot set both at the same time
+    if (pageSize != null && pageNumber != null) {
+      // throw error
+    };
+    if (pageSize != null) {
+      if (pageSize <= 0)
+        throw RangeError(`Page size must be at least ${PAGE_SIZE_MIN}`);
+      if (state.pageSize !== pageSize)
+        payload.pageNumber = 0;
+        commit('setViewOptions', { pageSize });
+    };
+    if (payload.pageNumber != null) {
+      if (payload.pageNumber < 0) { throw RangeError("Page number must greater than 0"); };
+      // check if there are enough results to go to the page number
+      let start = state.pageSize * (payload.pageNumber);
+      let end = state.pageSize * (payload.pageNumber + 1);
+      let page = state.results.slice(start, end);
+      // calculate forward backward
+      const totalDesired = state.pageSize * 3;
+      if (page.length <= state.pageSize) {
+        // attempt to retrieve more
+      }
+    };
+    commit('setViewOptions', { pageNumber });
+  },
+  setSearchOptions: async ({ commit }, payload) => {
+    commit('setSearchOptions', payload);
+  },
+  // go fetch search results using all options in this store
+  getInitSearchResults: async ({ state, commit }) => {
+    // results are still here, block the repeated request
+    if (state.initResultsRetrieved) return;
     let results;
-    if (query.length === 0)
+    if (state.query.length === 0)
       results = await origin.recent();
-    else results = await origin.search(query);
-    context.commit('setResults', { results });
+    else results = await origin.search(state.query);
+    commit('setViewOptions', { pageNumber: 0 });
+    commit('setSearchResults', { results });
   }
 };
 

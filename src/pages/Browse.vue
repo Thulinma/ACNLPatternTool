@@ -107,21 +107,22 @@ export default {
   methods: {
     // map using store module search
     ...mapActions('browse', [
-      'setOptions',
-      'getQueryResults'
+      'setViewOptions',
+      'setSearchOptions',
+      'getInitSearchResults'
     ]),
     async loadFromRoute(route) {
       const query = route.query.q;
       if (query != null) {
-        await this.setOptions({ query });
+        await this.setSearchOptions({ query });
         if (query.length == 0) this.$router.replace({ query: {} });
       }
-      else await this.setOptions({ query: "" });
-      await this.getQueryResults();
+      else await this.setSearchOptions({ query: "" });
+      await this.getInitSearchResults();
     },
     async updateQuery(event) {
       const query = event.target.value;
-      await this.setOptions({ query });
+      await this.setSearchOptions({ query });
     },
     async search(){
       // duplicated history guard
