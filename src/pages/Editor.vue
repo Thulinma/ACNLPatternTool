@@ -127,8 +127,8 @@
         <div class="modal-window" id="change-info-modal">
           <div class="edit-info">
               <span>Title: <input type="text" v-model="patTitle"></span>
-              <span>Author: <input type="text" v-model="patAuthor"></span>
-              <span>Town: <input type="text" v-model="patTown"></span>
+              <span>Author: <input type="text" maxlength="8" v-model="patAuthor"></span>
+              <span>Town: <input type="text" maxlength="8" v-model="patTown"></span>
               <span>Type:
                 <select v-model="patType">
                   <option
