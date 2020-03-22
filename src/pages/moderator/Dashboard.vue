@@ -133,15 +133,15 @@ export default {
       this.reject(dT.pixelHash);
     },
     okPattern(opt){
-      //Opts may contain:
+      //Opt may contain:
       // nsfc: 0/1
       // offensive: 0/1
       // feature: 0/1
       // retag: 0/1
       // loweffort: 0/1
       const dT = new DrawingTool(opt.bytes);
-      opts.approve = dT.pixelHash;
-      this.approve(opts);
+      opt.approve = dT.pixelHash;
+      this.approve(opt);
     },
   }
 }
