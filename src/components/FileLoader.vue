@@ -120,26 +120,30 @@ export default {
             fr.onload = (re) => {resolve(re.target.result);};
             fr.readAsArrayBuffer(f);
           });
-          addResult(new Uint8Array(pattern, 0xCC+2160*0, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*1, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*2, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*3, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*4, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*5, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*6, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*7, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*8, 2160));
-          addResult(new Uint8Array(pattern, 0xCC+2160*9, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*0, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*1, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*2, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*3, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*4, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*5, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*7, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*8, 2160));
-          addResult(new Uint8Array(pattern, 0x9FDC+2160*9, 2160));
+
+          if (pattern.byteLength == 522752){
+            //garden.dat
+            for (let i = 0; i < 10; ++i){
+              addResult(new Uint8Array(pattern, 0xCC+2160*i, 2160));
+            }
+            for (let i = 0; i < 10; ++i){
+              addResult(new Uint8Array(pattern, 0x9FDC+2160*i, 2160));
+            }
+            for (let i = 0; i < 8; ++i){
+              addResult(new Uint8Array(pattern, 0x80+0x05c8b4+2160*i, 2160));
+            }
+          }else if (pattern.byteLength == 563968){
+            //garden_plus.dat
+            for (let i = 0; i < 10; ++i){
+              addResult(new Uint8Array(pattern, 0xCC+2160*i, 2160));
+            }
+            for (let i = 0; i < 10; ++i){
+              addResult(new Uint8Array(pattern, 0x149CC+2160*i, 2160));
+            }
+            for (let i = 0; i < 8; ++i){
+              addResult(new Uint8Array(pattern, 0x62338+2160*i, 2160));
+            }
+          }
         }else{
           logger.warn("Unknown file type: "+fName);
         }
