@@ -5,6 +5,7 @@ const PAGE_SIZE_MIN = 30;
 // 'data' for stores, when mapping, use computed
 const state = {
   query: "",
+  nsfcFlag: false,
   pageSize: 50,
   pageNumber: 0,
   initResultsRetrieved: false,
@@ -45,12 +46,11 @@ const mutations = {
     if (pageNumber != null) state.pageNumber = pageNumber;
   },
   setSearchOptions: (state, payload) => {
-    const {
-      query
-    } = payload;
+    const { query, nsfc } = payload;
     // need to do this manually to trigger setters
-    if (query != null && state.query !== query) {
+    if (query != null && state.query !== query || state.nsfcState !== nsfc) {
       state.query = query;
+      state.nsfcState = nsfc;
       state.initResultsRetrieved = false;
     }
   },
@@ -106,7 +106,7 @@ const actions = {
     let results;
     if (state.query.length === 0)
       results = await origin.recent();
-    else results = await origin.search(state.query);
+    else results = await origin.search(state.query, state.nsfcFlag);
     commit('setViewOptions', { pageNumber: 0 });
     commit('setSearchResults', { results });
   }

@@ -130,7 +130,7 @@ export default {
     },
     async updateQuery(event) {
       const query = event.target.value;
-      await this.setSearchOptions({ query });
+      await this.setSearchOptions({ query, nsfc: this.nsfc });
     },
     async search(){
       // duplicated history guard
@@ -166,7 +166,7 @@ export default {
           e.preventDefault();
         }
       } else this.nsfc = false;
-      
+
       this.search();
       return this.nsfc;
     }

@@ -39,8 +39,9 @@ const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSF
 };
 
 // Search
-const search = async (q) => {
-  const response = await api.get(`api.php${encodeQueryParams({q})}`);
+const search = async (q, nsfc) => {
+  const nsfcParam = nsfc ? '&nsfc=1' : '';
+  const response = await api.get(`api.php${encodeQueryParams({q})}${nsfcParam}`);
   return response.data;
 };
 
