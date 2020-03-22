@@ -1,18 +1,21 @@
 <template>
-  <router-view></router-view>
+  <router-view @redirect="redirect"></router-view>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: "ModeratorIndex",
   computed: {
     ...mapGetters('profile', [
       'isLoggedIn',
-    ])
+    ]),
   },
   methods: {
+    ...mapActions('profile', [
+      'continue',
+    ]),
     // corrects link upon landing
     redirect: function() {
       let target;
@@ -28,7 +31,10 @@ export default {
       this.redirect();
     }
   },
-  mounted: function() { this.redirect(); }
+  mounted: async function() {
+    await this.continue();
+    this.redirect();
+  }
 }
 </script>
 

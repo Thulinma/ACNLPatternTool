@@ -56,6 +56,45 @@ const recent = async () => {
   return response.data;
 };
 
+const modLogIn = async (username, password) => {
+  try {
+    const response = await api.post("LOG_IN_ENDPOINT", {
+      username,
+      password
+    });
+    const token = response.data;
+    return token;
+  }
+  catch (error) {
+    // adjust lines below once 401 is implemented
+    throw new Error("Login API not implemented");
+    // if (error.response.status !== 401) throw error;
+    return "";
+  }
+};
+
+const modPending = async (token) => {
+  const response = await api.get("PENDING_ENDPOINT");
+  const pendingQueue = response.data;
+  return pendingQueue;
+};
+
+const modApprove = async (hash, options, token) => {
+  const response = await api.post("APPROVE ENDPOINT", {
+
+  });
+  return response.data;
+};
+
+// exporting as delete, delete is a keyword :(
+const modDelete = async (hash, token) => {
+  const response = await api.post("DELETE_ENDPOINT", {
+
+  });
+  return response.data;
+};
+
+
 const tags_style = [
   'Natural',
   'Cute',
@@ -97,6 +136,10 @@ export default {
   search,
   recent,
   view,
+  modLogIn,
+  modPending,
+  modApprove,
+  modDelete,
   tags_style,
   tags_type
 };
