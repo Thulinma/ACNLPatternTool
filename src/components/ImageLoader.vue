@@ -2,7 +2,7 @@
   <div>
     <div class="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" ref="cropper" @change="onCrop" /></div>
+      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
       <button @click="toggleView()">Next</button>
     </div>
     <input v-show="false" type="file" ref="files" accept="image/*" @change="onFile" />
@@ -71,6 +71,12 @@ export default {
     this.$refs.files.click();
   },
   methods: {
+    defPos(opt){
+      return {top:0, left:0};
+    },
+    defSize(opt){
+      return {height:opt.imageHeight, width:opt.imageWidth};
+    },
     onCrop({coordinates, canvas}){
       if (!(canvas instanceof HTMLCanvasElement)){return;}
       this.$refs.preview.width = this.draw.width;
