@@ -1,8 +1,7 @@
 <template>
-  <div v-if="!isLoggedIn"></div>
-  <div v-else>
-    <div>
-      I am {{ username }}.
+  <div v-if="isLoggedIn">
+    <div class="top">
+      Welcome, {{ username }}.<br>
       <button @click="onLogOut">Sign Out</button>
       <button @click="onGetPending">Get pending approval list</button>
     </div>
@@ -11,7 +10,7 @@
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
-            {{opt.f_type.toUpperCase()}}
+            {{opt.f_type}}
           </span>
           <span v-if="opt.f_type_a != null" class="tag type">
             {{opt.f_type_a}}
@@ -36,18 +35,28 @@
             {{opt.style_sub_b}}
           </span>
         </div>
-        <button @click.stop="okPattern(opt.bytes, {feature:1})">Approve, featured!</button>
-        <div>
-          <button @click.stop="okPattern(opt.bytes)">Approve</button>
-          <button @click.stop="okPattern(opt.bytes, {nsfc:true})">Approve NSFC</button>
-          <button @click.stop="okPattern(opt.bytes, {offensive:true})">Approve offensive</button>
+        <div class="options">
+          <span>
+            <input name="featured" type="checkbox" @change="opt.feature=$event.target.checked">
+            <label for="featured">Feature this Pattern</label>
+          </span>
+          <span>
+            <input name="nsfc" type="checkbox" @change="opt.nsfc=$event.target.checked">
+            <label for="nsfc">Not Safe For Children</label>
+          </span>
+          <span>
+            <input name="offensive" type="checkbox" @change="opt.offensive=$event.target.checked">
+            <label for="offensive">Offensive</label>
+          </span>
+          <span>
+            <input name="retagging" type="checkbox" @change="opt.retag=$event.target.checked">
+            <label for="retagging">Needs Retagging</label>
+          </span>
         </div>
-        <div>
-          <button @click.stop="okPattern(opt.bytes, {retag:true})">Approve, must retag</button>
-          <button @click.stop="okPattern(opt.bytes, {nsfc:true, retag:true})">Approve NSFC, must retag</button>
-          <button @click.stop="okPattern(opt.bytes, {offensive:true, retag:true})">Approve offensive, must retag</button>
+        <div class="mod-buttons">
+          <button class="approve-button" @click.stop="okPattern(opt)">Approve</button>
+          <button class="delete-button" @click.stop="wipePattern(opt.bytes)">Delete</button>
         </div>
-        <button @click.stop="wipePattern(opt.bytes)">DELETE</button>
       </div>
     </div>
   </div>
@@ -116,14 +125,14 @@ export default {
       const dT = new DrawingTool(bytes);
       this.reject(dT.pixelHash);
     },
-    okPattern(bytes, opts={}){
+    okPattern(opts){
       //Opts may contain:
       // nsfc: 0/1
       // offensive: 0/1
       // feature: 0/1
       // retag: 0/1
       // loweffort: 0/1
-      const dT = new DrawingTool(bytes);
+      const dT = new DrawingTool(opt.bytes);
       opts.approve = dT.pixelHash;
       this.approve(opts);
     },
@@ -131,10 +140,18 @@ export default {
 }
 </script>
 
-
 <style lang="scss" scoped>
 $type: #858585;
 
+button {
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 35px;
+  border: none;
+}
+.top {
+  text-align: center;
+}
 .patterns {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -150,9 +167,9 @@ $type: #858585;
   align-items: center;
   justify-content: center;
   width: 220px;
-  height: 300px;
+  height: 420px;
   max-width: 220px;
-  max-height: 300px;
+  max-height: 420px;
   margin: 10px;
   box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
   background-image: radial-gradient(#89C3B9 20%, transparent 20%), radial-gradient(#89C3B9 20%, transparent 20%);
@@ -160,7 +177,7 @@ $type: #858585;
   background-size: 10px 10px;
 }
 .pattern-container canvas {
-  margin: 10px;
+  margin: 5px;
 }
 .pattern-container .pickPattern{
   cursor: pointer;
@@ -191,5 +208,33 @@ $type: #858585;
   text-transform: uppercase;
   font-size: 11px;
   background-color: $type;
+}
+.options {
+  font-size: 10px;
+  margin: 0 0 10px;
+}
+.options span {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.options span input {
+  margin: 0 8px 5px 0;
+}
+.mod-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 90%;
+}
+.mod-buttons .approve-button, .delete-button {
+  color: #ffffff;
+}
+.mod-buttons .approve-button {
+  background-color: #50C878;
+}
+.mod-buttons .delete-button {
+  background-color: red;
 }
 </style>
