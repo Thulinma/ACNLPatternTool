@@ -86,13 +86,16 @@ const colors = {
   "civic": '#4F57C8',
   "silly": '#E64369',
   "spooky": '#363655',
-  'sci-fi': '#408877',
+  "sci-fi": '#408877',
   "aquatic": '#328BCE',
   "floral": '#EA80DA',
   "animal": '#AF2E33',
   "holiday": '#48903B',
   "food": '#B156FD',
   "brand": '#E93F33',
+  "anime": '#F25278',
+  "video-game": '#0D1010',
+  "meme": '#52307C',
 };
 
 export default {
@@ -123,7 +126,7 @@ export default {
       await this.getPending();
     },
     tagClass(tag){
-      if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase()]}`};
+      if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
     },
     wipePattern(bytes){
       const dT = new DrawingTool(bytes);

@@ -78,6 +78,9 @@ const colors = {
   "holiday": '#48903B',
   "food": '#B156FD',
   "brand": '#E93F33',
+  "anime": '#F25278',
+  "video-game": '#0D1010',
+  "meme": '#52307C',
 };
 
 export default {
@@ -144,7 +147,7 @@ export default {
       this.$router.push({ path: `/editor` });
     },
     tagClass(tag){
-      if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase()]}`};
+      if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
     },
   },
   mounted: async function(){
