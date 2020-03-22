@@ -8,6 +8,10 @@
           @keyup.enter="search"
           @input="updateQuery"
           :value="query">
+          <span>
+            <input type="checkbox" name="nsfc" @click="openNSFCDisclaimer" v-model="nsfc">
+            <label for="nsfc">View Patterns Tagged as NSFW?</label>
+          </span>
       </div>
       <button class="create-button" @click="goToEditor">
         Create
@@ -97,6 +101,7 @@ export default {
   },
   data: function(){
     return {
+      nsfc: false,
       addSvg,
     };
   },
@@ -117,8 +122,8 @@ export default {
     async loadFromRoute(route) {
       const query = route.query.q;
       if (query != null) {
-        await this.setSearchOptions({ query });
-        if (query.length == 0) this.$router.replace({ query: {} });
+        await this.setSearchOptions({ query, nsfc: this.nsfc });
+        if (query.length === 0) this.$router.replace({ query: {} });
       }
       else await this.setSearchOptions({ query: "" });
       await this.getInitSearchResults();
@@ -132,10 +137,11 @@ export default {
       let routeOptions = null;
       const currQuery = this.query;
       const prevQuery = this.$route.query.q;
+      const prevNSFC = this.$route.query.nsfc ? true : false;
 
-      if (currQuery === prevQuery) return;
+      if (currQuery === prevQuery && this.nsfc === prevNSFC) return;
       if (currQuery.length === 0) routeOptions = { query: {} };
-      else routeOptions = { query: { q: currQuery }};
+      else routeOptions = this.nsfc ? { query: { q: currQuery, nsfc: 1 }} : { query: { q: currQuery }};
 
       this.$router.push(routeOptions);
     },
@@ -149,6 +155,21 @@ export default {
     tagClass(tag){
       if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
     },
+    openNSFCDisclaimer: function(e) {
+      const disclaimer = `      By selecting this option, you are voluntarily agreeing to viewing patterns that may contain content that is pornographic, violent, illegal, or disturbing in nature.
+      By accepting this, you are consenting to this and confirming that you are at least 18 years of age. 
+      Continue?`;
+      if (!this.nsfc) {
+        if (window.confirm(disclaimer)) { this.nsfc = true; }
+        else {
+          this.nsfc = false;
+          e.preventDefault();
+        }
+      } else this.nsfc = false;
+      
+      this.search();
+      return this.nsfc;
+    }
   },
   mounted: async function(){
     await this.loadFromRoute(this.$route);
