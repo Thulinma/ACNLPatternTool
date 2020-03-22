@@ -550,8 +550,12 @@ export default {
       //this.mainMenu = true;
     },
     openColorPicker: function() {
-      this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-      this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:285)+'px';
+      if (this.drawingTool.currentColor !== 15) {
+        this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
+        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:285)+'px';
+        return;
+      }
+      alert('This one has to stay transparent. :)');
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
