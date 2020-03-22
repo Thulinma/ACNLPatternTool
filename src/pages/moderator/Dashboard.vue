@@ -125,7 +125,7 @@ export default {
       const dT = new DrawingTool(bytes);
       this.reject(dT.pixelHash);
     },
-    okPattern(opts){
+    okPattern(opt){
       //Opts may contain:
       // nsfc: 0/1
       // offensive: 0/1
