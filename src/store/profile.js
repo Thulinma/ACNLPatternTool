@@ -3,14 +3,15 @@ import lodash from 'lodash';
 
 // 'data' for stores, when mapping, use computed
 const state = {
-  token: null, // str when set
+  token: "",
+  username: "",
 };
 
 // 'computed' for stores, when mapping, use computed
 // (state, getters)
 const getters = {
   isLoggedIn: (state) => {
-    return state.token != null;
+    return Boolean(state.token);
   },
 };
 
@@ -31,8 +32,9 @@ const mutations = {
 // ({ state, getters, commit, dispatch }, payload)
 const actions = {
   logIn: async ({ commit }, payload) => {
-    const { passphrase } = payload;
-    // const token = await origin.modLogIn(passphrase);
+    const { username, password } = payload;
+    // const data = await origin.modLogIn(password);
+    // const { username, token } = data;
     // commit('setToken', { token });
   },
   logOut: async ({ commit }) => {

@@ -24,10 +24,10 @@
       <p class="que">What are the planned future updates?</p>
       <p class="ans">It's hard to keep track of this on this page. For the latest information and discussion, please join our <a href="https://discord.gg/UVgMK2h">Discord server</a>.</p>
     </div>
-    <div class="question">
+    <!-- <div class="question">
       <p class="que">This is open source? So I can re-use this code for my own projects?</p>
       <p class="ans">Yes. It's licensed under the WTFPL, which basically makes it public domain code. You can find the full source on <a href="https://github.com/Thulinma/ACNLPatternTool">GitHub</a>. Please don't claim you wrote it all yourself, and try to include a notice "Based on the Animal Crossing Pattern tool by Thulinma/DamSemViet/Myumi" somewhere. You don't <i>have</i> to include a notice like that, but we will be very very disappointed in you if you don't.</p>
-    </div>
+    </div> -->
     <div class="question">
       <p class="que">Is there an offline version I can use without an internet connection?</p>
       <p class="ans">Soon.</p>
@@ -58,7 +58,7 @@
 
 <script>
 export default {
-
+  name: "FAQ"
 }
 </script>
 

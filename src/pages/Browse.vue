@@ -51,7 +51,7 @@
 
 <script>
 import lzString from 'lz-string';
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
 import origin from '/libs/origin';

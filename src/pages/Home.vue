@@ -30,6 +30,7 @@
 <script>
 import logoSvg from '/assets/images/ac_easel_opt.svg';
 export default {
+  name: "Home",
   data: function(){
     return {logoSvg};
   },
