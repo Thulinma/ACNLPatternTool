@@ -48,9 +48,9 @@ const mutations = {
   setSearchOptions: (state, payload) => {
     const { query, nsfc } = payload;
     // need to do this manually to trigger setters
-    if (query != null && state.query !== query || state.nsfcState !== nsfc) {
+    if (query != null && state.query !== query || state.nsfcFlag !== nsfc) {
       state.query = query;
-      state.nsfcState = nsfc;
+      state.nsfcFlag = nsfc;
       state.initResultsRetrieved = false;
     }
   },
