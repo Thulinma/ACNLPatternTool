@@ -137,7 +137,7 @@ const rulesProd = [
 ];
 
 const fonts = [
-  { family: "Nunito", variants: ["800"] },
+  { family: "Nunito", variants: ["700", "800"] },
 ];
 
 const htmlWebpackOptions = {
@@ -183,6 +183,7 @@ const pluginsProd = [
     filename: "styles/font.css",
     path: "../fonts/",
     fonts,
+    formats: ["ttf"],
   }),
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
