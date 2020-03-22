@@ -15,7 +15,7 @@
       </button>
     </nav>
     <div class="patterns">
-      <div class="pattern-container" v-for="opt in results" :key="opt.bytes" @click="pickPattern(opt.bytes)">
+      <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="getUrl(opt.bytes)">
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
@@ -44,7 +44,7 @@
             {{opt.style_sub_b}}
           </span>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </template>
@@ -139,9 +139,9 @@ export default {
 
       this.$router.push(routeOptions);
     },
-    pickPattern(p){
+    getUrl(p){
       const dt = new DrawingTool(p);
-      this.$router.push({hash:"H:"+dt.pixelHash, path:"/editor"});
+      return "/editor#H:"+dt.pixelHash;
     },
     goToEditor() {
       this.$router.push({ path: `/editor` });
@@ -204,6 +204,8 @@ nav .create-button .svg {
   justify-items: center;
 }
 .pattern-container {
+  text-decoration:none;
+  color:black;
   background-color: #A1D4CA;
   border-radius: 35px;
   padding: 5px 8px;
