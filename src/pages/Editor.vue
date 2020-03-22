@@ -176,16 +176,24 @@
                 <li>Be nice to authors! It's okay to publish the work of others, but please don't change an existing work's author name/town to your own. Respect their skills!</li>
               </ol>
               <p>
-                This database is unmoderated and besides the above guidelines, there are no rules.<br /> 
-                Please play nice, respect the guidelines, and it can stay that way. 👍
+                Not following the above rules may lead to your published pattern being deleted from the database.
               </p>
             </div>
             <div class="right">
               <IconGenerator :pattern="drawingTool" width=150 height=150 />
-              <h2 class="pattern-title">{{patTitle}}</h2>
-              <span class="pattern-author">by {{patAuthor}} from {{patTown}}</span>
-              <span class="pattern-typename">{{patTypeName}}</span>
               <div class="dropdowns">
+                <span>Title: <input type="text" v-model="patTitle"></span>
+                <span>Author: <input type="text" maxlength="8" v-model="patAuthor"></span>
+                <span>Town: <input type="text" maxlength="8" v-model="patTown"></span>
+                <span>Type:
+                  <select v-model="patType">
+                    <option
+                      v-for="(ti, no) in allTypes"
+                      :key="no"
+                      :value="no">{{ti.name}}
+                    </option>
+                  </select>
+                </span>
                 <div class="dropdown">
                 <span>Main Style:</span>
                 <select v-model="pubStyleA">
@@ -263,7 +271,7 @@
                 <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
               </div>
               <div class="publish-buttons">
-                <button @click="onPublish">Save</button>
+                <button @click="patInfoSave(true)">Save</button>
                 <button @click="publishModal=false; onLoad()">Cancel</button>
               </div>
             </div>
@@ -436,15 +444,23 @@ export default {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title+".png");
     },
-    patInfoSave(){
-      this.drawingTool.title = this.patTitle;
-      if (this.drawingTool.creator[0] != this.patAuthor){this.drawingTool.creator = this.patAuthor;}
-      if (this.drawingTool.town[0] != this.patTown){this.drawingTool.town = this.patTown;}
-      if (this.drawingTool.patternType != this.patType){
-        this.drawingTool.patternType = this.patType;
-        this.patTypeName = this.drawingTool.typeInfo.name;
+    patInfoSave(publish=false){
+      const titleCheck = this.patTitle && this.patTitle !== 'Empty';
+      const townCheck = this.patTown && this.patTown !== 'Unknown';
+      const nameCheck = this.patAuthor && this.patAuthor !== 'Unknown';
+      if (titleCheck && townCheck && nameCheck){
+        this.drawingTool.title = this.patTitle;
+        if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
+        if (this.drawingTool.town[0] !== this.patTown) this.drawingTool.town = this.patTown;
+        if (this.drawingTool.patternType !== this.patType){
+          this.drawingTool.patternType = this.patType;
+          this.patTypeName = this.drawingTool.typeInfo.name;
+        }
+        this.patInfoModal = false;
+        if (publish) this.onPublish();
+        return;
       }
-      this.patInfoModal = false;
+      alert('Please provide a valid pattern name, town name, and player name for this pattern.');
     },
     async onOpenDB(){
       this.$router.push("/browse");
@@ -820,12 +836,12 @@ canvas.fordrawing{
   align-items: center;
   max-width: 400px;
 }
-#publish-modal.modal-window .dropdowns{
+#publish-modal.modal-window .dropdowns {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
-#publish-modal.modal-window .dropdown{
+#publish-modal.modal-window .dropdown, #publish-modal.modal-window span {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
