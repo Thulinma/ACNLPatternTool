@@ -78,13 +78,14 @@ const actions = {
   },
   approve: async ({ state, dispatch }, payload) => {
     const { token } = state;
-    const { hash, options } = payload;
-    await origin.modApprove(hash, options, token);
+    let options = payload;
+    options.token = token;
+    await origin.modApprove(options);
     await dispatch('getPending');
   },
-  delete: async ({ dispatch }, payload) => {
+  reject: async ({ dispatch }, payload) => {
     const { token } = state;
-    const { hash } = payload;
+    const hash = payload;
     await origin.modDelete(hash, token);
     await dispatch('getPending');
   }

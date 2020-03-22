@@ -58,38 +58,37 @@ const recent = async () => {
 
 const modLogIn = async (username, password) => {
   try {
-    const response = await api.post("LOG_IN_ENDPOINT", {
-      username,
-      password
+    const response = await api.post("api.php", {
+      user: username,
+      pass: password
     });
-    const token = response.data;
-    return token;
+    if (response.data.error){
+      throw new Error(response.data.error);
+      return "";
+    }
+    return response.data.token;
   }
   catch (error) {
-    // adjust lines below once 401 is implemented
-    throw new Error("Login API not implemented");
-    // if (error.response.status !== 401) throw error;
+    if (error.response.status !== 401) throw error;
     return "";
   }
 };
 
 const modPending = async (token) => {
-  const response = await api.get("PENDING_ENDPOINT");
-  const pendingQueue = response.data;
-  return pendingQueue;
+  const response = await api.get(`api.php${encodeQueryParams({modqueue: 1, token})}`);
+  return response.data;
 };
 
-const modApprove = async (hash, options, token) => {
-  const response = await api.post("APPROVE ENDPOINT", {
-
-  });
+const modApprove = async (options) => {
+  const response = await api.post("api.php", options);
   return response.data;
 };
 
 // exporting as delete, delete is a keyword :(
 const modDelete = async (hash, token) => {
-  const response = await api.post("DELETE_ENDPOINT", {
-
+  const response = await api.post("api.php", {
+    wipepattern: hash,
+    token: token
   });
   return response.data;
 };
