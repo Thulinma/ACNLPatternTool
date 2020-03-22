@@ -22,7 +22,7 @@
     </div>
     <div class="question">
       <p class="que">What are the planned future updates?</p>
-      <p class="ans">It's hard to keep track of this on this page. For the latest information and discussion, please join our <a href="https://discord.gg/UVgMK2h">Discord server</a>.</p>
+      <p class="ans">It's hard to keep track of this on this page. For the latest information and discussion, please join our <a href="https://discord.gg/9rGkZNk">Discord server</a>.</p>
     </div>
     <!-- <div class="question">
       <p class="que">This is open source? So I can re-use this code for my own projects?</p>
@@ -38,7 +38,7 @@
     </div>
     <div class="question">
       <p class="que">How do I reach you guys? / Can I make a suggestion? / How can I get help?</p>
-      <p class="ans">Please join our <a href="https://discord.gg/UVgMK2h">Discord server</a>.</p>
+      <p class="ans">Please join our <a href="https://discord.gg/9rGkZNk">Discord server</a>.</p>
     </div>
     <div class="question">
       <p class="que">Why isn't my QR code being read? It works in the game!</p>

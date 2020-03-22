@@ -14,7 +14,7 @@
         <button @click="goToChanges">
             Changelog
         </button>
-        <a href="https://discord.gg/UVgMK2h">
+        <a href="https://discord.gg/9rGkZNk">
             <button>
                 Discord
             </button>

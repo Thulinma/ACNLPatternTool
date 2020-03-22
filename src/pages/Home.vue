@@ -22,7 +22,7 @@
       <div class="text">Changelog</div>
     </div>
     <div class="button discord">
-      <a href="https://discord.gg/UVgMK2h" class="text">Discord</a>
+      <a href="https://discord.gg/9rGkZNk" class="text">Discord</a>
     </div>
   </div>
 </template>
