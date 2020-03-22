@@ -41,7 +41,7 @@
             <label for="featured">Feature this Pattern</label>
           </span>
           <span>
-            <input name="nsfc" type="checkbox" :checked="opt.nokids" @change="opt.nsfc=$event.target.checked">
+            <input name="nsfc" type="checkbox" :checked="!!+opt.nokids" @change="opt.nsfc=$event.target.checked">
             <label for="nsfc">Not Safe For Children</label>
           </span>
           <span>
