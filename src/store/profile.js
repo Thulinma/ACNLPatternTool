@@ -20,8 +20,13 @@ const getters = {
 // assume all payloads and thier contents are valid
 // (state, payload)
 const mutations = {
-  setToken: (state, payload) => {
-    const { token } = payload;
+  reset: (state) => {
+    state.token = "";
+    state.username = "";
+  },
+  setLogin: (state, payload) => {
+    const { username, token } = payload;
+    state.username = username;
     state.token = token;
   },
 };
@@ -33,13 +38,13 @@ const mutations = {
 const actions = {
   logIn: async ({ commit }, payload) => {
     const { username, password } = payload;
-    // const data = await origin.modLogIn(password);
-    // const { username, token } = data;
-    // commit('setToken', { token });
+    // const token = await origin.modLogIn(username, password, token);
+    // verify token to check if actually logged in
+    // commit('setLogin', { username, token });
   },
   logOut: async ({ commit }) => {
-    const token = null;
-    // commit('setToken', { token });
+    // await origin.modlogOut();
+    // commit('reset');
   },
 };
 
