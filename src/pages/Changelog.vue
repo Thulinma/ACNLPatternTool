@@ -2,6 +2,22 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>March 22, 2020</dt>
+    <dd>
+      <ul>
+        <li>Made it easier/more obvious to change pattern title and creator info</li>
+        <li>Fixed all known causes of 3999 error. There were SO MANY. 😭</li>
+        <li>Also fixed all old patterns retroactively. Just generate a new QR code for them and it should work now!</li>
+        <li>Added moderation tools so a mod team can approve/reject patterns and keep the database clean-ish.</li>
+        <li>Fixed bug that allowed overwriting the transparent color</li>
+        <li>Added NSFW search toggle</li>
+        <li>The image cropper now defaults to using the whole image (if possible)</li>
+        <li>Browse page should now work on iOS/Safari again... and allow opening patterns in new tabs! Yay!</li>
+        <li>Added support for importing ACNL savegames with the Welcome Amiibo DLC installed.</li>
+        <li>Improved ACNL savegame loading to also read the patterns from Able Sisters, not just players 1 and 2.</li>
+        <li>Updated Discord link to point directly to the information channel as opposed to the main chat channel</li>
+      </ul>
+    </dd>
     <dt>March 20, 2020</dt>
     <dd>
       <ul>
