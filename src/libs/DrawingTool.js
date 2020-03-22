@@ -177,6 +177,7 @@ class DrawingTool{
   set creator(n){this.pattern.creator = n;}
   get town(){return this.pattern.town;}
   set town(n){this.pattern.town = n;}
+  fixIssues(){this.pattern.fixIssues();}
   get authorStrict(){
     let copiedCreator = "";
     for (let i = 0; i < 44; ++i){copiedCreator += String.fromCharCode(this.pattern.dataBytes[0x2A + i]);}
@@ -311,6 +312,7 @@ class DrawingTool{
   ///Sets the given palette index to the closest color we can find to c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a color palette index.
   setPalette(idx, c){
+    if (idx < 0 || idx > 14){return;}//abort for invalid indexes
     this.pattern.setPalette(idx, this.findRGB(c));
     this.onColorChange();
     this.render();
@@ -318,6 +320,7 @@ class DrawingTool{
 
   /// Returns the HTML color of the given palette index
   getPalette(idx){
+    if (idx < 0 || idx > 14){return "#FFFFFF00";}//abort for invalid indexes
     return ACNLFormat.paletteColors[this.pattern.getPalette(idx)];
   }
 
@@ -401,7 +404,7 @@ class DrawingTool{
     for (let i = 0; i < pixCount; i++){
       let x = (i % 32);
       let y = Math.floor(i / 32);
-      if (this.pixels[i] == 0xFC){
+      if (this.pixels[i] == 0xFC || this.pixels[i] == 15){
         this.renderTargets[0].drawPixel(x, y, "");
       }else{
         this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);

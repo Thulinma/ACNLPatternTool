@@ -186,32 +186,32 @@ class ACNLFormat{
   }
 
   getPalette(i){
-    if (i < 0 || i > 15){return 0;}
+    if (i < 0 || i > 14){return 0;}
     return this.dataBytes[0x58 + i];
   }
   
   setPalette(i, newVal){
-    if (i < 0 || i > 15){return;}
+    if (i < 0 || i > 14){return;}
     this.dataBytes[0x58 + i] = newVal;
   }
 
-  set title(newTitle){this.utf16_encode(0, 42, newTitle);};
-  get title(){return this.utf16_decode(0, 42);};
+  set title(newTitle){this.utf16_encode(0, 40, newTitle);};
+  get title(){return this.utf16_decode(0, 40);};
   set creator(n){
     if (n instanceof Array && n.length == 2){this.creator = n[0]; this.creator = n[1]; return;}
-    if ((typeof n) == "string"){this.utf16_encode(0x2C, 20, n);}
+    if ((typeof n) == "string"){this.utf16_encode(0x2C, 18, n);}
     if ((typeof n) == "number"){this.dataView.setUint16(0x2A, n, true);}
   };
   get creator(){
-    return [this.utf16_decode(0x2C, 20), this.dataView.getUint16(0x2A, true)];
+    return [this.utf16_decode(0x2C, 18), this.dataView.getUint16(0x2A, true), this.dataBytes[0x44]?"Male":"Female"];
   };
   set town(n){
     if (n instanceof Array && n.length == 2){this.town = n[0]; this.town = n[1]; return;}
-    if ((typeof n) == "string"){this.utf16_encode(0x42, 20, n);}
+    if ((typeof n) == "string"){this.utf16_encode(0x42, 18, n);}
     if ((typeof n) == "number"){this.dataView.setUint16(0x40, n, true);}
   };
   get town(){
-    return [this.utf16_decode(0x42, 20), this.dataView.getUint16(0x40, true)];
+    return [this.utf16_decode(0x42, 18), this.dataView.getUint16(0x40, true)];
   };
   set unknown_a(newVal){
     this.dataView.setUint16(0x56, newVal, true);
@@ -291,6 +291,20 @@ class ACNLFormat{
   ///Returns FNV-1a 128-bit hash of the whole pattern
   fullHash(){
     return fnv1a128(this.b, 0, this.byteLength);
+  }
+  //Fixes common problems with patterns
+  fixIssues(){
+    if (!this.creator[1]){this.creator = 60598;}
+    if (!this.town[1]){this.town = 50500;}
+    //End town with wide-zero
+    this.dataBytes[0x42+18] = 0;
+    this.dataBytes[0x42+19] = 0;
+    //End creator with wide-zero
+    this.dataBytes[0x2C+18] = 0;
+    this.dataBytes[0x2C+19] = 0;
+    //End title with wide-zero
+    this.dataBytes[40] = 0;
+    this.dataBytes[41] = 0;
   }
   static widthForType(t){
     return ACNLFormat.typeInfo[t].size;
