@@ -5,30 +5,22 @@
     </div>
     <h2>Main Menu</h2>
     <div class="nook-buttons">
-        <!-- <button @click="onLocalSave"> -->
-        <button>
-            <object class="svg nav brown-circle" :data="storageAddSvg"></object>
-            Save to Personal Storage
+        <button @click="goToBrowse">
+            Browse
         </button>
-        <!-- <button @click="onPublish"> -->
-        <button>
-            <object class="svg nav brown-circle" :data="storageAddSvg"></object>
-            Publish
+        <button @click="goToFAQ">
+            FAQ
         </button>
-        <!-- <button @click="onOpenDB"> -->
-        <button>
-            <object class="svg nav brown-circle" :data="storageSvg"></object>
-            Open DB
+        <button @click="goToChanges">
+            Changelog
         </button>
-        <!-- <button @click="onOpenLocal"> -->
-        <button>
-            <object class="svg nav brown-circle" :data="storageSvg"></object>
-            Open Storage
-        </button>
-        <!-- <button @click="onModalOpen"> -->
-        <button>
-            <object class="svg nav brown-circle" :data="barcodeSvg"></object>
-            Generate QR code(s)
+        <a href="https://discord.gg/UVgMK2h">
+            <button>
+                Discord
+            </button>
+        </a>
+        <button @click="closeMenu">
+            Close Menu
         </button>
     </div>
   </div>
@@ -40,6 +32,10 @@ import storageAddSvg from '/assets/icons/bxs-folder-plus.svg';
 import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
 export default {
   name: "NookPhoneMenu",
+  model: {
+      prop: 'mainMenu',
+      event: 'close',
+  },
   data: function() {
     return {
         dateObj: new Date(),
@@ -53,7 +49,21 @@ export default {
       const interval = setInterval(() => this.time = this.dateObj.toLocaleTimeString('en-US', {hour: '2-digit', timeStyle: 'short'}), 1000);
   },
   methods: {
-
+    goToBrowse: function() {
+      this.$router.push({ path: `/browse` });
+    },
+    goToEditor: function() {
+      this.$router.push({ path: `/editor` });
+    },
+    goToFAQ: function() {
+      this.$router.push({ path: `/faq` });
+    },
+    goToChanges: function() {
+      this.$router.push({ path: `/changelog` });
+    },
+    closeMenu: function() {
+        this.$emit('close', false);
+    }
   }
 }
 </script>
@@ -61,7 +71,7 @@ export default {
 <style lang="scss" scoped>
 .nook-phone {
     border-radius: 45px;
-    background-color: #FFFAE3;
+    background-color: #F0ECE1;
     color: #7E7261;
     display: flex;
     flex-direction: column;

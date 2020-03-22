@@ -39,7 +39,7 @@
           <button class="menu-button" @click="onMainMenu">
             <object class="svg nav white-circle" :data="phoneSvg"></object>
             Menu
-            <!-- <object class="svg-small" :data="downArrowSvg"></object> -->
+            <object class="svg-small" :data="downArrowSvg"></object>
           </button>
         </div>
         <div class="tools-and-colors">
@@ -126,7 +126,7 @@
         </div>
         <div class="modal-window" id="change-info-modal">
           <div class="edit-info">
-              <span>Title: <input type="text" v-model="patTitle"></span>
+              <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
               <span>Author: <input type="text" maxlength="8" v-model="patAuthor"></span>
               <span>Town: <input type="text" maxlength="8" v-model="patTown"></span>
               <span>Type:
@@ -182,7 +182,7 @@
             <div class="right">
               <IconGenerator :pattern="drawingTool" width=150 height=150 />
               <div class="dropdowns">
-                <span>Title: <input type="text" v-model="patTitle"></span>
+                <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
                 <span>Author: <input type="text" maxlength="8" v-model="patAuthor"></span>
                 <span>Town: <input type="text" maxlength="8" v-model="patTown"></span>
                 <span>Type:
@@ -289,7 +289,7 @@
 
     <ModalContainer v-if="mainMenu" @modal-close="mainMenu=false">
       <div class="modal">
-        <NookPhoneMenu />
+        <NookPhoneMenu v-model="mainMenu"/>
       </div>
     </ModalContainer>
   </div>
@@ -546,8 +546,8 @@ export default {
       this.pickPatterns = false;
     },
     onMainMenu: function() {
-      this.$router.push("/");
-      //this.mainMenu = true;
+      // this.$router.push("/");
+      this.mainMenu = true;
     },
     openColorPicker: function() {
       if (this.drawingTool.currentColor !== 15) {
