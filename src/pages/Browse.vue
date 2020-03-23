@@ -6,10 +6,15 @@
         <input
           type="text"
           @keyup.enter="search"
-          @input="updateQuery"
+          @input="onQueryChange"
           :value="query">
           <span>
-            <input type="checkbox" name="nsfc" @click="openNSFCDisclaimer" v-model="nsfc">
+            <input
+              type="checkbox"
+              name="nsfc"
+              @click="openNSFCDisclaimer"
+              :checked="nsfc"
+            >
             <label for="nsfc">View Patterns Tagged as NSFW?</label>
           </span>
       </div>
@@ -101,13 +106,13 @@ export default {
   },
   data: function(){
     return {
-      nsfc: false,
       addSvg,
     };
   },
   computed: {
     // map using store module search
     ...mapState('browse', [
+      'nsfc',
       'query',
       'results',
     ]),
@@ -121,54 +126,85 @@ export default {
     ]),
     async loadFromRoute(route) {
       const query = route.query.q;
+      let nsfc = route.query.nsfc;
+      let searchOptions = {};
+      let queryOptions = {};
+      let isCorrecting = false;
       if (query != null) {
-        await this.setSearchOptions({ query, nsfc: this.nsfc });
-        if (query.length === 0) this.$router.replace({ query: {} });
+        // correct the url
+        searchOptions = {...searchOptions, query};
+        if (query.length !== 0) queryOptions = {...queryOptions, q: query};
+        else isCorrecting = true;
       }
-      else await this.setSearchOptions({ query: "" });
+      if (nsfc != null) {
+        nsfc = Number.parseInt(nsfc);
+        if (nsfc === 1) {
+          searchOptions  = {...searchOptions, nsfc: true};
+          queryOptions = {...queryOptions, nsfc: 1 };
+        }
+        else isCorrecting = true;
+      }
+      // check for invalid Numbers
+      if (isCorrecting) {
+        await this.$router.replace({ query: queryOptions });
+        return;
+      }
+      await this.setSearchOptions(searchOptions);
       await this.getInitSearchResults();
     },
-    async updateQuery(event) {
+    async onQueryChange(event) {
       const query = event.target.value;
-      await this.setSearchOptions({ query, nsfc: this.nsfc });
+      await this.setSearchOptions({ query });
     },
     async search(){
       // duplicated history guard
-      let routeOptions = null;
       const currQuery = this.query;
-      const prevQuery = this.$route.query.q;
-      const prevNSFC = this.$route.query.nsfc ? true : false;
+      let prevQuery = this.$route.query.q;
+      if (prevQuery == null) prevQuery = "";
+      const currNSFC = this.nsfc;
+      const prevNSFC = Boolean(this.$route.query.nsfc);
 
-      if (currQuery === prevQuery && this.nsfc === prevNSFC) return;
-      if (currQuery.length === 0) routeOptions = { query: {} };
-      else routeOptions = this.nsfc ? { query: { q: currQuery, nsfc: 1 }} : { query: { q: currQuery }};
+      let queryOptions = {};
+      // duplication guard
+      if (currQuery === prevQuery && currNSFC === prevNSFC) {
+        // console.log("blocked");
+        return;
+      };
 
-      this.$router.push(routeOptions);
+      if (currQuery.length !== 0) queryOptions = {...queryOptions, q: currQuery};
+      if (currNSFC) queryOptions = {...queryOptions, nsfc: 1};
+      // let route guard handle the rest
+      await this.$router.push({ query: queryOptions });
     },
     getUrl(p){
       const dt = new DrawingTool(p);
       return "/editor#H:"+dt.pixelHash;
     },
-    goToEditor() {
-      this.$router.push({ path: `/editor` });
+    async goToEditor() {
+      await this.$router.push({ path: `/editor` });
     },
     tagClass(tag){
       if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
     },
-    openNSFCDisclaimer: function(e) {
+    openNSFCDisclaimer: async function(e) {
       const disclaimer = `      By selecting this option, you are voluntarily agreeing to viewing patterns that may contain content that is pornographic, violent, illegal, or disturbing in nature.
-      By accepting this, you are consenting to this and confirming that you are at least 18 years of age. 
+      By accepting this, you are consenting to this and confirming that you are at least 18 years of age.
       Continue?`;
-      if (!this.nsfc) {
-        if (window.confirm(disclaimer)) { this.nsfc = true; }
-        else {
-          this.nsfc = false;
-          e.preventDefault();
-        }
-      } else this.nsfc = false;
+      let prevNSFC = this.nsfc;
+      let currNSFC;
+      // turning off if already on
+      if (prevNSFC) currNSFC = false;
+      // confirm turn on if already off
+      else if (window.confirm(disclaimer)) {
+        const nsfc = true;
+        await this.setSearchOptions({ nsfc });
+        await this.search();
+      }  else currNSFC = false;
 
-      this.search();
-      return this.nsfc;
+      if (prevNSFC === currNSFC) return;
+      await this.setSearchOptions({ nsfc: currNSFC });
+      await this.search();
+      return;
     }
   },
   mounted: async function(){
