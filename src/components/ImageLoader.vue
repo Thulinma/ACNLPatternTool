@@ -26,11 +26,11 @@
           <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp Pixels</li>
         </ul>
         <ul class="options">
-          <li :class="{active: convert_trans === 255}" @click="changeTrans(255)">100%</li>
-          <li :class="{active: convert_trans === 192}" @click="changeTrans(192)">75%</li>
-          <li :class="{active: convert_trans === 127}" @click="changeTrans(127)">50%</li>
-          <li :class="{active: convert_trans === 64}" @click="changeTrans(64)">25%</li>
-          <li :class="{active: convert_trans === 1}" @click="changeTrans(1)">1%</li>
+          <li :class="{active: convert_trans === 255}" @click="changeTrans(255)">100% Transparency</li>
+          <li :class="{active: convert_trans === 192}" @click="changeTrans(192)">75% Transparency</li>
+          <li :class="{active: convert_trans === 127}" @click="changeTrans(127)">50% Transparency</li>
+          <li :class="{active: convert_trans === 64}" @click="changeTrans(64)">25% Transparency</li>
+          <li :class="{active: convert_trans === 1}" @click="changeTrans(1)">1% Transparency</li>
         </ul>
       </div>
       <div class="buttons">
