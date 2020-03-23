@@ -1,5 +1,4 @@
 import origin from '/libs/origin';
-import lodash from 'lodash';
 
 // 'data' for stores, when mapping, use computed
 const state = {

@@ -16,7 +16,7 @@ git submodule update --init --recursive
  ### `npm run dev`
 
  Runs the application in development mode. Automatically reloads with changes.
- Open [https://localhost:PORT](https://localhost:3000) to view it in the
+ Open [https://localhost:3000](https://localhost:3000) to view it in the
  browser.
 
  ### `npm run build -- <options>`
