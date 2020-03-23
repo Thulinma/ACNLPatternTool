@@ -144,7 +144,8 @@ export default {
         }
         else isCorrecting = true;
       }
-      // check for invalid Numbers
+      // if any 'invalid' or uncessary data in query, correct it
+      // next loop around will load results
       if (isCorrecting) {
         await this.$router.replace({ query: queryOptions });
         return;

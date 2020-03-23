@@ -37,9 +37,9 @@ Here are some recommend group tokens:
 It's important that you follow the conventions set aside in the code. Specific
 organization styles are intended to keep the project maintainable and scalable.
 This includes things from file organization, module decoupling, to even small
-pieces such as import statements. Important concepts such as data stores,
-portals, and other rendering framework-related knowledge will definitely help
-you here.
+pieces such as import statements and parameter orders. Important concepts such
+as data stores, portals, and other rendering framework-related knowledge will
+definitely help you here.
 
 ### Performance and Optimization
 

@@ -80,8 +80,12 @@ const modPending = async (token) => {
   return response.data;
 };
 
-const modApprove = async (options) => {
-  const response = await api.post("api.php", options);
+const modApprove = async (hash, options, token) => {
+  const response = await api.post("api.php", {
+    ...options,
+    approve: hash,
+    token,
+  });
   return response.data;
 };
 

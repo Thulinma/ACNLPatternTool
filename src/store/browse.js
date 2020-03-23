@@ -32,6 +32,7 @@ const getters = {
 
 // SYNCHRONOUS ONLY
 // COMPONENTS SHOULD NEVER MUTATE DIRECTLY
+// you only get one payload, destructure it, don't rename it
 // assume all payloads and thier contents are valid
 // (state, payload)
 const mutations = {
@@ -66,6 +67,7 @@ const mutations = {
 
 // 'aggregate methods' for stores, when mapping, use methods
 // component's interface, sanitize payloads
+// you only get one payload, destructure it, don't rename it
 // (context, payload)
 // ({ state, getters, commit, dispatch }, payload)
 const actions = {

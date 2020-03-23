@@ -6,7 +6,7 @@
       <button @click="onGetPending">Get pending approval list</button>
     </div>
     <div class="patterns">
-      <div class="pattern-container" v-for="opt in pending" :key="opt.bytes">
+      <div class="pattern-container" v-for="(opt, i) in pending" :key="opt.bytes">
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
@@ -37,24 +37,24 @@
         </div>
         <div class="options">
           <span>
-            <input name="featured" type="checkbox" @change="opt.feature=$event.target.checked">
-            <label for="featured">Feature this Pattern</label>
+            <input :id="i + 'featured'" type="checkbox" @change="opt.feature=$event.target.checked">
+            <label :for="i + 'featured'">Feature this Pattern</label>
           </span>
           <span>
-            <input name="nsfc" type="checkbox" :checked="!!+opt.nokids" @change="opt.nsfc=$event.target.checked">
-            <label for="nsfc">Not Safe For Children</label>
+            <input :id="i + 'nsfc'" type="checkbox" :checked="!!+opt.nokids" @change="opt.nsfc=$event.target.checked">
+            <label :for="i + 'nsfc'">Not Safe For Children</label>
           </span>
           <span>
-            <input name="offensive" type="checkbox" @change="opt.offensive=$event.target.checked">
-            <label for="offensive">Offensive</label>
+            <input :id="i + 'offensive'" type="checkbox" @change="opt.offensive=$event.target.checked">
+            <label :for="i + 'offensive'">Offensive</label>
           </span>
           <span>
-            <input name="loweffort" type="checkbox" @change="opt.loweffort=$event.target.checked">
-            <label for="loweffort">Low Effort</label>
+            <input :id="i + 'loweffort'" type="checkbox" @change="opt.loweffort=$event.target.checked">
+            <label :for="i + 'loweffort'">Low Effort</label>
           </span>
           <span>
-            <input name="retagging" type="checkbox" @change="opt.retag=$event.target.checked">
-            <label for="retagging">Needs Retagging</label>
+            <input :id="i + 'retagging'" type="checkbox" @change="opt.retag=$event.target.checked">
+            <label :for="i + 'retagging'">Needs Retagging</label>
           </span>
         </div>
         <div class="mod-buttons">
@@ -128,20 +128,20 @@ export default {
     tagClass(tag){
       if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
     },
-    wipePattern(bytes){
+    wipePattern: async function(bytes) {
       const dT = new DrawingTool(bytes);
-      this.reject(dT.pixelHash);
+      await this.reject(dT.pixelHash);
     },
-    okPattern(opt){
+    okPattern: async function (options) {
       //Opt may contain:
       // nsfc: 0/1
       // offensive: 0/1
       // feature: 0/1
       // retag: 0/1
       // loweffort: 0/1
-      const dT = new DrawingTool(opt.bytes);
-      opt.approve = dT.pixelHash;
-      this.approve(opt);
+      const dT = new DrawingTool(options.bytes);
+      const hash  = dT.pixelHash;
+      await this.approve({ hash, options });
     },
   }
 }
