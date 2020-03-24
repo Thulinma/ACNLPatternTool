@@ -42,9 +42,18 @@ class RenderTarget{
     }
     //if zoom > 5, draw a line
     if (this.opt.grid){
-      this.context.fillStyle = "#AAAAAA";
-      this.context.fillRect(x*this.zoom+this.zoom-1,y*this.zoom,1,this.zoom);
-      this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-1,this.zoom,1);
+      if (x == 15){
+        this.context.fillStyle = "#AA0000";
+      }else{
+        this.context.fillStyle = "#AAAAAA";
+      }
+      this.context.fillRect(x*this.zoom+this.zoom-1,y*this.zoom,(x%8==7)?2:1,this.zoom);
+      if (y == 15){
+        this.context.fillStyle = "#BB0000";
+      }else{
+        this.context.fillStyle = "#AAAAAA";
+      }
+      this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-1,this.zoom,(y%8==7)?2:1);
     }
     if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
   }
@@ -60,12 +69,21 @@ class RenderTarget{
       this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height)
     }
     if (this.opt.grid){
-      this.context.fillStyle = "#AAAAAA";
       for (let x = 0; x < this.canvas.width/this.zoom; ++x){
-        this.context.fillRect((x+1)*this.zoom-1,0,1,this.canvas.height);
+        if (x == 15){
+          this.context.fillStyle = "#AA0000";
+        }else{
+          this.context.fillStyle = "#AAAAAA";
+        }
+        this.context.fillRect((x+1)*this.zoom-1,0,(x%8==7)?2:1,this.canvas.height);
       }
       for (let y = 0; y < this.canvas.height/this.zoom; ++y){
-        this.context.fillRect(0,(y+1)*this.zoom-1,this.canvas.width,1);
+        if (y == 15){
+          this.context.fillStyle = "#BB0000";
+        }else{
+          this.context.fillStyle = "#AAAAAA";
+        }
+        this.context.fillRect(0,(y+1)*this.zoom-1,this.canvas.width,(y%8==7)?2:1);
       }
     }
     if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
