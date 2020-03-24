@@ -37,29 +37,37 @@
         </div>
         <div class="options">
           <span>
-            <input :id="i + 'featured'" type="checkbox" @change="opt.feature=$event.target.checked">
-            <label :for="i + 'featured'">Feature this Pattern</label>
+            <input :id="i + '-featured'" type="checkbox" @change="opt.feature=$event.target.checked">
+            <label :for="i + '-featured'">Feature this Pattern</label>
           </span>
           <span>
-            <input :id="i + 'nsfc'" type="checkbox" :checked="!!+opt.nokids" @change="opt.nokids=$event.target.checked">
-            <label :for="i + 'nsfc'">Not Safe For Children</label>
+            <input :id="i + '-nsfc'" type="checkbox" :checked="!!+opt.nokids" @change="opt.nokids=$event.target.checked">
+            <label :for="i + '-nsfc'">Not Safe For Children</label>
           </span>
           <span>
-            <input :id="i + 'offensive'" type="checkbox" @change="opt.offensive=$event.target.checked">
-            <label :for="i + 'offensive'">Offensive</label>
+            <input :id="i + '-offensive'" type="checkbox" @change="opt.offensive=$event.target.checked">
+            <label :for="i + '-offensive'">Offensive</label>
           </span>
+          <!-- <span>
+            <input :id="i + '-loweffort'" type="checkbox" @change="opt.loweffort=$event.target.checked">
+            <label :for="i + '-loweffort'">Low Effort</label>
+          </span> -->
           <span>
-            <input :id="i + 'loweffort'" type="checkbox" @change="opt.loweffort=$event.target.checked">
-            <label :for="i + 'loweffort'">Low Effort</label>
-          </span>
-          <span>
-            <input :id="i + 'retagging'" type="checkbox" @change="opt.retag=$event.target.checked">
-            <label :for="i + 'retagging'">Needs Retagging</label>
+            <input :id="i + '-retagging'" type="checkbox" @change="opt.retag=$event.target.checked">
+            <label :for="i + '-retagging'">Needs Retagging</label>
           </span>
         </div>
         <div class="mod-buttons">
-          <button class="approve-button" @click.stop="okPattern(opt)">Approve</button>
-          <button class="delete-button" @click.stop="wipePattern(opt.bytes)">Delete</button>
+          <div class="lq">
+            <button class="approve-button" @click.stop="opt.loweffort=true;okPattern(opt)">LQ, Approve</button>
+            <button class="approve-button" @click.stop="opt.is_meme=true;okPattern(opt)">LQ, Meme, Approve</button>
+            <button class="approve-button" @click.stop="opt.is_anime=true;okPattern(opt)">LQ, Anime, Approve</button>
+            <button class="approve-button" @click.stop="opt.is_videogame;okPattern(opt)">LQ, Video Game, Approve</button>
+          </div>
+          <div class="normal">
+            <button class="approve-button" @click.stop="okPattern(opt)">Approve</button>
+            <button class="delete-button" @click.stop="wipePattern(opt.bytes)">Delete</button>
+          </div>
         </div>
       </div>
     </div>
@@ -155,6 +163,7 @@ button {
   padding: 8px 12px;
   border-radius: 35px;
   border: none;
+  cursor: pointer;
 }
 .top {
   text-align: center;
@@ -174,9 +183,9 @@ button {
   align-items: center;
   justify-content: center;
   width: 220px;
-  height: 420px;
+  height: 520px;
   max-width: 220px;
-  max-height: 420px;
+  max-height: 520px;
   margin: 10px;
   box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
   background-image: radial-gradient(#89C3B9 20%, transparent 20%), radial-gradient(#89C3B9 20%, transparent 20%);
@@ -230,10 +239,21 @@ button {
 }
 .mod-buttons {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
   align-items: center;
   width: 90%;
+}
+.mod-buttons .lq{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.mod-buttons .normal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 .mod-buttons .approve-button, .delete-button {
   color: #ffffff;
@@ -243,5 +263,10 @@ button {
 }
 .mod-buttons .delete-button {
   background-color: red;
+}
+.mod-buttons .lq button {
+  background-color: teal;
+  padding: 5px 10px;
+  margin: 2px 0;
 }
 </style>
