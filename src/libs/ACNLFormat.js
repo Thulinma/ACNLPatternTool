@@ -299,8 +299,8 @@ class ACNLFormat{
     //End town with wide-zero
     this.dataBytes[0x42+18] = 0;
     this.dataBytes[0x42+19] = 0;
-    //End creator with wide-zero
-    this.dataBytes[0x2C+18] = 0;
+    //End creator with valid gender and zero pad
+    if (this.dataBytes[0x2C+18] > 1){this.dataBytes[0x2C+18] = 0;}
     this.dataBytes[0x2C+19] = 0;
     //End title with wide-zero
     this.dataBytes[40] = 0;
