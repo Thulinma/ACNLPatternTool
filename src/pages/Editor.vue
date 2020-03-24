@@ -127,8 +127,8 @@
         <div class="modal-window" id="change-info-modal">
           <div class="edit-info">
               <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
-              <span>Author: <input type="text" maxlength="8" v-model="patAuthor"></span>
-              <span>Town: <input type="text" maxlength="8" v-model="patTown"></span>
+              <span>Author: <input type="text" maxlength="9" v-model="patAuthor"></span>
+              <span>Town: <input type="text" maxlength="9" v-model="patTown"></span>
               <span>Type:
                 <select v-model="patType">
                   <option
@@ -183,8 +183,8 @@
               <IconGenerator :pattern="drawingTool" width=150 height=150 />
               <div class="dropdowns">
                 <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
-                <span>Author: <input type="text" maxlength="8" v-model="patAuthor"></span>
-                <span>Town: <input type="text" maxlength="8" v-model="patTown"></span>
+                <span>Author: <input type="text" maxlength="9" v-model="patAuthor"></span>
+                <span>Town: <input type="text" maxlength="9" v-model="patTown"></span>
                 <span>Type:
                   <select v-model="patType">
                     <option
