@@ -445,9 +445,12 @@ export default {
       saveAs(img, this.drawingTool.title+".png");
     },
     patInfoSave(publish=false){
-      const titleCheck = this.patTitle && this.patTitle !== 'Empty';
-      const townCheck = this.patTown && this.patTown !== 'Unknown';
-      const nameCheck = this.patAuthor && this.patAuthor !== 'Unknown';
+      const patTitle = this.patTitle.trim();
+      const patTown = this.patTown.trim();
+      const patAuthor = this.patAuthor.trim();
+      const titleCheck = patTitle && patTitle !== 'Empty';
+      const townCheck = patTown && patTown !== 'Unknown';
+      const nameCheck = patAuthor && patAuthor !== 'Unknown';
       if (titleCheck && townCheck && nameCheck){
         this.drawingTool.title = this.patTitle;
         if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
