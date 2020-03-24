@@ -119,7 +119,10 @@ const tags_style = [
   'Animal',
   'Holiday',
   'Food',
-  'Brand'
+  'Brand',
+  'Video Game',
+  'Anime',
+  'Meme'
 ];
 
 const tags_type = [
