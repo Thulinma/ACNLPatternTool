@@ -47,13 +47,13 @@ class RenderTarget{
       }else{
         this.context.fillStyle = "#AAAAAA";
       }
-      this.context.fillRect(x*this.zoom+this.zoom-1,y*this.zoom,(x%8==7)?2:1,this.zoom);
+      this.context.fillRect(x*this.zoom+this.zoom-((x%8==7)?2:1),y*this.zoom,(x%8==7)?2:1,this.zoom);
       if (y == 15){
         this.context.fillStyle = "#BB0000";
       }else{
         this.context.fillStyle = "#AAAAAA";
       }
-      this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-1,this.zoom,(y%8==7)?2:1);
+      this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-((y%8==7)?2:1),this.zoom,(y%8==7)?2:1);
     }
     if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
   }
@@ -75,7 +75,7 @@ class RenderTarget{
         }else{
           this.context.fillStyle = "#AAAAAA";
         }
-        this.context.fillRect((x+1)*this.zoom-1,0,(x%8==7)?2:1,this.canvas.height);
+        this.context.fillRect((x+1)*this.zoom-((x%8==7)?2:1),0,(x%8==7)?2:1,this.canvas.height);
       }
       for (let y = 0; y < this.canvas.height/this.zoom; ++y){
         if (y == 15){
@@ -83,7 +83,7 @@ class RenderTarget{
         }else{
           this.context.fillStyle = "#AAAAAA";
         }
-        this.context.fillRect(0,(y+1)*this.zoom-1,this.canvas.width,(y%8==7)?2:1);
+        this.context.fillRect(0,(y+1)*this.zoom-((y%8==7)?2:1),this.canvas.width,(y%8==7)?2:1);
       }
     }
     if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
