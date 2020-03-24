@@ -101,7 +101,7 @@ const colors = {
   "holiday": '#48903B',
   "food": '#B156FD',
   "brand": '#E93F33',
-  "anime": '#F25278',
+  "anime": '#EB8D77',
   "video-game": '#0D1010',
   "meme": '#52307C',
 };
