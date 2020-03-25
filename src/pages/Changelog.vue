@@ -2,6 +2,14 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>March 24, 2020</dt>
+    <dd>
+      <ul>
+        <li>Corrected creator/town name to be max 9 chars instead of 8</li>
+        <li>Added helpful guidelines in the pattern grid</li>
+        <li>Fixed bug with creator gender being forced to female, causing male players to not be able to edit their own patterns in ACNL anymore</li>
+      </ul>
+    </dd>
     <dt>March 22, 2020</dt>
     <dd>
       <ul>
