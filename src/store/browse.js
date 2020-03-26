@@ -119,15 +119,16 @@ const actions = {
   getInitSearchResults: async ({ state, commit }) => {
     // results are still here, block the repeated request
     const { nsfc, unapproved } = state;
+    const options = {
+      nsfc,
+      unapproved
+    };
     if (state.initResultsRetrieved) return;
     let results;
     if (state.query.length === 0)
-      results = await origin.recent();
+      results = await origin.recent(options);
     else {
-      results = await origin.search(state.query, {
-        nsfc,
-        unapproved
-      });
+      results = await origin.search(state.query, options);
     }
     commit('setViewOptions', { pageNumber: 0 });
     commit('setSearchResults', { results });
