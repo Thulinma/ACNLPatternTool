@@ -3,6 +3,7 @@ $main-font: 'Nunito';
 $bg-color: #FFFAE5;
 $color: #7E7261;
 $link-color: #E98394;
+$link-hover: #EC637A;
 
 html {
   height: 100%;
@@ -20,4 +21,7 @@ body {
 a {
   color: $link-color;
   text-decoration: none;
+}
+a:hover {
+  color: $link-hover;
 }

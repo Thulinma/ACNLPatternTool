@@ -91,17 +91,31 @@ export default {
 
 
 <style lang="scss" scoped>
-h1{
-  font-size:300%;
+$header-bg: #72D8C0;
+$header-color: #FFFFFF;
+
+h1 {
+  background-color: $header-bg;
+  color: $header-color;
+  font-size: 300%;
+  padding: 8px;
 }
-dt{
-  font-size:150%;
-  margin-top:20px;
-}
-li{
-  margin-left:15px;
-}
-li::before{
-  content: '- '
+
+dl {
+  margin: 0 15px;
+  max-width: 800px;
+
+  dt {
+    font-size: 150%;
+    margin-top: 20px;
+  }
+
+  ul {
+    margin: 0 0 0 25px;
+
+    li::before {
+      content: '- ';
+    }
+  }
 }
 </style>
