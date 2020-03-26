@@ -6,6 +6,7 @@ const PAGE_SIZE_MIN = 30;
 const state = {
   query: "",
   nsfc: false,
+  unapproved: false,
   pageSize: 50,
   pageNumber: 0,
   initResultsRetrieved: false,
@@ -47,7 +48,7 @@ const mutations = {
     if (pageNumber != null) state.pageNumber = pageNumber;
   },
   setSearchOptions: (state, payload) => {
-    const { query, nsfc } = payload;
+    const { query, nsfc, unapproved } = payload;
     // need to do this manually to trigger setters
     if (query != null && state.query !== query) {
       state.query = query;
@@ -56,6 +57,16 @@ const mutations = {
     if (nsfc != null && state.nsfc !== nsfc) {
       state.nsfc = nsfc;
       state.initResultsRetrieved = false;
+      if (!nsfc) {
+        state.unapproved = false;
+      }
+    }
+    if (unapproved != null && state.unapproved !== unapproved) {
+      state.unapproved = unapproved;
+      state.initResultsRetrieved = false;
+      if (unapproved) {
+        state.nsfc = true;
+      }
     }
   },
   setSearchResults: (state, payload) => {
@@ -107,11 +118,17 @@ const actions = {
   // go fetch search results using all options in this store
   getInitSearchResults: async ({ state, commit }) => {
     // results are still here, block the repeated request
+    const { nsfc, unapproved } = state;
     if (state.initResultsRetrieved) return;
     let results;
     if (state.query.length === 0)
       results = await origin.recent();
-    else results = await origin.search(state.query, state.nsfc);
+    else {
+      results = await origin.search(state.query, {
+        nsfc,
+        unapproved
+      });
+    }
     commit('setViewOptions', { pageNumber: 0 });
     commit('setSearchResults', { results });
   }

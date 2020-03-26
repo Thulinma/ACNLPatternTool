@@ -10,12 +10,23 @@
           :value="query">
           <span>
             <input
+              id="nsfc-toggle"
               type="checkbox"
               name="nsfc"
               @click="openNSFCDisclaimer"
               :checked="nsfc"
-            >
-            <label for="nsfc">View Patterns Tagged as NSFW?</label>
+            />
+            <label for="nsfc-toggle">NSFW</label>
+          </span>
+          <span>
+            <input
+              id="unapproved-toggle"
+              type="checkbox"
+              name="unapproved"
+              @click="onUnapprovedChange"
+              :checked="unapproved"
+            />
+            <label for="unapproved-toggle">Unapproved</label>
           </span>
       </div>
       <button class="create-button" @click="goToEditor">
@@ -112,9 +123,10 @@ export default {
   computed: {
     // map using store module search
     ...mapState('browse', [
-      'nsfc',
       'query',
       'results',
+      'nsfc',
+      'unapproved'
     ]),
   },
   methods: {
@@ -127,9 +139,11 @@ export default {
     async loadFromRoute(route) {
       const query = route.query.q;
       let nsfc = route.query.nsfc;
+      let unapproved = route.query.unapproved;
       let searchOptions = {};
       let queryOptions = {};
       let isCorrecting = false;
+
       if (query != null) {
         // correct the url
         searchOptions = {...searchOptions, query};
@@ -141,6 +155,14 @@ export default {
         if (nsfc === 1) {
           searchOptions  = {...searchOptions, nsfc: true};
           queryOptions = {...queryOptions, nsfc: 1 };
+        }
+        else isCorrecting = true;
+      }
+      if (unapproved != null) {
+        unapproved = Number.parseInt(unapproved);
+        if (unapproved === 1) {
+          searchOptions = {...searchOptions, unapproved: true};
+          queryOptions = {...queryOptions, unapproved: 1};
         }
         else isCorrecting = true;
       }
@@ -165,15 +187,23 @@ export default {
       const currNSFC = this.nsfc;
       const prevNSFC = Boolean(this.$route.query.nsfc);
 
+      const currUnapproved = this.unapproved;
+      const prevUnapproved = Boolean(this.$route.query.unapproved);
+
       let queryOptions = {};
       // duplication guard
-      if (currQuery === prevQuery && currNSFC === prevNSFC) {
+      if (
+        currQuery === prevQuery &&
+        currNSFC === prevNSFC &&
+        currUnapproved === prevUnapproved
+      ) {
         // console.log("blocked");
         return;
       };
 
       if (currQuery.length !== 0) queryOptions = {...queryOptions, q: currQuery};
       if (currNSFC) queryOptions = {...queryOptions, nsfc: 1};
+      if (currUnapproved) queryOptions = {...queryOptions, unapproved: 1};
       // let route guard handle the rest
       await this.$router.push({ query: queryOptions });
     },
@@ -194,19 +224,45 @@ export default {
       let prevNSFC = this.nsfc;
       let currNSFC;
       // turning off if already on
-      if (prevNSFC) currNSFC = false;
+      if (prevNSFC) {
+        currNSFC = false;
+      }
       // confirm turn on if already off
       else if (window.confirm(disclaimer)) {
-        const nsfc = true;
-        await this.setSearchOptions({ nsfc });
-        await this.search();
+        currNSFC = true;
       }  else currNSFC = false;
+      if (prevNSFC === currNSFC && prevNSFC === false) {
+        e.preventDefault();
+        return currNSFC;
+      }
 
-      if (prevNSFC === currNSFC) return;
       await this.setSearchOptions({ nsfc: currNSFC });
       await this.search();
-      return;
-    }
+      return currNSFC;
+    },
+    onUnapprovedChange: async function(e) {
+      let currUnapproved = e.target.checked;
+      const prevUnapproved = this.unapproved;
+      console.log(currUnapproved, prevUnapproved);
+
+      const nsfc = this.nsfc;
+      if (currUnapproved) {// turning on
+        // skip disclaimer if nsfc already on
+        if (nsfc) { currUnapproved = true; }
+        // enable disclaimer if nsfc not accepted
+        else {
+          const didAccept = await this.openNSFCDisclaimer(e);
+          if (!didAccept) {
+            currUnapproved = false;
+            e.preventDefault();
+          }
+          else currUnapproved = true;
+        }
+      }
+      // otherwise turning off
+      await this.setSearchOptions({ unapproved: currUnapproved});
+      await this.search();
+    },
   },
   mounted: async function(){
     await this.loadFromRoute(this.$route);
