@@ -93,8 +93,11 @@ h1 {
     margin: 0 0 0 15px;
   }
   ul {
-    list-style: circle;
     margin: 0 0 0 25px;
+    
+    li::before{
+      content: '- '
+    }
   }
 }
 </style>
