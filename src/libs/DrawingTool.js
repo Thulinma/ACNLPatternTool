@@ -364,7 +364,7 @@ class DrawingTool{
     rTarget.calcZoom(this.pattern.width);
     if (!opt.tall && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.tall || this.renderTargets[0].opt.grid)){
       this.renderTargets.unshift(rTarget);
-    }else{
+    } else {
       this.renderTargets.push(rTarget);
     }
     const prevDef = function(e){e.preventDefault();}
