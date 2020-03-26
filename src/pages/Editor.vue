@@ -31,6 +31,7 @@
             ref="colorPicker"
             :drawing-tool="drawingTool"
             @color-picked="onColorPicked"/>
+            <button @click="closeColorPicker">Close Menu</button>
         </div>
       </div>
 
@@ -371,7 +372,6 @@ export default {
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
-      colorPickerMenu: false,
       saveSvg,
       scanSvg,
       paintSvg,
@@ -555,10 +555,13 @@ export default {
     openColorPicker: function() {
       if (this.drawingTool.currentColor !== 15) {
         this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:285)+'px';
+        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:315)+'px';
         return;
       }
       alert('This one has to stay transparent. :)');
+    },
+    closeColorPicker: function() {
+      this.$refs.colorPickerMenu.style.height = '0px';
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
@@ -734,8 +737,12 @@ main .center .colorPicker-menu {
   top: 60px;
   border-radius: 0 0 35px 35px;
   background-color: #f1b5c1;
-  left:50%;
+  left: 50%;
   transform: translate(-50%);
+}
+main .center .colorPicker-menu button {
+  display: block;
+  margin: 0 auto;
 }
 .bottom-buttons {
   padding: 20px 10% 0 0;
