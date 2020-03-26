@@ -76,9 +76,6 @@
       </div>
     </main>
 
-    <div class="bottom-buttons">
-    </div>
-
     <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
       <div class="modal">
         <div class="modal-header">
