@@ -8,26 +8,29 @@
           @keyup.enter="search"
           @input="onQueryChange"
           :value="query">
-          <span>
-            <input
-              id="nsfc-toggle"
-              type="checkbox"
-              name="nsfc"
-              @click="openNSFCDisclaimer"
-              :checked="nsfc"
-            />
-            <label for="nsfc-toggle">NSFW</label>
-          </span>
-          <span>
-            <input
-              id="unapproved-toggle"
-              type="checkbox"
-              name="unapproved"
-              @click="onUnapprovedChange"
-              :checked="unapproved"
-            />
-            <label for="unapproved-toggle">Unapproved</label>
-          </span>
+        <button @click="search">
+          Search
+        </button>
+        <span>
+          <input
+            id="nsfc-toggle"
+            type="checkbox"
+            name="nsfc"
+            @click="openNSFCDisclaimer"
+            :checked="nsfc"
+          />
+          <label for="nsfc-toggle">NSFW</label>
+        </span>
+        <span>
+          <input
+            id="unapproved-toggle"
+            type="checkbox"
+            name="unapproved"
+            @click="onUnapprovedChange"
+            :checked="unapproved"
+          />
+          <label for="unapproved-toggle">Unapproved</label>
+        </span>
       </div>
       <button class="create-button" @click="goToEditor">
         Create
@@ -183,7 +186,7 @@ export default {
       // duplicated history guard
       const currQuery = this.query;
       let prevQuery = this.$route.query.q;
-      if (prevQuery == null) prevQuery = "";
+      if (!prevQuery) prevQuery = "";
       const currNSFC = this.nsfc;
       const prevNSFC = Boolean(this.$route.query.nsfc);
 
@@ -243,7 +246,7 @@ export default {
     onUnapprovedChange: async function(e) {
       let currUnapproved = e.target.checked;
       const prevUnapproved = this.unapproved;
-      console.log(currUnapproved, prevUnapproved);
+      // console.log(currUnapproved, prevUnapproved);
 
       const nsfc = this.nsfc;
       if (currUnapproved) {// turning on

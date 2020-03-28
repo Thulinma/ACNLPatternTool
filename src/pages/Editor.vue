@@ -67,7 +67,7 @@
             <button @click="onOpenLocal">Open Storage</button>
             <button @click="publishModal=true">Publish</button>
             <button @click="onLocalSave">Store Locally</button>
-            <button @click="onModalOpen">
+            <button @click="onQROpen">
               <object class="svg nav brown-circle" :data="barcodeSvg"></object>
               Generate QR Code
             </button>
@@ -148,7 +148,7 @@
           <div class="edit-buttons">
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
-            <button @click="patInfoSave">Save</button>
+            <button @click="patInfoSave(false)">Save</button>
             <button @click="patInfoModal=false; onLoad()">Cancel</button>
           </div>
         </div>
@@ -386,7 +386,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       publishModal: false,
-      origin:origin
+      origin,
     };
   },
   methods: {
@@ -394,6 +394,8 @@ export default {
       let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
       if (uplStatus["upload"]){
         this.$router.push({ hash: "H:"+uplStatus["upload"] });
+      } else if (uplStatus.includes("error")) {
+        window.alert("A pattern just like this already exists in the database!");
       }
       this.publishModal = false;
     },
@@ -534,7 +536,7 @@ export default {
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
-    onModalOpen: function() {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
