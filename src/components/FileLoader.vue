@@ -5,7 +5,7 @@
       type="file"
       name="files"
       ref="files"
-      accept="image/*,.acnl,.dat,.zip"
+      accept="image/*,.acnl,.acnh,.dat,.zip"
       multiple
       @change="onFile" />
   </div>
@@ -99,7 +99,7 @@ export default {
           catch (err) {
             logger.warn(err);
           }
-        } else if (fName.endsWith(".acnl")){
+        } else if (fName.endsWith(".acnl") || fName.endsWith(".acnh")){
           const pattern = await new Promise((resolve, reject) => {
             let fr = new FileReader();
             fr.onerror = () => {
