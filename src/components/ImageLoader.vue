@@ -60,7 +60,7 @@
       </div>
       <div class="buttons">
         <button @click="toggleView()">Edit Crop</button>
-        <button @click="$emit('converted', draws)">Convert!</button>
+        <button @click="$emit('converted', getReturn())">Convert!</button>
       </div>
     </div>
   </div>
@@ -510,6 +510,13 @@ export default {
     getAspectRatio() {
       return this.muralWide/this.muralTall;
     },
+    getReturn() {
+      return {
+        draws: this.draws,
+        width: this.muralWide, 
+        height: this.muralTall
+      };
+    }
     /*
     scaleImageData(ctx, imageData, scale) {
       var scaled = ctx.createImageData(imageData.width * scale, imageData.height * scale);

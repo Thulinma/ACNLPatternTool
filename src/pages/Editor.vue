@@ -99,6 +99,7 @@
           <button @click="zipPicksAsACNL">Download ACNL files as .zip file</button>
           <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
           <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
+          <br/>
           <IconGenerator
             v-for="(opt, idx) in pickPatterns"
             :key="idx"
@@ -389,7 +390,9 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       publishModal: false,
-      origin:origin
+      origin:origin,
+      muralWide: 1, 
+      muralTall: 1
     };
   },
   methods: {
@@ -415,7 +418,7 @@ export default {
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        zip.file(dt.title+".acnl", dt.toBytes());
+        zip.file(dt.title+"_"+i+".acnl", dt.toBytes());
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
@@ -526,7 +529,10 @@ export default {
       this.drawingTool.load(data);
     },
     onConvert: function(sourceTools){
-      if(sourceTools.length == 1) {
+      if(sourceTools.draws.length == 1) {
+        let sourceTool = sourceTools.draws[0];
+        this.muralHigh = sourceTools.height;
+        this.muralWide = sourceTools.width;
         let pixelCount = sourceTool.pixelCount * 4;
         for (let i = 0; i < pixelCount; i++){this.drawingTool.pixels[i] = sourceTool.pixels[i];}
         for (let i = 0; i < 15; i++){this.drawingTool.setPalette(i, sourceTool.getPalette(i));}
@@ -535,7 +541,15 @@ export default {
         this.drawingTool.render();
       }
       else {
-        
+        this.pickPatterns = sourceTools.draws;
+        this.muralHigh = sourceTools.height;
+        this.muralWide = sourceTools.width;
+        let cutName = this.patTitle.substring(0, 20-(1+String(this.muralWide).length+1+String(this.muralTall).length));
+        for(let x = 0, i = 0; x < this.muralWide; x++) {
+          for(let y = 0; y < this.muralHigh; y++, i++) {
+            this.pickPatterns[i].title = cutName+" "+(x+1)+"x"+(y+1);
+          }
+        }
       }
     },
     extMultiLoad: function(data) {
