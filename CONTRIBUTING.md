@@ -30,7 +30,7 @@ way to make your PR more descriptive. Here are some examples:
 Here are some recommend group tokens:
 * `bug/<description>` - fix a bug
 * `feat/<description>` - add a feature
-* `up/<description>` - update anything (general use)
+* `update/<description>` - update anything (general use)
 
 ### Follow Conventions
 
