@@ -1,6 +1,7 @@
 import ACNLFormat from '/libs/ACNLFormat';
 import ACNHFormat from '/libs/ACNHFormat';
 import lzString from 'lz-string';
+import { applyFilter } from '/libs/xbrz';
 
 class RenderTarget{
   //Valid options for RenderTargets:
@@ -66,7 +67,7 @@ class RenderTarget{
     if (this.opt.tall){
       this.context.drawImage(c.canvas, 0, 0, c.canvas.width/2, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height/2);
       this.context.drawImage(c.canvas, c.canvas.width/2, 0, c.canvas.width/2, c.canvas.height, 0, this.canvas.height/2, this.canvas.width, this.canvas.height/2);
-    }else{
+    } else {
       this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height)
     }
     if (this.opt.grid){
@@ -103,6 +104,7 @@ class DrawingTool{
     this.reset();
     this.undoHistory = [];
     this.redoHistory = [];
+    this.xbrz = true;
     if (data != null){this.load(data);}
   }
 
@@ -463,6 +465,9 @@ class DrawingTool{
       }
     }
     
+    // apply filter before copying
+    if (this.xbrz) applyFilter(this.renderTargets[0])
+
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width);
