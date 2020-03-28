@@ -548,6 +548,8 @@ export default {
         for(let x = 0, i = 0; x < this.muralWide; x++) {
           for(let y = 0; y < this.muralHigh; y++, i++) {
             this.pickPatterns[i].title = cutName+" "+(x+1)+"x"+(y+1);
+            this.pickPatterns[i].creator = this.patAuthor;
+            this.pickPatterns[i].town = this.patTown;
           }
         }
       }
@@ -637,7 +639,7 @@ button, input[type="button"] {
   border-radius: 35px;
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
   color: #eff1d8;
-  cursor: pointer;
+  cursor: pointer; 
   display: inline-flex;
   align-items: center;
   font-size: 13px;
