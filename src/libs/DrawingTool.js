@@ -1,4 +1,5 @@
 import ACNLFormat from '/libs/ACNLFormat';
+import ACNHFormat from '/libs/ACNHFormat';
 import lzString from 'lz-string';
 
 class RenderTarget{
@@ -16,7 +17,11 @@ class RenderTarget{
 
   /// Calculates the correct zoom level, given the current pattern width
   /// Should be called every time the pattern (or canvas) changes width
-  calcZoom(pWidth){
+  calcZoom(pWidth, tWidth){
+    if (this.opt.texture){
+      console.log(this, pWidth, tWidth);
+      pWidth = tWidth;
+    }
     this.context.imageSmoothingEnabled = false;
     if (this.opt.tall){
       this.zoom = this.width/32;
@@ -30,7 +35,7 @@ class RenderTarget{
   /// Draws the given pixel with the given HTML color
   drawPixel(x, y, color){
     //If we've gone under 64 pixels, assume we meant the right side instead.
-    if (y > 63 && !this.opt.tall){
+    if (y > 63){
       y -= 64; x += 32;
     }
     //draw the pixel
@@ -42,19 +47,22 @@ class RenderTarget{
     }
     //if zoom > 5, draw a line
     if (this.opt.grid){
-      if (x == 15){
+      if (x % 16 == 15){
         this.context.fillStyle = "#AA0000";
       }else{
         this.context.fillStyle = "#AAAAAA";
       }
       this.context.fillRect(x*this.zoom+this.zoom-((x%8==7)?2:1),y*this.zoom,(x%8==7)?2:1,this.zoom);
-      if (y == 15){
+      if (y % 16 == 15){
         this.context.fillStyle = "#BB0000";
       }else{
         this.context.fillStyle = "#AAAAAA";
       }
       this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-((y%8==7)?2:1),this.zoom,(y%8==7)?2:1);
     }
+  }
+
+  drawCallback(){
     if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
   }
 
@@ -65,12 +73,12 @@ class RenderTarget{
     if (this.opt.tall){
       this.context.drawImage(c.canvas, 0, 0, c.canvas.width/2, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height/2);
       this.context.drawImage(c.canvas, c.canvas.width/2, 0, c.canvas.width/2, c.canvas.height, 0, this.canvas.height/2, this.canvas.width, this.canvas.height/2);
-    }else{
-      this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height)
+    } else {
+      this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, c.canvas.width/(c.zoom/this.zoom), c.canvas.height/(c.zoom/this.zoom))
     }
     if (this.opt.grid){
       for (let x = 0; x < this.canvas.width/this.zoom; ++x){
-        if (x == 15){
+        if (x % 16 == 15){
           this.context.fillStyle = "#AA0000";
         }else{
           this.context.fillStyle = "#AAAAAA";
@@ -78,7 +86,7 @@ class RenderTarget{
         this.context.fillRect((x+1)*this.zoom-((x%8==7)?2:1),0,(x%8==7)?2:1,this.canvas.height);
       }
       for (let y = 0; y < this.canvas.height/this.zoom; ++y){
-        if (y == 15){
+        if (y % 16 == 15){
           this.context.fillStyle = "#BB0000";
         }else{
           this.context.fillStyle = "#AAAAAA";
@@ -86,7 +94,7 @@ class RenderTarget{
         this.context.fillRect(0,(y+1)*this.zoom-((y%8==7)?2:1),this.canvas.width,(y%8==7)?2:1);
       }
     }
-    if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
+    this.drawCallback();
   }
 };
 
@@ -102,6 +110,7 @@ class DrawingTool{
     this.reset();
     this.undoHistory = [];
     this.redoHistory = [];
+    this.xbrz = true;
     if (data != null){this.load(data);}
   }
 
@@ -125,6 +134,12 @@ class DrawingTool{
       this.pattern = new ACNLFormat(atob(data.substr(3)));
     }else if (data instanceof DrawingTool){
       this.pattern = data.pattern;
+    }else if (data instanceof Uint8Array){
+      if (data.byteLength == 2216 || data.byteLength == 680){
+        this.pattern = new ACNHFormat(data);
+      }else{
+        this.pattern = new ACNLFormat(data);
+      }
     }else{
       this.pattern = new ACNLFormat(data);
     }
@@ -184,6 +199,7 @@ class DrawingTool{
   }
 
   get width(){return this.pattern.width;}
+  get texWidth(){return this.pattern.texWidth;}
   get height(){return this.pattern.height;}
   get pixelCount(){return this.width*this.height;}
   get fullHash(){return this.pattern.fullHash();}
@@ -213,8 +229,18 @@ class DrawingTool{
       this.onLoad();
     }
   }
-  get typeInfo(){return ACNLFormat.typeInfo[this.pattern.patternType];}
-  get allTypes(){return ACNLFormat.typeInfo;}
+  get typeInfo(){
+    if (this.pattern instanceof ACNHFormat){
+      return ACNHFormat.typeInfo[this.pattern.patternType];
+    }
+    return ACNLFormat.typeInfo[this.pattern.patternType];
+  }
+  get allTypes(){
+    if (this.pattern instanceof ACNHFormat){
+      return ACNHFormat.typeInfo;
+    }
+    return ACNLFormat.typeInfo;
+  }
   
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
@@ -263,7 +289,12 @@ class DrawingTool{
     let best = 255*255*3;
     let bestno = 0;
     for (let i = 0; i < 15; i++){
-      let m = ACNLFormat.RGBLookup[this.pattern.getPalette(i)];
+      let m = null;
+      if (this.pattern instanceof ACNHFormat){
+        m = this.pattern.getPalette(i);
+      }else{
+        m = ACNLFormat.RGBLookup[this.pattern.getPalette(i)];
+      }
       if (m === null){continue;}
       let rD = (m[0] - rgb[0]);
       let gD = (m[1] - rgb[1]);
@@ -331,7 +362,14 @@ class DrawingTool{
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a color palette index.
   setPalette(idx, c){
     if (idx < 0 || idx > 14){return;}//abort for invalid indexes
-    this.pattern.setPalette(idx, this.findRGB(c));
+    if (this.pattern instanceof ACNHFormat){
+      let rgb = c;
+      if ((typeof c) == "string" && c.length == 7){
+        rgb = [parseInt(c.substr(1, 2), 16), parseInt(c.substr(3, 2), 16), parseInt(c.substr(5, 2), 16)];
+      }
+      this.pattern.setPalette(idx, rgb);
+    }
+    if (this.pattern instanceof ACNLFormat){this.pattern.setPalette(idx, this.findRGB(c));}
     this.onColorChange();
     this.render();
   }
@@ -339,6 +377,11 @@ class DrawingTool{
   /// Returns the HTML color of the given palette index
   getPalette(idx){
     if (idx < 0 || idx > 14){return "#FFFFFF00";}//abort for invalid indexes
+    if (this.pattern instanceof ACNHFormat){
+      function toHex(n){return (n<16?"0":"")+n.toString(16);}
+      const c = this.pattern.getPalette(idx);
+      return "#"+toHex(c[0])+toHex(c[1])+toHex(c[2]);
+    }
     return ACNLFormat.paletteColors[this.pattern.getPalette(idx)];
   }
 
@@ -361,8 +404,8 @@ class DrawingTool{
   /// Adds a canvas to the internal list of render targets.
   addCanvas(c, opt = {}){
     let rTarget = new RenderTarget(c, opt);
-    rTarget.calcZoom(this.pattern.width);
-    if (!opt.tall && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.tall || this.renderTargets[0].opt.grid)){
+    rTarget.calcZoom(this.pattern.width, this.pattern.texWidth);
+    if (c.width >= 64 && c.height >= 64 && !opt.texture && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.texture || this.renderTargets[0].opt.grid || this.renderTargets[0].canvas.width < 64 || this.renderTargets[0].canvas.height < 64)){
       this.renderTargets.unshift(rTarget);
     } else {
       this.renderTargets.push(rTarget);
@@ -417,7 +460,7 @@ class DrawingTool{
     let palette = [];
     for (let i = 0; i < 16; ++i){palette.push(this.getPalette(i));}
     //Render all pixels to the first target
-    this.renderTargets[0].calcZoom(this.pattern.width);
+    this.renderTargets[0].calcZoom(this.pattern.width, this.pattern.texWidth);
     let pixCount = this.pattern.width == 32 ? 1024 : 4096;
     for (let i = 0; i < pixCount; i++){
       let x = (i % 32);
@@ -428,10 +471,11 @@ class DrawingTool{
         this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
       }
     }
+    this.renderTargets[0].drawCallback();
     
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
-      this.renderTargets[i].calcZoom(this.pattern.width);
+      this.renderTargets[i].calcZoom(this.pattern.width, this.pattern.texWidth);
       this.renderTargets[i].blitFrom(this.renderTargets[0]);
     }
   }
@@ -469,9 +513,10 @@ class DrawingTool{
   drawPixel(x, y, color = null){
     color = this.setPixel(x, y, color);
     if (color === false){return;}
-    let htmlColor = ACNLFormat.paletteColors[this.pattern.getPalette(color)];
+    let htmlColor = this.getPalette(color);
     for (let i in this.renderTargets){
       this.renderTargets[i].drawPixel(x, y, htmlColor);
+      this.renderTargets[i].drawCallback();
     }
   }
 
