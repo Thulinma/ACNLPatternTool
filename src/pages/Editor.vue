@@ -525,13 +525,18 @@ export default {
     extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onConvert: function(sourceTool){
-      let pixelCount = sourceTool.pixelCount * 4;
-      for (let i = 0; i < pixelCount; i++){this.drawingTool.pixels[i] = sourceTool.pixels[i];}
-      for (let i = 0; i < 15; i++){this.drawingTool.setPalette(i, sourceTool.getPalette(i));}
-      this.convertImage = false;
-      this.drawingTool.onColorChange();
-      this.drawingTool.render();
+    onConvert: function(sourceTools){
+      if(sourceTools.length == 1) {
+        let pixelCount = sourceTool.pixelCount * 4;
+        for (let i = 0; i < pixelCount; i++){this.drawingTool.pixels[i] = sourceTool.pixels[i];}
+        for (let i = 0; i < 15; i++){this.drawingTool.setPalette(i, sourceTool.getPalette(i));}
+        this.convertImage = false;
+        this.drawingTool.onColorChange();
+        this.drawingTool.render();
+      }
+      else {
+        
+      }
     },
     extMultiLoad: function(data) {
       this.pickPatterns = data;

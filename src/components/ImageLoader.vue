@@ -2,16 +2,41 @@
   <div>
     <div class="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
-      <button @click="toggleView()">Next</button>
+      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
+      <div class="muralInputArea">
+        <div class="muralInputColumn"> 
+          <label>Patterns Wide</label></br>
+          <input type="range" min="1" max="50" v-model="muralWide"/>
+          <input type="number" min="1" max="50" v-model="muralWide"/>
+        </div>
+        <div class="muralInputColumn"> 
+          <label>Patterns Tall</label></br>
+          <input type="range" min="1" max="50" v-model="muralTall"/>
+          <input type="number" min="1" max="50" v-model="muralTall"/>
+        </div>
+      </div>
+      <div class="buttons">
+        <button @click="toggleView()">Next</button>
+      </div>
     </div>
     <input v-show="false" type="file" ref="files" accept="image/*" @change="onFile" />
     <div class="preview-and-options" v-show="!isCropping">
       <h3>Please select your conversion type.</h3>
       <div class="preview">
+        <table ref="previewTable">
+          <tbody>
+            <tr v-for="row in parseInt(muralTall)">
+              <td v-for="column in parseInt(muralWide)">
+                <canvas v-show="false" v-bind:ref="'previewCanvas_'+(column-1)+'x'+(row-1)"/>
+                <canvas v-bind:ref="'postviewCanvas_'+(column-1)+'x'+(row-1)" class="postview"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--
         <canvas v-show="false" ref="preview" />
         <canvas ref="postview" class="postview" width=256 height=256 />
-
+        -->
         <ul class="options">
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
@@ -35,7 +60,7 @@
       </div>
       <div class="buttons">
         <button @click="toggleView()">Edit Crop</button>
-        <button @click="$emit('converted', draw)">Convert!</button>
+        <button @click="$emit('converted', draws)">Convert!</button>
       </div>
     </div>
   </div>
@@ -60,15 +85,16 @@ export default {
       convert_method: "quantize",
       convert_quality: "high",
       convert_trans: 127,
-      draw: new DrawingTool(),
       isCropping: true,
       fileLoaded: false,
+      muralWide: 1,
+      muralTall: 1,
+      draws: new Array()
     };
   },
   mounted(){
-    this.draw.patternType = this.patternType;
-    this.draw.addCanvas(this.$refs.postview);
     this.$refs.files.click();
+    this.draws.push(new DrawingTool());
   },
   methods: {
     defPos(opt){
@@ -79,129 +105,165 @@ export default {
     },
     onCrop({coordinates, canvas}){
       if (!(canvas instanceof HTMLCanvasElement)){return;}
-      this.$refs.preview.width = this.draw.width;
-      this.$refs.preview.height = this.draw.height;
-      const ctx = this.$refs.preview.getContext('2d');
-      if (this.convert_quality != "sharp"){
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = this.convert_quality;
-      }else{
-        ctx.imageSmoothingEnabled = false;
+      this.draws = new Array();
+      for(let i = 0; i < (this.muralWide * this.muralTall); i++) {
+        let draw = new DrawingTool()
+        draw.patternType = this.patternType;
+        this.draws.push(draw);
       }
-      ctx.drawImage(canvas, 0, 0,this.draw.width, this.draw.height);
-      const imgdata = ctx.getImageData(0, 0, this.draw.width, this.draw.height);
-      switch (this.convert_method){
-        case "quantize": this.image_quantize(imgdata); break;
-        case "rgb": this.image_rgb(imgdata); break;
-        case "yuv": this.image_yuv(imgdata); break;
-        case "grey": this.image_grey(imgdata); break;
-        case "sepia": this.image_sepia(imgdata); break;
-        case "keep": this.image_keep(imgdata); break;
-        case "lowest": this.image_lowestdistance(imgdata); break;
+      
+      let totalCrop = this.$refs.cropper.getResult().canvas;
+      let cropCtx = totalCrop.getContext('2d');
+      let cropWidth = totalCrop.width/this.muralWide;
+      let cropHeight = totalCrop.height/this.muralTall;
+      
+      let previewDimension = (384 / Math.max(this.muralWide, this.muralTall))/32;
+      previewDimension = Math.floor(previewDimension) * 32;
+      
+      let workingCanvas = document.createElement("canvas");
+      workingCanvas.width = cropWidth;
+      workingCanvas.height = cropHeight;
+      let workingCanvasCtx = workingCanvas.getContext('2d');
+      for(let x = 0; x < this.muralWide; x++) {
+        for(let y = 0; y < this.muralTall; y++) {
+          let position = String(x)+'x'+String(y);
+          let previewCanvas = this.$refs['previewCanvas_'+position][0];
+          
+          let myDraw = this.draws[y*this.muralWide + x];
+          myDraw.addCanvas(this.$refs['postviewCanvas_'+position][0]);
+          this.$refs['postviewCanvas_'+position][0].width = previewDimension;
+          this.$refs['postviewCanvas_'+position][0].height = previewDimension;
+          
+          previewCanvas.width = 32;
+          previewCanvas.height = 32;
+          let ctx = previewCanvas.getContext('2d');
+          if (this.convert_quality != "sharp"){
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = this.convert_quality;
+          }else{
+            ctx.imageSmoothingEnabled = false;
+          }
+          
+          let myCrop = cropCtx.getImageData(cropWidth*x, cropHeight*y, cropWidth, cropHeight);
+          workingCanvasCtx.putImageData(myCrop, 0, 0); 
+          ctx.drawImage(workingCanvas, 0, 0, myDraw.width, myDraw.height);
+          let imgdata = ctx.getImageData(0, 0, myDraw.width, myDraw.height);
+          
+          switch (this.convert_method){
+            case "quantize": this.image_quantize(imgdata, myDraw); break;
+            case "rgb": this.image_rgb(imgdata, myDraw); break;
+            case "yuv": this.image_yuv(imgdata, myDraw); break;
+            case "grey": this.image_grey(imgdata, myDraw); break;
+            case "sepia": this.image_sepia(imgdata, myDraw); break;
+            case "keep": this.image_keep(imgdata, myDraw); break;
+            case "lowest": this.image_lowestdistance(imgdata, myDraw); break;
+          }
+        }
       }
+      workingCanvas.remove();
     },
     //Sets the palette to the top-15 closest RGB colors
-    image_rgb(imgdata){
+    image_rgb(imgdata, myDraw){
       let palette = [];
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
-      const pixelCount = this.draw.pixelCount * 4;
+      const pixelCount = myDraw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
         if (imgdata.data[i+3] < this.convert_trans){continue;}
-        palette[this.draw.findRGB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
+        palette[myDraw.findRGB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort((a, b) => {
         if (a.c > b.c){return -1;}
         if (a.c < b.c){return 1;}
         return 0;
       });
-      for (let i = 0; i < 15; i++){this.draw.setPalette(i, palette[i].n);}
+      for (let i = 0; i < 15; i++){myDraw.setPalette(i, palette[i].n);}
 
       //Set each pixel to the nearest color from the palette
       for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
+        let x = (i >> 2) % myDraw.width;
+        let y = Math.floor((i >> 2) / myDraw.width);
         if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
+          myDraw.setPixel(x, y, 15);
         }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+          myDraw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
         }
       }
-      this.draw.onLoad();
+      myDraw.onLoad();
     },
     //Sets the palette to the top-15 closest YUV colors
-    image_yuv(imgdata){
+    image_yuv(imgdata, myDraw){
       let palette = [];
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
-      let pixelCount = this.draw.pixelCount * 4;
+      let pixelCount = myDraw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
         if (imgdata.data[i+3] < this.convert_trans){continue;}
-        palette[this.draw.findYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
+        palette[myDraw.findYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort(function(a, b){
         if (a.c > b.c){return -1;}
         if (a.c < b.c){return 1;}
         return 0;
       });
-      for (let i = 0; i < 15; i++){this.draw.setPalette(i, palette[i].n);}
+      for (let i = 0; i < 15; i++){myDraw.setPalette(i, palette[i].n);}
 
       //Set each pixel to the nearest color from the palette
       for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
+        let x = (i >> 2) % myDraw.width;
+        let y = Math.floor((i >> 2) / myDraw.width);
         if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
+          myDraw.setPixel(x, y, 15);
         }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+          myDraw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
         }
       }
-      this.draw.onLoad();
+      myDraw.onLoad();
     },
     //Set palette to greyscale
-    image_grey(imgdata){
+    image_grey(imgdata, myDraw){
       for (let i = 0; i < 15; i++){
-        this.draw.setPalette(i, 0x10*i + 0xF);
+        myDraw.setPalette(i, 0x10*i + 0xF);
       }
 
       function TripleY(rgb){
         return [rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000, rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000,rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000];
       }
       //Set each pixel to the nearest color from the palette
-      let pixelCount = this.draw.pixelCount * 4;
+      let pixelCount = myDraw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
+        let x = (i >> 2) % myDraw.width;
+        let y = Math.floor((i >> 2) / myDraw.width);
         if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
+          myDraw.setPixel(x, y, 15);
         }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+          myDraw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
         }
       }
-      this.draw.onLoad();
+      myDraw.onLoad();
     },
     //Set palette to sepia
-    image_sepia(imgdata){
+    image_sepia(imgdata, myDraw){
       for (let i = 0; i < 9; i++){
-        this.draw.setPalette(i, 0x30+i);
+        myDraw.setPalette(i, 0x30+i);
       }
       for (let i = 9; i < 15; i++){
-        this.draw.setPalette(i, 0x60+i-6);
+        myDraw.setPalette(i, 0x60+i-6);
       }
 
       //Set each pixel to the nearest color from the palette
-      let pixelCount = this.draw.pixelCount * 4;
+      let pixelCount = myDraw.pixelCount * 4;
       for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
+        let x = (i >> 2) % myDraw.width;
+        let y = Math.floor((i >> 2) / myDraw.width);
         if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
+          myDraw.setPixel(x, y, 15);
         }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+          myDraw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
         }
       }
-      this.draw.onLoad();
+      myDraw.onLoad();
     },
-    image_quantize(imgdata){
-      let pixelCount = this.draw.pixelCount * 4;
+    image_quantize(imgdata, myDraw){
+      let pixelCount = myDraw.pixelCount * 4;
       let pixels = [];
       for (let i = 0; i < pixelCount; i+=4){
         if (imgdata.data[i+3] < this.convert_trans){continue;}
@@ -264,7 +326,7 @@ export default {
           b_avg += b[i].b;
         }
         let rgb = [Math.round(r_avg/b.length), Math.round(g_avg/b.length), Math.round(b_avg/b.length)];
-        let idx = this.draw.findRGB(rgb);
+        let idx = myDraw.findRGB(rgb);
         if (!uniqCol.has(idx)){
           colors.push(idx);
           uniqCol.add(idx);
@@ -324,26 +386,26 @@ export default {
       for (let c of uniqCol){
         if (cNum > 14){break;}
         logger.info("Setting color "+cNum+" to "+c);
-        this.draw.setPalette(cNum, c);
+        myDraw.setPalette(cNum, c);
         cNum++;
       }
 
       //Set each pixel to the nearest color from the palette
       for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
+        let x = (i >> 2) % myDraw.width;
+        let y = Math.floor((i >> 2) / myDraw.width);
         if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
+          myDraw.setPixel(x, y, 15);
         }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+          myDraw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
         }
       }
-      this.draw.onLoad();
+      myDraw.onLoad();
     },
-    image_lowestdistance(imgdata){
+    image_lowestdistance(imgdata, myDraw){
       var palette = [];
       var prepixels = [];
-      let pixelCount = this.draw.pixelCount * 4;
+      let pixelCount = myDraw.pixelCount * 4;
       for (let i = 0; i < 256; i++){palette.push({"n":i, "c":0});}
       function myPal(pixel, r, g, b){
         var matches = {};
@@ -401,19 +463,19 @@ export default {
       }
 
       for (let i = 0; i < 15 && i < best_chosen.length; i++){
-        this.draw.setPalette(i, best_chosen[i]);
+        myDraw.setPalette(i, best_chosen[i]);
       }
       //Set each pixel to the nearest color from the palette
       for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
+        let x = (i >> 2) % myDraw.width;
+        let y = Math.floor((i >> 2) / myDraw.width);
         if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
+          myDraw.setPixel(x, y, 15);
         }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+          myDraw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
         }
       }
-      this.draw.onLoad();
+      myDraw.onLoad();
     },
     onFile: async function(e) {
       this.dataurl = await new Promise((resolve, reject) => {
@@ -444,7 +506,32 @@ export default {
     },
     tryAgain(){
       this.$refs.files.click();
+    },
+    getAspectRatio() {
+      return this.muralWide/this.muralTall;
+    },
+    /*
+    scaleImageData(ctx, imageData, scale) {
+      var scaled = ctx.createImageData(imageData.width * scale, imageData.height * scale);
+      var subLine = ctx.createImageData(scale, 1).data
+      for (var row = 0; row < imageData.height; row++) {
+          for (var col = 0; col < imageData.width; col++) {
+              var sourcePixel = imageData.data.subarray(
+                  (row * imageData.width + col) * 4,
+                  (row * imageData.width + col) * 4 + 4
+              );
+              for (var x = 0; x < scale; x++) subLine.set(sourcePixel, x*4)
+              for (var y = 0; y < scale; y++) {
+                  var destRow = row * scale + y;
+                  var destCol = col * scale;
+                  scaled.data.set(subLine, (destRow * scaled.width + destCol) * 4)
+              }
+          }
+      }
+
+      return scaled;
     }
+    */
   }
 }
 </script>
@@ -513,5 +600,25 @@ export default {
   }
   .postview{
     background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
+  }
+  
+  
+  .muralInputArea {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-content: space-between;
+  }
+  
+  .muralInputColumn {
+    flex: 50%;
+    flex-direction: column;
+    align-content: space-between;
+    text-align: center;
+  }
+  
+  .muralInputColumn * {
+    text-align: center;
+    width: 60%;
   }
 </style>
