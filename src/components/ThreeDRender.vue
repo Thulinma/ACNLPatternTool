@@ -119,13 +119,11 @@ export default {
       }
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       let loader = new GLTFLoader();
-      console.log(path);
       loader.parse(JSON.stringify(path), "", (gltf) => {
         if (this.model){this.scene.remove(this.model);}
         this.model = gltf.scene.children[0];
         let first = true;
         this.model.traverse((child) => {
-          console.log("Loaded:", child);
           if (child instanceof Mesh){
             if (first){
               first = false;
@@ -156,7 +154,6 @@ export default {
     this.texture.needsUpdate = true;
     this.texture.encoding = sRGBEncoding;
     this.texture.flipY = false;
-    this.texture.magFilter = NearestFilter;
 
     this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d, antialias:true});
     this.renderer.outputEncoding = sRGBEncoding;
