@@ -99,6 +99,9 @@ export default {
       let path;
       if (d.pattern instanceof ACNHFormat){
         switch (d.patternType){
+          case 0x0:
+            path = injected.easel;
+            break;
           case 0xf:
             path = injected.brimmed_cap;
             this.modelOffset.y = 5;
@@ -122,11 +125,9 @@ export default {
       loader.parse(JSON.stringify(path), "", (gltf) => {
         if (this.model){this.scene.remove(this.model);}
         this.model = gltf.scene.children[0];
-        let first = true;
         this.model.traverse((child) => {
           if (child instanceof Mesh){
-            if (first){
-              first = false;
+            if (child.material.map.image.width == 1 && child.material.map.image.height == 1) {
               child.material.map = this.texture;
             }
             child.material.metalness = 0;
