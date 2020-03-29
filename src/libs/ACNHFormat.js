@@ -188,9 +188,26 @@ class ACNHFormat{
   toPixels(ab){
     let offset = 0xA5;
     let pixel = 0;
-    for (let i = offset; i < this.b.byteLength-3 && pixel < ab.byteLength; i++){
-      ab[pixel++] = (this.dataBytes[i] & 0x0F);
-      ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+    if (this.b.byteLength > 680){
+      for (let x = 0; x < 32; x+=2){
+        for (let y = 0; y < 128; ++y){
+          let i = x/2 + y*16 + offset;
+          if (y > 31 && y < 64){
+            pixel = x+(y+32)*32;
+          }else if(y > 63 && y < 96){
+            pixel = x+(y-32)*32;
+          }else{
+            pixel = x+y*32;
+          }
+          ab[pixel++] = (this.dataBytes[i] & 0x0F);
+          ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+        }
+      }
+    }else{
+      for (let i = offset; i < this.b.byteLength-3 && pixel < ab.byteLength; i++){
+        ab[pixel++] = (this.dataBytes[i] & 0x0F);
+        ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+      }
     }
 
     /* Used to generate the masks
