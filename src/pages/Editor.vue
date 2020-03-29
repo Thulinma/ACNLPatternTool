@@ -89,6 +89,7 @@
             <button @click="onLocalSave();closeColorPicker();">Store Locally</button><!-- store in local storage button -->
             <button @click="onOpenLocal();closeColorPicker()">Open Storage</button><!-- open local storage button -->
             <button @click="publishModal=true;closeColorPicker();">Publish</button><!-- publish pattern to database button -->
+            <button @click="downTex">Save texture</button>
           </div><!-- side bar button -->
         </div><!-- tools and buttons container -->
       </div><!-- tools and buttons -->
@@ -504,6 +505,10 @@ export default {
     },
     async downPNG(){
       const img = await generateACNLQR(this.drawingTool);
+      saveAs(img, this.drawingTool.title+".png");
+    },
+    async downTex(){
+      const img = this.$refs.canvas3.toDataURL("image/png");
       saveAs(img, this.drawingTool.title+".png");
     },
     patInfoSave(publish=false){
