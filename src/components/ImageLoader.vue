@@ -33,10 +33,6 @@
             </tr>
           </tbody>
         </table>
-        <!--
-        <canvas v-show="false" ref="preview" />
-        <canvas ref="postview" class="postview" width=256 height=256 />
-        -->
         <ul class="options">
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
