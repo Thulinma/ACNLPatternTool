@@ -1,7 +1,6 @@
 import ACNLFormat from '/libs/ACNLFormat';
 import ACNHFormat from '/libs/ACNHFormat';
 import lzString from 'lz-string';
-import { applyFilter } from '/libs/xbrz';
 
 class RenderTarget{
   //Valid options for RenderTargets:
@@ -57,6 +56,9 @@ class RenderTarget{
       }
       this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-((y%8==7)?2:1),this.zoom,(y%8==7)?2:1);
     }
+  }
+
+  drawCallback(){
     if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
   }
 
@@ -88,7 +90,7 @@ class RenderTarget{
         this.context.fillRect(0,(y+1)*this.zoom-((y%8==7)?2:1),this.canvas.width,(y%8==7)?2:1);
       }
     }
-    if (typeof this.opt.drawCallback == "function"){this.opt.drawCallback();}
+    this.drawCallback();
   }
 };
 
@@ -464,10 +466,8 @@ class DrawingTool{
         this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
       }
     }
+    this.renderTargets[0].drawCallback();
     
-    // apply filter before copying
-    if (this.xbrz) applyFilter(this.renderTargets[0])
-
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width);
@@ -511,6 +511,7 @@ class DrawingTool{
     let htmlColor = this.getPalette(color);
     for (let i in this.renderTargets){
       this.renderTargets[i].drawPixel(x, y, htmlColor);
+      this.renderTargets[i].drawCallback();
     }
   }
 

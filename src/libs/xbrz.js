@@ -2,24 +2,14 @@
 // original: https://github.com/daelsepara/PixelFilterJS/blob/master/js/filters/xbrz.js
 
 // generates image with xbrz filter and applies it to the same canvas
-async function applyFilter(preview) {
-	const filter = new Filter();
-	// scale image to 32x32
-	// preview.context.scale(0.25, 0.25);
-	const data = preview.context.getImageData(0, 0, preview.width, preview.height);
-
-	// scale if back up to 128 when applying filter
-	filter.Apply(data, preview.width, preview.height, 4, true);
-
-	// get the new image
-	let result = { output: Common.ScaledImage, width: Common.SizeX, height: Common.SizeY };
-
-	// make the new image data
-	let newPreview = new ImageData(result.width, result.height);
-	newPreview.data.set(result.output);
-
-	// apply new image data to original canvas
-	// preview.context.putImageData(newPreview, 0, 0);
+async function applyFilter(input, output) {
+  const filter = new Filter();
+  //Apply filter
+  const inData = input.getContext('2d').getImageData(0, 0, input.width, input.height);
+  filter.Apply(inData.data, inData.width, inData.height, 4, true);
+  let newPreview = new ImageData(Common.SizeX, Common.SizeY);
+  newPreview.data.set(Common.ScaledImage);
+  output.getContext('2d').putImageData(newPreview, 0, 0);
 }
 
 // Zenju's XBRz nX family of filters
@@ -884,7 +874,6 @@ let Filter = class {
 				break;
 
 			case 4:
-
 				this.ScaleImage(new ScaleSize(new Scaler_4X()), src, dst, srcx, srcy, 0, srcy)
 
 				break;

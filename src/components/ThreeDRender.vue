@@ -15,6 +15,7 @@
 <script>
 import DrawingTool from "/libs/DrawingTool";
 import ACNHFormat from "/libs/ACNHFormat";
+import { applyFilter } from '/libs/xbrz';
 
 import {
   Scene,
@@ -48,6 +49,7 @@ export default {
       scene: new Scene(),
       camera: new OrthographicCamera( -this.width/scale, this.width/scale, this.height/scale, -this.height/scale, 0.1, 1000 ),
       renderer: null,
+      pixelCanvas: document.createElement('canvas'),
       renderCanvas: document.createElement('canvas'),
       texture: null,
       model: false,
@@ -93,7 +95,6 @@ export default {
       if (this.model){
         this.scene.remove(this.model);
         this.model = false;
-        this.texture = false;
       }
       let path;
       if (d.pattern instanceof ACNHFormat){
@@ -117,11 +118,6 @@ export default {
         }
       }
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
-      this.texture = new Texture(this.renderCanvas)
-      this.texture.needsUpdate = true;
-      this.texture.encoding = sRGBEncoding;
-      this.texture.flipY = false;
-      this.texture.magFilter = NearestFilter;
       let loader = new GLTFLoader();
       console.log(path);
       loader.parse(JSON.stringify(path), "", (gltf) => {
@@ -156,16 +152,21 @@ export default {
     }
   },
   mounted: function() {
+    this.texture = new Texture(this.renderCanvas)
+    this.texture.needsUpdate = true;
+    this.texture.encoding = sRGBEncoding;
+    this.texture.flipY = false;
+    this.texture.magFilter = NearestFilter;
+
     this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d, antialias:true});
     this.renderer.outputEncoding = sRGBEncoding;
     this.renderer.setClearColor( 0x000000, 0 );
-    this.renderCanvas.width = 256;
-    this.renderCanvas.height = 256;
-    this.drawingTool.addCanvas(this.renderCanvas, {drawCallback:()=>{
-      if (this.texture){
-        this.texture.needsUpdate = true;
-        if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
-      }
+    this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.width;
+    this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.width*4;
+    this.drawingTool.addCanvas(this.pixelCanvas, {drawCallback:()=>{
+      applyFilter(this.pixelCanvas, this.renderCanvas);
+      this.texture.needsUpdate = true;
+      if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
     }});
 
     let renderContext = this.renderCanvas.getContext('2d');
