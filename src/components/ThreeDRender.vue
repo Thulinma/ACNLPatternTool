@@ -131,6 +131,7 @@ export default {
               child.material.map = this.texture;
             }
             child.material.metalness = 0;
+            child.material.roughness = 0.5;
           }
         });
         this.model.position.x = this.modelOffset.x;
@@ -175,9 +176,9 @@ export default {
     this.camera.position.y = 9;
     this.camera.rotation.x = -0.1;
 
-    this.scene.add( new AmbientLight(0xffffff, 0.5) );
+    this.scene.add( new AmbientLight(0xffffff, 0.3) );
 
-    const dirLight = new DirectionalLight( 0xffffff, 0.5 );
+    const dirLight = new DirectionalLight( 0xffffff, 0.85 );
     dirLight.position.set( -1, 0.75, 1 );
     dirLight.position.multiplyScalar( 50);
     this.scene.add( dirLight );
