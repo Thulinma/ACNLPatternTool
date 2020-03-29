@@ -14,20 +14,27 @@
 
 <script>
 import DrawingTool from "/libs/DrawingTool";
+import ACNHFormat from "/libs/ACNHFormat";
+
 import {
   Scene,
   Texture,
   sRGBEncoding,
   NearestFilter,
-  PerspectiveCamera,
+  OrthographicCamera,
   Mesh,
-  MeshBasicMaterial,
-  WebGLRenderer
+  MeshStandardMaterial,
+  WebGLRenderer,
+  DirectionalLight,
+  HemisphereLight,
+  AmbientLight,
 } from '@three/core';
 import {
   GLTFLoader
 } from '@three/loaders/GLTFLoader';
 import injected from "/utils/injected";
+
+const scale = 35;
 
 export default {
   name: "ThreeDRender",
@@ -39,17 +46,18 @@ export default {
   data: function() {
     return {
       scene: new Scene(),
-      camera: new PerspectiveCamera( 75, this.width/this.height, 0.1, 1000 ),
+      camera: new OrthographicCamera( -this.width/scale, this.width/scale, this.height/scale, -this.height/scale, 0.1, 1000 ),
       renderer: null,
       renderCanvas: document.createElement('canvas'),
       texture: null,
       model: false,
       adjusting: false,
-      rotating: true,
+      rotating: false,
       hasAnimReq: false,
       rotx: 0,
       roty: 0,
-      rotstart: 0
+      rotstart: 0,
+      modelOffset: {x: 0, y:0, z:0},
     };
   },
   methods: {
@@ -74,10 +82,10 @@ export default {
     onZoom(e){
       if (this.model && e.deltaY != 0){
         const d = (e.deltaMode == 0)?e.deltaY/20:e.deltaY;
-        this.camera.position.z += d/5;
-        if (this.camera.position.z < 12){this.camera.position.z = 12;}
-        if (this.camera.position.z > 35){this.camera.position.z = 35;}
-        this.camera.position.y = this.camera.position.z + 15;
+        this.camera.zoom += d/5;
+        if (this.camera.zoom < 12){this.camera.zoom = 12;}
+        if (this.camera.zoom > 35){this.camera.zoom = 35;}
+        //this.camera.position.y = this.camera.position.z + 15;
         if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
       }
     },
@@ -88,14 +96,25 @@ export default {
         this.texture = false;
       }
       let path;
-      switch (d.patternType){
-        case 0: path = injected.dress_long; break;
-        case 1: path = injected.dress_half; break;
-        case 2: path = injected.dress_none; break;
-        case 3: path = injected.shirt_long; break;
-        case 4: path = injected.shirt_half; break;
-        case 5: path = injected.shirt_none; break;
-        default: return;
+      if (d.pattern instanceof ACNHFormat){
+        switch (d.patternType){
+          case 0xf:
+            path = injected.brimmed_cap;
+            this.modelOffset.y = 5;
+            break;
+          default: return;
+        }
+      }else{
+        switch (d.patternType){
+          case 0: path = injected.dress_long; break;
+          case 1: path = injected.dress_half; break;
+          case 2: path = injected.dress_none; break;
+          case 3: path = injected.shirt_long; break;
+          case 4: path = injected.shirt_half; break;
+          case 5: path = injected.shirt_none; break;
+          case 9: path = injected.easel; break;
+          default: return;
+        }
       }
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       this.texture = new Texture(this.renderCanvas)
@@ -104,11 +123,24 @@ export default {
       this.texture.flipY = false;
       this.texture.magFilter = NearestFilter;
       let loader = new GLTFLoader();
+      console.log(path);
       loader.parse(JSON.stringify(path), "", (gltf) => {
+        if (this.model){this.scene.remove(this.model);}
         this.model = gltf.scene.children[0];
+        let first = true;
         this.model.traverse((child) => {
-          if (child instanceof Mesh){child.material = new MeshBasicMaterial({map:this.texture});}
+          console.log("Loaded:", child);
+          if (child instanceof Mesh){
+            if (first){
+              first = false;
+              child.material.map = this.texture;
+            }
+            child.material.metalness = 0;
+          }
         });
+        this.model.position.x = this.modelOffset.x;
+        this.model.position.y = this.modelOffset.y;
+        this.model.position.z = this.modelOffset.z;
         this.scene.add(this.model);
         if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
       });
@@ -125,26 +157,38 @@ export default {
   },
   mounted: function() {
     this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d, antialias:true});
+    this.renderer.outputEncoding = sRGBEncoding;
     this.renderer.setClearColor( 0x000000, 0 );
-    this.renderCanvas.width = 128;
-    this.renderCanvas.height = 512;
-    this.drawingTool.addCanvas(this.renderCanvas, {tall:true, drawCallback:()=>{
-      if (this.texture){this.texture.needsUpdate = true;}
+    this.renderCanvas.width = 256;
+    this.renderCanvas.height = 256;
+    this.drawingTool.addCanvas(this.renderCanvas, {drawCallback:()=>{
+      if (this.texture){
+        this.texture.needsUpdate = true;
+        if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
+      }
     }});
 
     let renderContext = this.renderCanvas.getContext('2d');
-    renderContext.fillStyle = "rgba(255,255,255,1)";
+    renderContext.fillStyle = "rgba(255,255,255,0)";
     renderContext.fillRect(0, 0, 32, 128);
 
     this.camera.position.z = 15;
-    this.camera.position.y = 30;
-    this.camera.rotation.x = 5.6;
+    this.camera.position.y = 9;
+    this.camera.rotation.x = -0.1;
+
+    this.scene.add( new AmbientLight(0xffffff, 0.5) );
+
+    const dirLight = new DirectionalLight( 0xffffff, 0.5 );
+    dirLight.position.set( -1, 0.75, 1 );
+    dirLight.position.multiplyScalar( 50);
+    this.scene.add( dirLight );
 
     this.hasAnimReq = requestAnimationFrame(this.animate);
 
 
     //If the type of pattern changes, change the model too
     this.drawingTool.onLoad(this.loadModel);
+    this.loadModel(this.drawingTool);
   }
 }
 </script>

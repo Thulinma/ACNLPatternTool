@@ -6,7 +6,8 @@ const shirt_half = process.injected.shirt_half;
 const shirt_long = process.injected.shirt_long;
 const shirt_none = process.injected.shirt_none;
 const shirt_nrml = process.injected.shirt_nrml;
-
+const easel = process.injected.easel;
+const brimmed_cap = process.injected.brimmed_cap;
 
 export default {
   dress_half,
@@ -14,5 +15,8 @@ export default {
   dress_none,
   shirt_half,
   shirt_long,
-  shirt_none
+  shirt_none,
+  easel,
+  brimmed_cap,
 };
+

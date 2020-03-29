@@ -4,11 +4,10 @@ const {
   pathToInjected
 } = require("./paths");
 
-
 const loadGLTF = (fileName) => {
   const loc = path.resolve(pathToInjected, fileName);
   const buffer = fs.readFileSync(loc);
-  return JSON.parse(buffer.toString())
+  return JSON.parse(buffer.toString());
 }
 
 const dress_half = loadGLTF("dress_half.gltf");
@@ -18,6 +17,8 @@ const shirt_half_nrml = loadGLTF("shirt_half_nrml.gltf");
 const shirt_half = loadGLTF("shirt_half.gltf");
 const shirt_long = loadGLTF("shirt_long.gltf");
 const shirt_none = loadGLTF("shirt_none.gltf");
+const easel = loadGLTF("easel.gltf");
+const brimmed_cap = loadGLTF("brimmed_cap.gltf");
 
 module.exports = {
   dress_half,
@@ -27,4 +28,7 @@ module.exports = {
   shirt_half,
   shirt_long,
   shirt_none,
+  easel,
+  brimmed_cap,
 }
+
