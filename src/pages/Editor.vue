@@ -8,7 +8,7 @@
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
             <div class="pattern-info">
               <div class="pattern_title">{{patTitle}}</div>
-              <div class="pattern_author">by {{patAuthor}}</div> 
+              <div class="pattern_author">by {{patAuthor}}</div>
               <div class="pattern_town">from {{patTown}}</div>
               <div class="pattern_typename">{{patTypeName}}</div>
             </div><!-- pattern info -->
@@ -89,6 +89,7 @@
             <button @click="onLocalSave">Store Locally</button><!-- store in local storage button -->
             <button @click="onOpenLocal">Open Storage</button><!-- open local storage button -->
             <button @click="publishModal=true">Publish</button><!-- publish pattern to database button -->
+            <button @click="downTex">Save texture</button>
           </div><!-- side bar button -->
         </div><!-- tools and buttons container -->
       </div><!-- tools and buttons -->
@@ -290,8 +291,8 @@
                       :value="s">
                       {{s}}
                     </option>
-                  </select> 
-                </div>   
+                  </select>
+                </div>
               </div>
               <div>
                 <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
@@ -337,7 +338,6 @@ import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
 import origin from '/libs/origin';
 import generateACNLQR from "/libs/ACNLQRGenerator";
-import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
@@ -451,10 +451,12 @@ export default {
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        let title = dt.title + ".acnl";
+        let ext = ".acnl";
+        if (dt.pattern instanceof ACNHFormat){ext = ".acnh";}
+        let title = dt.title + ext;
         let k = 1;
         while(titles.includes(title)) {
-          title = dt.title + "(" + k + ")" + ".ancl";
+          title = dt.title + "(" + k + ")" + ext;
           k++;
         }
         zip.file(title, dt.toBytes());
@@ -486,13 +488,15 @@ export default {
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        let ancl_title = dt.title + ".ancl";
+        let ext = ".acnl";
+        if (dt.pattern instanceof ACNHFormat){ext = ".acnh";}
+        let ancl_title = dt.title + ext;
         let k = 1;
         while(titles.includes(ancl_title)) {
-          ancl_title = dt.title + "(" + k + ")" + ".ancl";
+          ancl_title = dt.title + "(" + k + ")" + ext;
           k++;
         }
-        const img_title = ancl_title.replace(".ancl", ".png");
+        const img_title = ancl_title.replace(ext, ".png");
         zip.file(ancl_title, dt.toBytes());
         const img = await generateACNLQR(dt);
         zip.file(img_title, img.substr(22), {base64:true});
@@ -504,26 +508,33 @@ export default {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title+".png");
     },
+    async downTex(){
+      const img = this.$refs.canvas3.toDataURL("image/png");
+      saveAs(img, this.drawingTool.title+"_texture.png");
+    },
     patInfoSave(publish=false){
       const patTitle = this.patTitle.trim();
       const patTown = this.patTown.trim();
       const patAuthor = this.patAuthor.trim();
-      const titleCheck = patTitle && patTitle !== 'Empty';
-      const townCheck = patTown && patTown !== 'Unknown';
-      const nameCheck = patAuthor && patAuthor !== 'Unknown';
-      if (titleCheck && townCheck && nameCheck){
-        this.drawingTool.title = this.patTitle;
-        if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
-        if (this.drawingTool.town[0] !== this.patTown) this.drawingTool.town = this.patTown;
-        if (this.drawingTool.patternType !== this.patType){
-          this.drawingTool.patternType = this.patType;
-          this.patTypeName = this.drawingTool.typeInfo.name;
-        }
-        this.patInfoModal = false;
-        if (publish) this.onPublish();
-        return;
+      this.drawingTool.title = this.patTitle;
+      if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
+      if (this.drawingTool.town[0] !== this.patTown) this.drawingTool.town = this.patTown;
+      if (this.drawingTool.patternType !== this.patType){
+        this.drawingTool.patternType = this.patType;
+        this.patTypeName = this.drawingTool.typeInfo.name;
       }
-      alert('Please provide a valid pattern name, town name, and player name for this pattern.');
+      if (publish){
+        const titleCheck = patTitle && patTitle !== 'Empty';
+        const townCheck = patTown && patTown !== 'Unknown';
+        const nameCheck = patAuthor && patAuthor !== 'Unknown';
+        if (titleCheck && townCheck && nameCheck){
+          this.onPublish();
+        }else{
+          alert('Please provide a valid pattern name, town name, and player name for this pattern.');
+          return;
+        }
+      }
+      this.patInfoModal = false;
     },
     async onOpenDB(){
       this.$router.push("/browse");
@@ -544,20 +555,22 @@ export default {
     },
     downACNL(){
       const blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
-      saveAs(blob, this.drawingTool.title+".acnl");
+      let ext = ".acnl";
+      if (this.drawingTool.pattern instanceof ACNHFormat){ext = ".acnh";}
+      saveAs(blob, this.drawingTool.title+ext);
     },
     onColorPicked: function(color) {
       const currentColor = this.drawingTool.currentColor;
       if (this.drawingTool.getPalette(currentColor) === color) return;
       this.drawingTool.pushUndo();
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-      logger.info(`color picked: ${color}`);
+      console.log(`color picked: ${color}`);
     },
     onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
-      logger.info(`changed current color: ${idx}`);
+      console.log(`changed current color: ${idx}`);
     },
     onLoad: async function(t){
       let patStr = this.drawingTool.toString();
