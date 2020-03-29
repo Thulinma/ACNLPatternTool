@@ -1,7 +1,14 @@
 <template>
   <div class="nook-phone">
     <div class="nook-header">
-        <span class="nook-time">{{ time }}</span>
+      <div>
+        <object :data="barsSvg"></object>
+        <object :data="nookSvg"></object>
+      </div>
+      <span class="nook-time">{{ time }}</span>
+      <div>
+        <object :data="gpsSvg"></object>
+      </div>
     </div>
     <h2>Main Menu</h2>
     <div class="nook-buttons">
@@ -27,9 +34,10 @@
 </template>
 
 <script>
-import storageSvg from '/assets/icons/bxs-folder-open.svg';
-import storageAddSvg from '/assets/icons/bxs-folder-plus.svg';
-import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
+import nookSvg from '/assets/icons/nookphone/nook-head.svg';
+import gpsSvg from '/assets/icons/nookphone/nook-gps.svg';
+import barsSvg from '/assets/icons/nookphone/nook-service.svg';
+
 export default {
   name: "NookPhoneMenu",
   model: {
@@ -40,9 +48,9 @@ export default {
     return {
         dateObj: new Date(),
         time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', timeStyle: 'short'}),
-        storageSvg,
-        storageAddSvg,
-        barcodeSvg,
+        nookSvg,
+        gpsSvg,
+        barsSvg,
     };
   },
   created() {
@@ -70,34 +78,41 @@ export default {
 
 <style lang="scss" scoped>
 .nook-phone {
-    border-radius: 45px;
-    background-color: #F0ECE1;
-    color: #7E7261;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 550px;
-    width: 320px;
-    padding: 20px 25px;
-    font-weight: 800;
-}
-.nook-header {
-    color: #DCD8CA;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-.nook-phone h2 {
+  border-radius: 45px;
+  background-color: #F0ECE1;
+  color: #7E7261;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 550px;
+  width: 320px;
+  padding: 20px 25px;
+  font-weight: 800;
+
+  h2 {
     margin: 10px 0;
     font-size: 24px;
+  }
+}
+.nook-header {
+  color: #DCD8CA;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+
+  object {
+    height: 25px;
+    width: 25px;
+  }
 }
 .nook-buttons {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-.nook-buttons button {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  button {
     border: none;
     display: flex;
     flex-direction: column;
@@ -106,5 +121,6 @@ export default {
     height: 100px;
     width: 100px;
     margin: 6px 3px 0;
+  }
 }
 </style>

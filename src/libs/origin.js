@@ -39,9 +39,14 @@ const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSF
 };
 
 // Search
-const search = async (q, nsfc) => {
-  const nsfcParam = nsfc ? '&nsfc=1' : '';
-  const response = await api.get(`api.php${encodeQueryParams({q})}${nsfcParam}`);
+const search = async (q, options) => {
+  const { nsfc, unapproved: letsgetdangerous } = options;
+  const params = encodeQueryParams({
+    q,
+    nsfc: Number(nsfc),
+    letsgetdangerous: Number(letsgetdangerous),
+  });
+  const response = await api.get(`api.php${params}`);
   return response.data;
 };
 
@@ -52,8 +57,14 @@ const view = async (hash) => {
 };
 
 // Recent uploads
-const recent = async () => {
-  const response = await api.get('api.php');
+const recent = async (options) => {
+  const { nsfc, unapproved: letsgetdangerous } = options;
+  const params = encodeQueryParams({
+    recent: 1,
+    nsfc: Number(nsfc),
+    letsgetdangerous: Number(letsgetdangerous),
+  });
+  const response = await api.get(`api.php${params}`);
   return response.data;
 };
 

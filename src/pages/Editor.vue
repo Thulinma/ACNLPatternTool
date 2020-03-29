@@ -31,6 +31,7 @@
             ref="colorPicker"
             :drawing-tool="drawingTool"
             @color-picked="onColorPicked"/>
+            <button @click="closeColorPicker">Close Menu</button>
         </div>
       </div>
 
@@ -66,7 +67,7 @@
             <button @click="onOpenLocal">Open Storage</button>
             <button @click="publishModal=true">Publish</button>
             <button @click="onLocalSave">Store Locally</button>
-            <button @click="onModalOpen">
+            <button @click="onQROpen">
               <object class="svg nav brown-circle" :data="barcodeSvg"></object>
               Generate QR Code
             </button>
@@ -74,9 +75,6 @@
         </div>
       </div>
     </main>
-
-    <div class="bottom-buttons">
-    </div>
 
     <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
       <div class="modal">
@@ -151,7 +149,7 @@
           <div class="edit-buttons">
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
-            <button @click="patInfoSave">Save</button>
+            <button @click="patInfoSave(false)">Save</button>
             <button @click="patInfoModal=false; onLoad()">Cancel</button>
           </div>
         </div>
@@ -372,7 +370,6 @@ export default {
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
-      colorPickerMenu: false,
       saveSvg,
       scanSvg,
       paintSvg,
@@ -400,6 +397,8 @@ export default {
       let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
       if (uplStatus["upload"]){
         this.$router.push({ hash: "H:"+uplStatus["upload"] });
+      } else if (uplStatus.includes("error")) {
+        window.alert("A pattern just like this already exists in the database!");
       }
       this.publishModal = false;
     },
@@ -558,7 +557,7 @@ export default {
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
-    onModalOpen: function() {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -576,10 +575,13 @@ export default {
     openColorPicker: function() {
       if (this.drawingTool.currentColor !== 15) {
         this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:285)+'px';
+        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:315)+'px';
         return;
       }
       alert('This one has to stay transparent. :)');
+    },
+    closeColorPicker: function() {
+      this.$refs.colorPickerMenu.style.height = '0px';
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
@@ -755,8 +757,12 @@ main .center .colorPicker-menu {
   top: 60px;
   border-radius: 0 0 35px 35px;
   background-color: #f1b5c1;
-  left:50%;
+  left: 50%;
   transform: translate(-50%);
+}
+main .center .colorPicker-menu button {
+  display: block;
+  margin: 0 auto;
 }
 .bottom-buttons {
   padding: 20px 10% 0 0;

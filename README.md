@@ -4,11 +4,17 @@ An application to edit Animal Crossing pattern designs.
 
 ## Installation
 
-### Submodules
-
 At the root of the project directory:
 ```sh
+# submodule setup
 git submodule update --init --recursive
+cd zxing-js-library
+yarn # need this to bypass sharp missing binaries
+cd ..
+
+# main repo setup
+npm install
+npm run build:submodule # build the submodule
 ```
 
  ## Available Scripts

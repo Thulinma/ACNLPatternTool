@@ -3,7 +3,7 @@
     <h1>Frequently Asked Questions</h1>
     <div class="question">
       <p class="que">ZOMG this thing doesn't work!?</p>
-      <p class="ans">The ACNL pattern tool is completely written in HTML5 and JavaScript. As such, it requires a decently standards-compliant browser. The latest versions of Chrome / Chromium / Firefox / Android / iOS are tested and should work. No promises on anything else. Internet Explorer will probably choke on this entire page.</p>
+      <p class="ans">The ACNL pattern tool is completely written in HTML5 and JavaScript. As such, it requires a decently standards-compliant browser. The latest versions of Chrome / Chromium / Firefox / Android / iOS are tested and should work. No promises on anything else. Internet Explorer will probably choke on this entire page, while Edge and Safari will probably run into issues with certain features.</p>
     </div>
     <div class="question">
       <p class="que">How do I use this thing?</p>
@@ -12,11 +12,11 @@
     <div class="question">
       <p class="que">Who made this? / Who made what?</p>
       <p class="ans">
-        The "new" version of the pattern tool was made by 3 main developers:
+        The "new" version of the pattern tool was made by 3 main developers.
         <ul>
-          <li><b>Thulinma:</b> Reverse-engineering of pattern format, core drawing system, image conversion, 3D renders, QR image generation, pattern database backend</li>
-          <li><b>DamSenViet:</b> Graphic design (most), JavaScript toolchain setup/configuration, optimization</li>
-          <li><b>Myumi:</b> QR code reading improvements, graphic design (the rest), practical implementation of design</li>
+          <li><i>Thulinma:</i> Reverse-engineering of pattern format, core drawing system, image conversion, 3D renders, QR image generation, pattern database backend</li>
+          <li><i>DamSenViet:</i> Graphic design (most), JavaScript toolchain setup/configuration, optimization</li>
+          <li><i>Myumi:</i> QR code reading improvements, graphic design (the rest), practical implementation of design</li>
         </ul>
       </p>
     </div>
@@ -32,10 +32,10 @@
       <p class="que">Is there an offline version I can use without an internet connection?</p>
       <p class="ans">Soon.</p>
     </div>
-    <div class="question">
+    <!-- <div class="question">
       <p class="que">I made something better / fixed something / added more browser support!</p>
       <p class="ans">That's not a question! But - yay! Go ahead and send us a pull request on <a href="https://github.com/Thulinma/ACNLPatternTool">GitHub</a>.</p>
-    </div>
+    </div> -->
     <div class="question">
       <p class="que">How do I reach you guys? / Can I make a suggestion? / How can I get help?</p>
       <p class="ans">Please join our <a href="https://discord.gg/9rGkZNk">Discord server</a>.</p>
@@ -64,12 +64,40 @@ export default {
 
 
 <style lang="scss" scoped>
-h1{
-  font-size:300%;
-}
+$header-bg: #72D8C0;
+$header-color: #FFFFFF;
+$ques-bg: #F5F3A6;
+$ques-color: #E7C441;
 
-.que{
-  font-weight:bold;
-  margin-top:20px;
+h1 {
+  background-color: $header-bg;
+  color: $header-color;
+  font-size: 300%;
+  padding: 8px;
+}
+.question {
+  margin: 0 15px;
+  max-width: 800px;
+
+  .que {
+    background-color: $ques-bg;
+    border-radius: 35px;
+    color: $ques-color;
+    display: inline-block;
+    font-weight: bold;
+    margin: 20px 0 8px;
+    padding: 8px 12px;
+  }
+  .ans {
+    text-indent: 15px;
+    margin: 0 0 0 15px;
+  }
+  ul {
+    margin: 0 0 0 25px;
+    
+    li::before{
+      content: '- '
+    }
+  }
 }
 </style>

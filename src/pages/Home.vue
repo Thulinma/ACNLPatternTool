@@ -6,7 +6,7 @@
       </div><div class="heading">
         <h1>Animal Crossing Pattern Tool</h1>
         <h2>Compatible with Animal Crossing: New Leaf, Animal Crossing: Happy Home Designer and Animal Crossing: New Horizons</h2>
-        <h2>By <a href="https://thulinma.com">Thulinma</a>, <a href="https://github.com/DamSenViet">DamSenViet</a> and <a href="https://github.com/myumi">Myumi</a></h2>
+        <h2>By <a href="https://thulinma.com">Thulinma</a>, <a href="https://github.com/DamSenViet">DamSenViet</a>, and <a href="https://github.com/myumi">Myumi</a></h2>
       </div>
     </div>
     <div class="button browse" @click="goToBrowse">
@@ -57,7 +57,6 @@ export default {
   float:left;
 }
 .title{
-  color:black;
   min-height:380px;
 }
 h1{
@@ -66,7 +65,6 @@ h1{
 
 .dummy-nav {
   font-family: Nunito;
-  color: white;
 }
 
 .button {
@@ -74,6 +72,7 @@ h1{
   cursor: pointer;
   padding:10px;
   box-sizing: border-box;
+  color: white;
 }
 
 .button.browse {background-color: rgb(52, 171, 109);}
