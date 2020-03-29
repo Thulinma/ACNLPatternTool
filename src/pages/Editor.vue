@@ -411,31 +411,56 @@ export default {
     },
     zipPicksAsACNL(){
       let zip = new JSZip();
+      const titles = [];
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        zip.file(dt.title+".acnl", dt.toBytes());
+        let title = dt.title + ".acnl";
+        let k = 1;
+        while(titles.includes(title)) {
+          title = dt.title + "(" + k + ")" + ".ancl";
+          k++;
+        }
+        zip.file(title, dt.toBytes());
+        titles.push(title);
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
     async zipPicksAsPNG(){
       let zip = new JSZip();
+      const titles = [];
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
         const img = await generateACNLQR(dt);
-        zip.file(dt.title+".png", img.substr(22), {base64:true});
+        let title = dt.title + ".png";
+        let k = 1;
+        while(titles.includes(title)) {
+          title = dt.title + "(" + k + ")" + ".png";
+          k++;
+        }
+        zip.file(title, img.substr(22), {base64:true});
+        titles.push(title);
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
     async zipPicksAsBoth(){
       let zip = new JSZip();
+      const titles = [];
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        zip.file(dt.title+".acnl", dt.toBytes());
+        let ancl_title = dt.title + ".ancl";
+        let k = 1;
+        while(titles.includes(ancl_title)) {
+          ancl_title = dt.title + "(" + k + ")" + ".ancl";
+          k++;
+        }
+        const img_title = ancl_title.replace(".ancl", ".png");
+        zip.file(ancl_title, dt.toBytes());
         const img = await generateACNLQR(dt);
-        zip.file(dt.title+".png", img.substr(22), {base64:true});
+        zip.file(img_title, img.substr(22), {base64:true});
+        titles.push(ancl_title);
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
