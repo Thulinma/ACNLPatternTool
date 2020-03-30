@@ -97,6 +97,7 @@
           <button @click="zipPicksAsACNL">Download ACNL files as .zip file</button>
           <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
           <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
+          <br/>
           <IconGenerator
             v-for="(opt, idx) in pickPatterns"
             :key="idx"

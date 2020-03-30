@@ -2,8 +2,22 @@
   <div>
     <div class="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: 1}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
-      <button @click="toggleView()">Next</button>
+      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
+      <div class="muralInputArea">
+        <div class="muralInputColumn"> 
+          <label>Patterns Wide</label></br>
+          <input type="range" min="1" max="50" v-model="muralWide"/>
+          <input type="number" min="1" max="50" v-model="muralWide"/>
+        </div>
+        <div class="muralInputColumn"> 
+          <label>Patterns Tall</label></br>
+          <input type="range" min="1" max="50" v-model="muralTall"/>
+          <input type="number" min="1" max="50" v-model="muralTall"/>
+        </div>
+      </div>
+      <div class="buttons">
+        <button @click="toggleView()">Next</button>
+      </div>
     </div>
     <input v-show="false" type="file" ref="files" accept="image/*" @change="onFile" />
     <div class="preview-and-options" v-show="!isCropping">
@@ -35,7 +49,7 @@
       </div>
       <div class="buttons">
         <button @click="toggleView()">Edit Crop</button>
-        <button @click="$emit('converted', draw)">Convert!</button>
+        <button @click="$emit('converted', getReturn())">Convert!</button>
       </div>
     </div>
   </div>
@@ -63,6 +77,8 @@ export default {
       draw: new DrawingTool(),
       isCropping: true,
       fileLoaded: false,
+      muralWide: 1,
+      muralTall: 1,
     };
   },
   mounted(){
@@ -79,26 +95,62 @@ export default {
     },
     onCrop({coordinates, canvas}){
       if (!(canvas instanceof HTMLCanvasElement)){return;}
-      this.$refs.preview.width = this.draw.width;
-      this.$refs.preview.height = this.draw.height;
-      const ctx = this.$refs.preview.getContext('2d');
-      if (this.convert_quality != "sharp"){
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = this.convert_quality;
-      }else{
-        ctx.imageSmoothingEnabled = false;
+      this.draws = new Array();
+      for(let i = 0; i < (this.muralWide * this.muralTall); i++) {
+        let draw = new DrawingTool()
+        draw.patternType = this.patternType;
+        this.draws.push(draw);
       }
-      ctx.drawImage(canvas, 0, 0,this.draw.width, this.draw.height);
-      const imgdata = ctx.getImageData(0, 0, this.draw.width, this.draw.height);
-      switch (this.convert_method){
-        case "quantize": this.image_quantize(imgdata); break;
-        case "rgb": this.image_rgb(imgdata); break;
-        case "yuv": this.image_yuv(imgdata); break;
-        case "grey": this.image_grey(imgdata); break;
-        case "sepia": this.image_sepia(imgdata); break;
-        case "keep": this.image_keep(imgdata); break;
-        case "lowest": this.image_lowestdistance(imgdata); break;
+      
+      let totalCrop = this.$refs.cropper.getResult().canvas;
+      let cropCtx = totalCrop.getContext('2d');
+      let cropWidth = totalCrop.width/this.muralWide;
+      let cropHeight = totalCrop.height/this.muralTall;
+      
+      let previewDimension = (384 / Math.max(this.muralWide, this.muralTall))/32;
+      previewDimension = Math.floor(previewDimension) * 32;
+      
+      let workingCanvas = document.createElement("canvas");
+      workingCanvas.width = cropWidth;
+      workingCanvas.height = cropHeight;
+      let workingCanvasCtx = workingCanvas.getContext('2d');
+      for(let x = 0; x < this.muralWide; x++) {
+        for(let y = 0; y < this.muralTall; y++) {
+          let position = String(x)+'x'+String(y);
+          let previewCanvas = this.$refs['previewCanvas_'+position][0];
+          
+          let myDraw = this.draws[y*this.muralWide + x];
+          myDraw.addCanvas(this.$refs['postviewCanvas_'+position][0]);
+          this.$refs['postviewCanvas_'+position][0].width = previewDimension;
+          this.$refs['postviewCanvas_'+position][0].height = previewDimension;
+          
+          previewCanvas.width = 32;
+          previewCanvas.height = 32;
+          let ctx = previewCanvas.getContext('2d');
+          if (this.convert_quality != "sharp"){
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = this.convert_quality;
+          }else{
+            ctx.imageSmoothingEnabled = false;
+          }
+          
+          let myCrop = cropCtx.getImageData(cropWidth*x, cropHeight*y, cropWidth, cropHeight);
+          workingCanvasCtx.putImageData(myCrop, 0, 0); 
+          ctx.drawImage(workingCanvas, 0, 0, myDraw.width, myDraw.height);
+          let imgdata = ctx.getImageData(0, 0, myDraw.width, myDraw.height);
+          
+          switch (this.convert_method){
+            case "quantize": this.image_quantize(imgdata, myDraw); break;
+            case "rgb": this.image_rgb(imgdata, myDraw); break;
+            case "yuv": this.image_yuv(imgdata, myDraw); break;
+            case "grey": this.image_grey(imgdata, myDraw); break;
+            case "sepia": this.image_sepia(imgdata, myDraw); break;
+            case "keep": this.image_keep(imgdata, myDraw); break;
+            case "lowest": this.image_lowestdistance(imgdata, myDraw); break;
+          }
+        }
       }
+      workingCanvas.remove();
     },
     //Sets the palette to the top-15 closest RGB colors
     image_rgb(imgdata){
@@ -444,6 +496,16 @@ export default {
     },
     tryAgain(){
       this.$refs.files.click();
+    },
+    getAspectRatio() {
+      return this.muralWide/this.muralTall;
+    },
+    getReturn() {
+      return {
+        draws: this.draws,
+        width: this.muralWide, 
+        height: this.muralTall
+      };
     }
   }
 }
@@ -513,5 +575,25 @@ export default {
   }
   .postview{
     background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
+  }
+  
+  
+  .muralInputArea {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-content: space-between;
+  }
+  
+  .muralInputColumn {
+    flex: 50%;
+    flex-direction: column;
+    align-content: space-between;
+    text-align: center;
+  }
+  
+  .muralInputColumn * {
+    text-align: center;
+    width: 60%;
   }
 </style>
