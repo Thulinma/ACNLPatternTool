@@ -127,7 +127,7 @@ export default {
         this.model = gltf.scene.children[0];
         this.model.traverse((child) => {
           if (child instanceof Mesh){
-            if (child.material.map.image.width == 1 && child.material.map.image.height == 1) {
+            if (!child.material.map || (child.material.map.image.width == 1 && child.material.map.image.height == 1)) {
               child.material.map = this.texture;
             }
             child.material.metalness = 0;
