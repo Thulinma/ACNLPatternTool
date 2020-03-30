@@ -464,6 +464,10 @@ export default {
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
+    async downPNG(){
+      const img = await generateACNLQR(this.drawingTool);
+      saveAs(img, this.drawingTool.title+".png");
+    },
     patInfoSave(publish=false){
       const patTitle = this.patTitle.trim();
       const patTown = this.patTown.trim();
