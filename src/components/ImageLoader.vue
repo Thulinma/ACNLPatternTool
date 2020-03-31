@@ -119,6 +119,7 @@ export default {
       this.$refs.postmix.width = oSize*this.muralWide;
       this.$refs.postmix.height = oSize*this.muralTall;
       const pmCtx = this.$refs.postmix.getContext('2d');
+      pmCtx.imageSmoothingEnabled = false;
 
       //Scale to intended size
       const ctx = this.$refs.preview.getContext('2d');
