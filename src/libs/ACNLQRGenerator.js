@@ -178,7 +178,7 @@ async function generateACNLQR(newData){
 
   const drawTxtWithBg = (x, y, txt, fore) => {
     const txtProps = ctx.measureText(txt);
-    var h = txtProps.fontBoundingBoxAscent + txtProps.fontBoundingBoxDescent+4;
+    var h = (txtProps.fontBoundingBoxAscent?txtProps.fontBoundingBoxAscent:txtProps.actualBoundingBoxAscent) + (txtProps.fontBoundingBoxDescent?txtProps.fontBoundingBoxDescent:txtProps.actualBoundingBoxDescent)+4;
     var w = txtProps.width-h/2;
     ctx.fillStyle=txtBg;
     ctx.strokeStyle=fore;
