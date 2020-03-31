@@ -3,15 +3,15 @@
     <div class="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
       <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
-      <div class="muralInputArea">
+      <div class="muralInputArea" :v-if="patternType == 9">
         <div class="muralInputColumn"> 
           <label>Patterns Wide</label></br>
-          <input type="range" min="1" max="50" v-model="muralWide"/>
+          <input type="range" min="1" max="8" v-model="muralWide"/>
           <input type="number" min="1" max="50" v-model="muralWide"/>
         </div>
         <div class="muralInputColumn"> 
           <label>Patterns Tall</label></br>
-          <input type="range" min="1" max="50" v-model="muralTall"/>
+          <input type="range" min="1" max="8" v-model="muralTall"/>
           <input type="number" min="1" max="50" v-model="muralTall"/>
         </div>
       </div>
@@ -24,7 +24,8 @@
       <h3>Please select your conversion type.</h3>
       <div class="preview">
         <canvas v-show="false" ref="preview" />
-        <canvas ref="postview" class="postview" width=256 height=256 />
+        <canvas v-show="false" ref="postview" width=64 height=64 />
+        <canvas ref="postmix" class="postview" width=256 height=256 />
 
         <ul class="options">
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
@@ -40,16 +41,18 @@
           <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp Pixels</li>
         </ul>
         <ul class="options">
-          <li :class="{active: convert_trans === 255}" @click="changeTrans(255)">100% Transparency</li>
-          <li :class="{active: convert_trans === 192}" @click="changeTrans(192)">75% Transparency</li>
-          <li :class="{active: convert_trans === 127}" @click="changeTrans(127)">50% Transparency</li>
-          <li :class="{active: convert_trans === 64}" @click="changeTrans(64)">25% Transparency</li>
-          <li :class="{active: convert_trans === 1}" @click="changeTrans(1)">1% Transparency</li>
+          <label>Transparency %</label></br>
+          <input type="range" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
+          <input type="number" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
+        </ul>
+        <ul class="options" :v-if="muralTall > 1 || muralWide > 1">
+          <li :class="{active: convert_samepal === true}" @click="changeSamepal(true)">Shared palette</li>
+          <li :class="{active: convert_samepal === false}" @click="changeSamepal(false)">Split palette</li>
         </ul>
       </div>
       <div class="buttons">
         <button @click="toggleView()">Edit Crop</button>
-        <button @click="$emit('converted', getReturn())">Convert!</button>
+        <button @click="$emit('converted', outputs)">Convert!</button>
       </div>
     </div>
   </div>
@@ -73,17 +76,23 @@ export default {
       dataurl: "",
       convert_method: "quantize",
       convert_quality: "high",
-      convert_trans: 127,
+      convert_trans: 50,
+      convert_samepal: false,
       draw: new DrawingTool(),
       isCropping: true,
       fileLoaded: false,
+      fileName: "",
       muralWide: 1,
       muralTall: 1,
+      outputs: []
     };
   },
   mounted(){
     this.draw.patternType = this.patternType;
     this.draw.addCanvas(this.$refs.postview);
+    if (localStorage.getItem("author_acnl")){
+      this.draw.authorStrict = localStorage.getItem("author_acnl");
+    }
     this.$refs.files.click();
   },
   methods: {
@@ -95,70 +104,89 @@ export default {
     },
     onCrop({coordinates, canvas}){
       if (!(canvas instanceof HTMLCanvasElement)){return;}
-      this.draws = new Array();
-      for(let i = 0; i < (this.muralWide * this.muralTall); i++) {
-        let draw = new DrawingTool()
-        draw.patternType = this.patternType;
-        this.draws.push(draw);
+      this.outputs = [];
+      const iSize = this.draw.width;
+      let oSize = this.draw.width;
+      const pattAspect = this.muralWide/this.muralTall;
+      if (pattAspect < 1){
+        while (oSize*this.muralTall < 256){oSize += 32;}
+      }else{
+        while (oSize*this.muralWide < 256){oSize += 32;}
       }
-      
-      let totalCrop = this.$refs.cropper.getResult().canvas;
-      let cropCtx = totalCrop.getContext('2d');
-      let cropWidth = totalCrop.width/this.muralWide;
-      let cropHeight = totalCrop.height/this.muralTall;
-      
-      let previewDimension = (384 / Math.max(this.muralWide, this.muralTall))/32;
-      previewDimension = Math.floor(previewDimension) * 32;
-      
-      let workingCanvas = document.createElement("canvas");
-      workingCanvas.width = cropWidth;
-      workingCanvas.height = cropHeight;
-      let workingCanvasCtx = workingCanvas.getContext('2d');
-      for(let x = 0; x < this.muralWide; x++) {
-        for(let y = 0; y < this.muralTall; y++) {
-          let position = String(x)+'x'+String(y);
-          let previewCanvas = this.$refs['previewCanvas_'+position][0];
-          
-          let myDraw = this.draws[y*this.muralWide + x];
-          myDraw.addCanvas(this.$refs['postviewCanvas_'+position][0]);
-          this.$refs['postviewCanvas_'+position][0].width = previewDimension;
-          this.$refs['postviewCanvas_'+position][0].height = previewDimension;
-          
-          previewCanvas.width = 32;
-          previewCanvas.height = 32;
-          let ctx = previewCanvas.getContext('2d');
-          if (this.convert_quality != "sharp"){
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = this.convert_quality;
-          }else{
-            ctx.imageSmoothingEnabled = false;
-          }
-          
-          let myCrop = cropCtx.getImageData(cropWidth*x, cropHeight*y, cropWidth, cropHeight);
-          workingCanvasCtx.putImageData(myCrop, 0, 0); 
-          ctx.drawImage(workingCanvas, 0, 0, myDraw.width, myDraw.height);
-          let imgdata = ctx.getImageData(0, 0, myDraw.width, myDraw.height);
-          
-          switch (this.convert_method){
-            case "quantize": this.image_quantize(imgdata, myDraw); break;
-            case "rgb": this.image_rgb(imgdata, myDraw); break;
-            case "yuv": this.image_yuv(imgdata, myDraw); break;
-            case "grey": this.image_grey(imgdata, myDraw); break;
-            case "sepia": this.image_sepia(imgdata, myDraw); break;
-            case "keep": this.image_keep(imgdata, myDraw); break;
-            case "lowest": this.image_lowestdistance(imgdata, myDraw); break;
-          }
+
+      this.$refs.preview.width = iSize*this.muralWide;
+      this.$refs.preview.height = iSize*this.muralTall;
+      this.$refs.postmix.width = oSize*this.muralWide;
+      this.$refs.postmix.height = oSize*this.muralTall;
+      const pmCtx = this.$refs.postmix.getContext('2d');
+
+      //Scale to intended size
+      const ctx = this.$refs.preview.getContext('2d');
+      if (this.convert_quality != "sharp"){
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = this.convert_quality;
+      }else{
+        ctx.imageSmoothingEnabled = false;
+      }
+      ctx.drawImage(canvas, 0, 0,iSize*this.muralWide, iSize*this.muralTall);
+
+      //Create palette for all at once
+      if (this.convert_samepal){
+        const imgdata = ctx.getImageData(0, 0, iSize*this.muralWide, iSize*this.muralTall);
+        switch (this.convert_method){
+          case "quantize": this.image_quantize(imgdata); break;
+          case "rgb": this.image_rgb(imgdata); break;
+          case "yuv": this.image_yuv(imgdata); break;
+          case "grey": this.image_grey(imgdata); break;
+          case "sepia": this.image_sepia(imgdata); break;
+          case "keep": this.image_keep(imgdata); break;
+          case "lowest": this.image_lowestdistance(imgdata); break;
         }
       }
-      workingCanvas.remove();
+      
+      for(let x = 0; x < this.muralWide; x++) {
+        for(let y = 0; y < this.muralTall; y++) {
+          const imgdata = ctx.getImageData(iSize*x, iSize*y, iSize, iSize);
+          //Create separate palettes
+          if (!this.convert_samepal){
+            switch (this.convert_method){
+              case "quantize": this.image_quantize(imgdata); break;
+              case "rgb": this.image_rgb(imgdata); break;
+              case "yuv": this.image_yuv(imgdata); break;
+              case "grey": this.image_grey(imgdata); break;
+              case "sepia": this.image_sepia(imgdata); break;
+              case "keep": this.image_keep(imgdata); break;
+              case "lowest": this.image_lowestdistance(imgdata); break;
+            }
+          }
+
+          //Set each pixel to the nearest color from the palette
+          const pixelCount = this.draw.pixelCount*4;
+          for (let i = 0; i < pixelCount; i+=4){
+            let x = (i >> 2) % iSize;
+            let y = Math.floor((i >> 2) / iSize);
+            if (imgdata.data[i+3] < this.convert_trans*2.55){
+              this.draw.setPixel(x, y, 15);
+            }else{
+              this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
+            }
+          }
+          this.draw.title = this.fileName.substring(0, 16)+" "+(x+1)+"x"+(y+1);
+          this.draw.onLoad();
+          this.outputs.push(this.draw.toString());
+
+          //Set postmix image segment
+          pmCtx.drawImage(this.$refs.postview, 0, 0, 64, 64, oSize*x, oSize*y, oSize, oSize);
+        }
+      }
     },
     //Sets the palette to the top-15 closest RGB colors
     image_rgb(imgdata){
       let palette = [];
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
-      const pixelCount = this.draw.pixelCount * 4;
+      const pixelCount = imgdata.data.length;
       for (let i = 0; i < pixelCount; i+=4){
-        if (imgdata.data[i+3] < this.convert_trans){continue;}
+        if (imgdata.data[i+3] < this.convert_trans*2.55){continue;}
         palette[this.draw.findRGB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort((a, b) => {
@@ -167,26 +195,14 @@ export default {
         return 0;
       });
       for (let i = 0; i < 15; i++){this.draw.setPalette(i, palette[i].n);}
-
-      //Set each pixel to the nearest color from the palette
-      for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
-        if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
-        }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
-        }
-      }
-      this.draw.onLoad();
     },
     //Sets the palette to the top-15 closest YUV colors
     image_yuv(imgdata){
       let palette = [];
       for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
-      let pixelCount = this.draw.pixelCount * 4;
+      const pixelCount = imgdata.data.length;
       for (let i = 0; i < pixelCount; i+=4){
-        if (imgdata.data[i+3] < this.convert_trans){continue;}
+        if (imgdata.data[i+3] < this.convert_trans*2.55){continue;}
         palette[this.draw.findYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort(function(a, b){
@@ -195,40 +211,12 @@ export default {
         return 0;
       });
       for (let i = 0; i < 15; i++){this.draw.setPalette(i, palette[i].n);}
-
-      //Set each pixel to the nearest color from the palette
-      for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
-        if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
-        }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
-        }
-      }
-      this.draw.onLoad();
     },
     //Set palette to greyscale
     image_grey(imgdata){
       for (let i = 0; i < 15; i++){
         this.draw.setPalette(i, 0x10*i + 0xF);
       }
-
-      function TripleY(rgb){
-        return [rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000, rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000,rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000];
-      }
-      //Set each pixel to the nearest color from the palette
-      let pixelCount = this.draw.pixelCount * 4;
-      for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
-        if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
-        }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
-        }
-      }
-      this.draw.onLoad();
     },
     //Set palette to sepia
     image_sepia(imgdata){
@@ -238,25 +226,12 @@ export default {
       for (let i = 9; i < 15; i++){
         this.draw.setPalette(i, 0x60+i-6);
       }
-
-      //Set each pixel to the nearest color from the palette
-      let pixelCount = this.draw.pixelCount * 4;
-      for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
-        if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
-        }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
-        }
-      }
-      this.draw.onLoad();
     },
     image_quantize(imgdata){
-      let pixelCount = this.draw.pixelCount * 4;
+      const pixelCount = imgdata.data.length;
       let pixels = [];
       for (let i = 0; i < pixelCount; i+=4){
-        if (imgdata.data[i+3] < this.convert_trans){continue;}
+        if (imgdata.data[i+3] < this.convert_trans*2.55){continue;}
         pixels.push({r:imgdata.data[i], g:imgdata.data[i+1], b:imgdata.data[i+2]});
       }
       const medianCut = (pixels) => {
@@ -355,7 +330,7 @@ export default {
             let gD = (colors[i][1] - colors[j][1]);
             let bD = (colors[i][2] - colors[j][2]);
             let match = (rD*rD + gD*gD + bD*bD);
-            if (match < minDist){
+            if (match < minDist || bucketA===null){
               minDist = match;
               bucketA = i;
               bucketB = j;
@@ -367,7 +342,7 @@ export default {
         colors.splice(bucketB);//Must remove B first, since B is guaranteed to be the latter entry
         colors.splice(bucketA);//Now we can remove A too, since it was before B and thus couldn't have shifted
         pushAvg(bucketC);
-        uniqcol = new Set(colors);
+        uniqCol = new Set(colors);
         logger.info("Unique colors after merge of closest two: "+uniqCol.size);
       }
 
@@ -379,23 +354,11 @@ export default {
         this.draw.setPalette(cNum, c);
         cNum++;
       }
-
-      //Set each pixel to the nearest color from the palette
-      for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
-        if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
-        }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
-        }
-      }
-      this.draw.onLoad();
     },
     image_lowestdistance(imgdata){
       var palette = [];
       var prepixels = [];
-      let pixelCount = this.draw.pixelCount * 4;
+      const pixelCount = imgdata.data.length;
       for (let i = 0; i < 256; i++){palette.push({"n":i, "c":0});}
       function myPal(pixel, r, g, b){
         var matches = {};
@@ -415,7 +378,7 @@ export default {
         prepixels[pixel] = matches;
       };
       for (let i = 0; i < pixelCount; i+=4){
-        if (imgdata.data[i+3] < this.convert_trans){continue;}
+        if (imgdata.data[i+3] < this.convert_trans*2.55){continue;}
         myPal(i/4, imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]);
       }
       palette.sort(function(a, b){
@@ -455,17 +418,6 @@ export default {
       for (let i = 0; i < 15 && i < best_chosen.length; i++){
         this.draw.setPalette(i, best_chosen[i]);
       }
-      //Set each pixel to the nearest color from the palette
-      for (let i = 0; i < pixelCount; i+=4){
-        let x = (i >> 2) % this.draw.width;
-        let y = Math.floor((i >> 2) / this.draw.width);
-        if (imgdata.data[i+3] < this.convert_trans){
-          this.draw.setPixel(x, y, 15);
-        }else{
-          this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
-        }
-      }
-      this.draw.onLoad();
     },
     onFile: async function(e) {
       this.dataurl = await new Promise((resolve, reject) => {
@@ -475,6 +427,7 @@ export default {
           reject(new DOMException("Problem parsing input file."));
         };
         fr.onload = (re) => {resolve(re.target.result);};
+        this.fileName = e.target.files[0].name;
         fr.readAsDataURL(e.target.files[0]);
       });
       this.fileLoaded = true;
@@ -488,7 +441,10 @@ export default {
       this.onCrop(this.$refs.cropper.getResult());
     },
     changeTrans(val){
-      this.convert_trans = val;
+      this.onCrop(this.$refs.cropper.getResult());
+    },
+    changeSamepal(val){
+      this.convert_samepal = val;
       this.onCrop(this.$refs.cropper.getResult());
     },
     toggleView(){
@@ -499,13 +455,6 @@ export default {
     },
     getAspectRatio() {
       return this.muralWide/this.muralTall;
-    },
-    getReturn() {
-      return {
-        draws: this.draws,
-        width: this.muralWide, 
-        height: this.muralTall
-      };
     }
   }
 }

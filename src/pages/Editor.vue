@@ -550,13 +550,13 @@ export default {
     extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onConvert: function(sourceTool){
-      let pixelCount = sourceTool.pixelCount * 4;
-      for (let i = 0; i < pixelCount; i++){this.drawingTool.pixels[i] = sourceTool.pixels[i];}
-      for (let i = 0; i < 15; i++){this.drawingTool.setPalette(i, sourceTool.getPalette(i));}
+    onConvert: function(patterns){
       this.convertImage = false;
-      this.drawingTool.onColorChange();
-      this.drawingTool.render();
+      if (patterns.length == 1){
+        this.extLoad(patterns[0]);
+      }else{
+        this.pickPatterns = patterns;
+      }
     },
     extMultiLoad: function(data) {
       this.pickPatterns = data;
