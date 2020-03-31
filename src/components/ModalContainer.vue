@@ -55,5 +55,6 @@ export default {
   display:table-cell;
   vertical-align:middle;
   overflow:auto;
+  z-index: 10;
 }
 </style>
