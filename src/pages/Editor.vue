@@ -50,7 +50,7 @@
               <object class="svg nav brown-circle" :data="paletteSvg"></object>
               Open Color Editor
             </button>
-            <button @click="convertImage = true">
+            <button @click="convertImage=true;closeColorPicker()">
               <object class="svg nav brown-circle" :data="imageAddSvg"></object>
               Convert
             </button>
@@ -64,10 +64,10 @@
               Save
               <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
             </button>
-            <button @click="onOpenLocal">Open Storage</button>
-            <button @click="publishModal=true">Publish</button>
-            <button @click="onLocalSave">Store Locally</button>
-            <button @click="onQROpen">
+            <button @click="onOpenLocal();closeColorPicker()">Open Storage</button>
+            <button @click="publishModal=true;closeColorPicker();">Publish</button>
+            <button @click="onLocalSave();closeColorPicker();">Store Locally</button>
+            <button @click="onQROpen();closeColorPicker();">
               <object class="svg nav brown-circle" :data="barcodeSvg"></object>
               Generate QR Code
             </button>
@@ -592,6 +592,7 @@ export default {
     },
     closeColorPicker: function() {
       this.$refs.colorPickerMenu.style.height = '0px';
+      this.$data.colorPickerMenu = false;
     },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
