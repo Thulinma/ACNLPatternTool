@@ -364,7 +364,7 @@ class DrawingTool{
       }
       this.pattern.setPalette(idx, rgb);
     }
-    if (this.pattern instanceof ACNHFormat){this.pattern.setPalette(idx, this.findRGB(c));}
+    if (this.pattern instanceof ACNLFormat){this.pattern.setPalette(idx, this.findRGB(c));}
     this.onColorChange();
     this.render();
   }
