@@ -139,13 +139,18 @@
               </span>
           </div>
           <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
-          <p class="edit-notice">
-            <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console.<br>
-            There is some "invisible" data attached to it that cannot be entered by hand.<br>
-            Use the below copy/load buttons to first "copy" your name/town from one of your own patterns from AC:NL.<br>
-            Then, "load" it onto any other pattern and it should become editable for you in-game!<br>
-            The copied author information is stored into your browser, so it'll be there for your future visits as well.
-          </p>
+          <div class="edit-notice">
+            <p>
+              IMPORTANT: AC:NH reads these patterns as AC:NL patterns; therefore, 
+              they will not be editable in-game since the game can't 
+              determine that they were originally made by you.
+            </p>
+            <p>
+              <br>
+              Similarly, patterns with transparency will look corrupted 
+              when scanned in the NSO application but will look fine in game.
+            </p>
+          </div>
           <div class="edit-buttons">
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
