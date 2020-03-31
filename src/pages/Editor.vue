@@ -91,7 +91,7 @@
 
     <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
       <div class="modal">
-        <div class="modal-header">Local storage</div>
+        <div class="modal-header">{{multiName}}</div>
         <div class="modal-window pattern-list">
           <button v-if="allowMoveToLocal" @click="picksToLocal">Store all in local storage</button>
           <button @click="zipPicksAsACNL">Download ACNL files as .zip file</button>
@@ -367,6 +367,7 @@ export default {
       patType: 9,
       patTypeName: "",
       pickPatterns: false,
+      multiName: "Local storage",
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
@@ -407,6 +408,7 @@ export default {
           tmp[i] = new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(i)));
         }
       }
+      this.multiName = "Local storage";
       this.pickPatterns = tmp;
       this.allowMoveToLocal = false;
     },
@@ -555,10 +557,13 @@ export default {
       if (patterns.length == 1){
         this.extLoad(patterns[0]);
       }else{
+        this.multiName = "Conversion result";
         this.pickPatterns = patterns;
+        this.allowMoveToLocal = true;
       }
     },
     extMultiLoad: function(data) {
+      this.multiName = "Load which?";
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
