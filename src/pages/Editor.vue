@@ -98,12 +98,12 @@
           <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
           <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
           <br/>
-          <IconGenerator
-            v-for="(opt, idx) in pickPatterns"
-            :key="idx"
-            width=150 height=150 text="true" decoration="true"
+          <ACNLQRGenerator
+            v-for="(pattern, index) in pickPatterns"
+            :key="index"
             @pattclick="pickPattern"
-            :pattern="opt" />
+            :pattern="pattern"
+          />
         </div>
       </div>
     </ModalContainer>
