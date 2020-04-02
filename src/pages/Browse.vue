@@ -262,33 +262,36 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-nav input[type=text] {
-  padding: 10px;
-  min-width: 300px;
-  border: none;
-}
-nav .create-button {
-  background-color: #57AB35;
-  color: #FFFFFF;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  border: none;
-  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  min-width: 120px;
-  padding: 10px 18px;
-  justify-content: space-between;
-  border-radius: 35px;
-  cursor: pointer;
-}
-nav .create-button .svg {
-  height: 25px;
-  width: 25px;
-  pointer-events: none;
+
+  input[type=text] {
+    padding: 10px;
+    min-width: 300px;
+    border: none;
+  }
+
+  .create-button {
+    background-color: #57AB35;
+    color: #FFFFFF;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    border: none;
+    box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    min-width: 120px;
+    padding: 10px 18px;
+    justify-content: space-between;
+    border-radius: 35px;
+    cursor: pointer;
+  }
+
+  .create-button .svg {
+    height: 25px;
+    width: 25px;
+    pointer-events: none;
+  }
 }
 .patterns {
   display: grid;
@@ -297,8 +300,8 @@ nav .create-button .svg {
   justify-items: center;
 }
 .pattern-container {
-  text-decoration:none;
-  color:black;
+  text-decoration: none;
+  color :black;
   background-color: #A1D4CA;
   border-radius: 35px;
   padding: 5px 8px;
@@ -315,12 +318,14 @@ nav .create-button .svg {
   background-image: radial-gradient(#89C3B9 20%, transparent 20%), radial-gradient(#89C3B9 20%, transparent 20%);
   background-position: 0 0, 5px 5px;
   background-size: 10px 10px;
-}
-.pattern-container canvas {
-  margin: 10px;
-}
-.pattern-container .pickPattern{
-  cursor: pointer;
+
+  canvas {
+    margin: 10px;
+  }
+
+  .pickPattern{
+    cursor: pointer;
+  }
 }
 .pattern-details {
   background-color: #EBE6CD;

@@ -317,6 +317,9 @@ import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+
+import IconBase from '/components/icons/IconBase.vue';
+
 import saveSvg from '/assets/icons/bxs-save.svg';
 import scanSvg from '/assets/icons/bx-scan.svg';
 import paintSvg from '/assets/icons/bxs-paint.svg';

@@ -1,21 +1,24 @@
 <template>
   <div class="tool-selector">
     <button class="tool" :class="{picked: pickedPencil}" @click.prevent="pickToolPencil" @contextmenu.prevent="pickToolPencil">
-      <img class="svg nav brown-circle" :src=pencilSvg />
+      <IconBase icon-name="pencil" :icon-color="pencilColor">
+        <IconPencil />
+      </IconBase>
     </button>
     <button class="tool" :class="{picked: pickedFloodFill}" @click.prevent="pickToolFloodFill" @contextmenu.prevent="pickToolFloodFill">
-      <img class="svg nav brown-circle" :src=fillSvg />
+      <IconBase icon-name="fill" :icon-color="fillColor"><IconFill /></IconBase>
     </button>
     <button class="tool" :class="{picked: pickedColorPicker}" @click.prevent="pickToolColorPicker" @contextmenu.prevent="pickToolColorPicker">
-      <img class="svg nav brown-circle" :src=dropperSvg />
+      <IconBase icon-name="fill" :icon-color="pickerColor"><IconPicker /></IconBase>
     </button>
   </div>
 </template>
 
 <script>
-import pencilSvg from '/assets/icons/bxs-pencil.svg'
-import fillSvg from '/assets/icons/bxs-color-fill.svg';
-import dropperSvg from '/assets/icons/bxs-eyedropper.svg';
+import IconBase from '/components/icons/IconBase.vue';
+import IconPencil from '/components/icons/IconPencil.vue';
+import IconFill from '/components/icons/IconFill.vue';
+import IconPicker from '/components/icons/IconPicker.vue';
 
 export default {
   name: "ToolSelector",
@@ -24,15 +27,21 @@ export default {
       pickedPencil: true,
       pickedFloodFill: false,
       pickedColorPicker: false,
-      pencilSvg,
-      fillSvg,
-      dropperSvg,
+      pencilColor: "#FFFFFF",
+      fillColor: "#7E7261",
+      pickerColor: "#7E7261",
     };
+  },
+  components: {
+    IconBase,
+    IconPencil,
+    IconFill,
+    IconPicker,
   },
   methods: {
     pickToolPencil(e) {
       this.setToolClass('pickedPencil');
-      console.log(this.pickedPencil);
+
       this.$emit("newtool"+(e.which == 1?"":"alt"), function(x, y, tool){
         tool.drawPixel(x, y);
       });
@@ -76,8 +85,13 @@ export default {
       this.pickedFloodFill = false;
       this.pickedColorPicker =  false;
       this.$data[tool] = true;
+
+      // set svg fill colors
+      this.pencilColor = this.pickedPencil ? "#FFFFFF" : "#7E7261";
+      this.fillColor = this.pickedFloodFill ? "#FFFFFF" : "#7E7261";
+      this.pickerColor = this.pickedColorPicker ? "#FFFFFF" : "#7E7261";
     },
-  }
+  },
 }
 </script>
 
