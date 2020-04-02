@@ -558,13 +558,13 @@ export default {
       if (this.drawingTool.getPalette(currentColor) === color) return;
       this.drawingTool.pushUndo();
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-      logger.info(`color picked: ${color}`);
+      console.log(`color picked: ${color}`);
     },
     onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
-      logger.info(`changed current color: ${idx}`);
+      console.log(`changed current color: ${idx}`);
     },
     onLoad: async function(t){
       let patStr = this.drawingTool.toString();

@@ -4,13 +4,13 @@
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
       <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
       <div class="muralInputArea" :v-if="patternType == 9">
-        <div class="muralInputColumn"> 
-          <label>Patterns Wide</label></br>
+        <div class="muralInputColumn">
+          <label>Patterns Wide</label><br/>
           <input type="range" min="1" max="8" v-model="muralWide"/>
           <input type="number" min="1" max="50" v-model="muralWide"/>
         </div>
-        <div class="muralInputColumn"> 
-          <label>Patterns Tall</label></br>
+        <div class="muralInputColumn">
+          <label>Patterns Tall</label><br/>
           <input type="range" min="1" max="8" v-model="muralTall"/>
           <input type="number" min="1" max="50" v-model="muralTall"/>
         </div>
@@ -41,7 +41,7 @@
           <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp Pixels</li>
         </ul>
         <ul class="options">
-          <label>Transparency %</label></br>
+          <label>Transparency %</label><br/>
           <input type="range" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
           <input type="number" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
         </ul>
@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import logger from "/utils/logger";
 import { Cropper } from 'vue-advanced-cropper'
 import DrawingTool from '/libs/DrawingTool';
 
@@ -144,7 +143,7 @@ export default {
           case "lowest": this.image_lowestdistance(imgdata); break;
         }
       }
-      
+
       for(let x = 0; x < this.muralWide; x++) {
         for(let y = 0; y < this.muralTall; y++) {
           const imgdata = ctx.getImageData(iSize*x, iSize*y, iSize, iSize);
@@ -301,21 +300,21 @@ export default {
 
       //Average the insides for colors.
       for (let i in buckets){pushAvg(buckets[i]);}
-      logger.info("Unique colors: "+uniqCol.size);
+      console.log("Unique colors: "+uniqCol.size);
 
       if (uniqCol.size < 15){
         //We could add more colors. Quantize some more and cross fingers!
         buckets = medianMultiCut(buckets);//splits into 32
         for (let i in buckets){pushAvg(buckets[i]);}
-        logger.info("Unique colors after further quantize: "+uniqCol.size);
+        console.log("Unique colors after further quantize: "+uniqCol.size);
         if (uniqCol.size < 15){
           buckets = medianMultiCut(buckets);//splits into 64
           for (let i in buckets){pushAvg(buckets[i]);}
-          logger.info("Unique colors after further quantize: "+uniqCol.size);
+          console.log("Unique colors after further quantize: "+uniqCol.size);
           if (uniqCol.size < 15){
             buckets = medianMultiCut(buckets);//splits into 128
             for (let i in buckets){pushAvg(buckets[i]);}
-            logger.info("Unique colors after further quantize: "+uniqCol.size);
+            console.log("Unique colors after further quantize: "+uniqCol.size);
           }
         }
       }else if (uniqCol.size > 15){
@@ -344,14 +343,14 @@ export default {
         colors.splice(bucketA);//Now we can remove A too, since it was before B and thus couldn't have shifted
         pushAvg(bucketC);
         uniqCol = new Set(colors);
-        logger.info("Unique colors after merge of closest two: "+uniqCol.size);
+        console.log("Unique colors after merge of closest two: "+uniqCol.size);
       }
 
       //Set palette to chosen colors
       let cNum = 0;
       for (let c of uniqCol){
         if (cNum > 14){break;}
-        logger.info("Setting color "+cNum+" to "+c);
+        console.log("Setting color "+cNum+" to "+c);
         this.draw.setPalette(cNum, c);
         cNum++;
       }
@@ -526,22 +525,22 @@ export default {
   .postview{
     background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
   }
-  
-  
+
+
   .muralInputArea {
     display: flex;
     flex-direction: row;
     width: 100%;
     align-content: space-between;
   }
-  
+
   .muralInputColumn {
     flex: 50%;
     flex-direction: column;
     align-content: space-between;
     text-align: center;
   }
-  
+
   .muralInputColumn * {
     text-align: center;
     width: 60%;

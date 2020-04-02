@@ -1,41 +1,66 @@
 // pool the injected gltfs together, save on size
-// Clothing stand
-const clothing_stand = process.injected.clothing_stand;
+let {
+  clothing_stand,
+  // clothing (ACNL)
+  dress_half,
+  dress_long,
+  dress_none,
+  shirt_half,
+  shirt_long,
+  shirt_none,
+  shirt_nrml,
+  // easel
+  easel,
+  // hats (ACNL)
+  hat,
+  hornhat,
+  // hats (ACNH)
+  brimmed_cap,
+  brimmed_hat,
+  knit_cap,
+  // clothing (ACNH)
+  dress_acnh_short,
+  dress_acnh_long,
+  dress_acnh_none,
+  dress_round,
+  dress_balloon,
+  robe,
+  tank_pro,
+  tank_simp,
+  tee_short,
+  dressshirt_long,
+  sweater,
+  coat,
+  easel_fbx
+} = process.injected;
 
-//ACNL clothing
-const dress_half = process.injected.dress_half;
-const dress_long = process.injected.dress_long;
-const dress_none = process.injected.dress_none;
-const shirt_half = process.injected.shirt_half;
-const shirt_long = process.injected.shirt_long;
-const shirt_none = process.injected.shirt_none;
-const shirt_nrml = process.injected.shirt_nrml;
+// likely won't need this, but leave it here anyway
+const createGltfUrl = (injectedGltf) => {
+  let json = JSON.stringify(injectedGltf);
+  let blob = new Blob([json], {
+    type: "application/gltf"
+  });
+  const url = URL.createObjectURL(blob);
+  return url;
+};
 
-//Easel
-const easel = process.injected.easel;
+const createFbxUrl = (injectedFbx) => {
+  let bin = atob(injectedFbx);
+  let bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i)
+    bytes[i] = bin.charCodeAt(i);
 
-//Hats (ACNL)
-const hat = process.injected.hat;
-const hornhat = process.injected.hornhat;
+  const blob = new Blob([bytes], {
+    type: "application/octet-stream"
+  });
 
-//Hats (ACNH)
-const brimmed_cap = process.injected.brimmed_cap;
-const brimmed_hat = process.injected.brimmed_hat;
-const knit_cap = process.injected.knit_cap;
+  const url = URL.createObjectURL(blob);
+  return url;
+};
 
-//ACNH clothing
-const dress_acnh_short = process.injected.dress_acnh_short;
-const dress_acnh_long = process.injected.dress_acnh_long;
-const dress_acnh_none = process.injected.dress_acnh_none;
-const dress_round = process.injected.dress_round;
-const dress_balloon = process.injected.dress_balloon;
-const robe = process.injected.robe;
-const tank_pro = process.injected.tank_pro;
-const tank_simp = process.injected.tank_simp;
-const tee_short = process.injected.tee_short;
-const dressshirt_long = process.injected.dressshirt_long;
-const sweater = process.injected.sweater;
-const coat = process.injected.coat;
+
+// overwrite with url for all fbx types
+easel_fbx = createFbxUrl(easel_fbx);
 
 export default {
   clothing_stand,
@@ -45,6 +70,7 @@ export default {
   shirt_half,
   shirt_long,
   shirt_none,
+  shirt_nrml,
   easel,
   hat,
   hornhat,
@@ -63,5 +89,7 @@ export default {
   dressshirt_long,
   sweater,
   coat,
+
+  easel_fbx
 };
 

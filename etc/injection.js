@@ -7,8 +7,16 @@ const {
 const loadGLTF = (fileName) => {
   const loc = path.resolve(pathToInjected, fileName);
   const buffer = fs.readFileSync(loc);
-  return JSON.parse(buffer.toString());
-}
+  // json types typically encoded in this format
+  return JSON.parse(buffer.toString("utf-8"));
+};
+
+const loadFBX = (fileName) => {
+  const loc = path.resolve(pathToInjected, fileName);
+  const buffer = fs.readFileSync(loc);
+  // inject using base64, save file size
+  return buffer.toString("base64");
+};
 
 //Clothing stand
 const clothing_stand = loadGLTF("clothing_stand.gltf");
@@ -47,6 +55,9 @@ const dressshirt_long = loadGLTF("dressshirt_long.gltf");
 const sweater = loadGLTF("sweater.gltf");
 const coat = loadGLTF("coat.gltf");
 
+// fbx test
+const easel_fbx = loadFBX("easel.fbx");
+
 module.exports = {
   clothing_stand,
   dress_half,
@@ -73,5 +84,6 @@ module.exports = {
   dressshirt_long,
   sweater,
   coat,
+  easel_fbx
 }
 
