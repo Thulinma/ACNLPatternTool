@@ -74,5 +74,7 @@ export default {
   sweater,
   hoodie,
   coat,
+
+  easel_fbx
 };
 
