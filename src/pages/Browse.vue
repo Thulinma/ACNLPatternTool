@@ -17,7 +17,7 @@
         <object class="svg" :data="addSvg"></object>
       </button>
       <div>
-        All patterns submitted to the database go through an approval system first.<br>After Nintendo contacted us, we decided to remove the ability to search through the unapproved portion of the database in order to keep the game a happy and save place for everyone.
+        All patterns submitted to the database go through an approval system first.<br>After Nintendo contacted us, we decided to remove the ability to search through the unapproved portion of the database in order to keep the game a happy and safe place for everyone.
       </div>
     </nav>
     <div class="patterns">
