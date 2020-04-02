@@ -29,6 +29,7 @@ import {
   DirectionalLight,
   HemisphereLight,
   AmbientLight,
+  DoubleSide,
 } from '@three/core';
 import {
   GLTFLoader
@@ -59,7 +60,6 @@ export default {
       rotx: 0,
       roty: 0,
       rotstart: 0,
-      modelOffset: {x: 0, y:0, z:0},
     };
   },
   methods: {
@@ -84,9 +84,9 @@ export default {
     onZoom(e){
       if (this.model && e.deltaY != 0){
         const d = (e.deltaMode == 0)?e.deltaY/20:e.deltaY;
-        this.camera.zoom += d/5;
-        if (this.camera.zoom < 12){this.camera.zoom = 12;}
-        if (this.camera.zoom > 35){this.camera.zoom = 35;}
+        this.camera.position.z += d/5;
+        if (this.camera.position.z > 15){this.camera.position.z = 15;}
+        if (this.camera.position.z < 3){this.camera.position.z = 3;}
         //this.camera.position.y = this.camera.position.z + 15;
         if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
       }
@@ -97,14 +97,89 @@ export default {
         this.model = false;
       }
       let path;
+      let modelOffset = {x: 0, y:0, z:0, rough: 0.75};
       if (d.pattern instanceof ACNHFormat){
         switch (d.patternType){
-          case 0x0:
+          case 0x00://Pattern
+          case 0x01://Pro pattern
             path = injected.easel;
+            modelOffset.rough = 0.5;
             break;
-          case 0xf:
+          case 0x02://plain tank top
+            path = injected.tank_simp;
+            modelOffset.y = 5;
+            break;
+          case 0x03://ls dress shirt
+            path = injected.dressshirt_long;
+            modelOffset.y = 5;
+            break;
+          case 0x04://short sleeve tee
+            path = injected.tee_short;
+            modelOffset.y = 5;
+            break;
+          case 0x05://pro tank top
+            path = injected.tank_pro;
+            modelOffset.y = 5;
+            break;
+          case 0x06://sweater
+            path = injected.sweater;
+            modelOffset.y = 5;
+            break;
+          case 0x07://hoodie
+            path = injected.sweater;
+            modelOffset.y = 5;
+            break;
+          case 0x08://coat
+            path = injected.coat;
+            modelOffset.y = 5;
+            break;
+          case 0x09://shortsleeve dress
+            path = injected.dress_acnh_short;
+            modelOffset.y = 5;
+            break;
+          case 0x0A://sleeveless dress
+            path = injected.dress_acnh_none;
+            modelOffset.y = 5;
+            break;
+          case 0x0B://long sleeve dress
+            path = injected.dress_acnh_long;
+            modelOffset.y = 5;
+            break;
+          case 0x0C://balloon hem dress
+            path = injected.dress_balloon;
+            modelOffset.y = 5;
+            break;
+          case 0x0D://round dress
+            path = injected.dress_round;
+            modelOffset.y = 5;
+            break;
+          case 0x0E://robe
+            path = injected.robe;
+            modelOffset.y = 5;
+            break;
+          case 0x0f://brimmed cap
             path = injected.brimmed_cap;
-            this.modelOffset.y = 5;
+            modelOffset.y = 5;
+            break;
+          case 0x10://knit cap
+            path = injected.knit_cap;
+            modelOffset.y = 5;
+            break;
+          case 0x11://brimmed hat
+            path = injected.brimmed_hat;
+            modelOffset.y = 5;
+            break;
+          case 0x13:
+            path = injected.dress_long;
+            modelOffset.y = 5;
+            break;
+          case 0x17:
+            path = injected.shirt_none;
+            modelOffset.y = 5;
+            break;
+          case 0x18:
+            path = injected.hat;
+            modelOffset.y = 5;
             break;
           default: return;
         }
@@ -116,7 +191,12 @@ export default {
           case 3: path = injected.shirt_long; break;
           case 4: path = injected.shirt_half; break;
           case 5: path = injected.shirt_none; break;
-          case 9: path = injected.easel; break;
+          case 6: path = injected.hornhat; break;
+          case 7: path = injected.hat; break;
+          case 9:
+            path = injected.easel;
+            modelOffset.rough = 0.5;
+          break;
           default: return;
         }
       }
@@ -127,19 +207,33 @@ export default {
         this.model = gltf.scene.children[0];
         this.model.traverse((child) => {
           if (child instanceof Mesh){
+            if (child.skeleton && child.skeleton.bones && child.skeleton.bones.length){
+              for (let b in child.skeleton.bones){
+                if (child.skeleton.bones[b].name == "Arm_1_R"){
+                  child.skeleton.bones[b].rotation.z += 0.5;
+                }
+                if (child.skeleton.bones[b].name == "Arm_1_L"){
+                  child.skeleton.bones[b].rotation.z -= 0.5;
+                }
+              }
+            }
             if (!child.material.map || (child.material.map.image.width == 1 && child.material.map.image.height == 1)) {
               child.material.map = this.texture;
             }
+            child.material.side = DoubleSide;
             child.material.metalness = 0;
-            child.material.roughness = 0.5;
+            child.material.roughness = modelOffset.rough;
           }
         });
-        this.model.position.x = this.modelOffset.x;
-        this.model.position.y = this.modelOffset.y;
-        this.model.position.z = this.modelOffset.z;
+        this.model.position.x = modelOffset.x;
+        this.model.position.y = modelOffset.y;
+        this.model.position.z = modelOffset.z;
         this.scene.add(this.model);
         if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
       });
+      this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.width;
+      this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.width*4;
+      this.drawingTool.render();
     },
     animate(){
       this.renderer.render(this.scene, this.camera);

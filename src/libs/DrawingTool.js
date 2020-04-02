@@ -400,7 +400,7 @@ class DrawingTool{
   addCanvas(c, opt = {}){
     let rTarget = new RenderTarget(c, opt);
     rTarget.calcZoom(this.pattern.width);
-    if (!opt.tall && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.tall || this.renderTargets[0].opt.grid)){
+    if (c.width >= 64 && c.height >= 64 && !opt.tall && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.tall || this.renderTargets[0].opt.grid || this.renderTargets[0].canvas.width < 64 || this.renderTargets[0].canvas.height < 64)){
       this.renderTargets.unshift(rTarget);
     } else {
       this.renderTargets.push(rTarget);

@@ -231,9 +231,25 @@ class ACNHFormat{
   fromPixels(ab){
     let offset = 0xA5;
     let pixel = 0;
-    for (let i = offset; i < this.b.byteLength-3; i++){
-      this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
-      pixel += 2;
+    if (this.b.byteLength > 680){
+      for (let x = 0; x < 32; x+=2){
+        for (let y = 0; y < 128; ++y){
+          let i = x/2 + y*16 + offset;
+          if (y > 31 && y < 64){
+            pixel = x+(y+32)*32;
+          }else if(y > 63 && y < 96){
+            pixel = x+(y-32)*32;
+          }else{
+            pixel = x+y*32;
+          }
+          this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
+        }
+      }
+    }else{
+      for (let i = offset; i < this.b.byteLength-3; i++){
+        this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
+        pixel += 2;
+      }
     }
   }
 
@@ -330,19 +346,19 @@ class ACNHFormat{
 //Masks use a compact notation of 32-bit masks, otherwise we'd have a giant list of true/false here.
 ACNHFormat.typeInfo = [];
 
-ACNHFormat.typeInfo[0x00] = {name:"Plain pattern (ACNH)", size:32, sections:[0, 0, 32, 32]};
-ACNHFormat.typeInfo[0x01] = {name:"Pro pattern (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x02] = {name:"Unknown (ACNH)", size:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x00] = {name:"Plain Pattern (ACNH)", size:32, sections:[0, 0, 32, 32]};
+ACNHFormat.typeInfo[0x01] = {name:"Pro Pattern (ACNH)", size:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x02] = {name:"Tank top (ACNH, non-pro)", size:32, sections:[0, 0, 32, 32]};
 ACNHFormat.typeInfo[0x03] = {name:"Long sleeve dress shirt (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x04] = {name:"Short sleeve tee (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x05] = {name:"Tank top (ACNH)", size:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x05] = {name:"Tank top (ACNH, pro)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x06] = {name:"Sweater (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x07] = {name:"Hoodie (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x08] = {name:"Coat (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x09] = {name:"Short sleeve dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x0A] = {name:"Sleeveless dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x0B] = {name:"Long sleeve dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0C] = {name:"Ballon hem dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0C] = {name:"Balloon hem dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x0D] = {name:"Round dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x0E] = {name:"Robe (ACNH)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x0F] = {name:"Brimmed cap (ACNH)", size:64, sections:[0, 0, 64, 64]};
@@ -358,10 +374,10 @@ ACNHFormat.typeInfo[0x18] = {name:"Hat (ACNL)", size:64, sections:[0, 0, 64, 64]
 
 //  00 = normal pattern
 //  01 = sample pro pattern
-//  02 = ?
+//  02 = tank top (non-pro)
 //  03 = long sleeve dress shirt
 //  04 = short sleeve tee
-//  05 = tank top
+//  05 = tank top (pro)
 //  06 = sweater
 //  07 = hoodie
 //  08 = coat
