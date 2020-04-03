@@ -1,3 +1,5 @@
+import LZString from "lz-string";
+
 // pool the injected gltfs together, save on size
 let {
   clothing_stand,
@@ -31,7 +33,8 @@ let {
   dressshirt_long,
   sweater,
   coat,
-  easel_fbx
+
+  easel_folder
 } = process.injected;
 
 // likely won't need this, but leave it here anyway
@@ -44,12 +47,12 @@ const createGltfUrl = (injectedGltf) => {
   return url;
 };
 
-const createFbxUrl = (injectedFbx) => {
-  let bin = atob(injectedFbx);
+const createAssetUrl = (injectedAsset) => {
+  let bin = LZString.decompress(injectedAsset);
   let bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i)
+  for (let i = 0; i < bin.length; ++i) {
     bytes[i] = bin.charCodeAt(i);
-
+  };
   const blob = new Blob([bytes], {
     type: "application/octet-stream"
   });
@@ -58,9 +61,26 @@ const createFbxUrl = (injectedFbx) => {
   return url;
 };
 
+const createFolderUrls = (injectedFolder) => {
+  const fileNames = new Set(Object.keys(injectedFolder));
+
+  const urls = {};
+  for (let fileName of fileNames) {
+    const compressed = injectedFolder[fileName];
+    const url = createAssetUrl(compressed);
+    urls[fileName] = url;
+
+    // grab extension, set as "dae" for easy access
+    const ext = /\.[^.]+$/.exec(fileName)[0].substr(1);
+    if (ext !== "dae") continue
+    urls["dae"] = url;
+  };
+  return urls;
+};
+
 
 // overwrite with url for all fbx types
-easel_fbx = createFbxUrl(easel_fbx);
+easel_folder = createFolderUrls(easel_folder);
 
 export default {
   clothing_stand,
@@ -90,6 +110,6 @@ export default {
   sweater,
   coat,
 
-  easel_fbx
+  easel_folder
 };
 

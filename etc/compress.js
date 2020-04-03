@@ -4,27 +4,8 @@ const path = require('path');
 const zlib = require("zlib");
 const stream = require("stream");
 const {
-  pathToBuild
-} = require("../etc/paths");
-
-// depth first search
-const forAllFilesIn = (startPath, callback) => {
-  if (!fs.existsSync(startPath)) return;
-  if (!fs.lstatSync(startPath).isDirectory())
-    if (callback) callback(startPath);
-
-  const files = fs.readdirSync(startPath);
-  for (const file of files) {
-    const filepath = path.resolve(startPath, file);
-    const stat = fs.lstatSync(filepath);
-    if (stat.isDirectory()) {
-      forAllFilesIn(filepath, callback);
-      continue;
-    }
-    // is a file
-    if (callback) callback(filepath);
-  }
-}
+  forAllFilesIn
+} = require("./utils");
 
 const compressFile = (filepath) => {
   const gzip = zlib.createGzip({
