@@ -14,7 +14,9 @@
       </div>
       <button class="create-button" @click="goToEditor">
         Create
-        <object class="svg" :data="addSvg"></object>
+        <IconBase icon-name="create" :icon-color="white" class="svg">
+          <IconPlus />
+        </IconBase><!-- scan svg -->
       </button>
     </nav>
     <div class="patterns">
@@ -58,7 +60,10 @@ import { mapState, mapActions } from 'vuex';
 import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
 import origin from '/libs/origin';
-import addSvg from '/assets/icons/bxs-plus-circle.svg';
+
+// svg icons
+import IconBase from '/components/icons/IconBase.vue';
+import IconPlus from '/components/icons/IconPlus.vue';
 
 const colors = {
   "natural": '#EAC558',
@@ -89,7 +94,9 @@ const colors = {
 export default {
   name: "Browse",
   components: {
-    IconGenerator
+    IconGenerator,
+    IconBase,
+    IconPlus,
   },
   beforeRouteUpdate: async function(to, from, next) {
     await this.loadFromRoute(to);
@@ -101,6 +108,7 @@ export default {
   data: function(){
     return {
       addSvg,
+      white: "#FFFFFF",
     };
   },
   computed: {

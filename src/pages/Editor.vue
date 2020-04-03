@@ -1,7 +1,7 @@
-<template v-for="i in 1">
+<template>
   <div class="editor">
     <main>
-      <div class="left">
+      <div id="left">
         <div class="previews">
           <div class="2D">
             <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
@@ -11,16 +11,16 @@
               <div class="pattern_author">by {{patAuthor}}</div> 
               <div class="pattern_town">from {{patTown}}</div>
               <div class="pattern_typename">{{patTypeName}}</div>
-            </div>
-            <button class="editInfo" @click="patInfoModal=true">Change</button>
-          </div>
+            </div><!-- pattern info -->
+            <button id="edit-info-button" @click="patInfoModal=true">Change</button><!-- edit pattern info button -->
+          </div><!-- flat canvases -->
           <div class="render-preview">
             <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
-          </div>
+          </div><!-- 3D preview -->
         </div>
-      </div>
+      </div><!-- previews and pattern info -->
 
-      <div class="center">
+      <div id="center">
         <Palette
           ref="palette"
           :drawing-tool="drawingTool"
@@ -33,49 +33,68 @@
             @color-picked="onColorPicked"/>
             <button @click="closeColorPicker">Close Menu</button>
         </div>
-      </div>
+      </div><!-- canvas and color palette -->
 
-      <div class="right">
+      <div id="right">
         <div class="topbar-buttons">
           <button class="menu-button" @click="onMainMenu">
-            <object class="svg nav white-circle" :data="phoneSvg"></object>
+            <IconBase icon-name="phone" :icon-color="orange" class="svg nav white-circle">
+              <IconPhone />
+            </IconBase><!-- phone svg -->
             Menu
-            <object class="svg-small" :data="downArrowSvg"></object>
+            <IconBase icon-name="down arrow" :icon-color="white" class="svg arrow" height="15" width="15">
+              <IconDownArrow />
+            </IconBase><!-- down arrow svg -->
           </button>
-        </div>
+        </div><!-- nav button -->
         <div class="tools-and-colors">
-          <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" />
-          <div class="tool-buttons">
-            <button @click="openColorPicker">
-              <object class="svg nav brown-circle" :data="paletteSvg"></object>
-              Open Color Editor
-            </button>
-            <button @click="convertImage=true;closeColorPicker()">
-              <object class="svg nav brown-circle" :data="imageAddSvg"></object>
-              Convert
-            </button>
-            <button @click="$refs.fileloader.open()">
-                <object class="svg nav brown-circle" :data="scanSvg"></object>
-                Load file / code
-            </button>
-            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
-            <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
-              <object class="svg nav white-circle" :data="saveSvg"></object>
-              Save
-              <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
-            </button>
-            <button @click="onOpenLocal();closeColorPicker()">Open Storage</button>
-            <button @click="publishModal=true;closeColorPicker();">Publish</button>
-            <button @click="onLocalSave();closeColorPicker();">Store Locally</button>
-            <button @click="onQROpen();closeColorPicker();">
-              <object class="svg nav brown-circle" :data="barcodeSvg"></object>
-              Generate QR Code
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
+          <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /><!-- tool selection sidebar -->
 
+          <div class="tool-buttons">
+            <button id="scan-button" @click="$refs.fileloader.open()">
+              <IconBase icon-name="scan" :icon-color="white" class="svg nav brown-circle">
+                <IconScan />
+              </IconBase><!-- scan svg -->
+              Open ACNL File / Scan QR
+            </button><!-- load file or scan qr button -->
+
+            <button @click="openColorPicker">
+              <IconBase icon-name="palette" :icon-color="brown" class="svg nav white-circle">
+                <IconPalette />
+              </IconBase><!-- palette svg full button -->
+              Open Color Editor
+            </button><!-- open palette button -->
+
+            <button @click="convertImage=true;closeColorPicker()">
+              <IconBase icon-name="convert" :icon-color="brown" class="svg nav white-circle">
+                <IconImageAdd />
+              </IconBase><!-- phone svg -->
+              Convert from Image
+            </button><!-- convert from image button -->
+
+            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
+            <button id="download-acnl" :value="$tc('editor.download')" @click="downACNL">
+              <IconBase icon-name="save" :icon-color="teal" class="svg nav white-circle">
+                <IconSave />
+              </IconBase><!-- save svg -->
+              Save
+            </button><!-- save acnl file button -->
+
+            <button @click="onQROpen();closeColorPicker();">
+              <IconBase icon-name="qr" :icon-color="brown" class="svg nav white-circle">
+                <IconQRCode />
+              </IconBase><!-- qr code svg -->
+              Generate QR Code
+            </button><!-- generate QR code button -->
+            <button @click="onLocalSave();closeColorPicker();">Store Locally</button><!-- store in local storage button -->
+            <button @click="onOpenLocal();closeColorPicker()">Open Storage</button><!-- open local storage button -->
+            <button @click="publishModal=true;closeColorPicker();">Publish</button><!-- publish pattern to database button -->
+          </div><!-- side bar button -->
+        </div><!-- tools and buttons container -->
+      </div><!-- tools and buttons -->
+    </main><!-- main editor parts -->
+
+  <div>
     <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
       <div class="modal">
         <div class="modal-header">
@@ -296,6 +315,7 @@
         <NookPhoneMenu v-model="mainMenu"/>
       </div>
     </ModalContainer>
+    </div>
   </div>
 </template>
 
@@ -313,23 +333,21 @@ import NookPhoneMenu from '/components/NookPhoneMenu.vue';
 import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
 import origin from '/libs/origin';
+import generateACNLQR from "/libs/ACNLQRGenerator";
 import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
+// svg icons
 import IconBase from '/components/icons/IconBase.vue';
-
-import saveSvg from '/assets/icons/bxs-save.svg';
-import scanSvg from '/assets/icons/bx-scan.svg';
-import paintSvg from '/assets/icons/bxs-paint.svg';
-import paletteSvg from '/assets/icons/bxs-palette.svg';
-import imageAddSvg from '/assets/icons/bxs-image-add.svg';
-import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
-import phoneSvg from '/assets/icons/bxs-mobile.svg';
-import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
-import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
-import generateACNLQR from "/libs/ACNLQRGenerator";
+import IconDownArrow from '/components/icons/IconDownArrow.vue';
+import IconImageAdd from '/components/icons/IconImageAdd.vue';
+import IconPalette from '/components/icons/IconPalette.vue';
+import IconPhone from '/components/icons/IconPhone.vue';
+import IconSave from '/components/icons/IconSave.vue';
+import IconScan from '/components/icons/IconScan.vue';
+import IconQRCode from '/components/icons/IconQRCode.vue';
 
 export default {
   name: "Editor",
@@ -344,6 +362,14 @@ export default {
     ModalContainer,
     ToolSelector,
     NookPhoneMenu,
+    IconBase,
+    IconDownArrow,
+    IconImageAdd,
+    IconPalette,
+    IconPhone,
+    IconSave,
+    IconScan,
+    IconQRCode,
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
@@ -379,15 +405,6 @@ export default {
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
-      saveSvg,
-      scanSvg,
-      paintSvg,
-      barcodeSvg,
-      paletteSvg,
-      imageAddSvg,
-      phoneSvg,
-      downArrowSvg,
-      upArrowSvg,
       pubStyleA: "",
       pubStyleB: "",
       pubStyleC: "",
@@ -396,6 +413,10 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       publishModal: false,
+      brown: "#7E7261",
+      teal: "#57B7A8",
+      orange: "#DC8D69",
+      white: "#FFFFFF",
       origin,
     };
   },
@@ -654,12 +675,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$brown: #7E7261;
+$dark-brown: #4D3D36;
+$green: #5DBF98;
+$off-white: #F8F3E8;
+$orange: #DC8D69;
+$pink: #F4BFC6;
+$teal: #57B7A8;
+$white: #FFFFFF;
+$yellow: #F8CC61;
+
+$modal-info: rgba(21, 50, 69, 0.7);
+$modal-normal: rgba(47, 31, 14, 0.9);
+
 button, input[type="button"] {
-  background-color: #7e7261;
+  background-color: $brown;
   border: none;
   border-radius: 35px;
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-  color: #eff1d8;
+  color: $off-white;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -668,37 +702,46 @@ button, input[type="button"] {
   text-transform: uppercase;
   padding: 10px 14px;
 
-  &.downACNL {
-    background-color: #57b7a8;
-    color: #ffffff;
+  &#download-acnl {
+    background-color: $teal;
+    color: $white;
   }
-  &.editInfo {
-    background-color: #60BB55;
+  &#edit-info-button {
+    background-color: $green;
+    color: $white;
     margin: 0 0 5px;
   }
-}
-.editor {
-  user-select: none;
-  color: #7e7261;
+  &#scan-button {
+    background-color: $off-white;
+    color: $brown;
+    // width: 170px;
+  }
+  &.drawing-icon {
+    background-color: transparent;
+    border-radius: none;
+    box-shadow: none;
+    height: 100px;
+    width: 100px;
+  }
 }
 .modal {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  display:flex;
-  margin:50px auto;
+  display: flex;
+  margin: 50px auto;
   max-width: 80%;
+  color: $white;
 }
 .modal-centered {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  display:flex;
+  display: flex;
 }
 .modal-header {
-  background-color: rgba(47, 31, 14, 0.9);
+  background-color: $modal-normal;
   border-radius: 45px 45px 0 0;
-  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -706,8 +749,7 @@ button, input[type="button"] {
   min-width: 300px;
 }
 .modal-window {
-  color: #FFFFFF;
-  background-color: rgba(47, 31, 14, 0.9);
+  background-color: $modal-normal;
   border-radius: 35px;
   padding: 25px;
   min-width: 600px;
@@ -718,7 +760,6 @@ button, input[type="button"] {
   width: 100%;
   position: fixed;
   top: 55%;
-  color: #ffffff;
   font-size: 32px;
   text-align: center;
 }
@@ -727,7 +768,7 @@ button, input[type="button"] {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgba(21, 50, 69, 0.7);
+  background-color: $modal-info;
   border-radius: 35px;
   padding: 40px;
   min-width: 800px;
@@ -740,9 +781,8 @@ button, input[type="button"] {
     display: inline-block;
     line-height: 40px;
   }
-  
   span {
-  color: #00C3C9;
+    color: $teal;
   }
 }
 .topbar-buttons {
@@ -752,8 +792,8 @@ button, input[type="button"] {
   height: 62px;
 
   .menu-button {
-  background-color: #DC8D69;
-  color: #FFFFFF;
+    background-color: $orange;
+    color: $white;
   }
 }
 main {
@@ -761,16 +801,16 @@ main {
   flex-direction: row;
   justify-content: center;
 
-  .left, .center, .right {
+  #left, #center, #right {
     display: flex;
     flex-direction: column;
   }
 
-  .left {
+  #left {
     padding-right: 40px;
   }
 
-  .center canvas, .left canvas {
+  #center canvas, #left canvas {
     box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
   }
 
@@ -782,7 +822,7 @@ main {
     transition: 0.5s;
     top: 60px;
     border-radius: 0 0 35px 35px;
-    background-color: #f1b5c1;
+    background-color: $pink;
     left: 50%;
     transform: translate(-50%);
 
@@ -811,10 +851,10 @@ main {
     width: 50px;
   }
   &.white-circle {
-    background-color: #ffffff;
+    background-color: $white;
   }
-  &.svg.brown-circle {
-    background-color: #EFF1D8;
+  &.brown-circle {
+    background-color: $brown;
   }
 }
 .previews {
@@ -830,7 +870,7 @@ main {
   flex-direction: row;
   align-items: center;
   border-radius: 0 35px 35px 0;
-  background-color: #f1b5c1;
+  background-color: $pink;
 }
 .tool-buttons {
   display: inline-flex;
@@ -838,7 +878,7 @@ main {
   align-items: right;
 
   button{
-    margin:5px;
+    margin: 5px;
   }
 }
 canvas.fordrawing {
@@ -850,7 +890,7 @@ canvas.fordrawing {
   overflow: hidden;
 }
 .render-preview {
-  border: 3px solid #7e7261;;
+  border: 3px solid $brown;
   width: 196px;
   height: 300px;
   border-radius: 5px;
