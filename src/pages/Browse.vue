@@ -107,7 +107,6 @@ export default {
   },
   data: function(){
     return {
-      addSvg,
       white: "#FFFFFF",
     };
   },
