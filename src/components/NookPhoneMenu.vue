@@ -77,10 +77,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$nook-phone-background-color: #F0ECE1;
+$nook-phone-color: #7E7261;
+$nook-phone-header-color: #DCD8CA;
+
 .nook-phone {
   border-radius: 45px;
-  background-color: #F0ECE1;
-  color: #7E7261;
+  background-color: $nook-phone-background-color;
+  color: $nook-phone-color;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -95,7 +99,7 @@ export default {
   }
 }
 .nook-header {
-  color: #DCD8CA;
+  color: $nook-phone-header-color;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -114,6 +118,7 @@ export default {
 
   button {
     border: none;
+    color: $nook-phone-color;
     display: flex;
     flex-direction: column;
     align-items: center;
