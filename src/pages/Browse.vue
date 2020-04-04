@@ -1,73 +1,60 @@
 <template>
-  <div class="container">
-    <nav>
-      <div class="search-bar">
-        Search:
-        <input
-          type="text"
-          @keyup.enter="search"
-          @input="onQueryChange"
-          :value="query">
-        <button @click="search">
-          Search
-        </button>
-        <span>
-          <input
-            id="nsfc-toggle"
-            type="checkbox"
-            name="nsfc"
-            @click="openNSFCDisclaimer"
-            :checked="nsfc"
-          />
-          <label for="nsfc-toggle">NSFW</label>
-        </span>
-        <span>
-          <input
-            id="unapproved-toggle"
-            type="checkbox"
-            name="unapproved"
-            @click="onUnapprovedChange"
-            :checked="unapproved"
-          />
-          <label for="unapproved-toggle">Unapproved</label>
-        </span>
-      </div>
-      <button class="create-button" @click="goToEditor">
-        Create
-        <object class="svg" :data="addSvg"></object>
-      </button>
-    </nav>
-    <div class="patterns">
-      <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="getUrl(opt.bytes)">
-        <h3>{{opt.title}}</h3>
-        <div class="type-tags">
-          <span v-if="opt.f_type != null" class="tag type">
-            {{opt.f_type.toUpperCase()}}
-          </span>
-          <span v-if="opt.f_type_a != null" class="tag type">
-            {{opt.f_type_a}}
-          </span>
-          <span v-if="opt.f_type_b != null" class="tag type">
-            {{opt.f_type_b}}
-          </span>
+  <div id="container">
+    <div id="search-bar">
+      <!-- TODO svg for maginifying glass -->
+      <input
+        type="text"
+        @keyup.enter="search"
+        @input="onQueryChange"
+        :value="query"
+        placeholder="Search by name, tag, etc...">
+      <!-- <button @click="search">
+        Search
+      </button> -->
+    </div><!-- search bar -->
+    <div id="browse">
+      <div id="patterns">
+        <h1>Designs</h1>
+        <span>{{results.length}} results</span>
+        <div id="pattern-list">
+          <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="getUrl(opt.bytes)">
+            <h3>{{opt.title}}</h3>
+            <div class="type-tags">
+              <span v-if="opt.f_type != null" class="tag type">
+                {{opt.f_type.toUpperCase()}}
+              </span>
+              <span v-if="opt.f_type_a != null" class="tag type">
+                {{opt.f_type_a}}
+              </span>
+              <span v-if="opt.f_type_b != null" class="tag type">
+                {{opt.f_type_b}}
+              </span>
+            </div>
+            <IconGenerator class="pickPattern" :pattern="opt.bytes" width=150 height=150 />
+            <div class="pattern-details">
+              <span>by {{opt.author}}</span>
+              <span>from {{opt.town}}</span>
+            </div>
+            <div class="pattern-tags">
+              <span v-if="opt.style_main != null" class="tag" :style="tagClass(opt.style_main)">
+                {{opt.style_main}}
+              </span>
+              <span v-if="opt.style_sub_a != null" class="tag" :style="tagClass(opt.style_sub_a)">
+                {{opt.style_sub_a}}
+              </span>
+              <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
+                {{opt.style_sub_b}}
+              </span>
+            </div>
+          </a>
         </div>
-        <IconGenerator class="pickPattern" :pattern="opt.bytes" width=150 height=150 />
-        <div class="pattern-details">
-          <span>by {{opt.author}}</span>
-          <span>from {{opt.town}}</span>
-        </div>
-        <div class="pattern-tags">
-          <span v-if="opt.style_main != null" class="tag" :style="tagClass(opt.style_main)">
-            {{opt.style_main}}
-          </span>
-          <span v-if="opt.style_sub_a != null" class="tag" :style="tagClass(opt.style_sub_a)">
-            {{opt.style_sub_a}}
-          </span>
-          <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
-            {{opt.style_sub_b}}
-          </span>
-        </div>
-      </a>
+      </div><!-- pattern list -->
+
+      <div id="filters">
+        <h1>Filters</h1>
+        <ul id="filter-list">
+        </ul>
+      </div><!-- attached filter list -->
     </div>
   </div>
 </template>
@@ -275,102 +262,124 @@ export default {
 
 <style lang="scss" scoped>
 $type: #858585;
+$brown: #95683F;
+$light-beige: #E7E0C3;
+$medium-beige: #E3D9B5;
+$dark-beige: #DED5AC;
+$gray: #C7C1AA;
+$white: #FFFFFF;
 
-.container {
-  padding: 10px 5px;
-  color: #7e7261;
+h1{ 
+  font-size: 24px;
 }
-nav {
-  max-width: 80%;
-  margin: 0 auto;
+#container {
+  background-color: $light-beige;
+  color: $brown;
+  height: 100%;
+  padding: 0 20px 0 50px;
+}
+#search-bar {
+  padding: 0 0 0 10px;
+  border-bottom: 3px solid $brown;
+  margin: 0 0 20px;
+
+  .svg { 
+    padding: 0 10px;
+  }
+  input {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    display: inline-block;
+    padding: 12px 18px;
+    width: 80%;
+  }
+  input, input::placeholder {
+    color: $brown;
+  }
+}
+#browse {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-nav input[type=text] {
-  padding: 10px;
-  min-width: 300px;
-  border: none;
-}
-nav .create-button {
-  background-color: #57AB35;
-  color: #FFFFFF;
-  display: inline-flex;
   flex-direction: row;
-  align-items: center;
-  border: none;
-  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  min-width: 120px;
-  padding: 10px 18px;
-  justify-content: space-between;
-  border-radius: 35px;
-  cursor: pointer;
 }
-nav .create-button .svg {
-  height: 25px;
-  width: 25px;
-  pointer-events: none;
+#patterns {
+  width: 65%;
+
+  h1 {
+    display: inline-block;
+    margin: 0 0 25px;
+  }
+  span { 
+    color: $gray;
+  }
+  #pattern-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-gap: 10px;
+    justify-items: center;
+    overflow-y: scroll;
+    max-height: 600px;
+
+    .pattern-container {
+      background-color: $brown;
+      border: 4px solid $white;
+      border-radius: 8px;
+      box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      width: 220px;
+      height: 300px;
+      max-width: 220px;
+      max-height: 300px;
+
+      canvas {
+        margin: 0 10px 10px;
+      }
+      .pattern-details {
+        background-color: $medium-beige;
+        border-radius: 10px;
+        color: $brown;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 12px;
+        width: 150px;
+      }
+      .type-tags, .pattern-tags{
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+      }
+      .tag {
+        border-radius: 35px;
+        padding: 3px 5px;
+        margin: 0 2px;
+        color: $white;
+        text-transform: uppercase;
+        font-size: 11px;
+        background-color: $type;
+      }
+    }
+  }
 }
-.patterns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 10px;
-  justify-items: center;
-}
-.pattern-container {
-  text-decoration:none;
-  color:black;
-  background-color: #A1D4CA;
-  border-radius: 35px;
-  padding: 5px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 220px;
-  height: 300px;
-  max-width: 220px;
-  max-height: 300px;
-  margin: 10px;
-  box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
-  background-image: radial-gradient(#89C3B9 20%, transparent 20%), radial-gradient(#89C3B9 20%, transparent 20%);
-  background-position: 0 0, 5px 5px;
-  background-size: 10px 10px;
-}
-.pattern-container canvas {
-  margin: 10px;
-}
-.pattern-container .pickPattern{
-  cursor: pointer;
-}
-.pattern-details {
-  background-color: #EBE6CD;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 8px 12px;
-  width: 150px;
-}
-.type-tags, .pattern-tags{
-  min-height: 30px;
-  display: flex;
-  align-items: center;
-}
-.type-tags .type {
-  background-color: $type;
-  text-transform: uppercase;
-}
-.tag {
-  border-radius: 35px;
-  padding: 3px 5px;
-  margin: 0 2px;
-  color: #FFFFFF;
-  text-transform: uppercase;
-  font-size: 11px;
-  background-color: $type;
+#filters {
+  width: 30%;
+  
+  ul {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      $dark-beige,
+      $dark-beige 50%,
+      $medium-beige 50%,
+      $medium-beige
+    );
+    background-size: 100% 160px;
+  }
 }
 </style>
