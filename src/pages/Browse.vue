@@ -18,7 +18,7 @@
       </button>
     </nav>
     <div class="patterns">
-      <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="getUrl(opt.bytes)">
+      <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="opt.url">
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
@@ -189,10 +189,6 @@ export default {
       if (currUnapproved) queryOptions = {...queryOptions, unapproved: 1};
       // let route guard handle the rest
       await this.$router.push({ query: queryOptions });
-    },
-    getUrl(p){
-      const dt = new DrawingTool(p);
-      return "/editor#H:"+dt.pixelHash;
     },
     async goToEditor() {
       await this.$router.push({ path: `/editor` });
