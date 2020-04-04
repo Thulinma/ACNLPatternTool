@@ -20,7 +20,7 @@
       </button>
     </nav>
     <div class="patterns">
-      <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="opt.url">
+      <a class="pattern-container" v-for="opt in page" :key="opt.bytes" :href="opt.url">
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
@@ -51,12 +51,24 @@
         </div>
       </a>
     </div>
+    <div>
+      <button
+        v-if="pageNumber > 0"
+        @click="toPage(pageNumber - 1)">
+        Prev
+      </button>
+      <button
+        @click="toPage()">
+        Jump
+      </button>
+      <button @click="toPage(pageNumber + 1)">Next</button>
+    </div>
   </div>
 </template>
 
 <script>
 import lzString from 'lz-string';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import DrawingTool from '/libs/DrawingTool';
 import IconGenerator from '/components/IconGenerator.vue';
 import origin from '/libs/origin';
@@ -114,32 +126,55 @@ export default {
     // map using store module search
     ...mapState('browse', [
       'query',
-      'results',
       'nsfc',
-      'unapproved'
+      'unapproved',
+      'pageNumber'
     ]),
+    ...mapGetters('browse', [
+      'page'
+    ])
   },
   methods: {
     // map using store module search
     ...mapActions('browse', [
       'setViewOptions',
       'setSearchOptions',
-      'getInitSearchResults'
+      'getSearchResults'
     ]),
     async loadFromRoute(route) {
-      const query = route.query.q;
-      let nsfc = route.query.nsfc;
-      let unapproved = route.query.unapproved;
+      // aliases
+      // all destructured from route query are strings
+      const {
+        q: query,
+      } = route.query;
+      let {
+        p: pageNumber,
+        nsfc,
+        unapproved
+      } = route.query;
       let searchOptions = {};
+      let viewOptions = {};
       let queryOptions = {};
       let isCorrecting = false;
 
       if (query != null) {
         // correct the url
         searchOptions = {...searchOptions, query};
-        if (query.length !== 0) queryOptions = {...queryOptions, q: query};
+        if (query.length !== 0)
+          queryOptions = {...queryOptions, q: query};
         else isCorrecting = true;
       }
+      if (pageNumber != null) {
+        pageNumber = Number.parseInt(pageNumber);
+        if (Number.isNaN(pageNumber)) isCorrecting = true;
+        // no page number and page number = 0 are both valid
+        else if (pageNumber < 0) isCorrecting = true;
+        else {
+          viewOptions = {...viewOptions, pageNumber};
+          queryOptions = {...queryOptions, p: pageNumber};
+        }
+      }
+      else viewOptions = {...viewOptions, pageNumber: 0};
       if (nsfc != null) {
         nsfc = Number.parseInt(nsfc);
         if (nsfc === 1) {
@@ -162,8 +197,10 @@ export default {
         await this.$router.replace({ query: queryOptions });
         return;
       }
+      // always set search options before view options
       await this.setSearchOptions(searchOptions);
-      await this.getInitSearchResults();
+      await this.setViewOptions(viewOptions);
+      await this.getSearchResults();
     },
     async onQueryChange(event) {
       const query = event.target.value;
@@ -174,6 +211,11 @@ export default {
       const currQuery = this.query;
       let prevQuery = this.$route.query.q;
       if (!prevQuery) prevQuery = "";
+
+      const currPageNumber = this.pageNumber;
+      let prevPageNumber = this.$route.query.p;
+      if (!prevPageNumber) prevPageNumber = 0;
+
       const currNSFC = this.nsfc;
       const prevNSFC = Boolean(this.$route.query.nsfc);
 
@@ -185,17 +227,31 @@ export default {
       if (
         currQuery === prevQuery &&
         currNSFC === prevNSFC &&
-        currUnapproved === prevUnapproved
-      ) {
-        // console.log("blocked");
-        return;
-      };
+        currUnapproved === prevUnapproved &&
+        currPageNumber === prevPageNumber
+      ) return;
 
       if (currQuery.length !== 0) queryOptions = {...queryOptions, q: currQuery};
+      if (currPageNumber != null) queryOptions = {...queryOptions, p: currPageNumber};
       if (currNSFC) queryOptions = {...queryOptions, nsfc: 1};
       if (currUnapproved) queryOptions = {...queryOptions, unapproved: 1};
+
       // let route guard handle the rest
       await this.$router.push({ query: queryOptions });
+    },
+    async toPage(n) {
+      if (n == null) {
+        const response = window.prompt("Please enter a valid page number.");
+        n = Number.parseInt(response);
+        if (Number.isNaN(n) || n < 0) {
+          window.alert(`'${n}' is not a valid page number.`);
+          return;
+        }
+      }
+      // should not trigger retrieval
+      // should trigger retrieval
+      await this.setViewOptions({ pageNumber: n });
+      await this.search();
     },
     async goToEditor() {
       await this.$router.push({ path: `/editor` });
