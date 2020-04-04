@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="container">
     <nav>
       <div class="search-bar">
@@ -32,24 +33,64 @@
           <span v-if="opt.f_type_b != null" class="tag type">
             {{opt.f_type_b}}
           </span>
+=======
+  <div id="container">
+    <div id="search-bar">
+      <!-- TODO svg for maginifying glass -->
+      <input
+        type="text"
+        @keyup.enter="search"
+        @input="onQueryChange"
+        :value="query"
+        placeholder="Search by name, tag, etc...">
+      <!-- <button @click="search">
+        Search
+      </button> -->
+    </div><!-- search bar -->
+    <div id="browse">
+      <div id="patterns">
+        <h1>Designs</h1>
+        <span>{{results.length}} results</span>
+        <div id="pattern-list">
+          <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="getUrl(opt.bytes)">
+            <h3>{{opt.title}}</h3>
+            <div class="type-tags">
+              <span v-if="opt.f_type != null" class="tag type">
+                {{opt.f_type.toUpperCase()}}
+              </span>
+              <span v-if="opt.f_type_a != null" class="tag type">
+                {{opt.f_type_a}}
+              </span>
+              <span v-if="opt.f_type_b != null" class="tag type">
+                {{opt.f_type_b}}
+              </span>
+            </div>
+            <IconGenerator class="pickPattern" :pattern="opt.bytes" width=150 height=150 />
+            <div class="pattern-details">
+              <span>by {{opt.author}}</span>
+              <span>from {{opt.town}}</span>
+            </div>
+            <div class="pattern-tags">
+              <span v-if="opt.style_main != null" class="tag" :style="tagClass(opt.style_main)">
+                {{opt.style_main}}
+              </span>
+              <span v-if="opt.style_sub_a != null" class="tag" :style="tagClass(opt.style_sub_a)">
+                {{opt.style_sub_a}}
+              </span>
+              <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
+                {{opt.style_sub_b}}
+              </span>
+            </div>
+          </a>
+>>>>>>> starting point for browse redesign
         </div>
-        <IconGenerator class="pickPattern" :pattern="opt.bytes" width=150 height=150 />
-        <div class="pattern-details">
-          <span>by {{opt.author}}</span>
-          <span>from {{opt.town}}</span>
-        </div>
-        <div class="pattern-tags">
-          <span v-if="opt.style_main != null" class="tag" :style="tagClass(opt.style_main)">
-            {{opt.style_main}}
-          </span>
-          <span v-if="opt.style_sub_a != null" class="tag" :style="tagClass(opt.style_sub_a)">
-            {{opt.style_sub_a}}
-          </span>
-          <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
-            {{opt.style_sub_b}}
-          </span>
-        </div>
-      </a>
+      </div><!-- pattern list -->
+
+      <div id="filters">
+        <h1>Filters</h1>
+        <ul id="filter-list">
+        </ul>
+      </div><!-- attached filter list -->
     </div>
     <div>
       <button
@@ -237,7 +278,14 @@ export default {
 
 <style lang="scss" scoped>
 $type: #858585;
+$brown: #95683F;
+$light-beige: #E7E0C3;
+$medium-beige: #E3D9B5;
+$dark-beige: #DED5AC;
+$gray: #C7C1AA;
+$white: #FFFFFF;
 
+<<<<<<< HEAD
 .container {
   padding: 10px 5px;
   color: #7e7261;
@@ -321,23 +369,119 @@ nav {
   align-items: flex-start;
   padding: 8px 12px;
   width: 150px;
+=======
+h1{ 
+  font-size: 24px;
 }
-.type-tags, .pattern-tags{
-  min-height: 30px;
+#container {
+  background-color: $light-beige;
+  color: $brown;
+  height: 100%;
+  padding: 0 20px 0 50px;
+}
+#search-bar {
+  padding: 0 0 0 10px;
+  border-bottom: 3px solid $brown;
+  margin: 0 0 20px;
+
+  .svg { 
+    padding: 0 10px;
+  }
+  input {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    display: inline-block;
+    padding: 12px 18px;
+    width: 80%;
+  }
+  input, input::placeholder {
+    color: $brown;
+  }
+>>>>>>> starting point for browse redesign
+}
+#browse {
   display: flex;
-  align-items: center;
+  flex-direction: row;
 }
-.type-tags .type {
-  background-color: $type;
-  text-transform: uppercase;
+#patterns {
+  width: 65%;
+
+  h1 {
+    display: inline-block;
+    margin: 0 0 25px;
+  }
+  span { 
+    color: $gray;
+  }
+  #pattern-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-gap: 10px;
+    justify-items: center;
+    overflow-y: scroll;
+    max-height: 600px;
+
+    .pattern-container {
+      background-color: $brown;
+      border: 4px solid $white;
+      border-radius: 8px;
+      box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      width: 220px;
+      height: 300px;
+      max-width: 220px;
+      max-height: 300px;
+
+      canvas {
+        margin: 0 10px 10px;
+      }
+      .pattern-details {
+        background-color: $medium-beige;
+        border-radius: 10px;
+        color: $brown;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 12px;
+        width: 150px;
+      }
+      .type-tags, .pattern-tags{
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+      }
+      .tag {
+        border-radius: 35px;
+        padding: 3px 5px;
+        margin: 0 2px;
+        color: $white;
+        text-transform: uppercase;
+        font-size: 11px;
+        background-color: $type;
+      }
+    }
+  }
 }
-.tag {
-  border-radius: 35px;
-  padding: 3px 5px;
-  margin: 0 2px;
-  color: #FFFFFF;
-  text-transform: uppercase;
-  font-size: 11px;
-  background-color: $type;
+#filters {
+  width: 30%;
+  
+  ul {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      $dark-beige,
+      $dark-beige 50%,
+      $medium-beige 50%,
+      $medium-beige
+    );
+    background-size: 100% 160px;
+  }
 }
 </style>
