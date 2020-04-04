@@ -5,23 +5,80 @@ const { API_URL } = process.env;
 const api = (() => {
   return axios.create({
     baseURL: `${API_URL}`,
+    // accept cookies from origin
+    // if same-site cookies are enabled, gets blocked by CORS on dev env
+    // withCredentials: true,
   timeout: 10000,
 });
 })();
+
 // 'get' api method helper
 const encodeQueryParams = (params) => {
   const keys = Object.keys(params);
   if (keys.length === 0) return "";
-  return Object.keys(params).reduce((accum, curr, index) => {
-    let query = accum;
-    let param = curr;
-    let value = params[curr]
-    if (index > 0) query += "&";
-    const encodedParam = encodeURIComponent(param);
-    const encodedValue = encodeURIComponent(value);
-    return query + `${encodedParam}=${encodedValue}`;
+  let paramsString = Object.keys(params).reduce((accum, curr, index) => {
+      let query = accum;
+      let param = curr;
+      let value = params[curr]
+      if (index > 0) query += "&";
+      const encodedParam = encodeURIComponent(param);
+      const encodedValue = encodeURIComponent(value);
+      return query + `${encodedParam}=${encodedValue}`;
   }, "?");
+  return paramsString;
 };
+
+
+// Recent uploads
+const recent = async (options) => {
+  const { start, nsfc, letsgetdangerous } = options
+  const paramsStr = encodeQueryParams({
+    recent: 1,
+    start,
+    nsfc,
+    letsgetdangerous,
+  });
+
+  const response = await api.get(`api.php${paramsStr}`);
+  return response.data;
+};
+
+
+const popular = async (options) => {
+  const { start, nsfc, letsgetdangerous } = options;
+  const paramsStr = encodeQueryParams({
+    popular: 1,
+    start,
+    nsfc,
+    letsgetdangerous,
+  });
+
+  const response = await api.get(`api.php${paramsStr}`);
+  return response.data;
+};
+
+
+// Search
+const search = async (query, options) => {
+  const { start, nsfc, letsgetdangerous } = options;
+  const params = encodeQueryParams({
+    q: query,
+    start,
+    nsfc,
+    letsgetdangerous,
+  });
+
+  const response = await api.get(`api.php${params}`);
+  return response.data;
+};
+
+
+// Open single pattern
+const view = async (hash) => {
+  const response = await api.get(`api.php${encodeQueryParams({view: hash})}`);
+  return response.data;
+};
+
 
 // Upload
 const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSFW) => {
@@ -38,35 +95,6 @@ const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSF
   return response.data;
 };
 
-// Search
-const search = async (q, options) => {
-  const { nsfc, unapproved: letsgetdangerous } = options;
-  const params = encodeQueryParams({
-    q,
-    nsfc: Number(nsfc),
-    letsgetdangerous: Number(letsgetdangerous),
-  });
-  const response = await api.get(`api.php${params}`);
-  return response.data;
-};
-
-// Open single pattern
-const view = async (hash) => {
-  const response = await api.get(`api.php${encodeQueryParams({view: hash})}`);
-  return response.data;
-};
-
-// Recent uploads
-const recent = async (options) => {
-  const { nsfc, unapproved: letsgetdangerous } = options;
-  const params = encodeQueryParams({
-    recent: 1,
-    nsfc: Number(nsfc),
-    letsgetdangerous: Number(letsgetdangerous),
-  });
-  const response = await api.get(`api.php${params}`);
-  return response.data;
-};
 
 const modLogIn = async (username, password) => {
   try {
@@ -86,10 +114,12 @@ const modLogIn = async (username, password) => {
   }
 };
 
+
 const modPending = async (token) => {
   const response = await api.get(`api.php${encodeQueryParams({modqueue: 1, token})}`);
   return response.data;
 };
+
 
 const modApprove = async (hash, options, token) => {
   const response = await api.post("api.php", {
@@ -99,6 +129,7 @@ const modApprove = async (hash, options, token) => {
   });
   return response.data;
 };
+
 
 // exporting as delete, delete is a keyword :(
 const modDelete = async (hash, token) => {
@@ -150,10 +181,11 @@ const tags_type = [
 ];
 
 export default {
-  upload,
-  search,
   recent,
+  popular,
+  search,
   view,
+  upload,
   modLogIn,
   modPending,
   modApprove,
