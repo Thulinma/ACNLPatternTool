@@ -19,11 +19,11 @@ const loadAsset = (fileName) => {
   const loc = path.resolve(pathToInjected, fileName);
   const buffer = fs.readFileSync(loc);
   // inject using base64, save file size
-  const compressed = LZString.compress(buffer.toString("binary"));
+  const compressed = LZString.compressToUTF16(buffer.toString("binary"));
   return compressed;
 };
 
-const loadDaeFolder = (dirName) => {
+const loadFolder = (dirName) => {
   const loc = path.resolve(pathToInjected, dirName);
   // absolute file paths
   const assetFiles = new Set();
@@ -52,7 +52,7 @@ const dress_long = loadGltf("dress_long.gltf");
 const dress_none = loadGltf("dress_none.gltf");
 const shirt_half = loadGltf("shirt_half.gltf");
 const shirt_long = loadGltf("shirt_long.gltf");
-const shirt_none = loadGltf("shirt_none.gltf");
+const shirt_none = loadFolder("shirt_none");
 
 //Easel
 const easel = loadGltf("easel.gltf");
@@ -71,17 +71,15 @@ const dress_acnh_short = loadGltf("dress_acnh_short.gltf");
 const dress_acnh_long = loadGltf("dress_acnh_long.gltf");
 const dress_acnh_none = loadGltf("dress_acnh_none.gltf");
 const dress_round = loadGltf("dress_round.gltf");
-const dress_balloon = loadGltf("dress_balloon.gltf");
+const dress_balloon = loadFolder("dress_balloon");
 const robe = loadGltf("robe.gltf");
 const tank_pro = loadGltf("tank_pro.gltf");
 const tank_simp = loadGltf("tank_simp.gltf");
-const tee_short = loadGltf("tee_short.gltf");
+const tee_short = loadFolder("tee_short");
 const dressshirt_long = loadGltf("dressshirt_long.gltf");
 const sweater = loadGltf("sweater.gltf");
 const coat = loadGltf("coat.gltf");
 
-// fbx test
-const easel_folder = loadDaeFolder("easel");
 
 module.exports = {
   clothing_stand,
@@ -109,7 +107,5 @@ module.exports = {
   dressshirt_long,
   sweater,
   coat,
-
-  easel_folder
 }
 
