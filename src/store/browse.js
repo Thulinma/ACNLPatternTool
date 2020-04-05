@@ -1,10 +1,29 @@
 import origin from "/libs/origin";
 
 const PAGE_SIZE_MIN = 30;
+const PAGE_SIZE_MAX = 50;
 
-// inconsistencies between api and store
+// turns booleans into nums 1 or 0
+const binarizeOptions = (options) => {
+  const keys = Object.keys(options);
+  for (let key of keys) {
+    if (typeof options[key] !== "boolean") continue;
+    options[key] = Number(options[key]); // always 1 or 0
+  };
+  return options;
+};
+
+// fills in missing options with defaults
+const normalizeOptions = (options) => {
+  if (options.originPageNumber == null)
+    options.originPageNumber = 0;
+  return options;
+};
+
+// resolve inconsistencies between api and store
 const optionsMap = {
-  "unapproved": "letsgetdangerous"
+  "unapproved": "letsgetdangerous",
+  "originPageNumber": "start"
 };
 
 // should be applied before making api call
@@ -21,30 +40,15 @@ const remapOptions = (options) => {
   return options;
 };
 
-// apply to to params before every api call
-const binarizeOptions = (options) => {
-  const keys = Object.keys(options);
-  for (let key of keys) {
-    if (typeof options[key] !== "boolean") continue;
-    options[key] = Number(options[key]); // always 1 or 0
-  };
-  return options;
-};
-
-// helps normalize all requests for debugging
-// fills in missing options with defaults
-const transformOptions = (options) => {
-  if (options.start == null) options.start = 0;
-  return options;
-};
-
+// fixes options before api call
 const correctOptions = (options) => {
-  remapOptions(options);
   binarizeOptions(options);
-  transformOptions(options);
+  normalizeOptions(options);
+  remapOptions(options);
   return options;
 };
 
+// extract options included in every request
 const persistentOptionsFrom = (state) => {
   const { nsfc, unapproved } = state;
   const options = {
@@ -54,37 +58,71 @@ const persistentOptionsFrom = (state) => {
   return options;
 };
 
+
+// browse cache helpers
+const optionsAreEqual = (optionsA, optionsB) => {
+  const options = new Set(Object.keys(optionsA));
+  for (let option of options)
+    if (optionsA[option] !== optionsB[option])
+      return false;
+  return true;
+};
+
+// mutation helpers
+const didChange = (currVal, prevVal) => {
+  if (currVal != null && currVal !== prevVal) return true;
+  return false;
+};
+
 // 'data' for stores, when mapping, use computed
 const state = {
   // search options
   query: "",
   nsfc: false,
   unapproved: false,
+  searchOptionsChanged: false,
   // view options
   pageSize: 50,
   pageNumber: 0,
   // results
   results: [],
-  // meta, need this to conditionally reset results
-  searchOptionsChanged: true
+  // meta
+  originResultsSize: null, // unknown at first
+  cache: new Map(), // key: search options, value: results
 };
 
 // 'computed' for stores, when mapping, use computed
 // (state, getters)
 const getters = {
-  // e.g. get filtered results by options, can store options in state
-  // can access state and other getters
-  // filteredResults: (state, getters) => {
-    // do the thing
-    // return this.state.results.filter()
-  // },
   page: (state) => {
     // compute current page from state.results
     const { pageSize, pageNumber, results } = state;
-    const start = pageSize * pageNumber;
-    const end = pageSize * (pageNumber + 1);
-    return results.slice(start, end);
+    const startIdx = pageSize * pageNumber;
+    const endIdx = pageSize * (pageNumber + 1);
+    return results.slice(startIdx, endIdx);
   },
+  searchOptions: (state) => {
+    const {
+      query,
+      nsfc,
+      unapproved,
+    } = state;
+    return {
+      query,
+      nsfc,
+      unapproved,
+    };
+  },
+  viewOptions: (state) => {
+    const {
+      pageSize,
+      pageNumber,
+    } = state;
+    return {
+      pageSize,
+      pageNumber,
+    }
+  }
 };
 
 // SYNCHRONOUS ONLY
@@ -104,31 +142,71 @@ const mutations = {
     if (pageNumber != null) state.pageNumber = pageNumber;
   },
   setSearchOptions: (state, payload) => {
-    const { query, nsfc, unapproved } = payload;
-    // need to do this manually to trigger setters
-    if (query != null && state.query !== query) {
-      state.query = query;
-      state.searchOptionsChanged = true;
+    let searchOptionsChanged = false;
+    const { query, nsfc, unapproved, currSearchOptions } = payload;
+    const { cache, results } = state;
+    // if any search options change and flag has not been triggered
+    // add new entry in cache
+
+    if (
+      (didChange(query, state.query) ||
+       didChange(nsfc, state.nsfc) ||
+       didChange(unapproved, state.unapproved)) &&
+      !state.searchOptionsChanged
+    ) {
+      // if old search options are still here, update it before changing search results
+      // update old entry
+      let didUpdateCache = false;
+      for (let prevSearchOptions of cache.keys()) {
+        if (optionsAreEqual(currSearchOptions, prevSearchOptions)) {
+          cache.set(prevSearchOptions, results.slice());
+          didUpdateCache = true;
+          // console.log("updated", currSearchOptions, results);
+        }
+      }
+      // no matching entry, set new entry
+      if (!didUpdateCache && results.length >= 0) {
+        cache.set(currSearchOptions, results.slice());
+        // console.log("set new", currSearchOptions, results);
+      }
     }
-    if (nsfc != null && state.nsfc !== nsfc) {
+
+    // need to do this manually to trigger setters
+    if (didChange(query, state.query)) {
+      state.query = query;
+      searchOptionsChanged = true;
+    }
+    if (didChange(nsfc, state.nsfc)) {
       state.nsfc = nsfc;
-      state.searchOptionsChanged = true;
+      searchOptionsChanged = true;
       if (!nsfc) {
         state.unapproved = false;
       }
     }
-    if (unapproved != null && state.unapproved !== unapproved) {
+    if (didChange(unapproved, state.unapproved)) {
       state.unapproved = unapproved;
-      state.searchOptionsChanged = true;
+      searchOptionsChanged = true;
       if (unapproved) {
         state.nsfc = true;
       }
     }
+    if (searchOptionsChanged) state.searchOptionsChanged = true;
   },
   setSearchResults: (state, payload) => {
     const { results } = payload;
-    state.results = results;
-    state.searchOptionsChanged = false;
+    if (results != null) {
+      state.results = results;
+      state.searchOptionsChanged = false;
+    }
+  },
+  setMeta: (state, payload) => {
+    const { originResultsSize, cache } = payload;
+    if (originResultsSize != null) {
+      state.originResultsSize = originResultsSize;
+    }
+    if (cache != null) {
+      state.cache = cache;
+    }
   }
 };
 
@@ -146,60 +224,125 @@ const actions = {
 
     // build up view options
     let viewOptions = {};
-    if (payload.pageSize != null) {
-      if (payload.pageSize <= PAGE_SIZE_MIN)
-        throw RangeError(`Page size must be at least ${PAGE_SIZE_MIN}`);
+    if (pageSize != null) {
+      if (pageSize < PAGE_SIZE_MIN || pageSize > PAGE_SIZE_MAX)
+        throw RangeError(`Invalid page size`);
       else viewOptions = {...viewOptions, pageSize};
     };
-    if (payload.pageNumber != null) {
-      if (payload.pageNumber < 0)
-        throw RangeError(`Page number must be at least 0`);
+    if (pageNumber != null) {
+      if (pageNumber < 0)
+        throw RangeError(`Invalid page number`);
       else viewOptions = {...viewOptions, pageNumber};
     }
     commit('setViewOptions', viewOptions);
   },
-  setSearchOptions: async ({ commit }, payload) => {
+  setSearchOptions: async ({ getters, commit }, payload) => {
+    payload = {
+      ...payload,
+      currSearchOptions: getters.searchOptions
+    };
     commit('setSearchOptions', payload);
   },
   // fetch search results using all options
-  getSearchResults: async ({ state, commit }) => {
+  getSearchResults: async ({ state, getters, commit }) => {
     let {
       query,
-      results
+      results,
+      originResultsSize,
+      cache
     } = state;
     const {
       pageSize,
       pageNumber,
-      searchOptionsChanged
+      searchOptionsChanged,
     } = state;
+
+    if (searchOptionsChanged) {
+      // check to see if you can load results from cache
+      let didLoadFromCache = false;
+      let currSearchOptions = getters.searchOptions;
+      for (const prevSearchOptions of cache.keys()) {
+        if (optionsAreEqual(currSearchOptions, prevSearchOptions)) {
+          results = cache.get(prevSearchOptions);
+          didLoadFromCache = true;
+          // console.log("loaded from", currSearchOptions, results);
+          break;
+        }
+      }
+      // search options not in cache
+      // prevents merges between results with different search options
+      if (!didLoadFromCache) results = [];
+    }
     query = state.query || null;
 
-    // prevents merges between results with different search options
-    if (searchOptionsChanged) results = [];
-
-    // determine, are there enough results to justify a request?
-    let start = pageSize * pageNumber;
-    let end = pageSize * (pageNumber + 1);
+    // target result indexes to complete a page
+    let startIdx = pageSize * pageNumber;
+    let endIdx = pageSize * (pageNumber + 1);
 
     // set up options to be sent out during search
     const persistentOptions = persistentOptionsFrom(state);
-    const options = correctOptions({
-      ...persistentOptions,
-      start
-    });
-
-    let availablePage = results.slice(start, end);
-    // enough results to justify another request?
-    if (availablePage.length >= state.pageSize) return;
 
     let moreResults;
-    if (query == null) moreResults = await origin.popular(options);
-    else moreResults = await origin.search(query, options);
+    if (originResultsSize == null) {
+      // always get page 0 if we don't know origin result size
+      const options = correctOptions({
+        ...persistentOptions,
+        originPageNumber: 0,
+      });
+      // can only rely on origin popular for accurate result size
+      moreResults = await origin.popular(options);
+      // update origin result size
+      originResultsSize = moreResults.length;
+      commit('setMeta', { originResultsSize });
+      // merge the results, only if using popular search
+      if (query == null) {
+        results = results.slice(); // force vue to detect change
+        for (let i = 0; i < moreResults.length; ++i)
+          results[i] = moreResults[i];
+      }
+    }
 
-    // merge results
-    results = results.slice();
-    for (let i = 0; i < moreResults.length; ++i)
-      results[start + i] = moreResults[i];
+    let availablePage = results.slice(startIdx, endIdx);
+    if (availablePage.length >= state.pageSize) {
+      // commit results from checking originResultSize
+      if (moreResults != null || searchOptionsChanged)
+        commit('setSearchResults', { results });
+      return
+    };
+    // find origin page that fulfills a portion of the availablePage
+    let lastIdxAvailable;
+    for (let i = 0; i < availablePage.length; ++i)
+      if (results[startIdx + i] !=  null)
+        lastIdxAvailable = startIdx + i;
+      else break;
+
+    let originPageNumber;
+    if (lastIdxAvailable == null)
+      originPageNumber = Math.floor(startIdx/originResultsSize);
+    else
+      originPageNumber = Math.floor((lastIdxAvailable + 1)/originResultsSize);
+
+    do {
+      const options = correctOptions({
+        ...persistentOptions,
+        originPageNumber
+      });
+
+      // determine request types
+      if (query == null) moreResults = await origin.popular(options);
+      else moreResults = await origin.search(query, options);
+      // no more results, stop
+      if (moreResults.length < originResultsSize) break;
+
+      // merge results
+      results = results.slice(); // force vue to detect change
+      for (let i = 0; i < moreResults.length; ++i)
+        results[startIdx + i] = moreResults[i];
+
+      // ready next loop
+      availablePage = results.slice(startIdx, endIdx);
+      ++originPageNumber;
+    } while (availablePage.length < state.pageSize);
     commit('setSearchResults', { results });
   }
 };

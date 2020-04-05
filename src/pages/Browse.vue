@@ -212,10 +212,6 @@ export default {
       let prevQuery = this.$route.query.q;
       if (!prevQuery) prevQuery = "";
 
-      const currPageNumber = this.pageNumber;
-      let prevPageNumber = this.$route.query.p;
-      if (!prevPageNumber) prevPageNumber = 0;
-
       const currNSFC = this.nsfc;
       const prevNSFC = Boolean(this.$route.query.nsfc);
 
@@ -227,12 +223,10 @@ export default {
       if (
         currQuery === prevQuery &&
         currNSFC === prevNSFC &&
-        currUnapproved === prevUnapproved &&
-        currPageNumber === prevPageNumber
+        currUnapproved === prevUnapproved
       ) return;
 
       if (currQuery.length !== 0) queryOptions = {...queryOptions, q: currQuery};
-      if (currPageNumber != null) queryOptions = {...queryOptions, p: currPageNumber};
       if (currNSFC) queryOptions = {...queryOptions, nsfc: 1};
       if (currUnapproved) queryOptions = {...queryOptions, unapproved: 1};
 
@@ -251,7 +245,10 @@ export default {
       // should not trigger retrieval
       // should trigger retrieval
       await this.setViewOptions({ pageNumber: n });
-      await this.search();
+      this.$router.push({ query: {
+        ...this.$router.query,
+        p: n
+      }});
     },
     async goToEditor() {
       await this.$router.push({ path: `/editor` });
@@ -279,7 +276,7 @@ export default {
       }
 
       await this.setSearchOptions({ nsfc: currNSFC });
-      await this.search();
+      await this.getSearchResults();
       return currNSFC;
     },
     onUnapprovedChange: async function(e) {
