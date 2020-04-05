@@ -337,7 +337,6 @@ import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
 import origin from '/libs/origin';
 import generateACNLQR from "/libs/ACNLQRGenerator";
-import logger from '/utils/logger';
 import lzString from 'lz-string';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
