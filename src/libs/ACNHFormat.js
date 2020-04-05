@@ -29,10 +29,10 @@
 //Pattern Types:
 //  00 = normal pattern
 //  01 = sample pro pattern
-//  02 = ?
+//  02 = tank top (non-pro)
 //  03 = long sleeve dress shirt
 //  04 = short sleeve tee
-//  05 = tank top
+//  05 = tank top (pro)
 //  06 = sweater
 //  07 = hoodie
 //  08 = coat
@@ -60,15 +60,20 @@
 //  ACNL dress, nosleeve
 //  ACNL hat with horns
 //
-//Colors:
-//H 0-29 (H*12 = degrees)
-//S 0-14 (S*(50/7) = percentage)
-//V 0-14 (V*(50/7) = percentage)
 //
 //50 regular patterns of 680 bytes each are stored in main.dat starting at offset 1930000
 //50 pro patterns of 2216 bytes each are stored in main.dat starting at offset 1964000
 //1 regular pattern (town flag) of 680 bytes in main.dat starting at offset 2074800
 //8 pro patterns (able sisters) of 2216 bytes each are stored in main.dat starting at offset 2075480
+
+//Colors:
+//  H =         NUM * 12;
+//  V = 7.843 + NUM * 5.85
+//  S =         NUM * 6.68
+const Sstart = 0;
+const Sinc = 6.68;
+const Vstart = 7.843;
+const Vinc = 5.85;
 
 import fnv1a128 from "./fnv1a.js";
 
@@ -317,10 +322,10 @@ class ACNHFormat{
     return "Unimplemented pattern type";
   };
   get width(){
-    return (this.dataBytes.byteLength == 680)? 32 : 64;
+    return ACNHFormat.widthForType(this.patternType);
   }
   get height(){
-    return (this.dataBytes.byteLength == 680)? 32 : 64;
+    return ACNHFormat.widthForType(this.patternType);
   }
   get byteLength(){
     return this.dataBytes.byteLength;
@@ -334,10 +339,66 @@ class ACNHFormat{
     return 0;//fnv1a128(this.b, 0, this.byteLength);
   }
   static widthForType(t){
-    return 64;//ACNLFormat.typeInfo[t].size;
+    return ACNHFormat.typeInfo[t].size;
   }
   static bytesForType(t){
-    return 680;//this.widthForType(t) > 32 ? 2160 : 620;
+    return ACNHFormat.widthForType(t) > 32 ? 2216 : 680;
+  }
+  static slidersToColor(hIn, sIn, vIn){
+    const s = Sinc*sIn/100.0;
+    const v = (Vstart+Vinc*vIn)/100.0;
+    const C = v*s;
+    const h = hIn/5;
+    const X = C*(1.0-Math.abs((h%2)-1.0));
+    let r, g, b;
+    r=g=b=v-C;
+    if(h<1){
+      r += C; g += X;
+    }else if(h<2){
+      r += X; g += C;
+    }else if(h<3){
+      g += C; b += X;
+    }else if(h<4){
+      g += X; b += C;
+    }else if(h<5){
+      r += X; b += C;
+    }else{
+      r += C; b += X;
+    }
+    r = Math.round(r*255);
+    g = Math.round(g*255);
+    b = Math.round(b*255);
+    hex = (r*65536+g*256+b).toString(16,6);
+    while(hex.length<6) hex = '0'+hex;
+    return hex.toUpperCase();
+  }
+  static colorToSliders(r,g,b){
+    if (typeof r == "string" && r.length == 7 && r.substr(0, 1) == 1){r = r.substr(1);}
+    if (typeof r == "string" && r.length == 6){
+      g = parseInt(r.substring(2,4), 16);
+      b = parseInt(r.substring(4,6), 16);
+      r = parseInt(r.substring(0,2), 16);
+    }
+    r/=255;
+    g/=255;
+    b/=255;
+    const M = Math.max(r,g,b);
+    const m = Math.min(r,g,b);
+    const C = M-m;
+    let h = 0;
+    if (!C){
+      h=0;
+    }else if(M==r){
+      h=((g-b)/C)%6;
+    }else if(M==g){
+      h=(b-r)/C+2;
+    }else{
+      h=(r-g)/C+4;
+    }
+    if (h<0){h+=6;}
+    const s=((!M)?0:(C/M))*100;
+    const v = M*100;
+    return [Math.round(h*5), Math.round(s/Sinc), Math.round((v-Vstart)/Vinc)];
   }
 };
 
@@ -370,32 +431,7 @@ ACNHFormat.typeInfo[0x14] = {name:"Unknown 2 (ACNL)", size:64, sections:[0, 0, 6
 ACNHFormat.typeInfo[0x15] = {name:"Unknown 3 (ACNL)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x16] = {name:"unKnown 4 (ACNL)", size:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x17] = {name:"Sleeveless shirt (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x18] = {name:"Hat (ACNL)", size:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x18] = {name:"Hat (ACNL)", size:32, sections:[0, 0, 32, 32]};
 
-//  00 = normal pattern
-//  01 = sample pro pattern
-//  02 = tank top (non-pro)
-//  03 = long sleeve dress shirt
-//  04 = short sleeve tee
-//  05 = tank top (pro)
-//  06 = sweater
-//  07 = hoodie
-//  08 = coat
-//  09 = short sleeve dress
-//  0a = sleeveless dress
-//  0b = long sleeve dress
-//  0c = balloon hem dress
-//  0d = round dress
-//  0e = robe
-//  0f = brimmed cap
-//  10 = knit cap
-//  11 = brimmed hat
-//  12 = ?
-//  13 = ACNL dress longsleeve
-//  14 = ?
-//  15 = ?
-//  16 = ?
-//  17 = ACNL shirt, nosleeve
-//  18 = ACNL hat
 export default ACNHFormat;
 
