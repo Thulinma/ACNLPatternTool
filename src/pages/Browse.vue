@@ -1,42 +1,9 @@
 <template>
-<<<<<<< HEAD
-  <div class="container">
-    <nav>
-      <div class="search-bar">
-        Search:
-        <input
-          type="text"
-          @keyup.enter="search"
-          @input="onQueryChange"
-          :value="query">
-        <button @click="search">
-          Search
-        </button>
-      </div>
-      <button class="create-button" @click="goToEditor">
-        Create
-        <IconBase icon-name="create" :icon-color="white" class="svg">
-          <IconPlus />
-        </IconBase><!-- scan svg -->
-      </button>
-    </nav>
-    <div class="patterns">
-      <a class="pattern-container" v-for="opt in page" :key="opt.bytes" :href="opt.url">
-        <h3>{{opt.title}}</h3>
-        <div class="type-tags">
-          <span v-if="opt.f_type != null" class="tag type">
-            {{opt.f_type.toUpperCase()}}
-          </span>
-          <span v-if="opt.f_type_a != null" class="tag type">
-            {{opt.f_type_a}}
-          </span>
-          <span v-if="opt.f_type_b != null" class="tag type">
-            {{opt.f_type_b}}
-          </span>
-=======
   <div id="container">
     <div id="search-bar">
-      <!-- TODO svg for maginifying glass -->
+      <IconBase icon-name="search" :icon-color="brown" id="search-icon">
+        <IconSearch />
+      </IconBase><!-- magnifying glass svg -->
       <input
         type="text"
         @keyup.enter="search"
@@ -82,12 +49,16 @@
               </span>
             </div>
           </a>
->>>>>>> starting point for browse redesign
         </div>
       </div><!-- pattern list -->
 
       <div id="filters">
-        <h1>Filters</h1>
+        <div id="filter-header">
+          <IconBase icon-name="filter" :icon-color="beige" id="filter-icon">
+            <IconFilter />
+          </IconBase><!-- filter svg -->
+          <h1>Filters</h1>
+        </div>
         <ul id="filter-list">
         </ul>
       </div><!-- attached filter list -->
@@ -115,8 +86,9 @@ import IconGenerator from '/components/IconGenerator.vue';
 import origin from '/libs/origin';
 
 // svg icons
-import IconBase from '/components/icons/IconBase.vue';
-import IconPlus from '/components/icons/IconPlus.vue';
+import IconBase from '../components/icons/IconBase.vue';
+import IconSearch from '../components/icons/IconSearch.vue';
+import IconFilter from '../components/icons/IconFilter.vue';
 
 const colors = {
   "natural": '#EAC558',
@@ -149,7 +121,8 @@ export default {
   components: {
     IconGenerator,
     IconBase,
-    IconPlus,
+    IconSearch,
+    IconFilter,
   },
   beforeRouteUpdate: async function(to, from, next) {
     await this.loadFromRoute(to);
@@ -160,7 +133,9 @@ export default {
   },
   data: function(){
     return {
-      white: "#FFFFFF",
+      brown: '#95683F',
+      beige: '#E7E0C3',
+      white: '#FFFFFF',
     };
   },
   computed: {
@@ -285,106 +260,21 @@ $dark-beige: #DED5AC;
 $gray: #C7C1AA;
 $white: #FFFFFF;
 
-<<<<<<< HEAD
-.container {
-  padding: 10px 5px;
-  color: #7e7261;
-}
-nav {
-  max-width: 80%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  input[type=text] {
-    padding: 10px;
-    min-width: 300px;
-    border: none;
-  }
-
-  .create-button {
-    background-color: #57AB35;
-    color: #FFFFFF;
-    display: inline-flex;
-    flex-direction: row;
-    align-items: center;
-    border: none;
-    box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
-    min-width: 120px;
-    padding: 10px 18px;
-    justify-content: space-between;
-    border-radius: 35px;
-    cursor: pointer;
-  }
-
-  .create-button .svg {
-    height: 25px;
-    width: 25px;
-    pointer-events: none;
-  }
-}
-.patterns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 10px;
-  justify-items: center;
-}
-.pattern-container {
-  text-decoration: none;
-  color :black;
-  background-color: #A1D4CA;
-  border-radius: 35px;
-  padding: 5px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 220px;
-  height: 300px;
-  max-width: 220px;
-  max-height: 300px;
-  margin: 10px;
-  box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
-  background-image: radial-gradient(#89C3B9 20%, transparent 20%), radial-gradient(#89C3B9 20%, transparent 20%);
-  background-position: 0 0, 5px 5px;
-  background-size: 10px 10px;
-
-  canvas {
-    margin: 10px;
-  }
-
-  .pickPattern{
-    cursor: pointer;
-  }
-}
-.pattern-details {
-  background-color: #EBE6CD;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 8px 12px;
-  width: 150px;
-=======
-h1{ 
+h1{
   font-size: 24px;
 }
 #container {
   background-color: $light-beige;
   color: $brown;
   height: 100%;
-  padding: 0 20px 0 50px;
+  padding: 40px 20px 0 50px;
 }
 #search-bar {
   padding: 0 0 0 10px;
   border-bottom: 3px solid $brown;
   margin: 0 0 20px;
 
-  .svg { 
+  .svg {
     padding: 0 10px;
   }
   input {
@@ -398,7 +288,6 @@ h1{
   input, input::placeholder {
     color: $brown;
   }
->>>>>>> starting point for browse redesign
 }
 #browse {
   display: flex;
@@ -409,18 +298,19 @@ h1{
 
   h1 {
     display: inline-block;
-    margin: 0 0 25px;
+    margin: 0 8px 25px 0;
   }
-  span { 
+  span {
     color: $gray;
   }
   #pattern-list {
+    direction: rtl;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     grid-gap: 10px;
     justify-items: center;
     overflow-y: scroll;
-    max-height: 600px;
+    max-height: 620px;
 
     .pattern-container {
       background-color: $brown;
@@ -442,6 +332,7 @@ h1{
         margin: 0 10px 10px;
       }
       .pattern-details {
+        direction: ltr;
         background-color: $medium-beige;
         border-radius: 10px;
         color: $brown;
@@ -469,9 +360,26 @@ h1{
   }
 }
 #filters {
-  width: 30%;
-  
+  width: 35%;
+
+  #filter-header {
+    border-bottom: 3px dashed $brown;
+    display: flex;
+    align-items: center;
+    padding: 0 0 10px;
+    margin: 0 0 10px;
+  }
+  #filter-icon {
+    background-color: $brown;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 0 8px 0 0;
+  }
+  h1 {
+    display: inline-block;
+  }
   ul {
+    border-radius: 5px;
     width: 100%;
     height: 100%;
     background: linear-gradient(
@@ -482,6 +390,7 @@ h1{
       $medium-beige
     );
     background-size: 100% 160px;
+    max-height: 565px;
   }
 }
 </style>
