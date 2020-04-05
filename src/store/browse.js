@@ -70,7 +70,7 @@ const optionsAreEqual = (optionsA, optionsB) => {
 
 // mutation helpers
 const didChange = (currVal, prevVal) => {
-  if (currVal != null && currVal !== prevVal) return true;
+  if (currVal != null) return currVal !== prevVal;
   return false;
 };
 
@@ -89,6 +89,7 @@ const state = {
   // meta
   originResultsSize: null, // unknown at first
   cache: new Map(), // key: search options, value: results
+  prevSearchOptions: null,
 };
 
 // 'computed' for stores, when mapping, use computed
@@ -102,7 +103,7 @@ const getters = {
     return results.slice(startIdx, endIdx);
   },
   searchOptions: (state) => {
-    const {
+    let {
       query,
       nsfc,
       unapproved,
@@ -144,32 +145,8 @@ const mutations = {
   setSearchOptions: (state, payload) => {
     let searchOptionsChanged = false;
     const { query, nsfc, unapproved, currSearchOptions } = payload;
-    const { cache, results } = state;
-    // if any search options change and flag has not been triggered
-    // add new entry in cache
-
-    if (
-      (didChange(query, state.query) ||
-       didChange(nsfc, state.nsfc) ||
-       didChange(unapproved, state.unapproved)) &&
-      !state.searchOptionsChanged
-    ) {
-      // if old search options are still here, update it before changing search results
-      // update old entry
-      let didUpdateCache = false;
-      for (let prevSearchOptions of cache.keys()) {
-        if (optionsAreEqual(currSearchOptions, prevSearchOptions)) {
-          cache.set(prevSearchOptions, results.slice());
-          didUpdateCache = true;
-          // console.log("updated", currSearchOptions, results);
-        }
-      }
-      // no matching entry, set new entry
-      if (!didUpdateCache && results.length >= 0) {
-        cache.set(currSearchOptions, results.slice());
-        // console.log("set new", currSearchOptions, results);
-      }
-    }
+    if (state.prevSearchOptions == null)
+      state.prevSearchOptions = currSearchOptions;
 
     // need to do this manually to trigger setters
     if (didChange(query, state.query)) {
@@ -193,9 +170,12 @@ const mutations = {
     if (searchOptionsChanged) state.searchOptionsChanged = true;
   },
   setSearchResults: (state, payload) => {
-    const { results } = payload;
+    const { searchOptionsChanged } = state;
+    const { results, currSearchOptions } = payload;
     if (results != null) {
       state.results = results;
+      if (searchOptionsChanged)
+        state.prevSearchOptions = currSearchOptions;
       state.searchOptionsChanged = false;
     }
   },
@@ -249,31 +229,43 @@ const actions = {
       query,
       results,
       originResultsSize,
-      cache
+      cache,
+      prevSearchOptions
     } = state;
     const {
       pageSize,
       pageNumber,
       searchOptionsChanged,
     } = state;
-
-    if (searchOptionsChanged) {
-      // check to see if you can load results from cache
-      let didLoadFromCache = false;
-      let currSearchOptions = getters.searchOptions;
-      for (const prevSearchOptions of cache.keys()) {
-        if (optionsAreEqual(currSearchOptions, prevSearchOptions)) {
-          results = cache.get(prevSearchOptions);
-          didLoadFromCache = true;
-          // console.log("loaded from", currSearchOptions, results);
-          break;
-        }
-      }
-      // search options not in cache
-      // prevents merges between results with different search options
-      if (!didLoadFromCache) results = [];
-    }
     query = state.query || null;
+    prevSearchOptions = Object.assign({}, prevSearchOptions);
+    const currSearchOptions = getters.searchOptions;
+    // know results will change if changed, need to update cache
+    if (searchOptionsChanged) {
+      // determine how prevSearchOptions are handled
+      const prevMatchSearchOptions = [...cache.keys()].find((searchOptions) => {
+        return optionsAreEqual(prevSearchOptions, searchOptions);
+      });
+      if (prevMatchSearchOptions != null) {
+        cache.delete(prevSearchOptions);
+        cache.set(prevSearchOptions, results.slice());
+        console.log("updated cache entry:", prevSearchOptions);
+      }
+      else {
+        cache.set(prevSearchOptions, results.slice());
+        console.log("added new cache entry:", prevSearchOptions);
+      }
+      // look for old cache entry, load it
+      const currMatchSearchOptions = [...cache.keys()].find((searchOptions) => {
+        return optionsAreEqual(currSearchOptions, searchOptions);
+      });
+      if (currMatchSearchOptions != null) {
+        results = cache.get(currMatchSearchOptions);
+        console.log("loaded cache entry:", currSearchOptions);
+      }
+      // prevent merges with old search options if not in cache
+      else results = [];
+    }
 
     // target result indexes to complete a page
     let startIdx = pageSize * pageNumber;
@@ -306,7 +298,7 @@ const actions = {
     if (availablePage.length >= state.pageSize) {
       // commit results from checking originResultSize
       if (moreResults != null || searchOptionsChanged)
-        commit('setSearchResults', { results });
+        commit('setSearchResults', { results, currSearchOptions });
       return
     };
     // find origin page that fulfills a portion of the availablePage
@@ -343,7 +335,7 @@ const actions = {
       availablePage = results.slice(startIdx, endIdx);
       ++originPageNumber;
     } while (availablePage.length < state.pageSize);
-    commit('setSearchResults', { results });
+    commit('setSearchResults', { results, currSearchOptions });
   }
 };
 

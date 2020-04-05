@@ -126,8 +126,6 @@ export default {
     // map using store module search
     ...mapState('browse', [
       'query',
-      'nsfc',
-      'unapproved',
       'pageNumber'
     ]),
     ...mapGetters('browse', [
@@ -175,22 +173,6 @@ export default {
         }
       }
       else viewOptions = {...viewOptions, pageNumber: 0};
-      if (nsfc != null) {
-        nsfc = Number.parseInt(nsfc);
-        if (nsfc === 1) {
-          searchOptions  = {...searchOptions, nsfc: true};
-          queryOptions = {...queryOptions, nsfc: 1 };
-        }
-        else isCorrecting = true;
-      }
-      if (unapproved != null) {
-        unapproved = Number.parseInt(unapproved);
-        if (unapproved === 1) {
-          searchOptions = {...searchOptions, unapproved: true};
-          queryOptions = {...queryOptions, unapproved: 1};
-        }
-        else isCorrecting = true;
-      }
       // if any 'invalid' or uncessary data in query, correct it
       // next loop around will load results
       if (isCorrecting) {
@@ -212,23 +194,13 @@ export default {
       let prevQuery = this.$route.query.q;
       if (!prevQuery) prevQuery = "";
 
-      const currNSFC = this.nsfc;
-      const prevNSFC = Boolean(this.$route.query.nsfc);
-
-      const currUnapproved = this.unapproved;
-      const prevUnapproved = Boolean(this.$route.query.unapproved);
-
       let queryOptions = {};
       // duplication guard
       if (
-        currQuery === prevQuery &&
-        currNSFC === prevNSFC &&
-        currUnapproved === prevUnapproved
+        currQuery === prevQuery
       ) return;
 
       if (currQuery.length !== 0) queryOptions = {...queryOptions, q: currQuery};
-      if (currNSFC) queryOptions = {...queryOptions, nsfc: 1};
-      if (currUnapproved) queryOptions = {...queryOptions, unapproved: 1};
 
       // let route guard handle the rest
       await this.$router.push({ query: queryOptions });
@@ -255,52 +227,6 @@ export default {
     },
     tagClass(tag){
       if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
-    },
-    openNSFCDisclaimer: async function(e) {
-      const disclaimer = `      By selecting this option, you are voluntarily agreeing to viewing patterns that may contain content that is pornographic, violent, illegal, or disturbing in nature.
-      By accepting this, you are consenting to this and confirming that you are at least 18 years of age.
-      Continue?`;
-      let prevNSFC = this.nsfc;
-      let currNSFC;
-      // turning off if already on
-      if (prevNSFC) {
-        currNSFC = false;
-      }
-      // confirm turn on if already off
-      else if (window.confirm(disclaimer)) {
-        currNSFC = true;
-      }  else currNSFC = false;
-      if (prevNSFC === currNSFC && prevNSFC === false) {
-        e.preventDefault();
-        return currNSFC;
-      }
-
-      await this.setSearchOptions({ nsfc: currNSFC });
-      await this.getSearchResults();
-      return currNSFC;
-    },
-    onUnapprovedChange: async function(e) {
-      let currUnapproved = e.target.checked;
-      const prevUnapproved = this.unapproved;
-      // console.log(currUnapproved, prevUnapproved);
-
-      const nsfc = this.nsfc;
-      if (currUnapproved) {// turning on
-        // skip disclaimer if nsfc already on
-        if (nsfc) { currUnapproved = true; }
-        // enable disclaimer if nsfc not accepted
-        else {
-          const didAccept = await this.openNSFCDisclaimer(e);
-          if (!didAccept) {
-            currUnapproved = false;
-            e.preventDefault();
-          }
-          else currUnapproved = true;
-        }
-      }
-      // otherwise turning off
-      await this.setSearchOptions({ unapproved: currUnapproved});
-      await this.search();
     },
   },
   mounted: async function(){
