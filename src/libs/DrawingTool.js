@@ -329,7 +329,7 @@ class DrawingTool{
   /// Finds the closest LAB global palette index we can find to the color c
   /// Supports [r,g,b]-style only.
   findLAB(rgb) {
-	rgb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
+    rgb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
     //Convert to XYZ from sRGB before converting to LAB
     let xyz;
     let lab;
@@ -385,7 +385,7 @@ class DrawingTool{
   /// Finds the closest LAB current palette index we can find to the color c
   /// Supports [r,g,b]-style only.
   findPalLAB(rgb) {
-	rgb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
+    rgb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
     //Convert to XYZ from sRGB before converting to LAB
     let xyz;
     let lab;
