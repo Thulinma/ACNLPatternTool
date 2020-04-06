@@ -15,6 +15,9 @@ const {
   pathToPublicIndex,
   pathToFavicon,
   pathToClientSrcIndex,
+  pathToClientSrc,
+  pathToZxingBuild,
+  pathToNodeModules
 } = require('../etc/paths');
 const {
   babelDevConfig,
@@ -88,14 +91,41 @@ const scssRuleProd = {
   ]
 }
 
+
+// use resourceQuery for svgs
+const svgRule = {
+  test: /\.(svg)$/i,
+  oneOf: [
+    {
+      // default
+      resourceQuery: /inline/i,
+      use: [
+        { // babel loader doesn't really matter here tbh
+          loader: "babel-loader",
+          options: babelDevConfig,
+        },
+        "vue-svg-loader",
+      ]
+    },
+    {
+      use: {
+        loader: "file-loader",
+        options: {
+          outputPath: "images",
+        }
+      }
+    },
+  ],
+};
+
 const fileRules = [
+  svgRule,
   {
     // file-loader for image assets
-    test: /\.(png|jpe?g|gif|svg)$/i,
+    test: /\.(png|jpe?g|gif)$/i,
     use: {
       loader: "file-loader",
       options: {
-        emitFile: true,
         outputPath: "images" // relative to output dir
       },
     },
@@ -121,6 +151,8 @@ const fileRules = [
     }
   },
 ];
+
+
 
 const rulesDev = [
   babelRuleDev,
