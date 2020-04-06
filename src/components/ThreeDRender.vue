@@ -75,16 +75,18 @@ export default {
         this.model = false;
       }
       let path;
-      let modelOffset = {x: 0, y:-6, z:0, rough: 0.75};
-      let stand = true;
+      let modelOffset = {x: 0, y:-6, z:0, rough: 1.5};
+      this.controls.maxZoom = 2.0;
+      this.controls.minZoom = 0.8;
+      this.camera.position.set( 0, 20, 100 );
+      this.controls.update();
+      let modelType = 1;
       if (d.pattern instanceof ACNHFormat){
         switch (d.patternType){
           case 0x00://Pattern
           case 0x01://Pro pattern
             path = injected.easel;
-            modelOffset.y = 0;
-            modelOffset.rough = 0.5;
-            stand = false;
+            modelType = 0;
             break;
           case 0x02://plain tank top
             path = injected.tank_simp;
@@ -94,7 +96,6 @@ export default {
             break;
           case 0x04://short sleeve tee
             path = injected.tee_short;
-            modelOffset.rough = 1.5;
             break;
           case 0x05://pro tank top
             path = injected.tank_pro;
@@ -103,7 +104,7 @@ export default {
             path = injected.sweater;
             break;
           case 0x07://hoodie
-            path = injected.sweater;
+            path = injected.hoodie;
             break;
           case 0x08://coat
             path = injected.coat;
@@ -119,7 +120,6 @@ export default {
             break;
           case 0x0C://balloon hem dress
             path = injected.dress_balloon;
-            modelOffset.rough = 1.5;
             break;
           case 0x0D://round dress
             path = injected.dress_round;
@@ -129,15 +129,15 @@ export default {
             break;
           case 0x0f://brimmed cap
             path = injected.brimmed_cap;
-            stand = false;
+            modelType = 2;
             break;
           case 0x10://knit cap
             path = injected.knit_cap;
-            stand = false;
+            modelType = 2;
             break;
           case 0x11://brimmed hat
             path = injected.brimmed_hat;
-            stand = false;
+            modelType = 2;
             break;
           case 0x13:
             path = injected.dress_long;
@@ -147,10 +147,11 @@ export default {
             break;
           case 0x18:
             path = injected.hat;
-            stand = false;
+            modelType = 2;
             break;
           default: return;
         }
+
       }else{
         switch (d.patternType){
           case 0: path = injected.dress_long; break;
@@ -159,106 +160,111 @@ export default {
           case 3: path = injected.shirt_long; break;
           case 4: path = injected.shirt_half; break;
           case 5: path = injected.shirt_none; break;
-          case 6: path = injected.hornhat; break;
-          case 7: path = injected.hat; break;
+          case 6:
+            path = injected.hornhat;
+            modelType = 2;
+          break;
+          case 7:
+            path = injected.hat;
+            modelType = 2;
+          break;
           case 9:
             path = injected.easel;
-            modelOffset.rough = 0.5;
-            modelOffset.y = -7;
+            modelType = 0;
           break;
           default: return;
         }
       }
+      let stand = true;
+      switch (modelType){
+        case 0://easel style
+          modelOffset.rough = 0.5;
+          modelOffset.y = -7;
+          stand = false;
+          this.controls.maxZoom = 2.0;
+          this.controls.minZoom = 0.8;
+          this.controls.zoom = 1.5;
+          this.controls.update();
+        break;
+        case 1://clothing style
+          this.controls.maxZoom = 4.0;
+          this.controls.minZoom = 1.5;
+          this.controls.update();
+        break;
+        case 2://hat style
+          modelOffset.y = -1;
+          stand = false;
+          this.controls.maxZoom = 2.0;
+          this.controls.minZoom = 0.8;
+          this.controls.update();
+        break;
+      }
+      this.$refs.canvas3d.dispatchEvent(new WheelEvent("wheel", {"deltaY":50}));
       this.scene.remove(this.stand);
       if (stand && this.stand){this.scene.add(this.stand);}
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       this.mixImg = false;
-      if (path.hasOwnProperty("model.gltf")){
-        loader.load(injected.getObjectUrl(path["model.gltf"]), (gltf) => {
-          if (this.model){this.scene.remove(this.model);}
-          this.model = gltf.scene.children[0];
-          this.model.traverse((child) => {
-            if (child instanceof Mesh){
-              //child.material = new MeshPhongMaterial();
+      loader.load(injected.getObjectUrl(path["model.gltf"]), (gltf) => {
+        if (this.model){this.scene.remove(this.model);}
+        this.model = gltf.scene.children[0];
+        this.model.traverse((child) => {
+          if (child instanceof Mesh){
+            console.log(child);
+            //child.material = new MeshPhongMaterial();
+            const meshName = child.name.split("__")[1];
+            const redraw = ()=>{
+              if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
+            };
+            if (path.hasOwnProperty(meshName+"_Nrm.png")){
+              child.material.normalMap = texLdr.load(injected.getObjectUrl(path[meshName+"_Nrm.png"]), redraw);
+              child.material.normalMap.flipY = false;
+            }
+            if (path.hasOwnProperty(meshName+"_Crv.png")){
+              child.material.lightMap = texLdr.load(injected.getObjectUrl(path[meshName+"_Crv.png"], redraw));
+              child.material.lightMap.flipY = false;
+            }
+            if (path.hasOwnProperty(meshName+"_OP.png")){
+              child.material.alphaMap = texLdr.load(injected.getObjectUrl(path[meshName+"_OP.png"], redraw));
+              child.material.alphaMap.flipY = false;
+              child.material.transparent = true;
               child.material.alphaTest = 0.5;
-              const meshName = child.name.split("__")[1];
-              if (path.hasOwnProperty(meshName+"_Nrm.png")){
-                child.material.normalMap = texLdr.load(injected.getObjectUrl(path[meshName+"_Nrm.png"]));
-                child.material.normalMap.flipY = false;
-              }
-              if (path.hasOwnProperty(meshName+"_Crv.png")){
-                child.material.lightMap = texLdr.load(injected.getObjectUrl(path[meshName+"_Crv.png"]));
-                child.material.lightMap.flipY = false;
-              }
-              if (path.hasOwnProperty(meshName+"_OP.png")){
-                child.material.alphaMap = texLdr.load(injected.getObjectUrl(path[meshName+"_OP.png"]));
-                child.material.alphaMap.flipY = false;
-                child.material.transparent = true;
-              }
-              if (path.hasOwnProperty(meshName+"_Mix.png")){
-                this.mixImg = new Image();
-                this.mixImg.onload = ()=>{this.drawingTool.render();}
-                this.mixImg.src = injected.getObjectUrl(path[meshName+"_Mix.png"]);
-              }
-              if (child.skeleton && child.skeleton.bones && child.skeleton.bones.length){
-                for (let b in child.skeleton.bones){
-                  if (child.skeleton.bones[b].name == "Arm_1_R"){
-                    child.skeleton.bones[b].rotation.z += 0.5;
-                  }
-                  if (child.skeleton.bones[b].name == "Arm_1_L"){
-                    child.skeleton.bones[b].rotation.z -= 0.5;
-                  }
+            }
+            if (path.hasOwnProperty(meshName+"_Mix.png")){
+              this.mixImg = new Image();
+              this.mixImg.onload = ()=>{this.drawingTool.render(); redraw();}
+              this.mixImg.src = injected.getObjectUrl(path[meshName+"_Mix.png"]);
+            }
+            if (path.hasOwnProperty(meshName+"_Alb.png")){
+              child.material.map = texLdr.load(injected.getObjectUrl(path[meshName+"_Alb.png"], redraw));
+              child.material.map.flipY = false;
+            }
+            if (child.skeleton && child.skeleton.bones && child.skeleton.bones.length){
+              for (let b in child.skeleton.bones){
+                if (child.skeleton.bones[b].name == "Arm_1_R"){
+                  child.skeleton.bones[b].rotation.z += 0.75;
+                }
+                if (child.skeleton.bones[b].name == "Arm_1_L"){
+                  child.skeleton.bones[b].rotation.z -= 0.75;
                 }
               }
-              if (!child.material.map || (child.material.map.image.width == 1 && child.material.map.image.height == 1)) {
-                child.material.map = this.texture;
-              }
-              child.material.side = DoubleSide;
-              child.material.metalness = 0;
-              child.material.shininess = 9;
-              child.material.roughness = modelOffset.rough;
-              console.log(child.material);
             }
-          });
-          this.model.position.x = modelOffset.x;
-          this.model.position.y = modelOffset.y;
-          this.model.position.z = modelOffset.z;
-          this.scene.add(this.model);
-          if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
-        });
-      }else{
-        loader.parse(JSON.stringify(path), "", (gltf) => {
-          if (this.model){this.scene.remove(this.model);}
-          this.model = gltf.scene.children[0];
-          this.model.traverse((child) => {
-            if (child instanceof Mesh){
-              if (child.skeleton && child.skeleton.bones && child.skeleton.bones.length){
-                for (let b in child.skeleton.bones){
-                  if (child.skeleton.bones[b].name == "Arm_1_R"){
-                    child.skeleton.bones[b].rotation.z += 0.5;
-                  }
-                  if (child.skeleton.bones[b].name == "Arm_1_L"){
-                    child.skeleton.bones[b].rotation.z -= 0.5;
-                  }
-                }
-              }
-              if (!child.material.map || (child.material.map.image.width == 1 && child.material.map.image.height == 1)) {
-                child.material.map = this.texture;
-              }
-              child.material.side = DoubleSide;
-              child.material.metalness = 0;
-              child.material.roughness = modelOffset.rough;
+            if (!child.material.map || (child.material.map.image && child.material.map.image.width == 1 && child.material.map.image.height == 1)) {
+              child.material.map = this.texture;
             }
-          });
-          this.model.position.x = modelOffset.x;
-          this.model.position.y = modelOffset.y;
-          this.model.position.z = modelOffset.z;
-          this.scene.add(this.model);
-          if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
+            child.material.side = DoubleSide;
+            child.material.metalness = 0;
+            child.material.shininess = 9;
+            child.material.roughness = modelOffset.rough;
+          }
         });
-      }
-      this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.width;
-      this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.width*4;
+        this.model.position.x = modelOffset.x;
+        this.model.position.y = modelOffset.y;
+        this.model.position.z = modelOffset.z;
+        this.scene.add(this.model);
+        if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
+      });
+      this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.texWidth;
+      this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.texWidth*4;
       this.drawingTool.render();
     },
     animate(){
@@ -284,9 +290,9 @@ export default {
     this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d, antialias:true});
     this.renderer.outputEncoding = sRGBEncoding;
     this.renderer.setClearColor( 0x000000, 0 );
-    this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.width;
-    this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.width*4;
-    this.drawingTool.addCanvas(this.pixelCanvas, {drawCallback:()=>{
+    this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.texWidth;
+    this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.texWidth*4;
+    this.drawingTool.addCanvas(this.pixelCanvas, {texture:true, drawCallback:()=>{
       applyFilter(this.pixelCanvas, this.renderCanvas);
       if (this.mixImg){
         const ctx = this.renderCanvas.getContext('2d');

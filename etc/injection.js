@@ -47,38 +47,39 @@ const loadFolder = (dirName) => {
 const clothing_stand = loadGltf("clothing_stand.gltf");
 
 // ACNNL clothing
-const dress_half = loadGltf("dress_half.gltf");
-const dress_long = loadGltf("dress_long.gltf");
-const dress_none = loadGltf("dress_none.gltf");
-const shirt_half = loadGltf("shirt_half.gltf");
-const shirt_long = loadGltf("shirt_long.gltf");
+const dress_half = loadFolder("dress_half");
+const dress_long = loadFolder("dress_long");
+const dress_none = loadFolder("dress_none");
+const shirt_half = loadFolder("shirt_half");
+const shirt_long = loadFolder("shirt_long");
 const shirt_none = loadFolder("shirt_none");
 
 //Easel
-const easel = loadGltf("easel.gltf");
+const easel = loadFolder("easel");
 
 //Hats (ACNL)
-const hat = loadGltf("hat.gltf");
-const hornhat = loadGltf("hornhat.gltf");
+const hat = loadFolder("hat");
+const hornhat = loadFolder("hornhat");
 
 //Hats {ACNH}
-const brimmed_cap = loadGltf("brimmed_cap.gltf");
-const brimmed_hat = loadGltf("brimmed_hat.gltf");
-const knit_cap = loadGltf("knit_cap.gltf");
+const brimmed_cap = loadFolder("brimmed_cap");
+const brimmed_hat = loadFolder("brimmed_hat");
+const knit_cap = loadFolder("knit_cap");
 
 //ACNH clothing
-const dress_acnh_short = loadGltf("dress_acnh_short.gltf");
-const dress_acnh_long = loadGltf("dress_acnh_long.gltf");
-const dress_acnh_none = loadGltf("dress_acnh_none.gltf");
-const dress_round = loadGltf("dress_round.gltf");
+const dress_acnh_short = loadFolder("dress_acnh_short");
+const dress_acnh_long = loadFolder("dress_acnh_long");
+const dress_acnh_none = loadFolder("dress_acnh_none");
+const dress_round = loadFolder("dress_round");
 const dress_balloon = loadFolder("dress_balloon");
-const robe = loadGltf("robe.gltf");
-const tank_pro = loadGltf("tank_pro.gltf");
-const tank_simp = loadGltf("tank_simp.gltf");
+const robe = loadFolder("robe");
+const tank_pro = loadFolder("tank_pro");
+const tank_simp = loadFolder("tank_simp");
 const tee_short = loadFolder("tee_short");
-const dressshirt_long = loadGltf("dressshirt_long.gltf");
-const sweater = loadGltf("sweater.gltf");
-const coat = loadGltf("coat.gltf");
+const dressshirt_long = loadFolder("dressshirt_long");
+const sweater = loadFolder("sweater");
+const hoodie = loadFolder("hoodie");
+const coat = loadFolder("coat");
 
 
 module.exports = {
@@ -106,6 +107,7 @@ module.exports = {
   tee_short,
   dressshirt_long,
   sweater,
+  hoodie,
   coat,
 }
 

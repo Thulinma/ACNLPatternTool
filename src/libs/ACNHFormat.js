@@ -322,10 +322,16 @@ class ACNHFormat{
     return "Unimplemented pattern type";
   };
   get width(){
-    return ACNHFormat.widthForType(this.patternType);
+    return ACNHFormat.typeInfo[this.patternType].size;
   }
   get height(){
-    return ACNHFormat.widthForType(this.patternType);
+    return ACNHFormat.typeInfo[this.patternType].size;
+  }
+  get texWidth(){
+    return ACNHFormat.typeInfo[this.patternType].texSize;
+  }
+  get texHeight(){
+    return ACNHFormat.typeInfo[this.patternType].texSize;
   }
   get byteLength(){
     return this.dataBytes.byteLength;
@@ -341,8 +347,11 @@ class ACNHFormat{
   static widthForType(t){
     return ACNHFormat.typeInfo[t].size;
   }
+  static texWidthForType(t){
+    return ACNHFormat.typeInfo[t].texSize;
+  }
   static bytesForType(t){
-    return ACNHFormat.widthForType(t) > 32 ? 2216 : 680;
+    return ACNHFormat.texWidthForType(t) > 32 ? 2216 : 680;
   }
   static slidersToColor(hIn, sIn, vIn){
     const s = Sinc*sIn/100.0;
@@ -407,31 +416,31 @@ class ACNHFormat{
 //Masks use a compact notation of 32-bit masks, otherwise we'd have a giant list of true/false here.
 ACNHFormat.typeInfo = [];
 
-ACNHFormat.typeInfo[0x00] = {name:"Plain Pattern (ACNH)", size:32, sections:[0, 0, 32, 32]};
-ACNHFormat.typeInfo[0x01] = {name:"Pro Pattern (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x02] = {name:"Tank top (ACNH, non-pro)", size:32, sections:[0, 0, 32, 32]};
-ACNHFormat.typeInfo[0x03] = {name:"Long sleeve dress shirt (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x04] = {name:"Short sleeve tee (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x05] = {name:"Tank top (ACNH, pro)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x06] = {name:"Sweater (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x07] = {name:"Hoodie (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x08] = {name:"Coat (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x09] = {name:"Short sleeve dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0A] = {name:"Sleeveless dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0B] = {name:"Long sleeve dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0C] = {name:"Balloon hem dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0D] = {name:"Round dress (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0E] = {name:"Robe (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x0F] = {name:"Brimmed cap (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x10] = {name:"Knit cap (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x11] = {name:"Brimmed hat (ACNH)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x12] = {name:"Unknown 1 (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x13] = {name:"Long sleeve dress (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x14] = {name:"Unknown 2 (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x15] = {name:"Unknown 3 (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x16] = {name:"unKnown 4 (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x17] = {name:"Sleeveless shirt (ACNL)", size:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x18] = {name:"Hat (ACNL)", size:32, sections:[0, 0, 32, 32]};
+ACNHFormat.typeInfo[0x00] = {name:"Plain Pattern (ACNH)", size:32, texSize:32, sections:[0, 0, 32, 32]};
+ACNHFormat.typeInfo[0x01] = {name:"Pro Pattern (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x02] = {name:"Tank top (ACNH, non-pro)", size:32, texSize:64, sections:[0, 0, 32, 32]};
+ACNHFormat.typeInfo[0x03] = {name:"Long sleeve dress shirt (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x04] = {name:"Short sleeve tee (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x05] = {name:"Tank top (ACNH, pro)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x06] = {name:"Sweater (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x07] = {name:"Hoodie (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x08] = {name:"Coat (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x09] = {name:"Short sleeve dress (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0A] = {name:"Sleeveless dress (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0B] = {name:"Long sleeve dress (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0C] = {name:"Balloon hem dress (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0D] = {name:"Round dress (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0E] = {name:"Robe (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x0F] = {name:"Brimmed cap (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x10] = {name:"Knit cap (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x11] = {name:"Brimmed hat (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x12] = {name:"Unknown 1 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x13] = {name:"Long sleeve dress (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x14] = {name:"Unknown 2 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x15] = {name:"Unknown 3 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x16] = {name:"unKnown 4 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x17] = {name:"Sleeveless shirt (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x18] = {name:"Hat (ACNL)", size:32, texSize:32, sections:[0, 0, 32, 32]};
 
 export default ACNHFormat;
 

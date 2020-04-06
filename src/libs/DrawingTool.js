@@ -17,7 +17,11 @@ class RenderTarget{
 
   /// Calculates the correct zoom level, given the current pattern width
   /// Should be called every time the pattern (or canvas) changes width
-  calcZoom(pWidth){
+  calcZoom(pWidth, tWidth){
+    if (this.opt.texture){
+      console.log(this, pWidth, tWidth);
+      pWidth = tWidth;
+    }
     this.context.imageSmoothingEnabled = false;
     if (this.opt.tall){
       this.zoom = this.width/32;
@@ -31,7 +35,7 @@ class RenderTarget{
   /// Draws the given pixel with the given HTML color
   drawPixel(x, y, color){
     //If we've gone under 64 pixels, assume we meant the right side instead.
-    if (y > 63 && !this.opt.tall){
+    if (y > 63){
       y -= 64; x += 32;
     }
     //draw the pixel
@@ -70,7 +74,7 @@ class RenderTarget{
       this.context.drawImage(c.canvas, 0, 0, c.canvas.width/2, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height/2);
       this.context.drawImage(c.canvas, c.canvas.width/2, 0, c.canvas.width/2, c.canvas.height, 0, this.canvas.height/2, this.canvas.width, this.canvas.height/2);
     } else {
-      this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, this.canvas.width, this.canvas.height)
+      this.context.drawImage(c.canvas, 0, 0, c.canvas.width, c.canvas.height, 0, 0, c.canvas.width/(c.zoom/this.zoom), c.canvas.height/(c.zoom/this.zoom))
     }
     if (this.opt.grid){
       for (let x = 0; x < this.canvas.width/this.zoom; ++x){
@@ -195,6 +199,7 @@ class DrawingTool{
   }
 
   get width(){return this.pattern.width;}
+  get texWidth(){return this.pattern.texWidth;}
   get height(){return this.pattern.height;}
   get pixelCount(){return this.width*this.height;}
   get fullHash(){return this.pattern.fullHash();}
@@ -399,8 +404,8 @@ class DrawingTool{
   /// Adds a canvas to the internal list of render targets.
   addCanvas(c, opt = {}){
     let rTarget = new RenderTarget(c, opt);
-    rTarget.calcZoom(this.pattern.width);
-    if (c.width >= 64 && c.height >= 64 && !opt.tall && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.tall || this.renderTargets[0].opt.grid || this.renderTargets[0].canvas.width < 64 || this.renderTargets[0].canvas.height < 64)){
+    rTarget.calcZoom(this.pattern.width, this.pattern.texWidth);
+    if (c.width >= 64 && c.height >= 64 && !opt.texture && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.texture || this.renderTargets[0].opt.grid || this.renderTargets[0].canvas.width < 64 || this.renderTargets[0].canvas.height < 64)){
       this.renderTargets.unshift(rTarget);
     } else {
       this.renderTargets.push(rTarget);
@@ -455,7 +460,7 @@ class DrawingTool{
     let palette = [];
     for (let i = 0; i < 16; ++i){palette.push(this.getPalette(i));}
     //Render all pixels to the first target
-    this.renderTargets[0].calcZoom(this.pattern.width);
+    this.renderTargets[0].calcZoom(this.pattern.width, this.pattern.texWidth);
     let pixCount = this.pattern.width == 32 ? 1024 : 4096;
     for (let i = 0; i < pixCount; i++){
       let x = (i % 32);
@@ -470,7 +475,7 @@ class DrawingTool{
     
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
-      this.renderTargets[i].calcZoom(this.pattern.width);
+      this.renderTargets[i].calcZoom(this.pattern.width, this.pattern.texWidth);
       this.renderTargets[i].blitFrom(this.renderTargets[0]);
     }
   }

@@ -302,6 +302,7 @@ class ACNLFormat{
     if (!ACNLFormat.typeInfo[this.dataBytes[0x69]]){return 32;}
     return ACNLFormat.typeInfo[this.dataBytes[0x69]].size;
   }
+  get texWidth(){return this.width;}
   get byteLength(){
     return (this.width > 32) ? 2160 : 620;
   }
