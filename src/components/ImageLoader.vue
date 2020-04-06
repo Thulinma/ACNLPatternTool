@@ -31,7 +31,7 @@
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
           <li :class="{active: convert_method === 'yuv'}" @click="changeConversion('yuv')">Nearest YUV Colors</li>
-	  <li :class="{active: convert_method === 'lab'}" @click="changeConversion('lab')">Nearest CIELAB Colors</li>
+          <li :class="{active: convert_method === 'lab'}" @click="changeConversion('lab')">Nearest CIELAB Colors</li>
           <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
           <li :class="{active: convert_method === 'sepia'}" @click="changeConversion('sepia')">To Sepia</li>
         </ul>
@@ -139,7 +139,7 @@ export default {
           case "quantize": this.image_quantize(imgdata); break;
           case "rgb": this.image_rgb(imgdata); break;
           case "yuv": this.image_yuv(imgdata); break;
-	  case "lab": this.image_lab(imgdata); break;
+          case "lab": this.image_lab(imgdata); break;
           case "grey": this.image_grey(imgdata); break;
           case "sepia": this.image_sepia(imgdata); break;
           case "keep": this.image_keep(imgdata); break;
