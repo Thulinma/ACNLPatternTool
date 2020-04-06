@@ -14,7 +14,8 @@ const babelDevConfig = {
       {
         root: [pathToClientSrc],
         alias: {
-          "^@zxing/library$" :  pathToZxingBuild
+          "^@zxing/library$" :  pathToZxingBuild,
+          "~": pathToClientSrc
         }
       }
     ],

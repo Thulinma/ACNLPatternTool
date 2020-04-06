@@ -15,9 +15,6 @@ const {
   pathToPublicIndex,
   pathToFavicon,
   pathToClientSrcIndex,
-  pathToClientSrc,
-  pathToZxingBuild,
-  pathToNodeModules
 } = require('../etc/paths');
 const {
   babelDevConfig,
