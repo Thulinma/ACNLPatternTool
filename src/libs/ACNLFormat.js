@@ -419,7 +419,7 @@ for (let i = 0; i < 256; i++){
   if (m.length < 7){
     ACNLFormat.RGBLookup.push(null);
     ACNLFormat.YUVLookup.push(null);
-	ACNLFormat.LABLookup.push(null);
+    ACNLFormat.LABLookup.push(null);
   }else{
     let rgb = [parseInt(m.substr(1, 2), 16), parseInt(m.substr(3, 2), 16), parseInt(m.substr(5, 2), 16)];
     ACNLFormat.RGBLookup.push(rgb);
