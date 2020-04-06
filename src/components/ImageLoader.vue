@@ -31,6 +31,7 @@
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
           <li :class="{active: convert_method === 'yuv'}" @click="changeConversion('yuv')">Nearest YUV Colors</li>
+		  <li :class="{active: convert_method === 'lab'}" @click="changeConversion('lab')">Nearest CIELAB Colors</li>
           <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
           <li :class="{active: convert_method === 'sepia'}" @click="changeConversion('sepia')">To Sepia</li>
         </ul>
@@ -138,6 +139,7 @@ export default {
           case "quantize": this.image_quantize(imgdata); break;
           case "rgb": this.image_rgb(imgdata); break;
           case "yuv": this.image_yuv(imgdata); break;
+		  case "lab": this.image_lab(imgdata); break;
           case "grey": this.image_grey(imgdata); break;
           case "sepia": this.image_sepia(imgdata); break;
           case "keep": this.image_keep(imgdata); break;
@@ -154,6 +156,7 @@ export default {
               case "quantize": this.image_quantize(imgdata); break;
               case "rgb": this.image_rgb(imgdata); break;
               case "yuv": this.image_yuv(imgdata); break;
+              case "lab": this.image_lab(imgdata); break;
               case "grey": this.image_grey(imgdata); break;
               case "sepia": this.image_sepia(imgdata); break;
               case "keep": this.image_keep(imgdata); break;
@@ -207,6 +210,22 @@ export default {
         palette[this.draw.findYUV([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
       }
       palette.sort(function(a, b){
+        if (a.c > b.c){return -1;}
+        if (a.c < b.c){return 1;}
+        return 0;
+      });
+      for (let i = 0; i < 15; i++){this.draw.setPalette(i, palette[i].n);}
+    },
+	//Sets the palette to the top-15 closest LAB colors
+    image_lab(imgdata){
+      let palette = [];
+      for (let i = 0; i < 256; i++){palette.push({n: i, c:0});}
+      const pixelCount = imgdata.data.length;
+      for (let i = 0; i < pixelCount; i+=4){
+        if (imgdata.data[i+3] < this.convert_trans*2.55){continue;}
+        palette[this.draw.findLAB([imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]])].c++;
+      }
+      palette.sort((a, b) => {
         if (a.c > b.c){return -1;}
         if (a.c < b.c){return 1;}
         return 0;

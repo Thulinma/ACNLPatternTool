@@ -413,15 +413,52 @@ ACNLFormat.typeInfo[9] = {name:"Normal Pattern (easel)", size:32, sections:[0, 0
 //Generate global lookup table
 ACNLFormat.RGBLookup = [];
 ACNLFormat.YUVLookup = [];
+ACNLFormat.LABLookup = [];
 for (let i = 0; i < 256; i++){
   let m = ACNLFormat.paletteColors[i];
   if (m.length < 7){
     ACNLFormat.RGBLookup.push(null);
     ACNLFormat.YUVLookup.push(null);
+	ACNLFormat.LABLookup.push(null);
   }else{
     let rgb = [parseInt(m.substr(1, 2), 16), parseInt(m.substr(3, 2), 16), parseInt(m.substr(5, 2), 16)];
     ACNLFormat.RGBLookup.push(rgb);
     ACNLFormat.YUVLookup.push([rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000, rgb[0] * -.168736 + rgb[1] * -.331264 + rgb[2] *  .500000 + 128, rgb[0] *  .500000 + rgb[1] * -.418688 + rgb[2] * -.081312 + 128]);
+	///Start of LAB
+	///This process is lengthy and computationally expensive - perhaps precompute this?
+    let gammargb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
+    let xyz;
+    let n;
+	let delta = 6/29;
+    //part 1: Apply gamma correction to sRGB values
+    for (let i = 0; i < 3; i++) {
+        switch (gammargb[i] <= 0.04045) {
+            case true:
+                gammargb[i] /= 12.92;
+                break;
+            default:
+                gammargb[i] = Math.pow((gammargb[i] * 200 + 11) / 211, 2.4);
+        }
+    }
+    //part 2: multiply new sRGB values by the XYZ matrix
+    xyz = [gammargb[0]*41.24 + gammargb[1]*35.76 + gammargb[2]*18.05, gammargb[0]*21.26 + gammargb[1]*71.52 + gammargb[2]*7.22, gammargb[0]*1.93 + gammargb[1]*11.92 + gammargb[2]*95.05];
+    
+    //Convert these XYZ values to LAB
+    //part 1: divide XYZ values by the D65 white point tristimulus values
+    n = [xyz[0]/95.0489, xyz[1]/100, xyz[2]/108.8840];
+    //part 2: send each normalized component through the transformation function
+    for (let i = 0; i < 3; i++) {
+        switch (n[i] > Math.pow(delta,3)) {
+            case true:
+                n[i] = Math.cbrt(n[i]);
+                break;
+            default:
+                n[i] = n[i] / (3 * Math.pow(delta,2)) + (4/29);
+        }
+    }
+    //part 3: finalize transformation and push to lookup table
+    ACNLFormat.LABLookup.push([116 * n[1] - 16, 500 * (n[0] - n[1]), 200 * (n[1] - n[2])]);
+    ///End of LAB
   }
 }
 

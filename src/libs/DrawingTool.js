@@ -325,6 +325,118 @@ class DrawingTool{
     }
     return bestno;
   }
+  
+  /// Finds the closest LAB global palette index we can find to the color c
+  /// Supports [r,g,b]-style only.
+  findLAB(rgb) {
+	rgb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
+    //Convert to XYZ from sRGB before converting to LAB
+    let xyz;
+    let lab;
+    let n;
+    let delta = 6/29;
+    let best = 255*255*3;
+    let bestno = 0;
+    //part 1: Apply gamma correction to sRGB values
+    for (let i = 0; i < 3; i++) {
+        switch (rgb[i] <= 0.04045) {
+            case true:
+                rgb[i] /= 12.92;
+                break;
+            default:
+                rgb[i] = Math.pow((rgb[i] * 200 + 11) / 211, 2.4);
+        }
+    }
+    //part 2: multiply new sRGB values by the XYZ matrix
+    xyz = [rgb[0]*41.24 + rgb[1]*35.76 + rgb[2]*18.05, rgb[0]*21.26 + rgb[1]*71.52 + rgb[2]*7.22, rgb[0]*1.93 + rgb[1]*11.92 + rgb[2]*95.05];
+    
+    //Convert these XYZ values to LAB
+    //part 1: divide XYZ values by the D65 white point tristimulus values
+    n = [xyz[0]/95.0489, xyz[1]/100, xyz[2]/108.8840];
+    //part 2: send each normalized component through the transformation function
+    for (let i = 0; i < 3; i++) {
+        switch (n[i] > Math.pow(delta,3)) {
+            case true:
+                n[i] = Math.cbrt(n[i]);
+                break;
+            default:
+                n[i] = n[i] / (3 * Math.pow(delta,2)) + (4/29);
+        }
+    }
+    //part 3: finalize transformation
+    lab = [116 * n[1] - 16, 500 * (n[0] - n[1]), 200 * (n[1] - n[2])];
+    //begin lookup
+    for (let i = 0; i < 256; i++){
+      let m = ACNLFormat.LABLookup[i];
+      if (m === null){continue;}
+      let lD = (m[0] - lab[0]);
+      let aD = (m[1] - lab[1]);
+      let bD = (m[2] - lab[2]);
+      let match = (lD*lD + aD*aD + bD*bD);
+      if (match < best){
+        if (!match){return i;}//perfect match - we can stop immediately
+        best = match;
+        bestno = i;
+      }
+    }
+    return bestno;
+  }
+  
+  /// Finds the closest LAB current palette index we can find to the color c
+  /// Supports [r,g,b]-style only.
+  findPalLAB(rgb) {
+	rgb = [rgb[0]/255,rgb[1]/255,rgb[2]/255]; //Equations require RGB values to be a real number ranging from 0-1
+    //Convert to XYZ from sRGB before converting to LAB
+    let xyz;
+    let lab;
+    let n;
+    let delta = 6/29;
+    let best = 255*255*3;
+    let bestno = 0;
+    //part 1: Apply gamma correction to sRGB values
+    for (let i = 0; i < 3; i++) {
+        switch (rgb[i] <= 0.04045) {
+            case true:
+                rgb[i] /= 12.92;
+                break;
+            default:
+                rgb[i] = Math.pow((rgb[i] * 200 + 11) / 211, 2.4);
+        }
+    }
+    //part 2: multiply new sRGB values by the XYZ matrix
+    xyz = [rgb[0]*41.24 + rgb[1]*35.76 + rgb[2]*18.05, rgb[0]*21.26 + rgb[1]*71.52 + rgb[2]*7.22, rgb[0]*1.93 + rgb[1]*11.92 + rgb[2]*95.05];
+    
+    //Convert these XYZ values to LAB
+    //part 1: divide XYZ values by the D65 white point tristimulus values
+    n = [xyz[0]/95.0489, xyz[1]/100, xyz[2]/108.8840];
+    //part 2: send each normalized component through the transformation function
+    for (let i = 0; i < 3; i++) {
+        switch (n[i] > Math.pow(delta,3)) {
+            case true:
+                n[i] = Math.cbrt(n[i]);
+                break;
+            default:
+                n[i] = n[i] / (3 * Math.pow(delta,2)) + (4/29);
+        }
+    }
+    //part 3: finalize transformation
+    lab = [116 * n[1] - 16, 500 * (n[0] - n[1]), 200 * (n[1] - n[2])];
+    //begin lookup
+    for (let i = 0; i < 15; i++){
+      let m = ACNLFormat.LABLookup[this.pattern.getPalette(i)];
+      if (m === null){continue;}
+      let lD = (m[0] - lab[0]);
+      let aD = (m[1] - lab[1]);
+      let bD = (m[2] - lab[2]);
+      let match = (lD*lD + aD*aD + bD*bD);
+      if (match < best){
+        if (!match){return i;}//perfect match - we can stop immediately
+        best = match;
+        bestno = i;
+      }
+    }
+    return bestno;
+  }
 
 
   ///Sets the given palette index to the closest color we can find to c
