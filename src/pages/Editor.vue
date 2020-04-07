@@ -291,6 +291,12 @@
         <NookPhoneMenu v-model="mainMenu"/>
       </div>
     </ModalContainer>
+      <div 
+        v-if="displayWarning"
+        class="warning"
+      >
+        Heads up! Transparency only works for New Horizon.
+      </div>
   </div>
 </template>
 
@@ -389,6 +395,7 @@ export default {
       pubNSFW: "",
       publishModal: false,
       origin,
+      displayWarning: false,
     };
   },
   methods: {
@@ -521,10 +528,19 @@ export default {
       logger.info(`color picked: ${color}`);
     },
     onChangedCurrentColor: function(idx) {
+      this.checkTransparentPixel(idx);
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
       logger.info(`changed current color: ${idx}`);
+    },
+    checkTransparentPixel: function(idx) {
+      if (idx == 15) {
+        this.displayWarning = true;
+      }
+      else {
+        this.displayWarning = false;
+      }
     },
     onLoad: async function(t){
       let patStr = this.drawingTool.toString();
@@ -889,5 +905,17 @@ canvas.fordrawing{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.warning {
+  text-align: center;
+  background-color: #f1b5c1;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 0 0 35px 35px;
+  padding: 15px;
+  margin: 0 auto;
+  width: 480px;
 }
 </style>
