@@ -356,15 +356,7 @@ import logger from "/utils/logger";
 import lzString from "lz-string";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
-// import saveSvg from "/assets/icons/bxs-save.svg";
-// import scanSvg from "/assets/icons/bx-scan.svg";
-// import paintSvg from "/assets/icons/bxs-paint.svg";
-// import paletteSvg from "/assets/icons/bxs-palette.svg";
-// import imageAddSvg from "/assets/icons/bxs-image-add.svg";
 import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
-// import phoneSvg from "/assets/icons/bxs-mobile.svg";
-// import downArrowSvg from "/assets/icons/bxs-down-arrow.svg";
-// import upArrowSvg from "/assets/icons/bxs-up-arrow.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
 export default {
@@ -405,9 +397,6 @@ export default {
     return {
       drawingTool: new DrawingTool(),
       qrCode: false,
-
-      // patAuthor: "Unknown",
-      // patTown: "Unknown",
       allTypes: [],
       storedAuthorHuman: false,
       patInfoModal: false,
@@ -419,15 +408,7 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      // saveSvg,
-      // scanSvg,
-      // paintSvg,
       barcodeSvg,
-      // paletteSvg,
-      // imageAddSvg,
-      // phoneSvg,
-      // downArrowSvg,
-      // upArrowSvg,
       pubStyleA: "",
       pubStyleB: "",
       pubStyleC: "",
