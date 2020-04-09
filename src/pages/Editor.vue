@@ -6,30 +6,30 @@
       @converted="onConvert"
     />
     <main>
-      <div class="left">
-        <div class="previews">
-          <div class="2D">
-            <canvas class="fordrawing" ref="canvas2" width="128" height="128" />
-            <!-- <canvas class="fordrawing" ref="canvas3" width="64" height="64" /> -->
-            <div class="pattern-info">
-              <div class="pattern_title">{{ patTitle }}</div>
-              <div class="pattern_author">by {{ patAuthor }}</div>
-              <div class="pattern_town">from {{ patTown }}</div>
-              <div class="pattern_typename">{{ patTypeName }}</div>
-            </div>
-            <!--   <button class="editInfo" @click="patInfoModal = true">
+      <!-- <div class="left"> -->
+      <div class="previews">
+        <div class="2D">
+          <!-- <canvas class="fordrawing" ref="canvas2" width="128" height="128" /> -->
+          <!-- <canvas class="fordrawing" ref="canvas3" width="64" height="64" /> -->
+          <div class="pattern-info">
+            <div class="pattern_title">{{ patTitle }}</div>
+            <div class="pattern_author">by {{ patAuthor }}</div>
+            <div class="pattern_town">from {{ patTown }}</div>
+            <div class="pattern_typename">{{ patTypeName }}</div>
+          </div>
+          <!--   <button class="editInfo" @click="patInfoModal = true">
               Change
             </button> -->
-          </div>
-          <!--  <div class="render-preview">
+        </div>
+        <!--  <div class="render-preview">
             <ThreeDRender
               :width="196"
               :height="300"
               :drawing-tool="drawingTool"
             />
           </div> -->
-        </div>
       </div>
+      <!-- </div> -->
 
       <!-- <div class="center"> -->
       <!--  <Palette
@@ -714,7 +714,7 @@ export default {
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
     }
     // this.drawingTool.addCanvas(this.$refs.canvas1, { grid: true });
-    this.drawingTool.addCanvas(this.$refs.canvas2);
+    // this.drawingTool.addCanvas(this.$refs.canvas2);
     // this.drawingTool.addCanvas(this.$refs.canvas3);
     this.allTypes = this.drawingTool.allTypes;
     this.drawingTool.onLoad(this.onLoad);
@@ -914,7 +914,6 @@ main .center .colorPicker-menu button {
   flex-direction: column;
   justify-content: space-between;
   padding-top: 62px;
-  height: 512px;
 }
 .tools-and-colors {
   height: 512px;
