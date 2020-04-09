@@ -19,7 +19,7 @@
         <h1>Designs</h1>
         <span>{{results.length}} results</span>
         <div id="pattern-list">
-          <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="opt.url">
+          <a class="pattern-container" v-for="opt in page" :key="opt.bytes" :href="opt.url">
             <h3>{{opt.title}}</h3>
             <div class="type-tags">
               <span v-if="opt.f_type != null" class="tag type">
