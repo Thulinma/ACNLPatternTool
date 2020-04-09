@@ -31,14 +31,14 @@
         </div>
       </div>
 
-      <div class="center">
-        <!--  <Palette
+      <!-- <div class="center"> -->
+      <!--  <Palette
           ref="palette"
           :drawing-tool="drawingTool"
           @changed-current-color="onChangedCurrentColor"
         /> -->
-        <!-- <canvas class="fordrawing" ref="canvas1" width="512" height="512" /> -->
-        <!-- <div class="colorPicker-menu" ref="colorPickerMenu">
+      <!-- <canvas class="fordrawing" ref="canvas1" width="512" height="512" /> -->
+      <!-- <div class="colorPicker-menu" ref="colorPickerMenu">
           <ColorPicker
             ref="colorPicker"
             :drawing-tool="drawingTool"
@@ -46,70 +46,64 @@
           />
           <button @click="closeColorPicker">Close Menu</button>
         </div> -->
-      </div>
+      <!-- </div> -->
 
-      <div class="right">
-        <!-- <div class="topbar-buttons">
+      <!-- <div class="right"> -->
+      <!-- <div class="topbar-buttons">
           <button class="menu-button" @click="onMainMenu">
             <object class="svg nav white-circle" :data="phoneSvg"></object>
             Menu
             <object class="svg-small" :data="downArrowSvg"></object>
           </button>
         </div> -->
-        <div class="tools-and-colors">
-          <!-- <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /> -->
-          <div class="tool-buttons">
-            <!-- <button @click="openColorPicker">
+      <!-- <div class="tools-and-colors"> -->
+      <!-- <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /> -->
+      <!-- <div class="tool-buttons"> -->
+      <!-- <button @click="openColorPicker">
               <object class="svg nav brown-circle" :data="paletteSvg"></object>
               Open Color Editor
             </button> -->
-            <!-- <button @click="convertImage = true">
+      <!-- <button @click="convertImage = true">
               <object class="svg nav brown-circle" :data="imageAddSvg"></object>
               Convert
             </button> -->
-            <!-- <button @click="$refs.fileloader.open()">
+      <!-- <button @click="$refs.fileloader.open()">
               <object class="svg nav brown-circle" :data="scanSvg"></object>
               Load file / code
             </button> -->
-            <!-- <FileLoader
+      <!-- <FileLoader
               v-show="false"
               ref="fileloader"
               @qr-load="extLoad"
               @qr-multiload="extMultiLoad"
             /> -->
-            <!--  <button
+      <!--  <button
               class="downACNL"
               :value="$tc('editor.download')"
               @click="downACNL"
             >
               <object class="svg nav white-circle" :data="saveSvg"></object>
               Save -->
-            <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
-            <!-- </button> -->
-            <!-- <button @click="onOpenLocal">Open Storage</button> -->
-            <!-- <button @click="publishModal=true">Publish</button> -->
-            <!-- <button @click="onLocalSave">Store Locally</button> -->
-            <button @click="onQROpen">
+      <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
+      <!-- </button> -->
+      <!-- <button @click="onOpenLocal">Open Storage</button> -->
+      <!-- <button @click="publishModal=true">Publish</button> -->
+      <!-- <button @click="onLocalSave">Store Locally</button> -->
+      <!--   <button @click="onQROpen">
               <object class="svg nav brown-circle" :data="barcodeSvg"></object>
               Generate QR Code
-            </button>
-          </div>
-        </div>
-      </div>
+            </button> -->
+      <!-- </div> -->
+      <!-- </div> -->
+      <!-- </div> -->
     </main>
 
-    <ModalContainer v-if="qrCode" @modal-close="qrCode = false">
-      <div class="modal">
-        <div class="modal-header">
-          <object class="svg nav" :data="barcodeSvg"></object>
-          Generate QR Code(s)
-        </div>
-        <div class="modal-window modal-centered">
-          <ACNLQRGenerator :pattern="qrCode" />
-          <button @click="downPNG">Save image</button>
-        </div>
-      </div>
-    </ModalContainer>
+    <div class="">
+      Generate QR Code(s)
+
+      <ACNLQRGenerator :pattern="qrCode" />
+      <button @click="downPNG">Save image</button>
+    </div>
 
     <!--  <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
       <div class="modal">
@@ -384,7 +378,7 @@ export default {
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer
+    ModalContainer,
     // ToolSelector
     // NookPhoneMenu
   },
@@ -443,7 +437,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin
+      origin,
     };
   },
   methods: {
@@ -653,6 +647,8 @@ export default {
         this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
       }
+      const patStr = this.drawingTool.toString();
+      this.qrCode = patStr;
     },
     extMultiLoad: function(data) {
       this.multiName = "Load which?";
@@ -695,7 +691,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    }
+    },
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -734,7 +730,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 
