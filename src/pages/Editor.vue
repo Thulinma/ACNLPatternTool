@@ -6,30 +6,30 @@
       @converted="onConvert"
     />
     <main>
-      <div class="left">
-        <div class="previews">
-          <div class="2D">
-            <canvas class="fordrawing" ref="canvas2" width="128" height="128" />
-            <!-- <canvas class="fordrawing" ref="canvas3" width="64" height="64" /> -->
-            <div class="pattern-info">
-              <div class="pattern_title">{{ patTitle }}</div>
-              <div class="pattern_author">by {{ patAuthor }}</div>
-              <div class="pattern_town">from {{ patTown }}</div>
-              <div class="pattern_typename">{{ patTypeName }}</div>
-            </div>
-            <button class="editInfo" @click="patInfoModal = true">
-              Change
-            </button>
+      <!-- <div class="left"> -->
+      <div class="previews">
+        <div class="2D">
+          <!-- <canvas class="fordrawing" ref="canvas2" width="128" height="128" /> -->
+          <!-- <canvas class="fordrawing" ref="canvas3" width="64" height="64" /> -->
+          <div class="pattern-info">
+            <div class="pattern_title">{{ patTitle }}</div>
+            <div class="pattern_author">by {{ patAuthor }}</div>
+            <div class="pattern_town">from {{ patTown }}</div>
+            <!-- <div class="pattern_typename">{{ patTypeName }}</div> -->
           </div>
-          <!--  <div class="render-preview">
+          <!--   <button class="editInfo" @click="patInfoModal = true">
+              Change
+            </button> -->
+        </div>
+        <!--  <div class="render-preview">
             <ThreeDRender
               :width="196"
               :height="300"
               :drawing-tool="drawingTool"
             />
           </div> -->
-        </div>
       </div>
+      <!-- </div> -->
 
       <!-- <div class="center"> -->
       <!--  <Palette
@@ -100,7 +100,6 @@
 
     <div class="">
       Generate QR Code(s)
-
       <ACNLQRGenerator :pattern="qrCode" />
       <button @click="downPNG">Save image</button>
     </div>
@@ -146,31 +145,31 @@
       </div>
     </ModalContainer> -->
 
-    <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
+    <!-- <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
       <div class="modal">
         <div class="modal-header">
           Edit Pattern Details
         </div>
         <div class="modal-window" id="change-info-modal">
-          <div class="edit-info">
-            <span
+          <div class="edit-info"> -->
+    <!--  <span
               >Title: <input type="text" maxlength="20" v-model="patTitle"
-            /></span>
-            <span
+            /></span> -->
+    <!--  <span
               >Author: <input type="text" maxlength="9" v-model="patAuthor"
-            /></span>
-            <span
+            /></span> -->
+    <!--    <span
               >Town: <input type="text" maxlength="9" v-model="patTown"
-            /></span>
-            <span
+            /></span> -->
+    <!-- <span
               >Type:
               <select v-model="patType">
                 <option v-for="(ti, no) in allTypes" :key="no" :value="no"
                   >{{ ti.name }}
                 </option>
               </select>
-            </span>
-          </div>
+            </span> -->
+    <!--  </div>
           <div v-if="storedAuthorHuman">Stored: {{ storedAuthorHuman }}</div>
           <p class="edit-notice">
             <b>Note:</b> You can't just type in your own name and town to make a
@@ -199,7 +198,7 @@
           </div>
         </div>
       </div>
-    </ModalContainer>
+    </ModalContainer> -->
 
     <!-- <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
       <div class="modal">
@@ -357,15 +356,7 @@ import logger from "/utils/logger";
 import lzString from "lz-string";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
-// import saveSvg from "/assets/icons/bxs-save.svg";
-// import scanSvg from "/assets/icons/bx-scan.svg";
-// import paintSvg from "/assets/icons/bxs-paint.svg";
-// import paletteSvg from "/assets/icons/bxs-palette.svg";
-// import imageAddSvg from "/assets/icons/bxs-image-add.svg";
 import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
-// import phoneSvg from "/assets/icons/bxs-mobile.svg";
-// import downArrowSvg from "/assets/icons/bxs-down-arrow.svg";
-// import upArrowSvg from "/assets/icons/bxs-up-arrow.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
 export default {
@@ -378,7 +369,7 @@ export default {
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer,
+    ModalContainer
     // ToolSelector
     // NookPhoneMenu
   },
@@ -406,9 +397,6 @@ export default {
     return {
       drawingTool: new DrawingTool(),
       qrCode: false,
-      patTitle: "Empty",
-      patAuthor: "Unknown",
-      patTown: "Unknown",
       allTypes: [],
       storedAuthorHuman: false,
       patInfoModal: false,
@@ -420,15 +408,7 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      // saveSvg,
-      // scanSvg,
-      // paintSvg,
       barcodeSvg,
-      // paletteSvg,
-      // imageAddSvg,
-      // phoneSvg,
-      // downArrowSvg,
-      // upArrowSvg,
       pubStyleA: "",
       pubStyleB: "",
       pubStyleC: "",
@@ -437,8 +417,22 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
+  },
+  computed: {
+    patAuthor() {
+      //calculate author here, max length 9
+      return "Author name";
+    },
+    patTitle() {
+      //calculate pattern title here, max length 20
+      return "Artwork title";
+    },
+    patTown() {
+      // this could stay in data (what should be town name?) - max length 9
+      return "Town name";
+    }
   },
   methods: {
     async onPublish() {
@@ -616,9 +610,9 @@ export default {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
-      this.patTitle = this.drawingTool.title;
-      this.patAuthor = this.drawingTool.creator[0];
-      this.patTown = this.drawingTool.town[0];
+      // this.patTitle = this.drawingTool.title;
+      // this.patAuthor = this.drawingTool.creator[0];
+      // this.patTown = this.drawingTool.town[0];
 
       // need to wait 2 ticks before access ref in portal
       // AFTER setting isOpenModal to true
@@ -691,7 +685,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -700,7 +694,7 @@ export default {
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
     }
     // this.drawingTool.addCanvas(this.$refs.canvas1, { grid: true });
-    this.drawingTool.addCanvas(this.$refs.canvas2);
+    // this.drawingTool.addCanvas(this.$refs.canvas2);
     // this.drawingTool.addCanvas(this.$refs.canvas3);
     this.allTypes = this.drawingTool.allTypes;
     this.drawingTool.onLoad(this.onLoad);
@@ -730,7 +724,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
@@ -900,7 +894,6 @@ main .center .colorPicker-menu button {
   flex-direction: column;
   justify-content: space-between;
   padding-top: 62px;
-  height: 512px;
 }
 .tools-and-colors {
   height: 512px;
@@ -931,56 +924,5 @@ canvas.fordrawing {
   margin: 10px 0;
   max-width: 196px;
   overflow: hidden;
-}
-
-#change-info-modal.modal-window {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#change-info-modal.modal-window .edit-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 500px;
-  max-width: 60%;
-}
-#change-info-modal.modal-window .edit-info span {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 60%;
-}
-#change-info-modal.modal-window .edit-notice {
-  max-width: 600px;
-  margin: 20px;
-}
-#publish-modal.modal-window {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-#publish-modal.modal-window ol {
-  list-style: decimal;
-  margin: 10px 0;
-  padding: 0 0 0 30px;
-}
-#publish-modal.modal-window .left,
-#publish-modal.modal-window .right {
-  flex: 1 1 0;
-  align-items: center;
-  max-width: 400px;
-}
-#publish-modal.modal-window .dropdowns {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-#publish-modal.modal-window .dropdown,
-#publish-modal.modal-window span {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
 }
 </style>
