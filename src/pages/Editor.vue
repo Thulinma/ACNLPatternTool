@@ -4,69 +4,86 @@
       <div class="left">
         <div class="previews">
           <div class="2D">
-            <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
-            <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
+            <canvas class="fordrawing" ref="canvas2" width="128" height="128" />
+            <canvas class="fordrawing" ref="canvas3" width="64" height="64" />
             <div class="pattern-info">
-              <div class="pattern_title">{{patTitle}}</div>
-              <div class="pattern_author">by {{patAuthor}}</div> 
-              <div class="pattern_town">from {{patTown}}</div>
-              <div class="pattern_typename">{{patTypeName}}</div>
+              <div class="pattern_title">{{ patTitle }}</div>
+              <div class="pattern_author">by {{ patAuthor }}</div>
+              <div class="pattern_town">from {{ patTown }}</div>
+              <div class="pattern_typename">{{ patTypeName }}</div>
             </div>
-            <button class="editInfo" @click="patInfoModal=true">Change</button>
+            <button class="editInfo" @click="patInfoModal = true">
+              Change
+            </button>
           </div>
-          <div class="render-preview">
-            <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
-          </div>
+          <!--  <div class="render-preview">
+            <ThreeDRender
+              :width="196"
+              :height="300"
+              :drawing-tool="drawingTool"
+            />
+          </div> -->
         </div>
       </div>
 
       <div class="center">
-        <Palette
+        <!--  <Palette
           ref="palette"
           :drawing-tool="drawingTool"
-          @changed-current-color="onChangedCurrentColor"/>
-        <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
-        <div class="colorPicker-menu" ref="colorPickerMenu">
+          @changed-current-color="onChangedCurrentColor"
+        /> -->
+        <canvas class="fordrawing" ref="canvas1" width="512" height="512" />
+        <!-- <div class="colorPicker-menu" ref="colorPickerMenu">
           <ColorPicker
             ref="colorPicker"
             :drawing-tool="drawingTool"
-            @color-picked="onColorPicked"/>
-            <button @click="closeColorPicker">Close Menu</button>
-        </div>
+            @color-picked="onColorPicked"
+          />
+          <button @click="closeColorPicker">Close Menu</button>
+        </div> -->
       </div>
 
       <div class="right">
-        <div class="topbar-buttons">
+        <!-- <div class="topbar-buttons">
           <button class="menu-button" @click="onMainMenu">
             <object class="svg nav white-circle" :data="phoneSvg"></object>
             Menu
             <object class="svg-small" :data="downArrowSvg"></object>
           </button>
-        </div>
+        </div> -->
         <div class="tools-and-colors">
-          <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" />
+          <!-- <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /> -->
           <div class="tool-buttons">
-            <button @click="openColorPicker">
+            <!-- <button @click="openColorPicker">
               <object class="svg nav brown-circle" :data="paletteSvg"></object>
               Open Color Editor
-            </button>
+            </button> -->
             <button @click="convertImage = true">
               <object class="svg nav brown-circle" :data="imageAddSvg"></object>
               Convert
             </button>
-            <button @click="$refs.fileloader.open()">
-                <object class="svg nav brown-circle" :data="scanSvg"></object>
-                Load file / code
-            </button>
-            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
-            <button class="downACNL" :value="$tc('editor.download')" @click="downACNL">
+            <!-- <button @click="$refs.fileloader.open()">
+              <object class="svg nav brown-circle" :data="scanSvg"></object>
+              Load file / code
+            </button> -->
+            <!-- <FileLoader
+              v-show="false"
+              ref="fileloader"
+              @qr-load="extLoad"
+              @qr-multiload="extMultiLoad"
+            /> -->
+            <!--  <button
+              class="downACNL"
+              :value="$tc('editor.download')"
+              @click="downACNL"
+            >
               <object class="svg nav white-circle" :data="saveSvg"></object>
-              Save
-              <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
-            </button>
-            <button @click="onOpenLocal">Open Storage</button>
-            <button @click="publishModal=true">Publish</button>
-            <button @click="onLocalSave">Store Locally</button>
+              Save -->
+            <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
+            <!-- </button> -->
+            <!-- <button @click="onOpenLocal">Open Storage</button> -->
+            <!-- <button @click="publishModal=true">Publish</button> -->
+            <!-- <button @click="onLocalSave">Store Locally</button> -->
             <button @click="onQROpen">
               <object class="svg nav brown-circle" :data="barcodeSvg"></object>
               Generate QR Code
@@ -76,7 +93,7 @@
       </div>
     </main>
 
-    <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
+    <ModalContainer v-if="qrCode" @modal-close="qrCode = false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="barcodeSvg"></object>
@@ -89,32 +106,44 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
+    <!--  <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
       <div class="modal">
-        <div class="modal-header">{{multiName}}</div>
+        <div class="modal-header">{{ multiName }}</div>
         <div class="modal-window pattern-list">
-          <button v-if="allowMoveToLocal" @click="picksToLocal">Store all in local storage</button>
-          <button @click="zipPicksAsACNL">Download ACNL files as .zip file</button>
+          <button v-if="allowMoveToLocal" @click="picksToLocal">
+            Store all in local storage
+          </button>
+          <button @click="zipPicksAsACNL">
+            Download ACNL files as .zip file
+          </button>
           <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
           <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
-          <br/>
+          <br />
           <IconGenerator
             v-for="(opt, idx) in pickPatterns"
             :key="idx"
-            width=150 height=150 text="true" decoration="true"
+            width="150"
+            height="150"
+            text="true"
+            decoration="true"
             @pattclick="pickPattern"
-            :pattern="opt" />
+            :pattern="opt"
+          />
         </div>
       </div>
-    </ModalContainer>
+    </ModalContainer> -->
 
-    <ModalContainer v-if="convertImage" @modal-close="convertImage=false">
+    <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="imageAddSvg"></object>
           Convert Image
         </div>
-        <ImageLoader class="modal-window" :pattern-type="patType" @converted="onConvert" />
+        <ImageLoader
+          class="modal-window"
+          :pattern-type="patType"
+          @converted="onConvert"
+        />
       </div>
     </ModalContainer>
 
@@ -125,38 +154,55 @@
         </div>
         <div class="modal-window" id="change-info-modal">
           <div class="edit-info">
-              <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
-              <span>Author: <input type="text" maxlength="9" v-model="patAuthor"></span>
-              <span>Town: <input type="text" maxlength="9" v-model="patTown"></span>
-              <span>Type:
-                <select v-model="patType">
-                  <option
-                    v-for="(ti, no) in allTypes"
-                    :key="no"
-                    :value="no">{{ti.name}}
-                  </option>
-                </select>
-              </span>
+            <span
+              >Title: <input type="text" maxlength="20" v-model="patTitle"
+            /></span>
+            <span
+              >Author: <input type="text" maxlength="9" v-model="patAuthor"
+            /></span>
+            <span
+              >Town: <input type="text" maxlength="9" v-model="patTown"
+            /></span>
+            <span
+              >Type:
+              <select v-model="patType">
+                <option v-for="(ti, no) in allTypes" :key="no" :value="no"
+                  >{{ ti.name }}
+                </option>
+              </select>
+            </span>
           </div>
-          <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
+          <div v-if="storedAuthorHuman">Stored: {{ storedAuthorHuman }}</div>
           <p class="edit-notice">
-            <b>Note:</b> You can't just type in your own name and town to make a pattern editable on your console.<br>
-            There is some "invisible" data attached to it that cannot be entered by hand.<br>
-            Use the below copy/load buttons to first "copy" your name/town from one of your own patterns from AC:NL.<br>
-            Then, "load" it onto any other pattern and it should become editable for you in-game!<br>
-            The copied author information is stored into your browser, so it'll be there for your future visits as well.
+            <b>Note:</b> You can't just type in your own name and town to make a
+            pattern editable on your console.<br />
+            There is some "invisible" data attached to it that cannot be entered
+            by hand.<br />
+            Use the below copy/load buttons to first "copy" your name/town from
+            one of your own patterns from AC:NL.<br />
+            Then, "load" it onto any other pattern and it should become editable
+            for you in-game!<br />
+            The copied author information is stored into your browser, so it'll
+            be there for your future visits as well.
           </p>
           <div class="edit-buttons">
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
             <button @click="patInfoSave(false)">Save</button>
-            <button @click="patInfoModal=false; onLoad()">Cancel</button>
+            <button
+              @click="
+                patInfoModal = false;
+                onLoad();
+              "
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
+    <!-- <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
       <div class="modal">
         <div class="modal-header">
           Publish to Public Database
@@ -276,7 +322,7 @@
             </div>
         </div>
       </div>
-    </ModalContainer>
+    </ModalContainer> -->
 
     <ModalContainer v-if="false">
       <div class="modal-info">
@@ -286,69 +332,73 @@
       </div>
     </ModalContainer>
 
-    <ModalContainer v-if="mainMenu" @modal-close="mainMenu=false">
+    <!-- <ModalContainer v-if="mainMenu" @modal-close="mainMenu = false">
       <div class="modal">
-        <NookPhoneMenu v-model="mainMenu"/>
+        <NookPhoneMenu v-model="mainMenu" />
       </div>
-    </ModalContainer>
+    </ModalContainer> -->
   </div>
 </template>
 
 <script>
-import ColorPicker from '/components/ColorPicker.vue';
-import Palette from '/components/Palette.vue';
-import ThreeDRender from '/components/ThreeDRender.vue';
-import FileLoader from '/components/FileLoader.vue';
-import ImageLoader from '/components/ImageLoader.vue';
-import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
-import IconGenerator from '/components/IconGenerator.vue';
-import ModalContainer from '/components/ModalContainer.vue';
-import ToolSelector from '/components/ToolSelector.vue';
-import NookPhoneMenu from '/components/NookPhoneMenu.vue';
-import DrawingTool from '/libs/DrawingTool';
-import ACNLFormat from '/libs/ACNLFormat';
-import origin from '/libs/origin';
-import logger from '/utils/logger';
-import lzString from 'lz-string';
-import { saveAs } from 'file-saver';
-import JSZip from 'jszip';
-import saveSvg from '/assets/icons/bxs-save.svg';
-import scanSvg from '/assets/icons/bx-scan.svg';
-import paintSvg from '/assets/icons/bxs-paint.svg';
-import paletteSvg from '/assets/icons/bxs-palette.svg';
-import imageAddSvg from '/assets/icons/bxs-image-add.svg';
-import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
-import phoneSvg from '/assets/icons/bxs-mobile.svg';
-import downArrowSvg from '/assets/icons/bxs-down-arrow.svg';
-import upArrowSvg from '/assets/icons/bxs-up-arrow.svg';
+// import ColorPicker from "/components/ColorPicker.vue";
+// import Palette from "/components/Palette.vue";
+// import ThreeDRender from "/components/ThreeDRender.vue";
+// import FileLoader from "/components/FileLoader.vue";
+import ImageLoader from "/components/ImageLoader.vue";
+import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
+import IconGenerator from "/components/IconGenerator.vue";
+import ModalContainer from "/components/ModalContainer.vue";
+// import ToolSelector from "/components/ToolSelector.vue";
+// import NookPhoneMenu from "/components/NookPhoneMenu.vue";
+import DrawingTool from "/libs/DrawingTool";
+import ACNLFormat from "/libs/ACNLFormat";
+import origin from "/libs/origin";
+import logger from "/utils/logger";
+import lzString from "lz-string";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
+// import saveSvg from "/assets/icons/bxs-save.svg";
+// import scanSvg from "/assets/icons/bx-scan.svg";
+import paintSvg from "/assets/icons/bxs-paint.svg";
+// import paletteSvg from "/assets/icons/bxs-palette.svg";
+import imageAddSvg from "/assets/icons/bxs-image-add.svg";
+import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
+// import phoneSvg from "/assets/icons/bxs-mobile.svg";
+// import downArrowSvg from "/assets/icons/bxs-down-arrow.svg";
+import upArrowSvg from "/assets/icons/bxs-up-arrow.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
 export default {
   name: "Editor",
   components: {
-    ColorPicker,
-    Palette,
-    ThreeDRender,
-    FileLoader,
+    // ColorPicker,
+    // Palette,
+    // ThreeDRender,
+    // FileLoader,
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer,
-    ToolSelector,
-    NookPhoneMenu,
+    ModalContainer
+    // ToolSelector
+    // NookPhoneMenu
   },
-  beforeRouteUpdate: function (to, from, next) {
+  beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
-      if (to.hash.startsWith("#H:")){
-        origin.view(to.hash.substring(3)).then((r)=>{
+      if (to.hash.startsWith("#H:")) {
+        origin.view(to.hash.substring(3)).then((r) => {
           this.drawingTool.load(r);
         });
         next();
         return;
       }
-      let newHash = lzString.compressToEncodedURIComponent(this.drawingTool.toString());
+      let newHash = lzString.compressToEncodedURIComponent(
+        this.drawingTool.toString()
+      );
       if (to.hash !== "#" + newHash) {
-        this.drawingTool.load(lzString.decompressFromEncodedURIComponent(to.hash.substring(1)));
+        this.drawingTool.load(
+          lzString.decompressFromEncodedURIComponent(to.hash.substring(1))
+        );
       }
     }
     next();
@@ -371,14 +421,14 @@ export default {
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
-      saveSvg,
-      scanSvg,
+      // saveSvg,
+      // scanSvg,
       paintSvg,
       barcodeSvg,
-      paletteSvg,
+      // paletteSvg,
       imageAddSvg,
-      phoneSvg,
-      downArrowSvg,
+      // phoneSvg,
+      // downArrowSvg,
       upArrowSvg,
       pubStyleA: "",
       pubStyleB: "",
@@ -387,102 +437,129 @@ export default {
       pubTypeB: "",
       pubTypeC: "",
       pubNSFW: "",
-      publishModal: false,
-      origin,
+      // publishModal: false,
+      origin
     };
   },
   methods: {
-    async onPublish(){
-      let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
-      if (uplStatus["upload"]){
-        this.$router.push({ hash: "H:"+uplStatus["upload"] });
+    async onPublish() {
+      let uplStatus = await origin.upload(
+        btoa(this.drawingTool.toString()),
+        this.pubStyleA,
+        this.pubStyleB,
+        this.pubStyleC,
+        this.pubTypeA,
+        this.pubTypeB,
+        this.pubTypeC,
+        this.pubNSFW
+      );
+      if (uplStatus["upload"]) {
+        this.$router.push({ hash: "H:" + uplStatus["upload"] });
       } else if (uplStatus.includes("error")) {
-        window.alert("A pattern just like this already exists in the database!");
+        window.alert(
+          "A pattern just like this already exists in the database!"
+        );
       }
       this.publishModal = false;
     },
-    onOpenLocal(){
+    onOpenLocal() {
       let tmp = {};
-      for (const i in localStorage){
-        if (i.startsWith("acnl_")){
-          tmp[i] = new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(i)));
+      for (const i in localStorage) {
+        if (i.startsWith("acnl_")) {
+          tmp[i] = new DrawingTool(
+            lzString.decompressFromUTF16(localStorage.getItem(i))
+          );
         }
       }
       this.multiName = "Local storage";
       this.pickPatterns = tmp;
       this.allowMoveToLocal = false;
     },
-    zipPicksAsACNL(){
+    zipPicksAsACNL() {
       let zip = new JSZip();
       const titles = [];
-      for (const i in this.pickPatterns){
+      for (const i in this.pickPatterns) {
         let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
+        if (!(dt instanceof DrawingTool)) {
+          dt = new DrawingTool(dt);
+        }
         let title = dt.title + ".acnl";
         let k = 1;
-        while(titles.includes(title)) {
+        while (titles.includes(title)) {
           title = dt.title + "(" + k + ")" + ".ancl";
           k++;
         }
         zip.file(title, dt.toBytes());
         titles.push(title);
       }
-      zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
+      zip.generateAsync({ type: "blob" }).then((d) => {
+        saveAs(d, "patterns.zip");
+      });
     },
-    async zipPicksAsPNG(){
+    async zipPicksAsPNG() {
       let zip = new JSZip();
       const titles = [];
-      for (const i in this.pickPatterns){
+      for (const i in this.pickPatterns) {
         let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
+        if (!(dt instanceof DrawingTool)) {
+          dt = new DrawingTool(dt);
+        }
         const img = await generateACNLQR(dt);
         let title = dt.title + ".png";
         let k = 1;
-        while(titles.includes(title)) {
+        while (titles.includes(title)) {
           title = dt.title + "(" + k + ")" + ".png";
           k++;
         }
-        zip.file(title, img.substr(22), {base64:true});
+        zip.file(title, img.substr(22), { base64: true });
         titles.push(title);
       }
-      zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
+      zip.generateAsync({ type: "blob" }).then((d) => {
+        saveAs(d, "patterns.zip");
+      });
     },
-    async zipPicksAsBoth(){
+    async zipPicksAsBoth() {
       let zip = new JSZip();
       const titles = [];
-      for (const i in this.pickPatterns){
+      for (const i in this.pickPatterns) {
         let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
+        if (!(dt instanceof DrawingTool)) {
+          dt = new DrawingTool(dt);
+        }
         let ancl_title = dt.title + ".ancl";
         let k = 1;
-        while(titles.includes(ancl_title)) {
+        while (titles.includes(ancl_title)) {
           ancl_title = dt.title + "(" + k + ")" + ".ancl";
           k++;
         }
         const img_title = ancl_title.replace(".ancl", ".png");
         zip.file(ancl_title, dt.toBytes());
         const img = await generateACNLQR(dt);
-        zip.file(img_title, img.substr(22), {base64:true});
+        zip.file(img_title, img.substr(22), { base64: true });
         titles.push(ancl_title);
       }
-      zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
+      zip.generateAsync({ type: "blob" }).then((d) => {
+        saveAs(d, "patterns.zip");
+      });
     },
-    async downPNG(){
+    async downPNG() {
       const img = await generateACNLQR(this.drawingTool);
-      saveAs(img, this.drawingTool.title+".png");
+      saveAs(img, this.drawingTool.title + ".png");
     },
-    patInfoSave(publish=false){
+    patInfoSave(publish = false) {
       const patTitle = this.patTitle.trim();
       const patTown = this.patTown.trim();
       const patAuthor = this.patAuthor.trim();
-      const titleCheck = patTitle && patTitle !== 'Empty';
-      const townCheck = patTown && patTown !== 'Unknown';
-      const nameCheck = patAuthor && patAuthor !== 'Unknown';
-      if (titleCheck && townCheck && nameCheck){
+      const titleCheck = patTitle && patTitle !== "Empty";
+      const townCheck = patTown && patTown !== "Unknown";
+      const nameCheck = patAuthor && patAuthor !== "Unknown";
+      if (titleCheck && townCheck && nameCheck) {
         this.drawingTool.title = this.patTitle;
-        if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
-        if (this.drawingTool.town[0] !== this.patTown) this.drawingTool.town = this.patTown;
-        if (this.drawingTool.patternType !== this.patType){
+        if (this.drawingTool.creator[0] !== this.patAuthor)
+          this.drawingTool.creator = this.patAuthor;
+        if (this.drawingTool.town[0] !== this.patTown)
+          this.drawingTool.town = this.patTown;
+        if (this.drawingTool.patternType !== this.patType) {
           this.drawingTool.patternType = this.patType;
           this.patTypeName = this.drawingTool.typeInfo.name;
         }
@@ -490,43 +567,53 @@ export default {
         if (publish) this.onPublish();
         return;
       }
-      alert('Please provide a valid pattern name, town name, and player name for this pattern.');
+      alert(
+        "Please provide a valid pattern name, town name, and player name for this pattern."
+      );
     },
-    async onOpenDB(){
-      this.$router.push("/browse");
+    async onOpenDB() {
+      // this.$router.push("/browse");
     },
-    onLocalSave(){
-      localStorage.setItem("acnl_"+this.drawingTool.fullHash, lzString.compressToUTF16(this.drawingTool.toString()));
-    },
-    picksToLocal(){
-      for (const i in this.pickPatterns){
-        localStorage.setItem("acnl_"+this.pickPatterns[i].fullHash, lzString.compressToUTF16(this.pickPatterns[i].toString()));
+    // onLocalSave() {
+    //   localStorage.setItem(
+    //     "acnl_" + this.drawingTool.fullHash,
+    //     lzString.compressToUTF16(this.drawingTool.toString())
+    //   );
+    // },
+    picksToLocal() {
+      for (const i in this.pickPatterns) {
+        localStorage.setItem(
+          "acnl_" + this.pickPatterns[i].fullHash,
+          lzString.compressToUTF16(this.pickPatterns[i].toString())
+        );
       }
     },
-    toolChange(newTool){
-      this.drawingTool.drawHandler = newTool;
-    },
-    toolChangeAlt(newTool){
-      this.drawingTool.drawHandlerAlt = newTool;
-    },
-    downACNL(){
-      const blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
-      saveAs(blob, this.drawingTool.title+".acnl");
-    },
-    onColorPicked: function(color) {
-      const currentColor = this.drawingTool.currentColor;
-      if (this.drawingTool.getPalette(currentColor) === color) return;
-      this.drawingTool.pushUndo();
-      this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-      logger.info(`color picked: ${color}`);
-    },
+    // toolChange(newTool) {
+    //   this.drawingTool.drawHandler = newTool;
+    // },
+    // toolChangeAlt(newTool) {
+    //   this.drawingTool.drawHandlerAlt = newTool;
+    // },
+    // downACNL() {
+    //   const blob = new Blob([this.drawingTool.toBytes()], {
+    //     type: "application/octet-stream"
+    //   });
+    //   saveAs(blob, this.drawingTool.title + ".acnl");
+    // },
+    // onColorPicked: function(color) {
+    //   const currentColor = this.drawingTool.currentColor;
+    //   if (this.drawingTool.getPalette(currentColor) === color) return;
+    //   this.drawingTool.pushUndo();
+    //   this.drawingTool.setPalette(this.drawingTool.currentColor, color);
+    //   logger.info(`color picked: ${color}`);
+    // },
     onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
       logger.info(`changed current color: ${idx}`);
     },
-    onLoad: async function(t){
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -552,11 +639,11 @@ export default {
     extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onConvert: function(patterns){
+    onConvert: function(patterns) {
       this.convertImage = false;
-      if (patterns.length == 1){
+      if (patterns.length == 1) {
         this.extLoad(patterns[0]);
-      }else{
+      } else {
         this.multiName = "Conversion result";
         this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
@@ -571,7 +658,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    pickPattern: function(p){
+    pickPattern: function(p) {
       this.extLoad(p);
       this.pickPatterns = false;
     },
@@ -582,74 +669,77 @@ export default {
       // this.$router.push("/");
       this.mainMenu = true;
     },
-    openColorPicker: function() {
-      if (this.drawingTool.currentColor !== 15) {
-        this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:315)+'px';
-        return;
-      }
-      alert('This one has to stay transparent. :)');
-    },
-    closeColorPicker: function() {
-      this.$refs.colorPickerMenu.style.height = '0px';
-    },
-    saveAuthor(){
-      this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
+    // openColorPicker: function() {
+    //   if (this.drawingTool.currentColor !== 15) {
+    //     this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
+    //     this.$refs.colorPickerMenu.style.height =
+    //       (!this.$data.colorPickerMenu ? 0 : 315) + "px";
+    //     return;
+    //   }
+    //   alert("This one has to stay transparent. :)");
+    // },
+    // closeColorPicker: function() {
+    //   this.$refs.colorPickerMenu.style.height = "0px";
+    // },
+    saveAuthor() {
+      this.storedAuthorHuman =
+        this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
       localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
     },
-    loadAuthor(){
+    loadAuthor() {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
     }
   },
   mounted: function() {
-    if (localStorage.getItem("author_acnl")){
+    if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
-      this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
+      this.storedAuthorHuman =
+        this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
     }
-    this.drawingTool.addCanvas(this.$refs.canvas1, {grid:true});
+    this.drawingTool.addCanvas(this.$refs.canvas1, { grid: true });
     this.drawingTool.addCanvas(this.$refs.canvas2);
     this.drawingTool.addCanvas(this.$refs.canvas3);
     this.allTypes = this.drawingTool.allTypes;
     this.drawingTool.onLoad(this.onLoad);
-    if (this.$router.currentRoute.hash.length > 1){
+    if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
-      if (hash.startsWith("H:")){
-        origin.view(hash.substring(2)).then((r)=>{
+      if (hash.startsWith("H:")) {
+        origin.view(hash.substring(2)).then((r) => {
           this.drawingTool.load(r);
         });
-      }else{
+      } else {
         this.drawingTool.load(lzString.decompressFromEncodedURIComponent(hash));
       }
-    }
-    else{
+    } else {
       this.onLoad();
       this.drawingTool.render();
     }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.key === 'Z'){
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
         return;
       }
-      if (e.ctrlKey && e.key === 'z'){
+      if (e.ctrlKey && e.key === "z") {
         this.drawingTool.undo();
         e.preventDefault();
         return;
       }
     });
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-button, input[type="button"] {
+button,
+input[type="button"] {
   background-color: #7e7261;
   border: none;
   border-radius: 35px;
-  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0 8px;
   color: #eff1d8;
   cursor: pointer;
   display: inline-flex;
@@ -659,12 +749,9 @@ button, input[type="button"] {
   text-transform: uppercase;
   padding: 10px 14px;
 }
-input[type="button"].downACNL, button.downACNL {
-  background-color: #57b7a8;
-  color: #ffffff;
-}
+
 button.editInfo {
-  background-color: #60BB55;
+  background-color: #60bb55;
   margin: 0 0 5px;
 }
 .editor {
@@ -675,20 +762,20 @@ button.editInfo {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  display:flex;
-  margin:50px auto;
+  display: flex;
+  margin: 50px auto;
   max-width: 80%;
 }
-.modal-centered{
+.modal-centered {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  display:flex;
+  display: flex;
 }
 .modal-header {
   background-color: rgba(47, 31, 14, 0.9);
   border-radius: 45px 45px 0 0;
-  color: #FFFFFF;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -696,7 +783,7 @@ button.editInfo {
   min-width: 300px;
 }
 .modal-window {
-  color: #FFFFFF;
+  color: #ffffff;
   background-color: rgba(47, 31, 14, 0.9);
   border-radius: 35px;
   padding: 25px;
@@ -730,8 +817,8 @@ button.editInfo {
   display: inline-block;
   line-height: 40px;
 }
-.info-text span{
-  color: #00C3C9;
+.info-text span {
+  color: #00c3c9;
 }
 .topbar-buttons {
   display: inline-flex;
@@ -740,23 +827,26 @@ button.editInfo {
   height: 62px;
 }
 .topbar-buttons .menu-button {
-  background-color: #DC8D69;
-  color: #FFFFFF;
+  background-color: #dc8d69;
+  color: #ffffff;
 }
 main {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
-main .left, .center, .right {
+main .left,
+.center,
+.right {
   display: flex;
   flex-direction: column;
 }
 main .left {
   padding-right: 40px;
 }
-main .center canvas, main .left canvas {
-  box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
+main .center canvas,
+main .left canvas {
+  box-shadow: 0px 12px 12px -3px rgba(0, 0, 0, 0.3);
 }
 main .center .colorPicker-menu {
   height: 0;
@@ -794,7 +884,7 @@ main .center .colorPicker-menu button {
   height: 25px;
   width: 25px;
 }
-.svg.toolbar{
+.svg.toolbar {
   height: 50px;
   width: 50px;
 }
@@ -802,7 +892,7 @@ main .center .colorPicker-menu button {
   background-color: #ffffff;
 }
 .svg.brown-circle {
-  background-color: #EFF1D8;
+  background-color: #eff1d8;
 }
 .previews {
   display: inline-flex;
@@ -824,47 +914,48 @@ main .center .colorPicker-menu button {
   flex-direction: column;
   align-items: right;
 }
-.tool-buttons button{
-  margin:5px;
+.tool-buttons button {
+  margin: 5px;
 }
-canvas.fordrawing{
-  background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
+canvas.fordrawing {
+  background: repeating-linear-gradient(
+    -45deg,
+    #ddd,
+    #ddd 5px,
+    #fff 5px,
+    #fff 10px
+  );
 }
-.pattern-info{
+.pattern-info {
   margin: 10px 0;
   max-width: 196px;
   overflow: hidden;
 }
-.render-preview{
-  border: 3px solid #7e7261;;
-  width: 196px;
-  height: 300px;
-  border-radius: 5px;
-}
-#change-info-modal.modal-window{
+
+#change-info-modal.modal-window {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-#change-info-modal.modal-window .edit-info{
+#change-info-modal.modal-window .edit-info {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 500px;
   max-width: 60%;
 }
-#change-info-modal.modal-window .edit-info span{
+#change-info-modal.modal-window .edit-info span {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 60%;
 }
-#change-info-modal.modal-window .edit-notice{
+#change-info-modal.modal-window .edit-notice {
   max-width: 600px;
   margin: 20px;
 }
-#publish-modal.modal-window{
+#publish-modal.modal-window {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -875,7 +966,7 @@ canvas.fordrawing{
   padding: 0 0 0 30px;
 }
 #publish-modal.modal-window .left,
-  #publish-modal.modal-window .right {
+#publish-modal.modal-window .right {
   flex: 1 1 0;
   align-items: center;
   max-width: 400px;
@@ -885,7 +976,8 @@ canvas.fordrawing{
   flex-direction: column;
   width: 100%;
 }
-#publish-modal.modal-window .dropdown, #publish-modal.modal-window span {
+#publish-modal.modal-window .dropdown,
+#publish-modal.modal-window span {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
