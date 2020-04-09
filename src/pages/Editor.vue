@@ -1,11 +1,16 @@
 <template v-for="i in 1">
   <div class="editor">
+    <ImageLoader
+      class="modal-window"
+      :pattern-type="patType"
+      @converted="onConvert"
+    />
     <main>
       <div class="left">
         <div class="previews">
           <div class="2D">
             <canvas class="fordrawing" ref="canvas2" width="128" height="128" />
-            <canvas class="fordrawing" ref="canvas3" width="64" height="64" />
+            <!-- <canvas class="fordrawing" ref="canvas3" width="64" height="64" /> -->
             <div class="pattern-info">
               <div class="pattern_title">{{ patTitle }}</div>
               <div class="pattern_author">by {{ patAuthor }}</div>
@@ -32,7 +37,7 @@
           :drawing-tool="drawingTool"
           @changed-current-color="onChangedCurrentColor"
         /> -->
-        <canvas class="fordrawing" ref="canvas1" width="512" height="512" />
+        <!-- <canvas class="fordrawing" ref="canvas1" width="512" height="512" /> -->
         <!-- <div class="colorPicker-menu" ref="colorPickerMenu">
           <ColorPicker
             ref="colorPicker"
@@ -58,10 +63,10 @@
               <object class="svg nav brown-circle" :data="paletteSvg"></object>
               Open Color Editor
             </button> -->
-            <button @click="convertImage = true">
+            <!-- <button @click="convertImage = true">
               <object class="svg nav brown-circle" :data="imageAddSvg"></object>
               Convert
-            </button>
+            </button> -->
             <!-- <button @click="$refs.fileloader.open()">
               <object class="svg nav brown-circle" :data="scanSvg"></object>
               Load file / code
@@ -133,7 +138,7 @@
       </div>
     </ModalContainer> -->
 
-    <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
+    <!-- <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
       <div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="imageAddSvg"></object>
@@ -145,7 +150,7 @@
           @converted="onConvert"
         />
       </div>
-    </ModalContainer>
+    </ModalContainer> -->
 
     <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
       <div class="modal">
@@ -360,13 +365,13 @@ import { saveAs } from "file-saver";
 import JSZip from "jszip";
 // import saveSvg from "/assets/icons/bxs-save.svg";
 // import scanSvg from "/assets/icons/bx-scan.svg";
-import paintSvg from "/assets/icons/bxs-paint.svg";
+// import paintSvg from "/assets/icons/bxs-paint.svg";
 // import paletteSvg from "/assets/icons/bxs-palette.svg";
-import imageAddSvg from "/assets/icons/bxs-image-add.svg";
+// import imageAddSvg from "/assets/icons/bxs-image-add.svg";
 import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
 // import phoneSvg from "/assets/icons/bxs-mobile.svg";
 // import downArrowSvg from "/assets/icons/bxs-down-arrow.svg";
-import upArrowSvg from "/assets/icons/bxs-up-arrow.svg";
+// import upArrowSvg from "/assets/icons/bxs-up-arrow.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
 export default {
@@ -419,17 +424,17 @@ export default {
       pickPatterns: false,
       multiName: "Local storage",
       allowMoveToLocal: true,
-      convertImage: false,
+      // convertImage: false,
       mainMenu: false,
       // saveSvg,
       // scanSvg,
-      paintSvg,
+      // paintSvg,
       barcodeSvg,
       // paletteSvg,
-      imageAddSvg,
+      // imageAddSvg,
       // phoneSvg,
       // downArrowSvg,
-      upArrowSvg,
+      // upArrowSvg,
       pubStyleA: "",
       pubStyleB: "",
       pubStyleC: "",
@@ -462,19 +467,19 @@ export default {
       }
       this.publishModal = false;
     },
-    onOpenLocal() {
-      let tmp = {};
-      for (const i in localStorage) {
-        if (i.startsWith("acnl_")) {
-          tmp[i] = new DrawingTool(
-            lzString.decompressFromUTF16(localStorage.getItem(i))
-          );
-        }
-      }
-      this.multiName = "Local storage";
-      this.pickPatterns = tmp;
-      this.allowMoveToLocal = false;
-    },
+    // onOpenLocal() {
+    //   let tmp = {};
+    //   for (const i in localStorage) {
+    //     if (i.startsWith("acnl_")) {
+    //       tmp[i] = new DrawingTool(
+    //         lzString.decompressFromUTF16(localStorage.getItem(i))
+    //       );
+    //     }
+    //   }
+    //   this.multiName = "Local storage";
+    //   this.pickPatterns = tmp;
+    //   this.allowMoveToLocal = false;
+    // },
     zipPicksAsACNL() {
       let zip = new JSZip();
       const titles = [];
@@ -640,7 +645,7 @@ export default {
       this.drawingTool.load(data);
     },
     onConvert: function(patterns) {
-      this.convertImage = false;
+      // this.convertImage = false;
       if (patterns.length == 1) {
         this.extLoad(patterns[0]);
       } else {
@@ -698,9 +703,9 @@ export default {
       this.storedAuthorHuman =
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
     }
-    this.drawingTool.addCanvas(this.$refs.canvas1, { grid: true });
+    // this.drawingTool.addCanvas(this.$refs.canvas1, { grid: true });
     this.drawingTool.addCanvas(this.$refs.canvas2);
-    this.drawingTool.addCanvas(this.$refs.canvas3);
+    // this.drawingTool.addCanvas(this.$refs.canvas3);
     this.allTypes = this.drawingTool.allTypes;
     this.drawingTool.onLoad(this.onLoad);
     if (this.$router.currentRoute.hash.length > 1) {
