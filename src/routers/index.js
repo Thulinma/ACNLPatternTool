@@ -1,7 +1,17 @@
-import offlineRouter from "./offline";
-import onlineRouter from "./online";
-import { ifOfflineVal } from "/utils/if-env";
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Editor from '/pages/Editor.vue';
+Vue.use(VueRouter);
 
-const selectedRouter = ifOfflineVal(offlineRouter, onlineRouter);
+const mode = "history";
 
-export default selectedRouter;
+const routes = [
+  { path: `/`, component: Editor },
+];
+
+const router = new VueRouter({
+  mode,
+  routes
+});
+
+export default router;
