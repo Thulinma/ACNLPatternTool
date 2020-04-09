@@ -17,9 +17,9 @@
               <div class="pattern_town">from {{ patTown }}</div>
               <div class="pattern_typename">{{ patTypeName }}</div>
             </div>
-            <button class="editInfo" @click="patInfoModal = true">
+            <!--   <button class="editInfo" @click="patInfoModal = true">
               Change
-            </button>
+            </button> -->
           </div>
           <!--  <div class="render-preview">
             <ThreeDRender
@@ -146,31 +146,31 @@
       </div>
     </ModalContainer> -->
 
-    <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
+    <!-- <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
       <div class="modal">
         <div class="modal-header">
           Edit Pattern Details
         </div>
         <div class="modal-window" id="change-info-modal">
-          <div class="edit-info">
-            <span
+          <div class="edit-info"> -->
+    <!--  <span
               >Title: <input type="text" maxlength="20" v-model="patTitle"
-            /></span>
-            <span
+            /></span> -->
+    <!--  <span
               >Author: <input type="text" maxlength="9" v-model="patAuthor"
-            /></span>
-            <span
+            /></span> -->
+    <!--    <span
               >Town: <input type="text" maxlength="9" v-model="patTown"
-            /></span>
-            <span
+            /></span> -->
+    <!-- <span
               >Type:
               <select v-model="patType">
                 <option v-for="(ti, no) in allTypes" :key="no" :value="no"
                   >{{ ti.name }}
                 </option>
               </select>
-            </span>
-          </div>
+            </span> -->
+    <!--  </div>
           <div v-if="storedAuthorHuman">Stored: {{ storedAuthorHuman }}</div>
           <p class="edit-notice">
             <b>Note:</b> You can't just type in your own name and town to make a
@@ -199,7 +199,7 @@
           </div>
         </div>
       </div>
-    </ModalContainer>
+    </ModalContainer> -->
 
     <!-- <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
       <div class="modal">
@@ -378,7 +378,7 @@ export default {
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer,
+    ModalContainer
     // ToolSelector
     // NookPhoneMenu
   },
@@ -406,9 +406,9 @@ export default {
     return {
       drawingTool: new DrawingTool(),
       qrCode: false,
-      patTitle: "Empty",
-      patAuthor: "Unknown",
-      patTown: "Unknown",
+
+      // patAuthor: "Unknown",
+      // patTown: "Unknown",
       allTypes: [],
       storedAuthorHuman: false,
       patInfoModal: false,
@@ -437,8 +437,22 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
+  },
+  computed: {
+    patAuthor() {
+      //calculate author here, max length 9
+      return "Temp author";
+    },
+    patTitle() {
+      //calculate pattern title here, max length 20
+      return "Placeholder title";
+    },
+    patTown() {
+      // this could stay in data (what should be town name?) - max length 9
+      return "Town Name";
+    }
   },
   methods: {
     async onPublish() {
@@ -616,9 +630,9 @@ export default {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
-      this.patTitle = this.drawingTool.title;
-      this.patAuthor = this.drawingTool.creator[0];
-      this.patTown = this.drawingTool.town[0];
+      // this.patTitle = this.drawingTool.title;
+      // this.patAuthor = this.drawingTool.creator[0];
+      // this.patTown = this.drawingTool.town[0];
 
       // need to wait 2 ticks before access ref in portal
       // AFTER setting isOpenModal to true
@@ -691,7 +705,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -730,7 +744,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
