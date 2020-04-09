@@ -15,7 +15,7 @@
             <div class="pattern_title">{{ patTitle }}</div>
             <div class="pattern_author">by {{ patAuthor }}</div>
             <div class="pattern_town">from {{ patTown }}</div>
-            <div class="pattern_typename">{{ patTypeName }}</div>
+            <!-- <div class="pattern_typename">{{ patTypeName }}</div> -->
           </div>
           <!--   <button class="editInfo" @click="patInfoModal = true">
               Change
@@ -100,7 +100,6 @@
 
     <div class="">
       Generate QR Code(s)
-
       <ACNLQRGenerator :pattern="qrCode" />
       <button @click="downPNG">Save image</button>
     </div>
@@ -443,15 +442,15 @@ export default {
   computed: {
     patAuthor() {
       //calculate author here, max length 9
-      return "Temp author";
+      return "Author name";
     },
     patTitle() {
       //calculate pattern title here, max length 20
-      return "Placeholder title";
+      return "Artwork title";
     },
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
-      return "Town Name";
+      return "Town name";
     }
   },
   methods: {
@@ -944,56 +943,5 @@ canvas.fordrawing {
   margin: 10px 0;
   max-width: 196px;
   overflow: hidden;
-}
-
-#change-info-modal.modal-window {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#change-info-modal.modal-window .edit-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 500px;
-  max-width: 60%;
-}
-#change-info-modal.modal-window .edit-info span {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 60%;
-}
-#change-info-modal.modal-window .edit-notice {
-  max-width: 600px;
-  margin: 20px;
-}
-#publish-modal.modal-window {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-#publish-modal.modal-window ol {
-  list-style: decimal;
-  margin: 10px 0;
-  padding: 0 0 0 30px;
-}
-#publish-modal.modal-window .left,
-#publish-modal.modal-window .right {
-  flex: 1 1 0;
-  align-items: center;
-  max-width: 400px;
-}
-#publish-modal.modal-window .dropdowns {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-#publish-modal.modal-window .dropdown,
-#publish-modal.modal-window span {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
 }
 </style>
