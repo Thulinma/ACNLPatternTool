@@ -1,9 +1,8 @@
 <template v-for="i in 1">
   <div>
     <section class="content">
-      <RichText :content="introText" contentType="json" />
+      <RichText :content="introText" contentType="markdown" />
       <Search @input="onSearchSelect" />
-
       <ImageLoader
         class=""
         :pattern-type="patType"
@@ -19,6 +18,8 @@
 </template>
 
 <script>
+import introText from "../data/intro_text.md";
+import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -367,7 +368,7 @@ export default {
 
 <style lang="scss">
 .content {
-  padding: 74px 36px;
+  padding: 26px 36px;
 }
 .o-hero__title {
   font-size: 28px !important;
