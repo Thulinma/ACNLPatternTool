@@ -1,10 +1,10 @@
 <template v-for="i in 1">
   <div class="editor">
-    <UrlInput v-model="iiifUrl" />
+    <UrlInput v-model="iiif" />
     <ImageLoader
       class=""
       :pattern-type="patType"
-      :iiif-url="iiifUrl.url"
+      :iiif-url="iiif.url"
       @converted="onConvert"
     />
     <main>
@@ -71,7 +71,7 @@ export default {
 
   data: function() {
     return {
-      iiifUrl: {
+      iiif: {
         url:
           "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
       },
