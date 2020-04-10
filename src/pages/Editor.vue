@@ -1,17 +1,12 @@
 <template v-for="i in 1">
   <div class="editor">
-    <input
-      class="iiif-input"
-      v-model="dataUrl"
-      placeholder="IIIF Url Goes Here"
-    />
+    <UrlInput v-model="iiif" />
     <ImageLoader
       class=""
       :pattern-type="patType"
-      :data-url="dataUrl"
+      :iiif-url="iiif.url"
       @converted="onConvert"
     />
-
     <main>
       <div class="previews">
         <div class="2D">
@@ -29,14 +24,6 @@
       <ACNLQRGenerator :pattern="qrCode" />
       <button @click="downPNG">Save image</button>
     </div>
-
-    <ModalContainer v-if="false">
-      <div class="modal-info">
-        <div class="info-text">
-          <p>Please select files with the <span>.acnl</span> extension.</p>
-        </div>
-      </div>
-    </ModalContainer>
   </div>
 </template>
 
@@ -44,8 +31,6 @@
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
-import IconGenerator from "/components/IconGenerator.vue";
-import ModalContainer from "/components/ModalContainer.vue";
 import DrawingTool from "/libs/DrawingTool";
 import ACNLFormat from "/libs/ACNLFormat";
 import origin from "/libs/origin";
@@ -61,9 +46,7 @@ export default {
   components: {
     UrlInput,
     ImageLoader,
-    ACNLQRGenerator,
-    IconGenerator,
-    ModalContainer,
+    ACNLQRGenerator
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -85,10 +68,13 @@ export default {
     }
     next();
   },
+
   data: function() {
     return {
-      dataUrl:
-        "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
+      iiif: {
+        url:
+          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
+      },
       drawingTool: new DrawingTool(),
       qrCode: false,
       allTypes: [],
@@ -111,7 +97,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
   },
   computed: {
@@ -126,7 +112,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    },
+    }
   },
   methods: {
     async onPublish() {
@@ -327,18 +313,6 @@ export default {
       // this.$router.push("/");
       this.mainMenu = true;
     },
-    // openColorPicker: function() {
-    //   if (this.drawingTool.currentColor !== 15) {
-    //     this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-    //     this.$refs.colorPickerMenu.style.height =
-    //       (!this.$data.colorPickerMenu ? 0 : 315) + "px";
-    //     return;
-    //   }
-    //   alert("This one has to stay transparent. :)");
-    // },
-    // closeColorPicker: function() {
-    //   this.$refs.colorPickerMenu.style.height = "0px";
-    // },
     saveAuthor() {
       this.storedAuthorHuman =
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
@@ -348,7 +322,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -387,7 +361,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
@@ -419,68 +393,6 @@ button.editInfo {
 .editor {
   user-select: none;
   color: #7e7261;
-}
-.modal {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  margin: 50px auto;
-  max-width: 80%;
-}
-.modal-centered {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
-.modal-header {
-  background-color: rgba(47, 31, 14, 0.9);
-  border-radius: 45px 45px 0 0;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 30px 0;
-  min-width: 300px;
-}
-.modal-window {
-  color: #ffffff;
-  background-color: rgba(47, 31, 14, 0.9);
-  border-radius: 35px;
-  padding: 25px;
-  min-width: 600px;
-}
-.modal-info {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  position: fixed;
-  top: 55%;
-  color: #ffffff;
-  font-size: 32px;
-  text-align: center;
-}
-.info-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(21, 50, 69, 0.7);
-  border-radius: 35px;
-  padding: 40px;
-  min-width: 800px;
-  min-height: 150px;
-  max-width: 60%;
-  max-height: 60%;
-}
-.info-text p {
-  width: 350px;
-  display: inline-block;
-  line-height: 40px;
-}
-.info-text span {
-  color: #00c3c9;
 }
 .topbar-buttons {
   display: inline-flex;
@@ -530,53 +442,11 @@ main .center .colorPicker-menu button {
   padding: 20px 10% 0 0;
   text-align: right;
 }
-.svg {
-  padding: 5px;
-  pointer-events: none;
-}
-.svg-small {
-  height: 10px;
-  width: 10px;
-  padding: 5px;
-  pointer-events: none;
-}
-.svg.nav {
-  border-radius: 100%;
-  margin-right: 5px;
-  height: 25px;
-  width: 25px;
-}
-.svg.toolbar {
-  height: 50px;
-  width: 50px;
-}
-.svg.white-circle {
-  background-color: #ffffff;
-}
-.svg.brown-circle {
-  background-color: #eff1d8;
-}
 .previews {
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
   padding-top: 62px;
-}
-.tools-and-colors {
-  height: 512px;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 0 35px 35px 0;
-  background-color: #f1b5c1;
-}
-.tool-buttons {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: right;
-}
-.tool-buttons button {
-  margin: 5px;
 }
 canvas.fordrawing {
   background: repeating-linear-gradient(
