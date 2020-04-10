@@ -404,8 +404,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .content {
   padding: 74px 36px;
+}
+.o-hero__title {
+  font-size: 28px !important;
 }
 </style>
