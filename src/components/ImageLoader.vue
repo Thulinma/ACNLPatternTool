@@ -559,8 +559,8 @@ $white: #FFFFFF;
     }
     #preview-buttons {
       display: flex;
-      justify-content: space-between;
-      max-width: 220px;
+      justify-content: space-around;
+      width: 300px;
     }
   }
 
