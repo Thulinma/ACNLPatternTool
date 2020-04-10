@@ -1,34 +1,42 @@
 <template v-for="i in 1">
-  <div class="editor">
-    <UrlInput v-model="iiif" />
-    <Search @input="onSearchSelect" />
-    <ImageLoader
-      class=""
-      :pattern-type="patType"
-      :iiif-url="iiif.url"
-      @converted="onConvert"
+  <div>
+    <Header
+      :primary-nav="HeaderData.primaryItems"
+      :secondary-nav="HeaderData.secondaryItems"
+      :museum-info="HeaderData.museumInfo"
+      :has-search="HeaderData.hasSearch"
+      :force-on-dark="HeaderData.forceOnDark"
+      :sticky="true"
     />
-    <main>
-      <div class="previews">
-        <div class="2D">
-          <div class="pattern-info">
-            <div class="pattern_title">{{ patTitle }}</div>
-            <div class="pattern_author">by {{ patAuthor }}</div>
-            <div class="pattern_town">from {{ patTown }}</div>
-          </div>
-        </div>
-      </div>
-    </main>
+    <div>
+      <UrlInput v-model="iiif" />
+      <Search />
+      <ImageLoader
+        class=""
+        :pattern-type="patType"
+        :iiif-url="iiif.url"
+        @converted="onConvert"
+      />
 
-    <div class="">
-      Generate QR Code(s)
-      <ACNLQRGenerator :pattern="qrCode" />
-      <button @click="downPNG">Save image</button>
+      <div>
+        <div class="pattern_title">{{ patTitle }}</div>
+        <div class="pattern_author">by {{ patAuthor }}</div>
+        <div class="pattern_town">from {{ patTown }}</div>
+      </div>
+
+      <div>
+        Generate QR Code(s)
+        <ACNLQRGenerator :pattern="qrCode" />
+        <button @click="downPNG">Save image</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
+
+import { Header, Footer } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -46,6 +54,7 @@ import generateACNLQR from "/libs/ACNLQRGenerator";
 export default {
   name: "Editor",
   components: {
+    Header,
     UrlInput,
     Search,
     ImageLoader,
@@ -74,6 +83,7 @@ export default {
 
   data: function() {
     return {
+      HeaderData: HeaderData,
       iiif: {
         url:
           "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
@@ -371,101 +381,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.iiif-input {
-  width: 80%;
-  margin: 1em;
-}
-button,
-input[type="button"] {
-  background-color: #7e7261;
-  border: none;
-  border-radius: 35px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 8px;
-  color: #eff1d8;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  padding: 10px 14px;
-}
-
-button.editInfo {
-  background-color: #60bb55;
-  margin: 0 0 5px;
-}
-.editor {
-  user-select: none;
-  color: #7e7261;
-}
-.topbar-buttons {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-evenly;
-  height: 62px;
-}
-.topbar-buttons .menu-button {
-  background-color: #dc8d69;
-  color: #ffffff;
-}
-main {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-main .left,
-.center,
-.right {
-  display: flex;
-  flex-direction: column;
-}
-main .left {
-  padding-right: 40px;
-}
-main .center canvas,
-main .left canvas {
-  box-shadow: 0px 12px 12px -3px rgba(0, 0, 0, 0.3);
-}
-main .center .colorPicker-menu {
-  height: 0;
-  position: fixed;
-  z-index: 1;
-  overflow: hidden;
-  transition: 0.5s;
-  top: 60px;
-  border-radius: 0 0 35px 35px;
-  background-color: #f1b5c1;
-  left: 50%;
-  transform: translate(-50%);
-}
-main .center .colorPicker-menu button {
-  display: block;
-  margin: 0 auto;
-}
-.bottom-buttons {
-  padding: 20px 10% 0 0;
-  text-align: right;
-}
-.previews {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding-top: 62px;
-}
-canvas.fordrawing {
-  background: repeating-linear-gradient(
-    -45deg,
-    #ddd,
-    #ddd 5px,
-    #fff 5px,
-    #fff 10px
-  );
-}
-.pattern-info {
-  margin: 10px 0;
-  max-width: 196px;
-  overflow: hidden;
-}
-</style>
+<style lang="scss" scoped></style>

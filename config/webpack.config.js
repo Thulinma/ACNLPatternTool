@@ -113,7 +113,7 @@ const fileRules = [
     }
   }, // file-loaders for fonts
   {
-    test: /\.(ttf|woff|)$/i,
+    test: /\.(ttf|woff|eot|ttf|otf|woff2)$/i,
     use: {
       loader: "file-loader",
       options: {
