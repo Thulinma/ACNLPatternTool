@@ -24,16 +24,9 @@ export default {
   data() {
     return {
       value: "",
-      lookupData: [],
-      searchData: [],
+
       matches: [],
     };
-  },
-  mounted() {
-    this.searchData = imageData
-      .split("\n")
-      .map((line) => line.split("|")[0].toUpperCase());
-    this.lookupData = imageData.split("\n").map((line) => extractData(line));
   },
   methods: {
     choose(match) {
@@ -43,12 +36,13 @@ export default {
       let query = this.value;
       this.matches = [];
       console.log("searching imageData...", query);
-      this.searchData.forEach((_upper, index) => {
-        let _query = query.toUpperCase();
+      for (let _line of imageData.split("\n")) {
+        const _upper = _line.split("|")[0].toUpperCase();
+        const _query = query.toUpperCase();
         if (_upper.indexOf(_query) > -1) {
-          this.matches.push(this.lookupData[index]);
+          this.matches.push(extractData(_line));
         }
-      });
+      }
     },
   },
 };
