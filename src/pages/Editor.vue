@@ -33,8 +33,6 @@ import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
-import { RichText } from "@thegetty/getty-ui";
-import introText from "../data/intro-text.json";
 
 export default {
   name: "Editor",
