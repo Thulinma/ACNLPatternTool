@@ -31,7 +31,6 @@
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
-import IconGenerator from "/components/IconGenerator.vue";
 import DrawingTool from "/libs/DrawingTool";
 import ACNLFormat from "/libs/ACNLFormat";
 import origin from "/libs/origin";
@@ -47,8 +46,7 @@ export default {
   components: {
     UrlInput,
     ImageLoader,
-    ACNLQRGenerator,
-    IconGenerator
+    ACNLQRGenerator
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -408,68 +406,6 @@ button.editInfo {
   user-select: none;
   color: #7e7261;
 }
-.modal {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  margin: 50px auto;
-  max-width: 80%;
-}
-.modal-centered {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
-.modal-header {
-  background-color: rgba(47, 31, 14, 0.9);
-  border-radius: 45px 45px 0 0;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 30px 0;
-  min-width: 300px;
-}
-.modal-window {
-  color: #ffffff;
-  background-color: rgba(47, 31, 14, 0.9);
-  border-radius: 35px;
-  padding: 25px;
-  min-width: 600px;
-}
-.modal-info {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  position: fixed;
-  top: 55%;
-  color: #ffffff;
-  font-size: 32px;
-  text-align: center;
-}
-.info-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(21, 50, 69, 0.7);
-  border-radius: 35px;
-  padding: 40px;
-  min-width: 800px;
-  min-height: 150px;
-  max-width: 60%;
-  max-height: 60%;
-}
-.info-text p {
-  width: 350px;
-  display: inline-block;
-  line-height: 40px;
-}
-.info-text span {
-  color: #00c3c9;
-}
 .topbar-buttons {
   display: inline-flex;
   align-items: center;
@@ -518,53 +454,11 @@ main .center .colorPicker-menu button {
   padding: 20px 10% 0 0;
   text-align: right;
 }
-.svg {
-  padding: 5px;
-  pointer-events: none;
-}
-.svg-small {
-  height: 10px;
-  width: 10px;
-  padding: 5px;
-  pointer-events: none;
-}
-.svg.nav {
-  border-radius: 100%;
-  margin-right: 5px;
-  height: 25px;
-  width: 25px;
-}
-.svg.toolbar {
-  height: 50px;
-  width: 50px;
-}
-.svg.white-circle {
-  background-color: #ffffff;
-}
-.svg.brown-circle {
-  background-color: #eff1d8;
-}
 .previews {
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
   padding-top: 62px;
-}
-.tools-and-colors {
-  height: 512px;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 0 35px 35px 0;
-  background-color: #f1b5c1;
-}
-.tool-buttons {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: right;
-}
-.tool-buttons button {
-  margin: 5px;
 }
 canvas.fordrawing {
   background: repeating-linear-gradient(
