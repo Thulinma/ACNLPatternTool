@@ -1,13 +1,51 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <Header
+      :primary-nav="HeaderData.primaryItems"
+      :secondary-nav="HeaderData.secondaryItems"
+      :museum-info="HeaderData.museumInfo"
+      :has-search="HeaderData.hasSearch"
+      :force-on-dark="HeaderData.forceOnDark"
+      :sticky="true"
+    />
+    <Hero name="Content" :data="heroData" />
+    <section>
+      <div class="container">
+        <router-view></router-view>
+      </div>
+    </section>
+    <Footer
+      :primary-nav="FooterData.primaryNavigation"
+      :museum-info="FooterData.museumInfo"
+      :nav-grid="FooterData.navGrid"
+      :social="FooterData.social"
+      :social-all-link="FooterData.socialAllLink"
+    />
   </div>
 </template>
 
 <script>
 import "@thegetty/getty-ui/dist/getty-ui.css";
+import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
+import FooterData from "@thegetty/getty-ui/src/components/globals/footer/data.json";
+import { Header, Footer, Hero, RichText } from "@thegetty/getty-ui";
 export default {
   name: "App",
+  components: {
+    Header,
+    Hero,
+    Footer,
+  },
+  data: function () {
+    return {
+      HeaderData: HeaderData,
+      FooterData: FooterData,
+      heroData: {
+        title: "Animal Crossing: Getty Images",
+        backgroundColor: "garden",
+      },
+    };
+  },
 };
 </script>
 
