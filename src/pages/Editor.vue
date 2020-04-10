@@ -13,87 +13,15 @@
     />
 
     <main>
-      <!-- <div class="left"> -->
       <div class="previews">
         <div class="2D">
           <div class="pattern-info">
             <div class="pattern_title">{{ patTitle }}</div>
             <div class="pattern_author">by {{ patAuthor }}</div>
             <div class="pattern_town">from {{ patTown }}</div>
-            <!-- <div class="pattern_typename">{{ patTypeName }}</div> -->
           </div>
-          <!--   <button class="editInfo" @click="patInfoModal = true">
-              Change
-            </button> -->
         </div>
       </div>
-      <!-- </div> -->
-
-      <!-- <div class="center"> -->
-      <!--  <Palette
-          ref="palette"
-          :drawing-tool="drawingTool"
-          @changed-current-color="onChangedCurrentColor"
-        /> -->
-      <!-- <canvas class="fordrawing" ref="canvas1" width="512" height="512" /> -->
-      <!-- <div class="colorPicker-menu" ref="colorPickerMenu">
-          <ColorPicker
-            ref="colorPicker"
-            :drawing-tool="drawingTool"
-            @color-picked="onColorPicked"
-          />
-          <button @click="closeColorPicker">Close Menu</button>
-        </div> -->
-      <!-- </div> -->
-
-      <!-- <div class="right"> -->
-      <!-- <div class="topbar-buttons">
-          <button class="menu-button" @click="onMainMenu">
-            <object class="svg nav white-circle" :data="phoneSvg"></object>
-            Menu
-            <object class="svg-small" :data="downArrowSvg"></object>
-          </button>
-        </div> -->
-      <!-- <div class="tools-and-colors"> -->
-      <!-- <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /> -->
-      <!-- <div class="tool-buttons"> -->
-      <!-- <button @click="openColorPicker">
-              <object class="svg nav brown-circle" :data="paletteSvg"></object>
-              Open Color Editor
-            </button> -->
-      <!-- <button @click="convertImage = true">
-              <object class="svg nav brown-circle" :data="imageAddSvg"></object>
-              Convert
-            </button> -->
-      <!-- <button @click="$refs.fileloader.open()">
-              <object class="svg nav brown-circle" :data="scanSvg"></object>
-              Load file / code
-            </button> -->
-      <!-- <FileLoader
-              v-show="false"
-              ref="fileloader"
-              @qr-load="extLoad"
-              @qr-multiload="extMultiLoad"
-            /> -->
-      <!--  <button
-              class="downACNL"
-              :value="$tc('editor.download')"
-              @click="downACNL"
-            >
-              <object class="svg nav white-circle" :data="saveSvg"></object>
-              Save -->
-      <!-- <object class="svg-small" :data="upArrowSvg"></object> -->
-      <!-- </button> -->
-      <!-- <button @click="onOpenLocal">Open Storage</button> -->
-      <!-- <button @click="publishModal=true">Publish</button> -->
-      <!-- <button @click="onLocalSave">Store Locally</button> -->
-      <!--   <button @click="onQROpen">
-              <object class="svg nav brown-circle" :data="barcodeSvg"></object>
-              Generate QR Code
-            </button> -->
-      <!-- </div> -->
-      <!-- </div> -->
-      <!-- </div> -->
     </main>
 
     <div class="">
@@ -102,224 +30,6 @@
       <button @click="downPNG">Save image</button>
     </div>
 
-    <!--  <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
-      <div class="modal">
-        <div class="modal-header">{{ multiName }}</div>
-        <div class="modal-window pattern-list">
-          <button v-if="allowMoveToLocal" @click="picksToLocal">
-            Store all in local storage
-          </button>
-          <button @click="zipPicksAsACNL">
-            Download ACNL files as .zip file
-          </button>
-          <button @click="zipPicksAsPNG">Download QR codes as .zip file</button>
-          <button @click="zipPicksAsBoth">Download ACNL+QR as .zip file</button>
-          <br />
-          <IconGenerator
-            v-for="(opt, idx) in pickPatterns"
-            :key="idx"
-            width="150"
-            height="150"
-            text="true"
-            decoration="true"
-            @pattclick="pickPattern"
-            :pattern="opt"
-          />
-        </div>
-      </div>
-    </ModalContainer> -->
-
-    <!-- <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
-      <div class="modal">
-        <div class="modal-header">
-          <object class="svg nav" :data="imageAddSvg"></object>
-          Convert Image
-        </div>
-        <ImageLoader
-          class="modal-window"
-          :pattern-type="patType"
-          @converted="onConvert"
-        />
-      </div>
-    </ModalContainer> -->
-
-    <!-- <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
-      <div class="modal">
-        <div class="modal-header">
-          Edit Pattern Details
-        </div>
-        <div class="modal-window" id="change-info-modal">
-          <div class="edit-info"> -->
-    <!--  <span
-              >Title: <input type="text" maxlength="20" v-model="patTitle"
-            /></span> -->
-    <!--  <span
-              >Author: <input type="text" maxlength="9" v-model="patAuthor"
-            /></span> -->
-    <!--    <span
-              >Town: <input type="text" maxlength="9" v-model="patTown"
-            /></span> -->
-    <!-- <span
-              >Type:
-              <select v-model="patType">
-                <option v-for="(ti, no) in allTypes" :key="no" :value="no"
-                  >{{ ti.name }}
-                </option>
-              </select>
-            </span> -->
-    <!--  </div>
-          <div v-if="storedAuthorHuman">Stored: {{ storedAuthorHuman }}</div>
-          <p class="edit-notice">
-            <b>Note:</b> You can't just type in your own name and town to make a
-            pattern editable on your console.<br />
-            There is some "invisible" data attached to it that cannot be entered
-            by hand.<br />
-            Use the below copy/load buttons to first "copy" your name/town from
-            one of your own patterns from AC:NL.<br />
-            Then, "load" it onto any other pattern and it should become editable
-            for you in-game!<br />
-            The copied author information is stored into your browser, so it'll
-            be there for your future visits as well.
-          </p>
-          <div class="edit-buttons">
-            <button @click="saveAuthor">Copy author information</button>
-            <button @click="loadAuthor">Load copied author information</button>
-            <button @click="patInfoSave(false)">Save</button>
-            <button
-              @click="
-                patInfoModal = false;
-                onLoad();
-              "
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </ModalContainer> -->
-
-    <!-- <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
-      <div class="modal">
-        <div class="modal-header">
-          Publish to Public Database
-        </div>
-        <div class="modal-window" id="publish-modal">
-            <div class="left">
-              <p>
-              Really cool that you want to publish your pattern!<br />
-              Publishing means everyone will be able to search for and link to your pattern easily, hopefully allowing many others to enjoy your work.<br />
-              Please do keep the following in mind:
-              </p>
-              <ol>
-                <li>Published patterns cannot be deleted or edited. So, please don't publish unfinished works.</li>
-                <li>Please try to title and tag your pattern appropriately, so that it can be found easily.</li>
-                <li>If any pattern might be inappropriate for children, please flag it accordingly to protect the innocent.</li>
-                <li>Be nice to authors! It's okay to publish the work of others, but please don't change an existing work's author name/town to your own. Respect their skills!</li>
-              </ol>
-              <p>
-                Not following the above rules may lead to your published pattern being deleted from the database.
-              </p>
-            </div>
-            <div class="right">
-              <IconGenerator :pattern="drawingTool" width=150 height=150 />
-              <div class="dropdowns">
-                <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
-                <span>Author: <input type="text" maxlength="9" v-model="patAuthor"></span>
-                <span>Town: <input type="text" maxlength="9" v-model="patTown"></span>
-                <span>Type:
-                  <select v-model="patType">
-                    <option
-                      v-for="(ti, no) in allTypes"
-                      :key="no"
-                      :value="no">{{ti.name}}
-                    </option>
-                  </select>
-                </span>
-                <div class="dropdown">
-                <span>Main Style:</span>
-                <select v-model="pubStyleA">
-                  <option value="">-</option>
-                  <option
-                    v-for="(s, no) in origin.tags_style"
-                    :key="no"
-                    :value="s">
-                    {{s}}
-                  </option>
-                </select>
-                </div>
-                <div class="dropdown">
-                  <span>Additional Style:</span>
-                  <select v-model="pubStyleB">
-                    <option value="">-</option>
-                    <option
-                      v-for="(s, no) in origin.tags_style"
-                      :key="no"
-                      :value="s">
-                      {{s}}
-                    </option>
-                  </select>
-                </div>
-                <div class="dropdown">
-                  <span>Additional Style:</span>
-                  <select v-model="pubStyleC">
-                    <option value="">-</option>
-                    <option
-                      v-for="(s, no) in origin.tags_style"
-                      :key="no"
-                      :value="s">
-                      {{s}}
-                    </option>
-                  </select>
-                </div>
-                <div class="dropdown">
-                  <span>Main Type:</span>
-                  <select v-model="pubTypeA">
-                    <option value="">-</option>
-                    <option
-                      v-for="(s, no) in origin.tags_type"
-                      :key="no"
-                      :value="s">
-                      {{s}}
-                    </option>
-                  </select>
-                </div>
-                <div class="dropdown">
-                  <span>Additional Type:</span>
-                  <select v-model="pubTypeB">
-                    <option value="">-</option>
-                    <option
-                      v-for="(s, no) in origin.tags_type"
-                      :key="no"
-                      :value="s">
-                      {{s}}
-                    </option>
-                  </select>
-                </div>
-                <div class="dropdown">
-                  <span>Additional Type:</span>
-                  <select v-model="pubTypeC">
-                    <option value="">-</option>
-                    <option
-                      v-for="(s, no) in origin.tags_type"
-                      :key="no"
-                      :value="s">
-                      {{s}}
-                    </option>
-                  </select> 
-                </div>   
-              </div>
-              <div>
-                <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
-              </div>
-              <div class="publish-buttons">
-                <button @click="patInfoSave(true)">Save</button>
-                <button @click="publishModal=false; onLoad()">Cancel</button>
-              </div>
-            </div>
-        </div>
-      </div>
-    </ModalContainer> -->
-
     <ModalContainer v-if="false">
       <div class="modal-info">
         <div class="info-text">
@@ -327,12 +37,6 @@
         </div>
       </div>
     </ModalContainer>
-
-    <!-- <ModalContainer v-if="mainMenu" @modal-close="mainMenu = false">
-      <div class="modal">
-        <NookPhoneMenu v-model="mainMenu" />
-      </div>
-    </ModalContainer> -->
   </div>
 </template>
 
@@ -356,16 +60,10 @@ export default {
   name: "Editor",
   components: {
     UrlInput,
-    // ColorPicker,
-    // Palette,
-    // ThreeDRender,
-    // FileLoader,
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer
-    // ToolSelector
-    // NookPhoneMenu
+    ModalContainer,
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -413,7 +111,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin
+      origin,
     };
   },
   computed: {
@@ -428,7 +126,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    }
+    },
   },
   methods: {
     async onPublish() {
@@ -451,19 +149,6 @@ export default {
       }
       this.publishModal = false;
     },
-    // onOpenLocal() {
-    //   let tmp = {};
-    //   for (const i in localStorage) {
-    //     if (i.startsWith("acnl_")) {
-    //       tmp[i] = new DrawingTool(
-    //         lzString.decompressFromUTF16(localStorage.getItem(i))
-    //       );
-    //     }
-    //   }
-    //   this.multiName = "Local storage";
-    //   this.pickPatterns = tmp;
-    //   this.allowMoveToLocal = false;
-    // },
     zipPicksAsACNL() {
       let zip = new JSZip();
       const titles = [];
@@ -577,25 +262,7 @@ export default {
         );
       }
     },
-    // toolChange(newTool) {
-    //   this.drawingTool.drawHandler = newTool;
-    // },
-    // toolChangeAlt(newTool) {
-    //   this.drawingTool.drawHandlerAlt = newTool;
-    // },
-    // downACNL() {
-    //   const blob = new Blob([this.drawingTool.toBytes()], {
-    //     type: "application/octet-stream"
-    //   });
-    //   saveAs(blob, this.drawingTool.title + ".acnl");
-    // },
-    // onColorPicked: function(color) {
-    //   const currentColor = this.drawingTool.currentColor;
-    //   if (this.drawingTool.getPalette(currentColor) === color) return;
-    //   this.drawingTool.pushUndo();
-    //   this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-    //   logger.info(`color picked: ${color}`);
-    // },
+
     onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
@@ -681,7 +348,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    }
+    },
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -720,7 +387,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 
