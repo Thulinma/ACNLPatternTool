@@ -1,10 +1,10 @@
 <template v-for="i in 1">
   <div class="editor">
-    <UrlInput @updateUrl="updateDataUrl" ref="urlInput" />
+    <UrlInput v-model="dataUrl" />
     <ImageLoader
       class=""
       :pattern-type="patType"
-      :data-url="dataUrl"
+      :data-url="dataUrl.url"
       @converted="onConvert"
     />
     <main>
@@ -83,8 +83,10 @@ export default {
 
   data: function() {
     return {
-      dataUrl:
-        "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
+      dataUrl: {
+        url:
+          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
+      },
       drawingTool: new DrawingTool(),
       qrCode: false,
       allTypes: [],
@@ -124,22 +126,7 @@ export default {
       return "Town name";
     }
   },
-  created: function() {
-    console.log("created");
-  },
-  mounted() {
-    console.log("here!");
-    // this.$nextTick(function() {
-    //   console.log("this!!");
-    //   // Code that will run only after the
-    //   // entire view has been rendered
-    // });
-    // // this.urlInput.url = "boop";
-  },
   methods: {
-    updateDataUrl(url) {
-      this.dataUrl = url;
-    },
     async onPublish() {
       let uplStatus = await origin.upload(
         btoa(this.drawingTool.toString()),

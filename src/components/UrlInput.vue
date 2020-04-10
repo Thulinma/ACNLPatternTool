@@ -3,8 +3,7 @@
     <input
       class="iiif-input"
       placeholder="IIIF Url Goes Here"
-      v-model="inputUrl"
-      ref="url"
+      v-model="value.url"
     />
   </div>
 </template>
@@ -12,17 +11,15 @@
 <script>
 export default {
   name: "UrlInput",
-  data: function() {
-    return { inputUrl: "" };
-  },
-  watch: {
-    inputUrl() {
-      this.$emit("updateUrl", this.inputUrl);
+  props: {
+    value: {
+      type: Object,
+      required: true
     }
   },
-  methods: {
-    updateInputUrl(url) {
-      this.inputUrl = url;
+  watch: {
+    value() {
+      this.$emit("input", this.value);
     }
   }
 };
