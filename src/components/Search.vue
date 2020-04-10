@@ -8,37 +8,28 @@
     </button>
     <ol>
       <li v-for="match of matches" @click="choose(match)">
-        {{ match.title }}
-        {{ match.id }}
-        <img
-          :src="
-            'https://media.getty.edu/iiif/image/' +
-              match.manifest +
-              '/full/!150,150/0/default.jpg'
-          "
-        />
+        {{ match.full_name }}
+        <a :href="match.webpage">view in collection</a>
+        <img :src="match.iiif_url" />
       </li>
     </ol>
   </div>
 </template>
 <script>
-import imageData from "../data/NoC-US.txt"; // OR: const helloText = require('./hello.txt')
+import imageData from "../data/NoC-US.txt";
+import { extractData } from "../libs/ExtractData.js";
 
 export default {
   name: "Search",
   data() {
     return {
       value: "",
-      matches: []
+
+      matches: [],
     };
   },
   methods: {
     choose(match) {
-      match.url =
-        "https://media.getty.edu/iiif/image/" +
-        match.manifest +
-        "/full/!300,300/0/default.jpg";
-      console.log("emitting,", match);
       this.$emit("input", match);
     },
     search() {
@@ -46,27 +37,19 @@ export default {
       this.matches = [];
       console.log("searching imageData...", query);
       for (let _line of imageData.split("\n")) {
-        let line = _line.split("|");
-        let _query = query.toUpperCase();
-        let _upper = line[0].toUpperCase();
-        if (
-          (_upper.includes && _upper.includes(_query)) ||
-          _upper.indexOf(_query) > -1
-        ) {
-          this.matches.push({
-            title: line[0],
-            id: line[1],
-            manifest: line[2]
-          });
+        const _upper = _line.split("|")[0].toUpperCase();
+        const _query = query.toUpperCase();
+        if (_upper.indexOf(_query) > -1) {
+          this.matches.push(extractData(_line));
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style type="text/css" scoped>
 ol {
-  max-height: 10em;
+  max-height: 40em;
   overflow-y: scroll;
 }
 </style>
