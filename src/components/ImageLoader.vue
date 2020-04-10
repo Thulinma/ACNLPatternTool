@@ -104,7 +104,7 @@ export default {
     if (localStorage.getItem("author_acnl")) {
       this.draw.authorStrict = localStorage.getItem("author_acnl");
     }
-    this.$refs.files.click();
+    //this.$refs.files.click();
   },
   methods: {
     defPos(opt) {
