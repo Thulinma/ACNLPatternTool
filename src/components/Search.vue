@@ -24,7 +24,7 @@
   </div>
 </template>
 <script>
-import imageData from "../data/NoC-US.txt";
+import NoC_US from "../data/NoC-US.txt";
 import { extractData } from "../libs/ExtractData.js";
 
 export default {
@@ -33,9 +33,11 @@ export default {
     return {
       value: "",
       query: "",
-      matches: []
+      matches: [],
+      imageData: NoC_US
     };
   },
+  computed: {},
   methods: {
     choose(match) {
       this.$emit("input", match);
