@@ -2,11 +2,12 @@
   <div>
     <input
       name="search"
+      ref="input"
       v-model="value"
       @keyup.enter="search"
       placeholder="Search the Getty's Open Content Images "
     />
-    <button name="search" @click="search">
+    <button ref="search" name="search" @click="search">
       Search
     </button>
 
