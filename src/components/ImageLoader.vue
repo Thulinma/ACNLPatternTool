@@ -30,7 +30,13 @@
       <div class="preview">
         <canvas v-show="false" ref="preview" />
         <canvas v-show="false" ref="postview" width="64" height="64" />
-        <canvas ref="postmix" class="postview" width="256" height="256" />
+        <canvas
+          v-show="false"
+          ref="postmix"
+          class="postview"
+          width="256"
+          height="256"
+        />
 
         <!-- <ul class="options">
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
@@ -57,7 +63,7 @@
       </div>
       <!-- <div class="buttons"> -->
       <!-- <button @click="toggleView()">Edit Crop</button> -->
-      <button @click="$emit('converted', outputs)">Convert!</button>
+      <!-- <button @click="$emit('converted', outputs)">Convert!</button> -->
       <!-- </div> -->
     </div>
   </div>
@@ -654,7 +660,6 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  min-height: 400px;
   color: #ffffff;
 }
 .cropper-container.hidden,
@@ -662,11 +667,8 @@ canvas {
   display: none;
 }
 .cropper-container Cropper {
-  width: 50%;
-  height: 50%;
 }
 .cropper-container button {
-  margin: 20px 0 0 0;
 }
 .preview-and-options .preview {
   display: flex;
@@ -694,8 +696,6 @@ canvas {
   min-width: 220px;
 }
 .outercropper {
-  width: 400px;
-  height: 400px;
 }
 .postview {
   background: repeating-linear-gradient(

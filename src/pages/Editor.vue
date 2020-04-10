@@ -1,10 +1,6 @@
 <template v-for="i in 1">
   <div class="editor">
-    <ImageLoader
-      class="modal-window"
-      :pattern-type="patType"
-      @converted="onConvert"
-    />
+    <ImageLoader class="" :pattern-type="patType" @converted="onConvert" />
     <main>
       <!-- <div class="left"> -->
       <div class="previews">
@@ -369,7 +365,7 @@ export default {
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer
+    ModalContainer,
     // ToolSelector
     // NookPhoneMenu
   },
@@ -417,7 +413,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin
+      origin,
     };
   },
   computed: {
@@ -432,7 +428,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    }
+    },
   },
   methods: {
     async onPublish() {
@@ -685,7 +681,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    }
+    },
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -724,7 +720,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 
