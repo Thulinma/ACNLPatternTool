@@ -1,17 +1,12 @@
 <template v-for="i in 1">
   <div class="editor">
-    <input
-      class="iiif-input"
-      v-model="dataUrl"
-      placeholder="IIIF Url Goes Here"
-    />
+    <UrlInput @updateUrl="updateDataUrl" ref="urlInput" />
     <ImageLoader
       class=""
       :pattern-type="patType"
       :data-url="dataUrl"
       @converted="onConvert"
     />
-
     <main>
       <div class="previews">
         <div class="2D">
@@ -63,7 +58,7 @@ export default {
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer,
+    ModalContainer
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -85,6 +80,7 @@ export default {
     }
     next();
   },
+
   data: function() {
     return {
       dataUrl:
@@ -111,7 +107,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
   },
   computed: {
@@ -126,9 +122,24 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    },
+    }
+  },
+  created: function() {
+    console.log("created");
+  },
+  mounted() {
+    console.log("here!");
+    // this.$nextTick(function() {
+    //   console.log("this!!");
+    //   // Code that will run only after the
+    //   // entire view has been rendered
+    // });
+    // // this.urlInput.url = "boop";
   },
   methods: {
+    updateDataUrl(url) {
+      this.dataUrl = url;
+    },
     async onPublish() {
       let uplStatus = await origin.upload(
         btoa(this.drawingTool.toString()),
@@ -348,7 +359,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -387,7 +398,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
