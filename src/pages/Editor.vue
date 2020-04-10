@@ -313,18 +313,6 @@ export default {
       // this.$router.push("/");
       this.mainMenu = true;
     },
-    // openColorPicker: function() {
-    //   if (this.drawingTool.currentColor !== 15) {
-    //     this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-    //     this.$refs.colorPickerMenu.style.height =
-    //       (!this.$data.colorPickerMenu ? 0 : 315) + "px";
-    //     return;
-    //   }
-    //   alert("This one has to stay transparent. :)");
-    // },
-    // closeColorPicker: function() {
-    //   this.$refs.colorPickerMenu.style.height = "0px";
-    // },
     saveAuthor() {
       this.storedAuthorHuman =
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
