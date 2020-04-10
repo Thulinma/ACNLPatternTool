@@ -38,6 +38,17 @@ describe("Search", () => {
     ]);
   });
 
+  it("does a search with a carriage return", async () => {
+    const wrapper = shallowMount(Search, opts);
+    wrapper.find({ ref: "input" }).setValue("lisa");
+    wrapper.find({ ref: "input" }).trigger("keyup.enter");
+    expect(JSON.stringify(wrapper.vm.matches)).toContain("Mona Lisa");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find({ ref: "summary" }).text()).toEqual(
+      "Showing 1 results for lisa"
+    );
+  });
+
   it("does a search with a carriage return", () => {
     const wrapper = shallowMount(Search, opts);
     wrapper.find({ ref: "input" }).setValue("lisa");

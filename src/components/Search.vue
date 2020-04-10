@@ -11,8 +11,8 @@
       Search
     </button>
 
-    <span v-if="query"
-      >Showing {{ matches.length }} results for {{ query }}</span
+    <span v-if="query" ref="summary"
+      >Showing {{ matches.length }} result(s) for {{ query }}</span
     >
 
     <ol>
