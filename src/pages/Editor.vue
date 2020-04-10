@@ -1,12 +1,21 @@
 <template v-for="i in 1">
   <div class="editor">
-    <ImageLoader class="" :pattern-type="patType" @converted="onConvert" />
+    <input
+      class="iiif-input"
+      v-model="dataUrl"
+      placeholder="IIIF Url Goes Here"
+    />
+    <ImageLoader
+      class=""
+      :pattern-type="patType"
+      :data-url="dataUrl"
+      @converted="onConvert"
+    />
+
     <main>
       <!-- <div class="left"> -->
       <div class="previews">
         <div class="2D">
-          <!-- <canvas class="fordrawing" ref="canvas2" width="128" height="128" /> -->
-          <!-- <canvas class="fordrawing" ref="canvas3" width="64" height="64" /> -->
           <div class="pattern-info">
             <div class="pattern_title">{{ patTitle }}</div>
             <div class="pattern_author">by {{ patAuthor }}</div>
@@ -17,13 +26,6 @@
               Change
             </button> -->
         </div>
-        <!--  <div class="render-preview">
-            <ThreeDRender
-              :width="196"
-              :height="300"
-              :drawing-tool="drawingTool"
-            />
-          </div> -->
       </div>
       <!-- </div> -->
 
@@ -335,16 +337,11 @@
 </template>
 
 <script>
-// import ColorPicker from "/components/ColorPicker.vue";
-// import Palette from "/components/Palette.vue";
-// import ThreeDRender from "/components/ThreeDRender.vue";
-// import FileLoader from "/components/FileLoader.vue";
+import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
 import IconGenerator from "/components/IconGenerator.vue";
 import ModalContainer from "/components/ModalContainer.vue";
-// import ToolSelector from "/components/ToolSelector.vue";
-// import NookPhoneMenu from "/components/NookPhoneMenu.vue";
 import DrawingTool from "/libs/DrawingTool";
 import ACNLFormat from "/libs/ACNLFormat";
 import origin from "/libs/origin";
@@ -358,6 +355,7 @@ import generateACNLQR from "/libs/ACNLQRGenerator";
 export default {
   name: "Editor",
   components: {
+    UrlInput,
     // ColorPicker,
     // Palette,
     // ThreeDRender,
@@ -365,7 +363,7 @@ export default {
     ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
-    ModalContainer,
+    ModalContainer
     // ToolSelector
     // NookPhoneMenu
   },
@@ -391,6 +389,8 @@ export default {
   },
   data: function() {
     return {
+      dataUrl:
+        "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
       drawingTool: new DrawingTool(),
       qrCode: false,
       allTypes: [],
@@ -413,7 +413,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
   },
   computed: {
@@ -428,7 +428,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    },
+    }
   },
   methods: {
     async onPublish() {
@@ -681,7 +681,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -720,11 +720,15 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+.iiif-input {
+  width: 80%;
+  margin: 1em;
+}
 button,
 input[type="button"] {
   background-color: #7e7261;

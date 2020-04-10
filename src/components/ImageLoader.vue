@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="cropper-container">
-      <input
+      <!--   <input
         class="iiif-input"
         v-model="dataurl"
         placeholder="IIIF Url Goes Here"
         @update="processImage"
-      />
+      /> -->
 
       <div class="outercropper">
         <Cropper
-          :src="dataurl"
+          :src="dataUrl"
           :stencilProps="{ aspectRatio: getAspectRatio() }"
           :defaultPositon="defPos"
           :defaultSize="defSize"
@@ -47,15 +47,16 @@ import DrawingTool from "/libs/DrawingTool";
 export default {
   name: "ImageLoader",
   components: {
-    Cropper,
+    Cropper
   },
   props: {
     patternType: Number,
+    dataUrl: {
+      type: String
+    }
   },
   data: function() {
     return {
-      dataurl:
-        "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
       convert_method: "quantize",
       convert_quality: "high",
       convert_trans: 50,
@@ -64,7 +65,7 @@ export default {
       fileName: "",
       muralWide: 1,
       muralTall: 1,
-      outputs: [],
+      outputs: []
     };
   },
   mounted() {
@@ -197,7 +198,7 @@ export default {
               this.draw.setPixel(x, y, [
                 imgdata.data[i],
                 imgdata.data[i + 1],
-                imgdata.data[i + 2],
+                imgdata.data[i + 2]
               ]);
             }
           }
@@ -237,7 +238,7 @@ export default {
           this.draw.findRGB([
             imgdata.data[i],
             imgdata.data[i + 1],
-            imgdata.data[i + 2],
+            imgdata.data[i + 2]
           ])
         ].c++;
       }
@@ -269,7 +270,7 @@ export default {
           this.draw.findYUV([
             imgdata.data[i],
             imgdata.data[i + 1],
-            imgdata.data[i + 2],
+            imgdata.data[i + 2]
           ])
         ].c++;
       }
@@ -311,7 +312,7 @@ export default {
         pixels.push({
           r: imgdata.data[i],
           g: imgdata.data[i + 1],
-          b: imgdata.data[i + 2],
+          b: imgdata.data[i + 2]
         });
       }
       const medianCut = (pixels) => {
@@ -392,7 +393,7 @@ export default {
         let rgb = [
           Math.round(r_avg / b.length),
           Math.round(g_avg / b.length),
-          Math.round(b_avg / b.length),
+          Math.round(b_avg / b.length)
         ];
         let idx = this.draw.findRGB(rgb);
         if (!uniqCol.has(idx)) {
@@ -563,23 +564,19 @@ export default {
         this.draw.setPalette(i, best_chosen[i]);
       }
     },
-    processImage: function(e) {
-      this.onCrop(this.$refs.cropper.getResult());
-    },
+    // commenting out because this wasn't being used - the @change on cropper seemed to take care of it
+    // processImage: function(e) {
+    //   this.onCrop(this.$refs.cropper.getResult());
+    // },
 
     getAspectRatio() {
       return this.muralWide / this.muralTall;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.iiif-input {
-  width: 80%;
-  margin: 1em;
-}
-
 canvas {
   border: 1px solid gray;
 }
