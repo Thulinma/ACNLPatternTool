@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 /**
  * The return data format for the extractData() function
  *
@@ -20,7 +22,7 @@
  * @param  {Number} size       The number of pixels on the longest side for the IIIF image
  * @return {ParsedData}            The data parsed into a usable form.
  */
-function extractData(dataString, size = 300) {
+export function extractData(dataString, size = 300) {
   let full_name, id, uuid;
   [full_name, id, uuid] = dataString.split("|");
 
@@ -39,4 +41,43 @@ function extractData(dataString, size = 300) {
   };
 }
 
-export default extractData;
+/**
+ * Given the URL to a IIIF Manifest, return a url to a jpeg thumbnail.
+ *
+ * @param  {String} manifestURL The URL to a IIIF Manifest
+ * @param  {Number} size Number in pixels on the longest side for the thumbnail.
+ *                       ...note that this only works if the thumbnail has a IIIF
+ *                       image service attached.
+ * @return {String}             The URL to the thumbnail
+ */
+export async function getIIIFThumbnail(manifestURL, size = 300) {
+  let response = null;
+  try {
+    response = await axios.get(manifestURL);
+  } catch (error) {}
+
+  if (!response) {
+    return null;
+  }
+
+  const manifest = response.data;
+
+  // Happiest path: has a IIIF Service.
+  if (
+    manifest.thumbnail &&
+    manifest.thumbnail.service &&
+    manifest.thumbnail.service["@context"] ==
+      "http://iiif.io/api/image/2/context.json"
+  ) {
+    const thumbnailId = manifest.thumbnail.service["@id"];
+    return `${manifest.thumbnail.service["@id"]}/full/!${size},${size}/0/default.jpg`;
+  }
+
+  // Happy path:  Has a thumbnail defined, but it's not IIIF-compatible
+  else if (manifest.thumbnail) {
+    return manifest.thumbnail["@id"];
+  }
+
+  // sad path: we failed.
+  return null;
+}
