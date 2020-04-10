@@ -1,9 +1,13 @@
 <template>
   <div>
-    <div class="cropper-container" v-show="isCropping">
-      <button v-show="!fileLoaded" @click="tryAgain">
-        Upload an Image File
-      </button>
+    <div class="cropper-container">
+      <input
+        class="iiif-input"
+        v-model="dataurl"
+        placeholder="IIIF Url Goes Here"
+        @update="processImage"
+      />
+
       <div class="outercropper">
         <Cropper
           :src="dataurl"
@@ -14,19 +18,12 @@
           @change="onCrop"
         />
       </div>
-      <!--       <div class="buttons">
-        <button @click="toggleView()">Next</button>
-      </div> -->
     </div>
-    <input
-      v-show="false"
-      type="file"
-      ref="files"
-      accept="image/*"
-      @change="onFile"
-    />
-    <div class="preview-and-options" v-show="!isCropping">
-      <!-- <h3>Please select your conversion type.</h3> -->
+
+    <!-- These are part of the rendering pipeline.  I think we could
+    get rid of the preview one, but I don't know 100%, and it didn't seem
+    worth the time to dig in. -->
+    <div class="preview-and-options">
       <div class="preview">
         <canvas v-show="false" ref="preview" />
         <canvas v-show="false" ref="postview" width="64" height="64" />
@@ -37,34 +34,7 @@
           width="256"
           height="256"
         />
-
-        <!-- <ul class="options">
-          <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
-          <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
-          <li :class="{active: convert_method === 'yuv'}" @click="changeConversion('yuv')">Nearest YUV Colors</li>
-          <li :class="{active: convert_method === 'grey'}" @click="changeConversion('grey')">To Greyscale</li>
-          <li :class="{active: convert_method === 'sepia'}" @click="changeConversion('sepia')">To Sepia</li>
-        </ul>
-        <ul class="options">
-          <li :class="{active: convert_quality === 'high'}" @click="changeQuality('high')">High Quality</li>
-          <li :class="{active: convert_quality === 'medium'}" @click="changeQuality('medium')">Medium Quality</li>
-          <li :class="{active: convert_quality === 'low'}" @click="changeQuality('low')">Low Quality</li>
-          <li :class="{active: convert_quality === 'sharp'}" @click="changeQuality('sharp')">Sharp Pixels</li>
-        </ul>
-        <ul class="options">
-          <label>Transparency %</label></br>
-          <input type="range" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
-          <input type="number" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
-        </ul>
-        <ul class="options" :v-if="muralTall > 1 || muralWide > 1">
-          <li :class="{active: convert_samepal === true}" @click="changeSamepal(true)">Shared palette</li>
-          <li :class="{active: convert_samepal === false}" @click="changeSamepal(false)">Split palette</li>
-        </ul> -->
       </div>
-      <!-- <div class="buttons"> -->
-      <!-- <button @click="toggleView()">Edit Crop</button> -->
-      <!-- <button @click="$emit('converted', outputs)">Convert!</button> -->
-      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -84,14 +54,13 @@ export default {
   },
   data: function() {
     return {
-      dataurl: "",
+      dataurl:
+        "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
       convert_method: "quantize",
       convert_quality: "high",
       convert_trans: 50,
       convert_samepal: false,
       draw: new DrawingTool(),
-      isCropping: true,
-      fileLoaded: false,
       fileName: "",
       muralWide: 1,
       muralTall: 1,
@@ -594,47 +563,10 @@ export default {
         this.draw.setPalette(i, best_chosen[i]);
       }
     },
-    onFile: async function(e) {
-      this.dataurl = await new Promise((resolve, reject) => {
-        let fr = new FileReader();
-        fr.onerror = () => {
-          fr.abort();
-          reject(new DOMException("Problem parsing input file."));
-        };
-        fr.onload = (re) => {
-          let fake_url =
-            "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg";
-          // resolve(re.target.result);
-          resolve(fake_url);
-        };
-        this.fileName = e.target.files[0].name;
-        fr.readAsDataURL(e.target.files[0]);
-      });
-      this.fileLoaded = true;
-      this.onCrop(this.$refs.cropper.getResult());
-      this.toggleView();
-    },
-    changeConversion(val) {
-      this.convert_method = val;
+    processImage: function(e) {
       this.onCrop(this.$refs.cropper.getResult());
     },
-    changeQuality(val) {
-      this.convert_quality = val;
-      this.onCrop(this.$refs.cropper.getResult());
-    },
-    changeTrans(val) {
-      this.onCrop(this.$refs.cropper.getResult());
-    },
-    changeSamepal(val) {
-      this.convert_samepal = val;
-      this.onCrop(this.$refs.cropper.getResult());
-    },
-    toggleView() {
-      this.isCropping = !this.isCropping;
-    },
-    tryAgain() {
-      this.$refs.files.click();
-    },
+
     getAspectRatio() {
       return this.muralWide / this.muralTall;
     },
@@ -643,89 +575,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button {
-  border-radius: 35px;
-  text-transform: uppercase;
-  padding: 10px 14px;
-  border: none;
-  background-color: #00b6a7;
-  color: #ffffff;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 8px;
-  cursor: pointer;
-  font-weight: 800;
+.iiif-input {
+  width: 80%;
+  margin: 1em;
 }
+
 canvas {
   border: 1px solid gray;
-}
-.cropper-container,
-.preview-and-options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  color: #ffffff;
-}
-.cropper-container.hidden,
-.preview-and-options.hidden {
-  display: none;
-}
-.cropper-container Cropper {
-}
-.cropper-container button {
-}
-.preview-and-options .preview {
-  display: flex;
-  align-items: flex-start;
-}
-.preview-and-options .options {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-left: 20px;
-}
-.preview-and-options .options li {
-  cursor: pointer;
-  padding: 10px;
-  min-width: 200px;
-}
-.preview-and-options .options li.active {
-  background-color: teal;
-  border-radius: 20px;
-}
-.preview-and-options .buttons {
-  display: flex;
-  justify-content: space-between;
-  min-width: 220px;
-}
-.outercropper {
-}
-.postview {
-  background: repeating-linear-gradient(
-    -45deg,
-    #ddd,
-    #ddd 5px,
-    #fff 5px,
-    #fff 10px
-  );
-}
-
-.muralInputArea {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-content: space-between;
-}
-
-.muralInputColumn {
-  flex: 50%;
-  flex-direction: column;
-  align-content: space-between;
-  text-align: center;
-}
-
-.muralInputColumn * {
-  text-align: center;
-  width: 60%;
 }
 </style>
