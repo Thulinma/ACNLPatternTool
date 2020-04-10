@@ -52,9 +52,9 @@ export default {
   height: 100%;
   width: 100%;
   background-color: rgba(0,0,0,.8);
-  display:table-cell;
-  vertical-align:middle;
-  overflow:auto;
+  display: table-cell;
+  vertical-align: middle;
+  overflow: auto;
   z-index: 10;
 }
 </style>

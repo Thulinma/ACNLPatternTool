@@ -1,36 +1,28 @@
 <template>
-  <div class="palette">
-    <div class="palette-color-row">
-      <div
+  <div id="palette">
+    <div id="palette-color-row">
+      <IconBase
         v-for="i in 15"
-        v-if="drawingTool.currentColor !== i-1"
-        class="palette-color"
+        :class="{picked: drawingTool.currentColor === i-1}"
         :key="i-1"
-        :style="{ backgroundColor: paletteColors[i-1] }"
-        @click="onColorClick($event, i-1)"
-        @mousemove="onColorMousemove($event, i-1)">
-      </div>
-      <div
-        v-else
-        :key="i-1"
-        class="palette-color picked"
-        :style="{ backgroundColor: paletteColors[i-1] }"
-        @click="onColorClick($event, i-1)"
-        @mousemove="onColorMousemove($event, i-1)">
-      </div>
-      <div
-        v-if="drawingTool.currentColor !== 15"
-        class="palette-color"
-        :style="{ background: 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px)' }"
-        @click="onColorClick($event, 15)"
-        @mousemove="onColorMousemove($event, 15)">
-      </div>
-      <div
-        v-else
-        class="palette-color picked"
-        :style="{ background: 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px)' }"
-        @click="onColorClick($event, 15)"
-        @mousemove="onColorMousemove($event, 15)">
+        class="blob"
+        @click.native="onColorClick($event, i-1)"
+        @mousemove="onColorMousemove($event, i-1)"
+        icon-name="color" 
+        :icon-color="paletteColors[i-1]"
+        :viewBox="colorBlobViewBox"
+        width="28"
+        height="28">
+        <IconColorBlob />
+      </IconBase>
+      <div class="img-border picked">
+        <img
+          class="blob"
+          :class="{picked: drawingTool.currentColor === 15}"
+          :src="transparentBlob"
+          @click="onColorClick($event, 15)"
+          @mousemove="onColorMousemove($event, 15)"
+        >
       </div>
     </div>
   </div>
@@ -39,8 +31,17 @@
 <script>
 import DrawingTool from "/libs/DrawingTool";
 
+// svg icons
+import IconBase from '/components/icons/IconBase.vue';
+import IconColorBlob from '/components/icons/IconColorBlob.vue';
+import transparentBlob from '/assets/icons/transparent-blob.svg'
+
 export default {
   name: "Palette",
+  components: {
+    IconBase,
+    IconColorBlob,
+  },
   props: {
     drawingTool: DrawingTool,
   },
@@ -48,7 +49,12 @@ export default {
     const paletteColors = [];
     for (let i = 0; i < 15; ++i)
       paletteColors.push(this.drawingTool.getPalette(i));
-    return {paletteColors};
+
+    return {
+      paletteColors,
+      transparentBlob,
+      colorBlobViewBox: "0 0 1002.2 992.31",
+    };
   },
   methods: {
     onColorClick: function(event, idx) {
@@ -71,32 +77,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.palette {
+$pink: #F1B5C1;
+$teal: #5DBF98;
+
+#palette {
   user-select: none;
   border-radius: 0 0 35px 35px;
-  background-color: #f1b5c1;
+  background-color: $pink;
   padding: 15px;
   width: 480px;
-  float: right;
   box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-}
-.palette-color {
-  width: 29px;
-  height: 29px;
-  border-radius: 70% 30% 70% 30% / 60% 30% 70% 40%;
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  font-size: 0;
-}
 
-.palette-color-row {
+  #palette-color-row {
   height: 32px;
-}
+  display: flex;
+  justify-content: center;
+  }
+  .blob {
+    cursor: pointer;
+    padding: 0 3px 5px;
+    height: 28px;
+    width: 28px;
+    box-sizing: content-box;
 
-.palette-color.picked {
-  width: 24px;
-  height: 24px;
-  margin: 4px;
+    &.picked{
+      border-bottom: 4px solid $teal;
+    }
+  }
+  img.blob {
+    width: 24px;
+  }
 }
 </style>

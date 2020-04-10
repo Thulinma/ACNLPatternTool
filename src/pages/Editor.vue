@@ -65,14 +65,14 @@
               Open Color Editor
             </button><!-- open palette button -->
 
-            <button @click="convertImage=true;closeColorPicker()">
+            <button @click="convertImage=true;closeColorPicker();">
               <IconBase icon-name="convert" :icon-color="brown" class="svg nav white-circle">
                 <IconImageAdd />
               </IconBase><!-- phone svg -->
               Convert from Image
             </button><!-- convert from image button -->
 
-            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad"  />
+            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad" />
             <button id="download-acnl" :value="$tc('editor.download')" @click="downACNL">
               <IconBase icon-name="save" :icon-color="teal" class="svg nav white-circle">
                 <IconSave />
@@ -80,30 +80,31 @@
               Save
             </button><!-- save acnl file button -->
 
-            <button @click="onQROpen();closeColorPicker();">
+            <button @click="onQROpen">
               <IconBase icon-name="qr" :icon-color="brown" class="svg nav white-circle">
                 <IconQRCode />
               </IconBase><!-- qr code svg -->
               Generate QR Code
             </button><!-- generate QR code button -->
-            <button @click="onLocalSave();closeColorPicker();">Store Locally</button><!-- store in local storage button -->
-            <button @click="onOpenLocal();closeColorPicker()">Open Storage</button><!-- open local storage button -->
-            <button @click="publishModal=true;closeColorPicker();">Publish</button><!-- publish pattern to database button -->
+            <button @click="onLocalSave">Store Locally</button><!-- store in local storage button -->
+            <button @click="onOpenLocal">Open Storage</button><!-- open local storage button -->
+            <button @click="publishModal=true">Publish</button><!-- publish pattern to database button -->
           </div><!-- side bar button -->
         </div><!-- tools and buttons container -->
       </div><!-- tools and buttons -->
     </main><!-- main editor parts -->
-
   <div>
     <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
       <div class="modal">
         <div class="modal-header">
-          <object class="svg nav" :data="barcodeSvg"></object>
+          <IconBase icon-name="qr" :icon-color="white" height=20 width=20>
+            <IconQRCode />
+          </IconBase><!-- qr code svg -->
           Generate QR Code(s)
         </div>
         <div class="modal-window modal-centered">
           <ACNLQRGenerator :pattern="qrCode" />
-          <button @click="downPNG">Save image</button>
+          <button @click="downPNG">Save Image</button>
         </div>
       </div>
     </ModalContainer>
@@ -130,7 +131,9 @@
     <ModalContainer v-if="convertImage" @modal-close="convertImage=false">
       <div class="modal">
         <div class="modal-header">
-          <object class="svg nav" :data="imageAddSvg"></object>
+          <IconBase icon-name="convert image" :icon-color="white" height=20 width=20>
+            <IconImageAdd />
+          </IconBase><!-- qr code svg -->
           Convert Image
         </div>
         <ImageLoader class="modal-window" :pattern-type="patType" @converted="onConvert" />
@@ -413,10 +416,10 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       publishModal: false,
-      brown: "#7E7261",
-      teal: "#57B7A8",
-      orange: "#DC8D69",
-      white: "#FFFFFF",
+      brown: '#7E7261',
+      teal: '#57B7A8',
+      orange: '#DC8D69',
+      white: '#FFFFFF',
       origin,
     };
   },
@@ -431,6 +434,7 @@ export default {
       this.publishModal = false;
     },
     onOpenLocal(){
+      this.closeColorPicker();
       let tmp = {};
       for (const i in localStorage){
         if (i.startsWith("acnl_")){
@@ -586,7 +590,7 @@ export default {
       if (patterns.length == 1){
         this.extLoad(patterns[0]);
       }else{
-        this.multiName = "Conversion result";
+        this.multiName = "Conversion Result";
         this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
       }
@@ -597,6 +601,7 @@ export default {
       this.allowMoveToLocal = true;
     },
     onQROpen: function() {
+      this.closeColorPicker();
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -609,6 +614,7 @@ export default {
     },
     onMainMenu: function() {
       // this.$router.push("/");
+      this.closeColorPicker();
       this.mainMenu = true;
     },
     openColorPicker: function() {

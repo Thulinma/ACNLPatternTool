@@ -9,34 +9,50 @@
       <div>
         <object :data="gpsSvg"></object>
       </div>
-    </div>
+    </div><!-- time, service bars, gps icon, etc (header) -->
+
     <h2>Main Menu</h2>
+
     <div class="nook-buttons">
-        <button @click="goToBrowse">
-            Browse
-        </button>
-        <button @click="goToFAQ">
-            FAQ
-        </button>
-        <button @click="goToChanges">
-            Changelog
-        </button>
-        <a href="https://discord.gg/9rGkZNk">
-            <button>
-                Discord
-            </button>
-        </a>
-        <button @click="closeMenu">
-            Close Menu
-        </button>
-    </div>
+      <img 
+        :src="browseSvg"
+        @click="goToBrowse"
+      >
+      <img
+        :src="editorSvg"
+        @click="closeMenu"
+      >
+      <img
+        :src="faqSvg"
+        @click="goToFAQ"
+      >
+      <img
+        :src="changelogSvg"
+        @click="goToChanges"
+      >
+      <a href="https://discord.gg/9rGkZNk">
+        <img :src="discordSvg">
+      </a>
+      <a href="https://nooknet.net">
+        <img :src="nooknetSvg">
+      </a>
+    </div><!-- nav buttons -->
   </div>
 </template>
 
 <script>
+// header svgs
 import nookSvg from '/assets/icons/nookphone/nook-head.svg';
 import gpsSvg from '/assets/icons/nookphone/nook-gps.svg';
 import barsSvg from '/assets/icons/nookphone/nook-service.svg';
+
+// menu svgs
+import browseSvg from '/assets/icons/nookphone/nav-browse.svg';
+import changelogSvg from '/assets/icons/nookphone/nav-changelog.svg';
+import discordSvg from '/assets/icons/nookphone/nav-discord.svg';
+import editorSvg from '/assets/icons/nookphone/nav-editor.svg';
+import faqSvg from '/assets/icons/nookphone/nav-faq.svg';
+import nooknetSvg from '/assets/icons/nookphone/nav-nooknet.svg';
 
 export default {
   name: "NookPhoneMenu",
@@ -51,6 +67,12 @@ export default {
         nookSvg,
         gpsSvg,
         barsSvg,
+        browseSvg,
+        changelogSvg,
+        discordSvg,
+        editorSvg,
+        faqSvg,
+        nooknetSvg,
     };
   },
   created() {
@@ -116,9 +138,9 @@ $nook-phone-header-color: #DCD8CA;
   flex-direction: row;
   flex-wrap: wrap;
 
-  button {
+  img {
     border: none;
-    color: $nook-phone-color;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;

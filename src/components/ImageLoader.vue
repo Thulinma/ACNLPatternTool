@@ -1,32 +1,40 @@
 <template>
-  <div>
-    <div class="cropper-container" v-show="isCropping">
+  <div id="image-loader">
+    <div id="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
-      <div class="muralInputArea" :v-if="patternType == 9">
+
+      <div id="outer-cropper">
+        <Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" />
+      </div>
+
+      <div id="mural-input-area" :v-if="patternType === 9">
         <div class="muralInputColumn"> 
-          <label>Patterns Wide</label></br>
+          <label>Patterns Wide</label><br />
           <input type="range" min="1" max="8" v-model="muralWide"/>
           <input type="number" min="1" max="50" v-model="muralWide"/>
         </div>
         <div class="muralInputColumn"> 
-          <label>Patterns Tall</label></br>
+          <label>Patterns Tall</label><br />
           <input type="range" min="1" max="8" v-model="muralTall"/>
           <input type="number" min="1" max="50" v-model="muralTall"/>
         </div>
       </div>
-      <div class="buttons">
+
+      <div id="cropper-buttons">
         <button @click="toggleView()">Next</button>
       </div>
-    </div>
+    </div><!-- upload and crop image menu -->
+
     <input v-show="false" type="file" ref="files" accept="image/*" @change="onFile" />
-    <div class="preview-and-options" v-show="!isCropping">
+
+    <div id="preview-and-options" v-show="!isCropping">
       <h3>Please select your conversion type.</h3>
-      <div class="preview">
+      <div id="preview">
         <canvas v-show="false" ref="preview" />
         <canvas v-show="false" ref="postview" width=64 height=64 />
         <canvas ref="postmix" class="postview" width=256 height=256 />
-
+      </div>
+      <div id="options">
         <ul class="options">
           <li :class="{active: convert_method === 'quantize'}" @click="changeConversion('quantize')">Quantize by Median-Cut</li>
           <li :class="{active: convert_method === 'rgb'}" @click="changeConversion('rgb')">Nearest RGB Colors</li>
@@ -50,11 +58,12 @@
           <li :class="{active: convert_samepal === false}" @click="changeSamepal(false)">Split palette</li>
         </ul>
       </div>
-      <div class="buttons">
+
+      <div id="preview-buttons">
         <button @click="toggleView()">Edit Crop</button>
         <button @click="$emit('converted', outputs)">Convert!</button>
       </div>
-    </div>
+    </div><!-- conversion options menu -->
   </div>
 </template>
 
@@ -462,88 +471,100 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  button {
-    border-radius: 35px;
-    text-transform: uppercase;
-    padding: 10px 14px;
-    border: none;
-    background-color: #00B6A7;
-    color: #ffffff;
-    box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-    cursor: pointer;
-    font-weight: 800;
+$gray: #A9A9A9;
+$teal: #00B6A7;
+$white: #FFFFFF;
+
+  #image-loader {
+    button {
+      background-color: $teal;
+      border: none;
+      border-radius: 35px;
+      box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+      color: $white;
+      cursor: pointer;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 10px 14px;
+    }
+    canvas {
+      border: 1px solid $gray;
+    }
   }
-  canvas {
-    border: 1px solid gray;
-  }
-  .cropper-container, .preview-and-options {
+
+  #cropper-container, #preview-and-options {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     min-height: 400px;
-    color: #ffffff;
+    color: $white;
   }
-  .cropper-container.hidden, .preview-and-options.hidden {
-    display: none;
-  }
-  .cropper-container Cropper{
-    width: 50%;
-    height: 50%;
-  }
-  .cropper-container button {
-    margin: 20px 0 0 0;
-  }
-  .preview-and-options .preview {
-    display: flex;
-    align-items: flex-start;
-  }
-  .preview-and-options .options {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-left: 20px;
-  }
-  .preview-and-options .options li{
-    cursor: pointer;
-    padding: 10px;
-    min-width: 200px;
-  }
-  .preview-and-options .options li.active {
-    background-color: teal;
-    border-radius: 20px;
-  }
-  .preview-and-options .buttons {
-    display: flex;
-    justify-content: space-between;
-    min-width: 220px;
-  }
-  .outercropper{
-    width:400px;
-    height:400px;
-  }
-  .postview{
-    background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
-  }
-  
-  
-  .muralInputArea {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    align-content: space-between;
-  }
-  
-  .muralInputColumn {
+
+  #cropper-container {
+
+    #outer-cropper{
+      width: 400px;
+      height: 400px;
+    }
+    #mural-input-area {
+      margin: 8px 0 0;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      align-content: space-between;
+    }
+    .muralInputColumn {
     flex: 50%;
     flex-direction: column;
     align-content: space-between;
     text-align: center;
+    }
+    .muralInputColumn * {
+      text-align: center;
+      width: 60%;
+    }
+    #cropper-buttons {
+      margin: 20px 0 0;
+    }
   }
-  
-  .muralInputColumn * {
-    text-align: center;
-    width: 60%;
+
+  #preview-and-options {
+
+    #preview {
+      margin: 10px 0;
+    }
+    #options {
+      display: flex;
+      align-items: flex-start;
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-left: 20px;
+
+        li {
+          cursor: pointer;
+          padding: 10px;
+          min-width: 200px;
+
+          &.active {
+            background-color: $teal;
+            border-radius: 20px;
+          }
+        }
+      }
+    }
+    #preview-buttons {
+      display: flex;
+      justify-content: space-between;
+      max-width: 220px;
+    }
+  }
+
+  .postview{
+    background: repeating-linear-gradient(-45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
   }
 </style>
