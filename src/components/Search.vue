@@ -9,7 +9,7 @@
     <ol>
       <li v-for="match of matches" @click="choose(match)">
         {{ match.full_name }}
-        <a :src="match.webpage">view in collection</a>
+        <a :href="match.webpage">view in collection</a>
         <img :src="match.iiif_url" />
       </li>
     </ol>
