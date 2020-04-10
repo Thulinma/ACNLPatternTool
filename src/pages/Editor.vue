@@ -8,35 +8,48 @@
       :force-on-dark="HeaderData.forceOnDark"
       :sticky="true"
     />
-    <div>
-      <UrlInput v-model="iiif" />
-      <Search @input="onSearchSelect" />
-      <ImageLoader
-        class=""
-        :pattern-type="patType"
-        :iiif-url="iiif.url"
-        @converted="onConvert"
-      />
+    <Hero name="Content" :data="heroData" />
+    <section>
+      <div class="container">
+        <div>
+          <UrlInput v-model="iiif" />
+          <Search @input="onSearchSelect" />
+          <ImageLoader
+            class=""
+            :pattern-type="patType"
+            :iiif-url="iiif.url"
+            @converted="onConvert"
+          />
 
-      <div>
-        <div class="pattern_title">{{ patTitle }}</div>
-        <div class="pattern_author">by {{ patAuthor }}</div>
-        <div class="pattern_town">from {{ patTown }}</div>
-      </div>
+          <div>
+            <div class="pattern_title">{{ patTitle }}</div>
+            <div class="pattern_author">by {{ patAuthor }}</div>
+            <div class="pattern_town">from {{ patTown }}</div>
+          </div>
 
-      <div>
-        Generate QR Code(s)
-        <ACNLQRGenerator :pattern="qrCode" />
-        <button @click="downPNG">Save image</button>
+          <div>
+            Generate QR Code(s)
+            <ACNLQRGenerator :pattern="qrCode" />
+            <button @click="downPNG">Save image</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <Footer
+      :primary-nav="FooterData.primaryNavigation"
+      :museum-info="FooterData.museumInfo"
+      :nav-grid="FooterData.navGrid"
+      :social="FooterData.social"
+      :social-all-link="FooterData.socialAllLink"
+    />
   </div>
 </template>
 
 <script>
 import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
-
-import { Header, Footer } from "@thegetty/getty-ui";
+import FooterData from "@thegetty/getty-ui/src/components/globals/footer/data.json";
+import { Header, Footer, Hero } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -55,6 +68,8 @@ export default {
   name: "Editor",
   components: {
     Header,
+    Hero,
+    Footer,
     UrlInput,
     Search,
     ImageLoader,
@@ -84,6 +99,10 @@ export default {
   data: function() {
     return {
       HeaderData: HeaderData,
+      FooterData: FooterData,
+      heroData: {
+        title: "Animal Crossing: Getty Images",
+      },
       iiif: {
         url:
           "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
