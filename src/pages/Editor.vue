@@ -8,7 +8,7 @@
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
             <div class="pattern-info">
               <div class="pattern_title">{{patTitle}}</div>
-              <div class="pattern_author">by {{patAuthor}}</div> 
+              <div class="pattern_author">by {{patAuthor}}</div>
               <div class="pattern_town">from {{patTown}}</div>
               <div class="pattern_typename">{{patTypeName}}</div>
             </div><!-- pattern info -->
@@ -96,7 +96,7 @@
 
   <div>
     <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
-      <div class="modal">
+      <template #window><div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="barcodeSvg"></object>
           Generate QR Code(s)
@@ -105,11 +105,11 @@
           <ACNLQRGenerator :pattern="qrCode" />
           <button @click="downPNG">Save image</button>
         </div>
-      </div>
+      </div></template>
     </ModalContainer>
 
     <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
-      <div class="modal">
+      <template #window><div class="modal">
         <div class="modal-header">{{multiName}}</div>
         <div class="modal-window pattern-list">
           <button v-if="allowMoveToLocal" @click="picksToLocal">Store all in local storage</button>
@@ -124,21 +124,21 @@
             @pattclick="pickPattern"
             :pattern="opt" />
         </div>
-      </div>
+      </div></template>
     </ModalContainer>
 
     <ModalContainer v-if="convertImage" @modal-close="convertImage=false">
-      <div class="modal">
+      <template #window><div class="modal">
         <div class="modal-header">
           <object class="svg nav" :data="imageAddSvg"></object>
           Convert Image
         </div>
         <ImageLoader class="modal-window" :pattern-type="patType" @converted="onConvert" />
-      </div>
+      </div></template>
     </ModalContainer>
 
     <ModalContainer v-if="patInfoModal" @modal-close="patInfoSave">
-      <div class="modal">
+      <template v-slot:window><div class="modal">
         <div class="modal-header">
           Edit Pattern Details
         </div>
@@ -160,13 +160,13 @@
           <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
           <div class="edit-notice">
             <p>
-              IMPORTANT: AC:NH reads these patterns as AC:NL patterns; therefore, 
-              they will not be editable in-game since the game can't 
+              IMPORTANT: AC:NH reads these patterns as AC:NL patterns; therefore,
+              they will not be editable in-game since the game can't
               determine that they were originally made by you.
             </p>
             <p>
               <br>
-              Similarly, patterns with transparency will look corrupted 
+              Similarly, patterns with transparency will look corrupted
               when scanned in the NSO application but will look fine in game.
             </p>
           </div>
@@ -177,11 +177,11 @@
             <button @click="patInfoModal=false; onLoad()">Cancel</button>
           </div>
         </div>
-      </div>
+      </div></template>
     </ModalContainer>
 
     <ModalContainer v-if="publishModal" @modal-close="publishModal=false">
-      <div class="modal">
+      <template #window><div class="modal">
         <div class="modal-header">
           Publish to Public Database
         </div>
@@ -287,11 +287,13 @@
                       :value="s">
                       {{s}}
                     </option>
-                  </select> 
-                </div>   
+                  </select>
+                </div>
               </div>
               <div>
-                <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
+                <label>
+                  <input type="checkbox" value="Y" v-model="pubNSFW"/>This pattern is not appropriate for children
+                </label>
               </div>
               <div class="publish-buttons">
                 <button @click="patInfoSave(true)">Save</button>
@@ -299,21 +301,21 @@
               </div>
             </div>
         </div>
-      </div>
+      </div></template>
     </ModalContainer>
 
     <ModalContainer v-if="false">
-      <div class="modal-info">
+      <template #window><div class="modal-info">
         <div class="info-text">
           <p>Please select files with the <span>.acnl</span> extension.</p>
         </div>
-      </div>
+      </div></template>
     </ModalContainer>
 
     <ModalContainer v-if="mainMenu" @modal-close="mainMenu=false">
-      <div class="modal">
+      <template #window><div class="modal">
         <NookPhoneMenu v-model="mainMenu"/>
-      </div>
+      </div></template>
     </ModalContainer>
     </div>
   </div>
@@ -348,6 +350,8 @@ import IconPhone from '/components/icons/IconPhone.vue';
 import IconSave from '/components/icons/IconSave.vue';
 import IconScan from '/components/icons/IconScan.vue';
 import IconQRCode from '/components/icons/IconQRCode.vue';
+import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
+import imageAddSvg from '/assets/icons/bxs-image-add.svg';
 
 export default {
   name: "Editor",
@@ -418,6 +422,8 @@ export default {
       orange: "#DC8D69",
       white: "#FFFFFF",
       origin,
+      barcodeSvg,
+      imageAddSvg,
     };
   },
   methods: {

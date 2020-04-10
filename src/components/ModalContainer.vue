@@ -1,13 +1,30 @@
 <template>
+  <!-- teleport modal contents to manager -->
   <portal to="ModalManager">
-    <div class="modal-container" @click.self="onOverlayClick($event)">
-      <slot></slot>
+    <div class="modal">
+      <!-- window content -->
+      <slot
+        name="window">
+      </slot>
+
+      <!-- provided overlayed -->
+      <slot
+        v-if="$slots.overlay"
+        name="overlay"
+        @click.self="onOverlayClick($event)">
+      </slot>
+
+      <!-- default overlay -->
+      <div
+        v-if="!$slots.overlay"
+        class="modal--overlay--default"
+        @click.self="onOverlayClick($event)">
+      </div>
     </div>
   </portal>
 </template>
 
 <script>
-// use this component to wrap all modals
 class MissingContentError extends Error {
   constructor(message) {
     super(message);
@@ -15,6 +32,7 @@ class MissingContentError extends Error {
   }
 }
 
+// use this component to wrap all modals
 export default {
   name: "ModalContainer",
   data: function() {return {};},
@@ -29,12 +47,13 @@ export default {
     }
   },
   created: function() {
-    if (!this.$slots.default) {
-      throw new MissingContentError("");
-    }
+    // as early as possible for responsive canceling, don't wait for mount
     window.addEventListener("keyup", this.onKeyEscape);
   },
   mounted: function() {
+    if (this.$slots.window == null) {
+      throw new MissingContentError("");
+    }
     this.$emit("modal-open");
   },
   destroyed: function() {
@@ -45,7 +64,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-container{
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+}
+
+.modal--overlay--default {
   position: fixed;
   top: 0;
   left: 0;
@@ -55,6 +83,10 @@ export default {
   display:table-cell;
   vertical-align:middle;
   overflow:auto;
-  z-index: 10;
+  z-index: -999;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>
