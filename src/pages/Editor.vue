@@ -1,4 +1,4 @@
-<template v-for="i in 1">
+<template>
   <div>
     <Header
       :primary-nav="HeaderData.primaryItems"
