@@ -164,13 +164,13 @@
           <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
           <div class="edit-notice">
             <p>
-              IMPORTANT: AC:NH reads these patterns as AC:NL patterns; therefore, 
-              they will not be editable in-game since the game can't 
+              IMPORTANT: AC:NH reads these patterns as AC:NL patterns; therefore,
+              they will not be editable in-game since the game can't
               determine that they were originally made by you.
             </p>
             <p>
               <br>
-              Similarly, patterns with transparency will look corrupted 
+              Similarly, patterns with transparency will look corrupted
               when scanned in the NSO application but will look fine in game.
             </p>
           </div>
@@ -295,7 +295,9 @@
                 </div>
               </div>
               <div>
-                <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
+                <label>
+                  <input type="checkbox" value="Y" v-model="pubNSFW"/>This pattern is not appropriate for children
+                </label>
               </div>
               <div class="publish-buttons">
                 <button @click="patInfoSave(true)">Save</button>
