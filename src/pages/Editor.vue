@@ -24,14 +24,6 @@
       <ACNLQRGenerator :pattern="qrCode" />
       <button @click="downPNG">Save image</button>
     </div>
-
-    <ModalContainer v-if="false">
-      <div class="modal-info">
-        <div class="info-text">
-          <p>Please select files with the <span>.acnl</span> extension.</p>
-        </div>
-      </div>
-    </ModalContainer>
   </div>
 </template>
 
@@ -40,7 +32,6 @@ import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
 import IconGenerator from "/components/IconGenerator.vue";
-import ModalContainer from "/components/ModalContainer.vue";
 import DrawingTool from "/libs/DrawingTool";
 import ACNLFormat from "/libs/ACNLFormat";
 import origin from "/libs/origin";
@@ -57,8 +48,7 @@ export default {
     UrlInput,
     ImageLoader,
     ACNLQRGenerator,
-    IconGenerator,
-    ModalContainer
+    IconGenerator
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
