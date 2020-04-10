@@ -7,7 +7,7 @@
     />
 
     <UrlInput v-model="iiif" />
-    <Search />
+    <Search @input="onSearchSelect" />
     <ImageLoader
       class=""
       :pattern-type="patType"
@@ -289,6 +289,9 @@ export default {
     },
     extLoad: function(data) {
       this.drawingTool.load(data);
+    },
+    onSearchSelect: function(data) {
+      this.$set(this.iiif, "url", data.iiif_url);
     },
     onConvert: function(patterns) {
       // this.convertImage = false;
