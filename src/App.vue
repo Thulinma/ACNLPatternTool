@@ -6,7 +6,6 @@
       :museum-info="HeaderData.museumInfo"
       :has-search="HeaderData.hasSearch"
       :force-on-dark="HeaderData.forceOnDark"
-      :sticky="true"
     />
     <Hero name="Content" :data="heroData" />
     <section>
@@ -34,18 +33,18 @@ export default {
   components: {
     Header,
     Hero,
-    Footer,
+    Footer
   },
-  data: function () {
+  data: function() {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
       heroData: {
         title: "Animal Crossing: Getty Images",
-        backgroundColor: "garden",
-      },
+        backgroundColor: "garden"
+      }
     };
-  },
+  }
 };
 </script>
 
