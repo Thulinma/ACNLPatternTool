@@ -24,7 +24,7 @@
   </div>
 </template>
 <script>
-import imageData from "../data/NoC-US.txt";
+import NoC_US from "../data/NoC-US.txt";
 import { extractData } from "../libs/ExtractData.js";
 
 export default {
@@ -33,9 +33,11 @@ export default {
     return {
       value: "",
       query: "",
-      matches: []
+      matches: [],
+      imageData: NoC_US
     };
   },
+  computed: {},
   methods: {
     choose(match) {
       this.$emit("input", match);
@@ -44,7 +46,7 @@ export default {
       this.query = this.value;
       this.matches = [];
       console.log("searching imageData...", this.query);
-      for (let _line of imageData.split("\n")) {
+      for (let _line of this.imageData.split("\n")) {
         const _upper = _line.split("|")[0].toUpperCase();
         const _query = this.query.toUpperCase();
         if (_upper.indexOf(_query) > -1) {

@@ -24,7 +24,7 @@ new Vue({
   store,
   router,
   i18n,
-  render: (h) => h(App)
+  render: h => h(App)
 }).$mount("#app");
 
 // add this query string to url to see: '?log=info'
