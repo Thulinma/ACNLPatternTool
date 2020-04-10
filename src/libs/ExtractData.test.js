@@ -9,7 +9,7 @@ let sampleData =
 it("extracts a url from data", () => {
   let url =
     "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!300,300/0/default.jpg";
-  expect(extractData(sampleData).url).toBe(url);
+  expect(extractData(sampleData).iiif_url).toBe(url);
 });
 
 it("exports the full name", () => {
@@ -19,30 +19,30 @@ it("exports the full name", () => {
 });
 
 it("generates a short name", () => {
-  expect(extractData(sampleData).name).toBe("Apulian Red-Figur...");
+  expect(extractData(sampleData).short_name).toBe("Apulian Red-Figur...");
 });
 
 it("does not truncate short names", () => {
   const data = "short name|1|123";
-  expect(extractData(data).name).toEqual("short name");
+  expect(extractData(data).short_name).toEqual("short name");
 });
 
 it("does not truncate 20 char names", () => {
   const data = "Im twenty characters|1|123";
-  expect(extractData(data).name).toEqual("Im twenty characters");
+  expect(extractData(data).short_name).toEqual("Im twenty characters");
 });
 
 it("does truncate 21 char names", () => {
   const data = "I'm twenty characters|1|123";
-  expect(extractData(data).name).toEqual("I'm twenty charac...");
+  expect(extractData(data).short_name).toEqual("I'm twenty charac...");
 });
 
 it("generates a link to the collection object", () => {
-  expect(extractData(sampleData).link).toEqual(
+  expect(extractData(sampleData).webpage).toEqual(
     "https://www.getty.edu/art/collection/objects/tms:12038"
   );
 });
 
 it("allows you to specify a max size", () => {
-  expect(extractData(sampleData, 600).url).toMatch("!600,600");
+  expect(extractData(sampleData, 600).iiif_url).toMatch("!600,600");
 });
