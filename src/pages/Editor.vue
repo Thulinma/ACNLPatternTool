@@ -295,7 +295,9 @@
                 </div>
               </div>
               <div>
-                <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children
+                <label>
+                  <input type="checkbox" value="Y" v-model="pubNSFW"/>This pattern is not appropriate for children
+                </label>
               </div>
               <div class="publish-buttons">
                 <button @click="patInfoSave(true)">Save</button>
