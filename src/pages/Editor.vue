@@ -6,10 +6,10 @@
       :museum-info="HeaderData.museumInfo"
       :has-search="HeaderData.hasSearch"
       :force-on-dark="HeaderData.forceOnDark"
-      :sticky="true"
     />
     <Hero name="Content" :data="heroData" />
-    <section>
+    <section class="content">
+      <RichText :content="introText" contentType="json" />
       <div class="container">
         <div>
           <UrlInput v-model="iiif" />
@@ -47,9 +47,10 @@
 </template>
 
 <script>
+import introText from "../data/intro-text.json";
 import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
 import FooterData from "@thegetty/getty-ui/src/components/globals/footer/data.json";
-import { Header, Footer, Hero } from "@thegetty/getty-ui";
+import { Header, Footer, Hero, RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -69,11 +70,12 @@ export default {
   components: {
     Header,
     Hero,
+    RichText,
     Footer,
     UrlInput,
     Search,
     ImageLoader,
-    ACNLQRGenerator,
+    ACNLQRGenerator
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -98,14 +100,16 @@ export default {
 
   data: function() {
     return {
+      introText: introText,
       HeaderData: HeaderData,
       FooterData: FooterData,
       heroData: {
-        title: "Animal Crossing: Getty Images",
+        backgroundColor: "garden",
+        title: "Animal Crossing: Getty Images"
       },
       iiif: {
         url:
-          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
+          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
       },
       drawingTool: new DrawingTool(),
       qrCode: false,
@@ -129,7 +133,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
   },
   computed: {
@@ -144,7 +148,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    },
+    }
   },
   methods: {
     async onPublish() {
@@ -357,7 +361,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -396,8 +400,15 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.content {
+  padding: 74px 36px;
+}
+.o-hero__title {
+  font-size: 28px !important;
+}
+</style>
