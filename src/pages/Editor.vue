@@ -1,4 +1,4 @@
-<template v-for="i in 1">
+<template>
   <div>
     <section class="content">
       <RichText :content="introText" contentType="markdown" />
