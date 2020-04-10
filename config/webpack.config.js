@@ -107,7 +107,7 @@ const fileRules = [
     }
   },
   {
-    test: /\.(txt)$/i,
+    test: /\.(txt|md)$/i,
     use: {
       loader: "raw-loader"
     }

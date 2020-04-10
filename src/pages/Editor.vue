@@ -9,7 +9,7 @@
     />
     <Hero name="Content" :data="heroData" />
     <section class="content">
-      <RichText :content="introText" contentType="json" />
+      <RichText :content="introText" contentType="markdown" />
       <div class="container">
         <div>
           <UrlInput v-model="iiif" />
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import introText from "../data/intro-text.json";
+import introText from "../data/intro_text.md";
 import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
 import FooterData from "@thegetty/getty-ui/src/components/globals/footer/data.json";
 import { Header, Footer, Hero, RichText } from "@thegetty/getty-ui";
@@ -406,7 +406,7 @@ export default {
 
 <style lang="scss">
 .content {
-  padding: 74px 36px;
+  padding: 26px 36px;
 }
 .o-hero__title {
   font-size: 28px !important;
