@@ -1,26 +1,21 @@
 <template>
-  <div id=app>
+  <div id="app">
     <router-view></router-view>
-    <ModalManager/>
+    <ModalManager />
   </div>
 </template>
 
 <script>
-import ModalManager from '/components/ModalManager.vue';
+import ModalManager from "/components/ModalManager.vue";
 
 export default {
   name: "App",
   components: {
     ModalManager
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-#app {
-  position: relative;
-  top: 0;
-  left: 0;
-  height: 100%;
-}
+@import "../node_modules/@thegetty/getty-ui/dist/getty-ui.css";
 </style>
