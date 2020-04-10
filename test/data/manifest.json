@@ -1,0 +1,134 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json", 
+  "@id": "https://media.getty.edu/iiif/manifest/db44cc30-ac6f-4fe3-ad45-99910a61cb79.json", 
+  "@type": "sc:Manifest", 
+  "attribution": "Provided by The J. Paul Getty Museum", 
+  "description": [
+    "Amidst the soft, feathery trees in this English landscape, a subtly rendered house at the right suggests a human presence. Though this country view seems spontaneous, the scene is thoughtfully arranged around the prominent central tree. Anthony van Dyck's rich and translucent colors and the freshness of his watercolor and pen accents lend an almost impressionistic tone to the drawing.  <br/>  <br/> Van Dyck regularly sketched from life during relaxed interludes, all the while successfully creating coherent, unified compositions. This watercolor probably records a momentary impression created while at leisure, but it may also have served as a study for the background of a painting. While in England, van Dyck developed a pastoral style that often presented portrait sitters in a landscape."
+  ], 
+  "label": "Landscape", 
+  "logo": "http://www.getty.edu/museum/media/graphics/web/logos/getty.png", 
+  "metadata": [
+    {
+      "label": "Artist / Maker", 
+      "value": [
+        "Anthony van Dyck"
+      ]
+    }, 
+    {
+      "label": "Culture & Date", 
+      "value": [
+        "Flemish", 
+        "about 1640"
+      ]
+    }, 
+    {
+      "label": "Medium", 
+      "value": [
+        "Pen and brown ink and watercolor"
+      ]
+    }, 
+    {
+      "label": "Dimensions", 
+      "value": [
+        "18.9 Ã— 36.4 cm (7 7/16 Ã— 14 5/16 in.)"
+      ]
+    }, 
+    {
+      "label": "Object Number", 
+      "value": [
+        "85.GG.96"
+      ]
+    }, 
+    {
+      "label": "Collection", 
+      "value": [
+        "<a href='http://www.getty.edu/art/collection/' target='_blank'>The J. Paul Getty Museum</a>"
+      ]
+    }, 
+    {
+      "label": "Related", 
+      "value": [
+        "http://www.getty.edu/art/collection/objects/117/anthony-van-dyck-landscape-flemish-about-1640"
+      ]
+    }, 
+    {
+      "label": "Display Inscription", 
+      "value": [
+        "Verso, in black chalk: \"13\""
+      ]
+    }, 
+    {
+      "label": "Display Markings", 
+      "value": [
+        "Recto, lower right: Nicolaes Flinck collector's mark (L.959)"
+      ]
+    }, 
+    {
+      "label": "Rights Statement", 
+      "value": [
+        "<div>Images provided here are believed to be in the public domain and are available under the terms of the Getty's <nobr><a href='http://www.getty.edu/about/opencontent.html' target='_blank'>Open Content Program</a></nobr>. Texts provided here are Â© J. Paul Getty Trust, licensed under <a href='https://creativecommons.org/licenses/by/4.0/legalcode' target='_blank'>CC BY 4.0</a>. Terms of use for the Getty logo can be found <a href='http://www.getty.edu/legal/copyright.html#logo' target='_blank'>here</a>.</div>"
+      ]
+    }
+  ], 
+  "sequences": [
+    {
+      "@id": "https://media.getty.edu/iiif/manifest/sequence/db44cc30-ac6f-4fe3-ad45-99910a61cb79/default.json", 
+      "@type": "sc:Sequence", 
+      "canvases": [
+        {
+          "@id": "https://media.getty.edu/iiif/manifest/canvas/0cff9091-e65c-4f63-8da5-44d0c4bc0782.json", 
+          "@type": "sc:Canvas", 
+          "height": 3549, 
+          "images": [
+            {
+              "@id": "https://media.getty.edu/iiif/manifest/annotation/anno-0cff9091-e65c-4f63-8da5-44d0c4bc0782.json", 
+              "@type": "oa:Annotation", 
+              "motivation": "sc:painting", 
+              "on": "https://media.getty.edu/iiif/manifest/canvas/0cff9091-e65c-4f63-8da5-44d0c4bc0782.json", 
+              "resource": {
+                "@id": "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782/full/full/0/default.jpg", 
+                "@type": "dctypes:Image", 
+                "format": "image/jpeg", 
+                "height": 3549, 
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json", 
+                  "@id": "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782", 
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }, 
+                "width": 6696
+              }
+            }
+          ], 
+          "label": "Main View", 
+          "license": "http://rightsstatements.org/vocab/NoC-US/1.0/", 
+          "thumbnail": {
+            "@id": "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782/full/!300,300/0/default.jpg", 
+            "@type": "dctypes:Image", 
+            "format": "image/jpeg", 
+            "label": "Main View", 
+            "service": {
+              "@context": "http://iiif.io/api/image/2/context.json", 
+              "@id": "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782", 
+              "profile": "http://iiif.io/api/image/2/level2.json"
+            }
+          }, 
+          "width": 6696
+        }
+      ], 
+      "label": "Object", 
+      "startCanvas": "https://media.getty.edu/iiif/manifest/canvas/0cff9091-e65c-4f63-8da5-44d0c4bc0782.json"
+    }
+  ], 
+  "thumbnail": {
+    "@id": "https://media.getty.edu/iiif/image/non-iiif-service/full/!300,300/0/default.jpg", 
+    "@type": "dctypes:Image", 
+    "format": "image/jpeg", 
+    "label": "Main View", 
+    "service": {
+      "@context": "http://iiif.io/api/image/2/context.json", 
+      "@id": "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782", 
+      "profile": "http://iiif.io/api/image/2/level2.json"
+    }
+  }
+}

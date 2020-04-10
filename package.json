@@ -72,6 +72,7 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
+    "axios-mock-adapter": "^1.18.1",
     "babel-jest": "^25.3.0",
     "jest": "^25.3.0",
     "webpack-dev-server": "^3.10.3"
