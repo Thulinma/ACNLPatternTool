@@ -2,16 +2,17 @@
   <div>
     <input
       name="search"
+      ref="input"
       v-model="value"
       @keyup.enter="search"
       placeholder="Search the Getty's Open Content Images "
     />
-    <button name="search" @click="search">
+    <button ref="search" name="search" @click="search">
       Search
     </button>
 
-    <span v-if="query"
-      >Showing {{ matches.length }} results for {{ query }}</span
+    <span v-if="query" ref="summary"
+      >Showing {{ matches.length }} {{ resultText }} for '{{ query }}'</span
     >
 
     <ol>
@@ -37,7 +38,14 @@ export default {
       imageData: NoC_US
     };
   },
-  computed: {},
+  computed: {
+    resultText() {
+      if (this.matches && this.matches.length == 1) {
+        return "result";
+      }
+      return "results";
+    }
+  },
   methods: {
     choose(match) {
       this.$emit("input", match);
