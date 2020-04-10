@@ -7,7 +7,7 @@
 
 <script>
 import ModalManager from "/components/ModalManager.vue";
-
+import "@thegetty/getty-ui/dist/getty-ui.css";
 export default {
   name: "App",
   components: {
@@ -16,6 +16,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import "../node_modules/@thegetty/getty-ui/dist/getty-ui.css";
-</style>
+<style lang="scss" scoped></style>
