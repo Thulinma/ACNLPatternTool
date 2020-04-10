@@ -602,7 +602,10 @@ export default {
           reject(new DOMException("Problem parsing input file."));
         };
         fr.onload = (re) => {
-          resolve(re.target.result);
+          let fake_url =
+            "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg";
+          // resolve(re.target.result);
+          resolve(fake_url);
         };
         this.fileName = e.target.files[0].name;
         fr.readAsDataURL(e.target.files[0]);
