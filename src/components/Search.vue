@@ -46,7 +46,7 @@ export default {
       this.query = this.value;
       this.matches = [];
       console.log("searching imageData...", this.query);
-      for (let _line of imageData.split("\n")) {
+      for (let _line of this.imageData.split("\n")) {
         const _upper = _line.split("|")[0].toUpperCase();
         const _query = this.query.toUpperCase();
         if (_upper.indexOf(_query) > -1) {
