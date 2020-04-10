@@ -1,6 +1,13 @@
 <template v-for="i in 1">
   <div class="editor">
+    <input
+      class="iiif-input"
+      v-model="dataUrl"
+      placeholder="IIIF Url Goes Here"
+    />
+
     <UrlInput v-model="iiif" />
+    <Search />
     <ImageLoader
       class=""
       :pattern-type="patType"
@@ -31,6 +38,7 @@
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
+import Search from "/components/Search.vue";
 import DrawingTool from "/libs/DrawingTool";
 import ACNLFormat from "/libs/ACNLFormat";
 import origin from "/libs/origin";
@@ -45,13 +53,14 @@ export default {
   name: "Editor",
   components: {
     UrlInput,
+    Search,
     ImageLoader,
     ACNLQRGenerator
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then((r) => {
+        origin.view(to.hash.substring(3)).then(r => {
           this.drawingTool.load(r);
         });
         next();
@@ -152,7 +161,7 @@ export default {
         zip.file(title, dt.toBytes());
         titles.push(title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -174,7 +183,7 @@ export default {
         zip.file(title, img.substr(22), { base64: true });
         titles.push(title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -198,7 +207,7 @@ export default {
         zip.file(img_title, img.substr(22), { base64: true });
         titles.push(ancl_title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -338,7 +347,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then((r) => {
+        origin.view(hash.substring(2)).then(r => {
           this.drawingTool.load(r);
         });
       } else {
@@ -349,7 +358,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();

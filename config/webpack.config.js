@@ -1,28 +1,24 @@
-const webpack = require('webpack');
+const webpack = require("webpack");
 // auto-generate the index.html file
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
-const env = require('../etc/env'); // assume already loaded, checked
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const GoogleFontsPlugin = require("@beyonk/google-fonts-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const OptimizeThreePlugin = require("@vxna/optimize-three-webpack-plugin");
+const env = require("../etc/env"); // assume already loaded, checked
 const {
   pathToBuild,
   pathToPublicIndex,
   pathToFavicon,
-  pathToClientSrcIndex,
-} = require('../etc/paths');
-const {
-  babelDevConfig,
-  babelProdConfig
-} = require('./babel.config');
+  pathToClientSrcIndex
+} = require("../etc/paths");
+const { babelDevConfig, babelProdConfig } = require("./babel.config");
 
-
-const injection = require('../etc/injection');
+const injection = require("../etc/injection");
 
 const clientEnv = env.buildClient();
 
@@ -31,7 +27,7 @@ const entry = [pathToClientSrcIndex];
 const output = {
   filename: "scripts/bundle.js",
   publicPath: "/",
-  path: pathToBuild,
+  path: pathToBuild
 };
 
 const babelRuleDev = {
@@ -39,32 +35,32 @@ const babelRuleDev = {
   exclude: /(node_modules|bower_components)/,
   use: {
     loader: "babel-loader",
-    options: babelDevConfig,
-  },
+    options: babelDevConfig
+  }
 };
 
 const babelRuleProd = {
   ...babelRuleDev,
   use: {
     ...babelRuleDev.use,
-    options: babelProdConfig,
+    options: babelProdConfig
   }
-}
+};
 
 const vueRule = {
   test: /\.vue$/i,
-  loader: 'vue-loader'
+  loader: "vue-loader"
 };
 
 const scssRuleDev = {
   test: /\.s?css$/i,
   use: [
-    'vue-style-loader',
-    'css-loader',
+    "vue-style-loader",
+    "css-loader",
     {
-      loader: 'sass-loader',
+      loader: "sass-loader",
       options: {
-        sourceMap: true,
+        sourceMap: true
       }
     }
   ]
@@ -75,18 +71,18 @@ const scssRuleProd = {
   sideEffects: true,
   use: [
     MiniCssExtractPlugin.loader,
-    'css-loader',
+    "css-loader",
     {
-      loader: 'sass-loader',
+      loader: "sass-loader",
       options: {
         sourceMap: false,
         sassOptions: {
-          outputStyle: 'compressed',
+          outputStyle: "compressed"
         }
       }
     }
   ]
-}
+};
 
 const fileRules = [
   {
@@ -97,8 +93,8 @@ const fileRules = [
       options: {
         emitFile: true,
         outputPath: "images" // relative to output dir
-      },
-    },
+      }
+    }
   },
   // file-loader for models
   {
@@ -110,89 +106,82 @@ const fileRules = [
       }
     }
   },
-  // file-loaders for fonts
+  {
+    test: /\.(txt)$/i,
+    use: {
+      loader: "raw-loader"
+    }
+  }, // file-loaders for fonts
   {
     test: /\.(ttf|woff|)$/i,
     use: {
       loader: "file-loader",
       options: {
         outputPath: "fonts" // relative to output.path
-      },
+      }
     }
-  },
+  }
 ];
 
-const rulesDev = [
-  babelRuleDev,
-  vueRule,
-  scssRuleDev,
-  ...fileRules
-];
+const rulesDev = [babelRuleDev, vueRule, scssRuleDev, ...fileRules];
 
-const rulesProd = [
-  babelRuleProd,
-  vueRule,
-  scssRuleProd,
-  ...fileRules
-];
+const rulesProd = [babelRuleProd, vueRule, scssRuleProd, ...fileRules];
 
-const fonts = [
-  { family: "Nunito", variants: ["700", "800"] },
-];
+const fonts = [{ family: "Nunito", variants: ["700", "800"] }];
 
 const htmlWebpackOptions = {
   inject: true,
   hash: true,
   template: pathToPublicIndex,
-  title: 'Animal Crossing Pattern Tool',
+  title: "Animal Crossing Pattern Tool"
 };
 
 const plugins = [
   new VueLoaderPlugin(),
   new OptimizeThreePlugin(),
   new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
-  new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
+  new webpack.DefinePlugin({ "process.injected": JSON.stringify(injection) })
 ];
 
 const pluginsDev = [
   ...plugins,
   new GoogleFontsPlugin({
     local: false,
-    fonts,
+    fonts
   }),
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
     alwaysWriteToDisk: false,
-    filename: "index.html",
+    filename: "index.html"
   }),
   new HtmlWebpackHarddiskPlugin(), // ^ allows more options
   new FaviconsWebpackPlugin({
     logo: pathToFavicon,
     inject: true,
-    prefix: "favicons",
-  }),
+    prefix: "favicons"
+  })
 ];
 
 const pluginsProd = [
   ...plugins,
   new MiniCssExtractPlugin({
-    filename: "styles/style.css",
+    filename: "styles/style.css"
   }),
   new GoogleFontsPlugin({
     local: true,
     filename: "styles/font.css",
     path: "../fonts/",
     fonts,
-    formats: ["ttf"],
+    formats: ["ttf"]
   }),
   new HtmlWebpackPlugin({
-    ...htmlWebpackOptions,
+    ...htmlWebpackOptions
   }),
   new FaviconsWebpackPlugin({
     logo: pathToFavicon,
     inject: true,
-    prefix: "favicons",
-  }),
+    prefix: "favicons"
+  })
 ];
 
 const optimizatonProd = {
@@ -201,12 +190,12 @@ const optimizatonProd = {
       test: /\.js(\?.*)?$/i,
       terserOptions: {
         mangle: true,
-        ie8: false,
+        ie8: false
       },
-      extractComments: true,
+      extractComments: true
     }),
-    new OptimizeCSSAssetsPlugin({}),
-  ],
+    new OptimizeCSSAssetsPlugin({})
+  ]
 };
 
 const webpackDevConfig = {
@@ -226,13 +215,13 @@ const webpackProdConfig = {
   entry,
   output,
   module: {
-    rules: rulesProd,
+    rules: rulesProd
   },
   plugins: pluginsProd,
   optimization: optimizatonProd,
   // ignore webpack performance warnings
   // not a good gauge
-  performance: false,
+  performance: false
 };
 
 // default setting, set by .env
@@ -241,5 +230,5 @@ let webpackConfig = env.ifProdVal(webpackProdConfig, webpackDevConfig);
 module.exports = {
   webpackConfig, // default
   webpackDevConfig, // force dev
-  webpackProdConfig, // force prod
-}
+  webpackProdConfig // force prod
+};
