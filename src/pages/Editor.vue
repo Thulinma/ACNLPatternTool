@@ -58,7 +58,7 @@ export default {
     UrlInput,
     Search,
     ImageLoader,
-    ACNLQRGenerator
+    ACNLQRGenerator,
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -86,7 +86,7 @@ export default {
       HeaderData: HeaderData,
       iiif: {
         url:
-          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
+          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
       },
       drawingTool: new DrawingTool(),
       qrCode: false,
@@ -110,7 +110,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin
+      origin,
     };
   },
   computed: {
@@ -125,7 +125,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    }
+    },
   },
   methods: {
     async onPublish() {
@@ -294,6 +294,9 @@ export default {
     extLoad: function(data) {
       this.drawingTool.load(data);
     },
+    onSearchSelect: function(data) {
+      this.$set(this.iiif, "url", data.iiif_url);
+    },
     onConvert: function(patterns) {
       // this.convertImage = false;
       if (patterns.length == 1) {
@@ -335,7 +338,7 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    }
+    },
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -374,7 +377,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 

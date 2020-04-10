@@ -1,11 +1,19 @@
 <template>
   <div>
-    <input name="search" v-model="value" /><button
+    <input
       name="search"
-      @click="search"
-    >
+      v-model="value"
+      @keyup.enter="search"
+      placeholder="Search the Getty's Open Content Images "
+    />
+    <button name="search" @click="search">
       Search
     </button>
+
+    <span v-if="query"
+      >Showing {{ matches.length }} results for {{ query }}</span
+    >
+
     <ol>
       <li v-for="match of matches" @click="choose(match)">
         {{ match.full_name }}
@@ -24,8 +32,8 @@ export default {
   data() {
     return {
       value: "",
-
-      matches: [],
+      query: "",
+      matches: []
     };
   },
   methods: {
@@ -33,23 +41,27 @@ export default {
       this.$emit("input", match);
     },
     search() {
-      let query = this.value;
+      this.query = this.value;
       this.matches = [];
-      console.log("searching imageData...", query);
+      console.log("searching imageData...", this.query);
       for (let _line of imageData.split("\n")) {
         const _upper = _line.split("|")[0].toUpperCase();
-        const _query = query.toUpperCase();
+        const _query = this.query.toUpperCase();
         if (_upper.indexOf(_query) > -1) {
           this.matches.push(extractData(_line));
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style type="text/css" scoped>
 ol {
   max-height: 40em;
   overflow-y: scroll;
+  list-style: decimal;
+}
+li {
+  margin-left: 3em;
 }
 </style>
