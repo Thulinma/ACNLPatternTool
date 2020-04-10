@@ -15,10 +15,10 @@
     >
 
     <ol>
-      <li v-for="match of matches" @click="choose(match)">
+      <li v-for="match of matches" @click="choose(match)" :key="match.id">
         {{ match.full_name }}
         <a :href="match.webpage">view in collection</a>
-        <img :src="match.iiif_url" />
+        <img :key="match.id" :src="match.iiif_url" />
       </li>
     </ol>
   </div>
@@ -34,6 +34,7 @@ export default {
       value: "",
       query: "",
       matches: [],
+      maxSearch: 250,
       imageData: NoC_US
     };
   },
@@ -51,6 +52,9 @@ export default {
         const _query = this.query.toUpperCase();
         if (_upper.indexOf(_query) > -1) {
           this.matches.push(extractData(_line));
+        }
+        if (this.maxSearch <= this.matches.length) {
+          break;
         }
       }
     }
