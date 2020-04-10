@@ -1,56 +1,25 @@
 <template v-for="i in 1">
   <div>
-    <Header
-      :primary-nav="HeaderData.primaryItems"
-      :secondary-nav="HeaderData.secondaryItems"
-      :museum-info="HeaderData.museumInfo"
-      :has-search="HeaderData.hasSearch"
-      :force-on-dark="HeaderData.forceOnDark"
-    />
-    <Hero name="Content" :data="heroData" />
     <section class="content">
       <RichText :content="introText" contentType="markdown" />
-      <div class="container">
-        <div>
-          <UrlInput v-model="iiif" />
-          <Search @input="onSearchSelect" />
-          <ImageLoader
-            class=""
-            :pattern-type="patType"
-            :iiif-url="iiif.url"
-            @converted="onConvert"
-          />
-
-          <div>
-            <div class="pattern_title">{{ patTitle }}</div>
-            <div class="pattern_author">by {{ patAuthor }}</div>
-            <div class="pattern_town">from {{ patTown }}</div>
-          </div>
-
-          <div>
-            Generate QR Code(s)
-            <ACNLQRGenerator :pattern="qrCode" />
-            <button @click="downPNG">Save image</button>
-          </div>
-        </div>
-      </div>
+      <Search @input="onSearchSelect" />
+      <ImageLoader
+        class=""
+        :pattern-type="patType"
+        :iiif-url="iiif.url"
+        @converted="onConvert"
+      />
     </section>
 
-    <Footer
-      :primary-nav="FooterData.primaryNavigation"
-      :museum-info="FooterData.museumInfo"
-      :nav-grid="FooterData.navGrid"
-      :social="FooterData.social"
-      :social-all-link="FooterData.socialAllLink"
-    />
+    <ACNLQRGenerator :pattern="qrCode" />
+
+    <button @click="downPNG">Save image</button>
   </div>
 </template>
 
 <script>
 import introText from "../data/intro_text.md";
-import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
-import FooterData from "@thegetty/getty-ui/src/components/globals/footer/data.json";
-import { Header, Footer, Hero, RichText } from "@thegetty/getty-ui";
+import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -64,20 +33,19 @@ import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
+import { RichText } from "@thegetty/getty-ui";
+import introText from "../data/intro-text.json";
 
 export default {
   name: "Editor",
   components: {
-    Header,
-    Hero,
-    RichText,
-    Footer,
     UrlInput,
     Search,
     ImageLoader,
-    ACNLQRGenerator
+    ACNLQRGenerator,
+    RichText,
   },
-  beforeRouteUpdate: function(to, from, next) {
+  beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
         origin.view(to.hash.substring(3)).then((r) => {
@@ -98,18 +66,12 @@ export default {
     next();
   },
 
-  data: function() {
+  data: function () {
     return {
       introText: introText,
-      HeaderData: HeaderData,
-      FooterData: FooterData,
-      heroData: {
-        backgroundColor: "garden",
-        title: "Animal Crossing: Getty Images"
-      },
       iiif: {
         url:
-          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
+          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
       },
       drawingTool: new DrawingTool(),
       qrCode: false,
@@ -133,7 +95,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin
+      origin,
     };
   },
   computed: {
@@ -148,7 +110,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    }
+    },
   },
   methods: {
     async onPublish() {
@@ -285,13 +247,13 @@ export default {
       }
     },
 
-    onChangedCurrentColor: function(idx) {
+    onChangedCurrentColor: function (idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
       logger.info(`changed current color: ${idx}`);
     },
-    onLoad: async function(t) {
+    onLoad: async function (t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -314,13 +276,13 @@ export default {
       */
       return;
     },
-    extLoad: function(data) {
+    extLoad: function (data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function(data) {
+    onSearchSelect: function (data) {
       this.$set(this.iiif, "url", data.iiif_url);
     },
-    onConvert: function(patterns) {
+    onConvert: function (patterns) {
       // this.convertImage = false;
       if (patterns.length == 1) {
         this.extLoad(patterns[0]);
@@ -332,23 +294,23 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    extMultiLoad: function(data) {
+    extMultiLoad: function (data) {
       this.multiName = "Load which?";
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
-    onQROpen: function() {
+    onQROpen: function () {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    pickPattern: function(p) {
+    pickPattern: function (p) {
       this.extLoad(p);
       this.pickPatterns = false;
     },
-    closePicks: function() {
+    closePicks: function () {
       this.pickPatterns = false;
     },
-    onMainMenu: function() {
+    onMainMenu: function () {
       // this.$router.push("/");
       this.mainMenu = true;
     },
@@ -361,9 +323,9 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -400,7 +362,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 

@@ -1,34 +1,26 @@
 <template>
   <div>
-    <div class="cropper-container">
-      <div class="outercropper">
-        <Cropper
-          :src="iiifUrl"
-          :stencilProps="{ aspectRatio: getAspectRatio() }"
-          :defaultPositon="defPos"
-          :defaultSize="defSize"
-          ref="cropper"
-          @change="onCrop"
-        />
-      </div>
-    </div>
+    <Cropper
+      :src="iiifUrl"
+      :stencilProps="{ aspectRatio: getAspectRatio() }"
+      :defaultPosition="defPos"
+      :defaultSize="defSize"
+      ref="cropper"
+      @change="onCrop"
+    />
 
     <!-- These are part of the rendering pipeline.  I think we could
     get rid of the preview one, but I don't know 100%, and it didn't seem
     worth the time to dig in. -->
-    <div class="preview-and-options">
-      <div class="preview">
-        <canvas v-show="false" ref="preview" />
-        <canvas v-show="false" ref="postview" width="64" height="64" />
-        <canvas
-          v-show="false"
-          ref="postmix"
-          class="postview"
-          width="256"
-          height="256"
-        />
-      </div>
-    </div>
+    <canvas v-show="false" ref="preview" />
+    <canvas v-show="false" ref="postview" width="64" height="64" />
+    <canvas
+      v-show="false"
+      ref="postmix"
+      class="postview"
+      width="256"
+      height="256"
+    />
   </div>
 </template>
 
@@ -40,15 +32,15 @@ import DrawingTool from "/libs/DrawingTool";
 export default {
   name: "ImageLoader",
   components: {
-    Cropper
+    Cropper,
   },
   props: {
     patternType: Number,
     iiifUrl: {
-      type: String
-    }
+      type: String,
+    },
   },
-  data: function() {
+  data: function () {
     return {
       convert_method: "quantize",
       convert_quality: "high",
@@ -58,7 +50,7 @@ export default {
       fileName: "",
       muralWide: 1,
       muralTall: 1,
-      outputs: []
+      outputs: [],
     };
   },
   mounted() {
@@ -191,7 +183,7 @@ export default {
               this.draw.setPixel(x, y, [
                 imgdata.data[i],
                 imgdata.data[i + 1],
-                imgdata.data[i + 2]
+                imgdata.data[i + 2],
               ]);
             }
           }
@@ -231,7 +223,7 @@ export default {
           this.draw.findRGB([
             imgdata.data[i],
             imgdata.data[i + 1],
-            imgdata.data[i + 2]
+            imgdata.data[i + 2],
           ])
         ].c++;
       }
@@ -263,11 +255,11 @@ export default {
           this.draw.findYUV([
             imgdata.data[i],
             imgdata.data[i + 1],
-            imgdata.data[i + 2]
+            imgdata.data[i + 2],
           ])
         ].c++;
       }
-      palette.sort(function(a, b) {
+      palette.sort(function (a, b) {
         if (a.c > b.c) {
           return -1;
         }
@@ -305,7 +297,7 @@ export default {
         pixels.push({
           r: imgdata.data[i],
           g: imgdata.data[i + 1],
-          b: imgdata.data[i + 2]
+          b: imgdata.data[i + 2],
         });
       }
       const medianCut = (pixels) => {
@@ -386,7 +378,7 @@ export default {
         let rgb = [
           Math.round(r_avg / b.length),
           Math.round(g_avg / b.length),
-          Math.round(b_avg / b.length)
+          Math.round(b_avg / b.length),
         ];
         let idx = this.draw.findRGB(rgb);
         if (!uniqCol.has(idx)) {
@@ -503,7 +495,7 @@ export default {
         }
         myPal(i / 4, imgdata.data[i], imgdata.data[i + 1], imgdata.data[i + 2]);
       }
-      palette.sort(function(a, b) {
+      palette.sort(function (a, b) {
         if (a.c > b.c) {
           return -1;
         }
@@ -564,8 +556,8 @@ export default {
 
     getAspectRatio() {
       return this.muralWide / this.muralTall;
-    }
-  }
+    },
+  },
 };
 </script>
 
