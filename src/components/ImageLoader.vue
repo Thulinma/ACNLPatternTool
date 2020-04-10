@@ -1,16 +1,9 @@
 <template>
   <div>
     <div class="cropper-container">
-      <!--   <input
-        class="iiif-input"
-        v-model="dataurl"
-        placeholder="IIIF Url Goes Here"
-        @update="processImage"
-      /> -->
-
       <div class="outercropper">
         <Cropper
-          :src="dataUrl"
+          :src="iiifUrl"
           :stencilProps="{ aspectRatio: getAspectRatio() }"
           :defaultPositon="defPos"
           :defaultSize="defSize"
@@ -51,7 +44,7 @@ export default {
   },
   props: {
     patternType: Number,
-    dataUrl: {
+    iiifUrl: {
       type: String
     }
   },

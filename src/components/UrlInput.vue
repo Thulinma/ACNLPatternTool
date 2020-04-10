@@ -1,17 +1,27 @@
 <template>
   <div>
-    <input class="iiif-input" placeholder="IIIF Url Goes Here" />
+    <input
+      class="iiif-input"
+      placeholder="IIIF Url Goes Here"
+      v-model="value.url"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: "UrlInput",
-  props: {},
-  data: function() {
-    return {};
+  props: {
+    value: {
+      type: Object,
+      required: true
+    }
   },
-  methods: {}
+  watch: {
+    value() {
+      this.$emit("input", this.value);
+    }
+  }
 };
 </script>
 
