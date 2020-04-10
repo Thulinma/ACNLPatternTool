@@ -10,7 +10,9 @@
     "clean:submodule": "cd zxing-js-library && npm run clean",
     "build": "cd zxing-js-library && npm run build:es5 && cd .. && node scripts/build.js",
     "build:app": "node scripts/build.js",
-    "build:submodule": "cd zxing-js-library && npm run build:es5"
+    "build:submodule": "cd zxing-js-library && npm run build:es5",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -70,6 +72,8 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
+    "babel-jest": "^25.3.0",
+    "jest": "^25.3.0",
     "webpack-dev-server": "^3.10.3"
   }
 }
