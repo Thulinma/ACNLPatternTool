@@ -10,7 +10,7 @@
     />
     <div>
       <UrlInput v-model="iiif" />
-      <Search />
+      <Search @input="onSearchSelect" />
       <ImageLoader
         class=""
         :pattern-type="patType"
