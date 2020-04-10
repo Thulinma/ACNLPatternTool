@@ -12,7 +12,7 @@
     </button>
 
     <span v-if="query" ref="summary"
-      >Showing {{ matches.length }} result(s) for {{ query }}</span
+      >Showing {{ matches.length }} {{ resultText }} for '{{ query }}'</span
     >
 
     <ol>
@@ -38,7 +38,14 @@ export default {
       imageData: NoC_US
     };
   },
-  computed: {},
+  computed: {
+    resultText() {
+      if (this.matches && this.matches.length == 1) {
+        return "result";
+      }
+      return "results";
+    }
+  },
   methods: {
     choose(match) {
       this.$emit("input", match);
