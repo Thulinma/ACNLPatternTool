@@ -133,27 +133,6 @@ export default {
     }
   },
   methods: {
-    search(query) {
-      let matches = [];
-      console.log("searching imageData...", query);
-      for (let _line of imageData.split("\n")) {
-        let _query = query.toUpperCase();
-        let _upper = _line.toUpperCase();
-        if (
-          (_upper.includes && _upper.includes(_query)) ||
-          _upper.indexOf(_query) > -1
-        ) {
-          let line = _line.split("|");
-          matches.push({
-            title: line[0],
-            id: line[1],
-            manifest: line[2]
-          });
-        }
-      }
-      // console.log(matches);
-      return matches;
-    },
     async onPublish() {
       let uplStatus = await origin.upload(
         btoa(this.drawingTool.toString()),
