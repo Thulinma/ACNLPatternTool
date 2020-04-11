@@ -33,19 +33,24 @@ export default {
   components: {
     Header,
     Hero,
-    Footer
+    Footer,
   },
-  data: function() {
+  data: function () {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
       heroData: {
         title: "Animal Crossing: Getty Images",
-        backgroundColor: "garden"
-      }
+        backgroundColor: "garden",
+      },
     };
-  }
+  },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.o-hero--content .o-hero__inner {
+  padding-top: inherit !important;
+  height: inherit !important;
+}
+</style>

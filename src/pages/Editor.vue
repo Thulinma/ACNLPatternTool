@@ -3,6 +3,10 @@
     <section class="content">
       <RichText :content="introText" contentType="markdown" />
       <Search @input="onSearchSelect" />
+    </section>
+
+    <section class="content">
+      <RichText :content="step2" contentType="markdown" />
       <ImageLoader
         class=""
         :pattern-type="patType"
@@ -11,14 +15,18 @@
       />
     </section>
 
-    <ACNLQRGenerator :pattern="qrCode" />
-
-    <button @click="downPNG">Save image</button>
+    <section class="content">
+      <RichText :content="step3" contentType="markdown" />
+      <ACNLQRGenerator :pattern="qrCode" />
+      <button @click="downPNG">Save image</button>
+    </section>
   </div>
 </template>
 
 <script>
 import introText from "../data/intro_text.md";
+import step2 from "../data/step2.md";
+import step3 from "../data/step3.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
@@ -66,6 +74,8 @@ export default {
 
   data: function () {
     return {
+      step2: step2,
+      step3: step3,
       introText: introText,
       iiif: {
         url:
