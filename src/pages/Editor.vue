@@ -71,6 +71,7 @@ export default {
         url:
           "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
       },
+      searchResult: {},
       drawingTool: new DrawingTool(),
       qrCode: false,
       allTypes: [],
@@ -278,6 +279,7 @@ export default {
       this.drawingTool.load(data);
     },
     onSearchSelect: function (data) {
+      this.searchResult = data;
       this.$set(this.iiif, "url", data.iiif_url);
     },
     onConvert: function (patterns) {
@@ -289,6 +291,7 @@ export default {
         this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
       }
+      this.drawingTool.title = this.searchResult.short_name;
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
