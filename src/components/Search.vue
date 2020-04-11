@@ -16,10 +16,10 @@
     >
 
     <ol>
-      <li v-for="match of matches" @click="choose(match)" :key="match.id">
+      <li v-for="match of matches" @click="choose(match)" :key="match.webpage">
         {{ match.full_name }}
         <a :href="match.webpage">view in collection</a>
-        <img :key="match.id" :src="match.iiif_url" />
+        <img :key="match.webpage" :src="match.iiif_url" />
       </li>
     </ol>
   </div>
@@ -30,13 +30,14 @@ import { extractData } from "../libs/ExtractData.js";
 
 export default {
   name: "Search",
+
   data() {
     return {
       value: "",
       query: "",
       matches: [],
       maxSearch: 250,
-      imageData: NoC_US
+      imageData: NoC_US,
     };
   },
   computed: {
@@ -45,7 +46,7 @@ export default {
         return "result";
       }
       return "results";
-    }
+    },
   },
   methods: {
     choose(match) {
@@ -65,8 +66,8 @@ export default {
           break;
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style type="text/css" scoped>
@@ -77,5 +78,13 @@ ol {
 }
 li {
   margin-left: 3em;
+}
+
+input {
+  width: 100%;
+  font-size: 120%;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding: 0.25em;
 }
 </style>
