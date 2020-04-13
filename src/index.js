@@ -16,7 +16,14 @@ import logger from "/utils/logger";
 import router from "/routers"; // use router
 import store from "/store"; // use vuex
 // import "/style.scss"; // top-level styles
+import VueAnalytics from "vue-analytics";
+
 import VBodyScrollLock from "v-body-scroll-lock";
+
+Vue.use(VueAnalytics, {
+  id: undefined,
+  router
+});
 
 // vue global config
 Vue.config.productionTip = false;

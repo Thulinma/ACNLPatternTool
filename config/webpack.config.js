@@ -24,10 +24,30 @@ const clientEnv = env.buildClient();
 
 const entry = [pathToClientSrcIndex];
 
+// const output = {
+//   filename: "scripts/bundle.js",
+//   publicPath: "/animal-crossing-artwork-generator/",
+//   path: pathToBuild + "/animal-crossing-artwork-generator/"
+// };
+
+let buildPath = pathToBuild;
+let publicPath = "/";
+if (process.env.PUBLIC_PATH) {
+  publicPath = process.env.PUBLIC_PATH;
+  const fs = require("fs");
+  if (fs.existsSync(buildPath) == false) {
+    fs.mkdirSync(buildPath);
+  }
+  const filename = buildPath + "/index.html";
+  fs.closeSync(fs.openSync(filename, "w"));
+
+  buildPath = buildPath + publicPath;
+}
+
 const output = {
   filename: "scripts/bundle.js",
-  publicPath: "/",
-  path: pathToBuild
+  publicPath: publicPath,
+  path: buildPath
 };
 
 const babelRuleDev = {
