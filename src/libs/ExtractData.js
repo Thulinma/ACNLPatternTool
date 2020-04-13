@@ -31,7 +31,7 @@ export function extractData(dataString, size = 300) {
 
   let name = full_name;
   if (name.length > 20) {
-    name = name.substr(0, 17) + "...";
+    name = name.substr(0, 19) + "…";
   }
   return {
     short_name: name,

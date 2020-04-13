@@ -23,7 +23,7 @@ describe("extractData", () => {
   });
 
   it("generates a short name", () => {
-    expect(extractData(sampleData).short_name).toBe("Apulian Red-Figur...");
+    expect(extractData(sampleData).short_name).toBe("Apulian Red-Figure …");
   });
 
   it("does not truncate short names", () => {
@@ -38,7 +38,7 @@ describe("extractData", () => {
 
   it("does truncate 21 char names", () => {
     const data = "I'm twenty characters|1|123";
-    expect(extractData(data).short_name).toEqual("I'm twenty charac...");
+    expect(extractData(data).short_name).toEqual("I'm twenty characte…");
   });
 
   it("generates a link to the collection object", () => {
