@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require("path");
 
 // path to directories
 const pathToRoot = process.cwd();
@@ -19,7 +19,7 @@ const pathToEnvConfig = path.resolve(pathToConfig, "env.config.js");
 const pathToWebpackConfig = path.resolve(pathToConfig, "webpack.config.js");
 const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
 const pathToFavicon = path.resolve(pathToPublic, "favicon.svg");
-const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
+const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js");
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
 const pathToZxingBuild = path.resolve(pathToZxingSubmodule, "esm5");
 const pathToBundleStats = path.resolve(pathToStats, "bundle.html");
