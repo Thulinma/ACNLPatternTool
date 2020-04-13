@@ -1,4 +1,13 @@
 import Vue from "vue";
+import * as Sentry from "@sentry/browser";
+import * as Integrations from "@sentry/integrations";
+
+Sentry.init({
+  dsn:
+    "https://0ceef9680626415687568c7bd41ccbf8@o294689.ingest.sentry.io/5199201",
+  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+});
+
 import App from "/App.vue";
 import i18n from "/i18n"; // use i18n
 import PortalVue from "portal-vue";
@@ -7,7 +16,14 @@ import logger from "/utils/logger";
 import router from "/routers"; // use router
 import store from "/store"; // use vuex
 // import "/style.scss"; // top-level styles
+import VueAnalytics from "vue-analytics";
+
 import VBodyScrollLock from "v-body-scroll-lock";
+
+Vue.use(VueAnalytics, {
+  id: undefined,
+  router
+});
 
 // vue global config
 Vue.config.productionTip = false;

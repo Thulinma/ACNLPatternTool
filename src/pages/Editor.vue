@@ -307,7 +307,12 @@ export default {
         this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
       }
-      this.drawingTool.title = this.searchResult.short_name;
+      let title = "untitled";
+      if (this.searchResult && this.searchResult.short_name) {
+        title = this.searchResult.short_name;
+      }
+
+      this.drawingTool.title = title;
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
