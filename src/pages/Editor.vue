@@ -20,6 +20,10 @@
       <ACNLQRGenerator :pattern="qrCode" />
       <button @click="downPNG">Save image</button>
     </section>
+
+    <section class="content">
+      <Gallery />
+    </section>
   </div>
 </template>
 
@@ -30,6 +34,7 @@ import step3 from "../data/step3.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
+import Gallery from "/components/Gallery.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
 import Search from "/components/Search.vue";
 import DrawingTool from "/libs/DrawingTool";
@@ -48,13 +53,14 @@ export default {
     UrlInput,
     Search,
     ImageLoader,
+    Gallery,
     ACNLQRGenerator,
-    RichText,
+    RichText
   },
-  beforeRouteUpdate: function (to, from, next) {
+  beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then((r) => {
+        origin.view(to.hash.substring(3)).then(r => {
           this.drawingTool.load(r);
         });
         next();
@@ -72,14 +78,14 @@ export default {
     next();
   },
 
-  data: function () {
+  data: function() {
     return {
       step2: step2,
       step3: step3,
       introText: introText,
       iiif: {
         url:
-          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg",
+          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -104,7 +110,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
   },
   computed: {
@@ -119,7 +125,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    },
+    }
   },
   methods: {
     async onPublish() {
@@ -159,7 +165,7 @@ export default {
         zip.file(title, dt.toBytes());
         titles.push(title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -181,7 +187,7 @@ export default {
         zip.file(title, img.substr(22), { base64: true });
         titles.push(title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -205,7 +211,7 @@ export default {
         zip.file(img_title, img.substr(22), { base64: true });
         titles.push(ancl_title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -256,13 +262,13 @@ export default {
       }
     },
 
-    onChangedCurrentColor: function (idx) {
+    onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
       logger.info(`changed current color: ${idx}`);
     },
-    onLoad: async function (t) {
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -285,14 +291,14 @@ export default {
       */
       return;
     },
-    extLoad: function (data) {
+    extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function (data) {
+    onSearchSelect: function(data) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.iiif_url);
     },
-    onConvert: function (patterns) {
+    onConvert: function(patterns) {
       // this.convertImage = false;
       if (patterns.length == 1) {
         this.extLoad(patterns[0]);
@@ -305,23 +311,23 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    extMultiLoad: function (data) {
+    extMultiLoad: function(data) {
       this.multiName = "Load which?";
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
-    onQROpen: function () {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    pickPattern: function (p) {
+    pickPattern: function(p) {
       this.extLoad(p);
       this.pickPatterns = false;
     },
-    closePicks: function () {
+    closePicks: function() {
       this.pickPatterns = false;
     },
-    onMainMenu: function () {
+    onMainMenu: function() {
       // this.$router.push("/");
       this.mainMenu = true;
     },
@@ -334,9 +340,9 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
-  mounted: function () {
+  mounted: function() {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -350,7 +356,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then((r) => {
+        origin.view(hash.substring(2)).then(r => {
           this.drawingTool.load(r);
         });
       } else {
@@ -361,7 +367,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
@@ -373,7 +379,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
