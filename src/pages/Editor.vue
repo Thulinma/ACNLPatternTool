@@ -78,8 +78,10 @@ export default {
       step3: step3,
       introText: introText,
       iiif: {
+        title: "Jeanne (Spring)",
+        short_name: "Jeanne...",
         url:
-          "https://media.getty.edu/iiif/image/88001b5b-0261-4b9c-974b-a973e7d0824a/full/!300,300/0/default.jpg"
+          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!300,300/0/default.jpg"
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -294,14 +296,15 @@ export default {
     },
     onConvert: function(patterns) {
       // this.convertImage = false;
+      let title = "untitled";
       if (patterns.length == 1) {
+        title = this.iiif.short_name;
         this.extLoad(patterns[0]);
       } else {
         this.multiName = "Conversion result";
         this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
       }
-      let title = "untitled";
       if (this.searchResult && this.searchResult.short_name) {
         title = this.searchResult.short_name;
       }
