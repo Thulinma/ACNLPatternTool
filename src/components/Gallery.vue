@@ -2,53 +2,65 @@
   <div>
     <div>
       <h1 class="f-heading-5">Getty museum images</h1>
+      <!-- image grid -->
       <div class="l-quarters">
         <div
           v-for="(img, index) in images"
           class="l-quarters__quarter"
           @click="changeImage(index)"
         >
-          <img src="../assets/images/1.png" class="test" />
+          <img :src="img.src" :class="getClass(index)" />
         </div>
+      </div>
+      <!-- selected image preview -->
+      <div v-if="selectedImageIndex > -1" class="selected-container">
+        <img :src="images[selectedImageIndex].qrSrc" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import irises from "/assets/images/irises.png";
+import irisesQR from "/assets/images/irises-qr.png";
+import yawn from "/assets/images/yawn.png";
+import yawnQR from "/assets/images/yawn-qr.png";
+
 export default {
   name: "Gallery",
   components: {},
 
   data: function() {
     return {
+      selectedImageIndex: -1,
       images: [
         {
           alt: "image alt",
           id: "123",
-          src: "/images/1.png",
-          title: "Test Title"
+          src: irises,
+          qrSrc: irisesQR,
+          title: "Irises Title"
         },
         {
           alt: "image alt",
           id: "123",
-          src:
-            "https://media.getty.edu/iiif/image/e5d29650-11f8-4897-9540-54a9dd65b04f/square/!300,300/0/default.jpg",
-          title: "Test Title"
+          src: yawn,
+          qrSrc: yawnQR,
+          title: "Yawn Title"
         },
         {
           alt: "image alt",
           id: "123",
-          src:
-            "https://media.getty.edu/iiif/image/e5d29650-11f8-4897-9540-54a9dd65b04f/square/!300,300/0/default.jpg",
-          title: "Test Title"
+          src: irises,
+          qrSrc: irisesQR,
+          title: "Irises Title"
         },
         {
           alt: "image alt",
           id: "123",
-          src:
-            "https://media.getty.edu/iiif/image/e5d29650-11f8-4897-9540-54a9dd65b04f/square/!300,300/0/default.jpg",
-          title: "Test Title"
+          src: yawn,
+          qrSrc: yawnQR,
+          title: "Yawn Title"
         }
       ]
     };
@@ -56,7 +68,13 @@ export default {
   computed: {},
   methods: {
     changeImage(index) {
-      console.log("index", index);
+      this.selectedImageIndex = index;
+    },
+    getClass(index) {
+      if (index === this.selectedImageIndex) {
+        return "selected";
+      }
+      return "";
     }
   }
 };
@@ -65,5 +83,14 @@ export default {
 <style lang="scss" scoped>
 .f-heading-5 {
   margin-bottom: 28px;
+}
+.selected-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.selected {
+  border: 3px solid blue;
 }
 </style>
