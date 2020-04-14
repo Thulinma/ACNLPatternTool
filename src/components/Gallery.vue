@@ -2,10 +2,10 @@
   <div>
     <h1 class="f-heading-5">Getty museum artwork examples</h1>
     <!-- image grid -->
-    <div class="columns is-mobile is-multiline">
+    <div class="gallery">
       <div
         v-for="(img, index) in images"
-        class="column is-one-quarter"
+        class="gallery-column"
         @click="changeImage(index)"
       >
         <img :src="img.src" :class="getClass(index)" />
@@ -120,7 +120,19 @@ export default {
 .selected {
   border: 3px solid pink;
 }
+
 .thumbnail {
   width: 100%;
+}
+
+.gallery {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
+.gallery-column {
+  flex: 1 0 21%;
+  margin: 1em;
 }
 </style>
