@@ -166,7 +166,7 @@ async function generateACNLQR(newData) {
   // bgCtx.fillRect(0, -80, 16, 160);
   // bgCtx.fillRect(-32, -80, 16, 160);
   //Copy background to main canvas
-  ctx.fillStyle = "#17B692";
+  ctx.fillStyle = "#FFE6F3";
   ctx.fillRect(0, 0, width, height);
 
   //Draw the pattern itself to canvas
@@ -304,13 +304,13 @@ async function generateACNLQR(newData) {
   ctx.font = "7pt Graphik Web";
   drawTxtWithBg(
     width / 2,
-    height - 2 - (height - pattHeight) / 4,
+    height - (height - pattHeight) / 4,
     "experiments.getty.edu/animal-crossing-artwork-generator",
     "#1a47b8"
   );
 
   const image = document.getElementById("gettylogo");
-  ctx.drawImage(image, 14, height - 36);
+  ctx.drawImage(image, 14, height - 28);
 
   //Prepare pretty side decoration
   bgCanvas.width = 3;

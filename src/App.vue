@@ -5,7 +5,7 @@
       :secondary-nav="HeaderData.secondaryItems"
       :museum-info="HeaderData.museumInfo"
       :has-search="HeaderData.hasSearch"
-      :force-on-dark="HeaderData.forceOnDark"
+      :force-on-dark="false"
       :baseUrl="'https://www.getty.edu'"
     />
     <Hero name="Content" :data="heroData" />
@@ -43,7 +43,7 @@ export default {
       FooterData: FooterData,
       heroData: {
         title: "Animal Crossing: Getty Images",
-        backgroundColor: "garden"
+        backgroundColor: "white"
       }
     };
   }
