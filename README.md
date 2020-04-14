@@ -75,4 +75,4 @@ directory.
 
 ### deploy the built app to netlify
 
-1. `npx netlify deploy --dir=build`
+1. `npx netlify deploy --dir=build --prod`
