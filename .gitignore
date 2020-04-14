@@ -9,3 +9,5 @@
 /stats
 # Ignore OS Metadata
 **/.DS_Store
+# Local Netlify folder
+.netlify
