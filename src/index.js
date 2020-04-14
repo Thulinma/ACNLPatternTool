@@ -21,7 +21,7 @@ import VueAnalytics from "vue-analytics";
 import VBodyScrollLock from "v-body-scroll-lock";
 
 Vue.use(VueAnalytics, {
-  id: undefined,
+  id: "UA-8087223-37",
   router
 });
 
