@@ -15,8 +15,8 @@
       <hr />
 
       <section class="section">
-        <div class="columns">
-          <div class="half-column">
+        <div class="l-halves">
+          <div class="l-halves__half">
             <h1 id="step2" ref="step2" class="f-heading-5">
               Step 2: Select the crop for your artwork
             </h1>
@@ -26,7 +26,7 @@
               @converted="onConvert"
             />
           </div>
-          <div class="half-column">
+          <div class="l-halves__half leftborder">
             <h1 class="f-heading-5">
               Step 3: Import your artwork into Animal Crossing
             </h1>
@@ -430,19 +430,8 @@ export default {
   color: #1a47b8;
   text-decoration: none;
 }
-.columns {
-  display: flex;
-}
-.half-column {
-  width: 50%;
-}
-.half-column:first-child {
-  padding: 12px 12px 12px 0;
-  margin-right: 4px;
-}
-.half-column:last-child {
+.leftborder {
   padding: 12px 0 12px 12px;
-  margin-left: 4px;
   border-left: 1px solid #e6e6e6;
 }
 .generated-image {
