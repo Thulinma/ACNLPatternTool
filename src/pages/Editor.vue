@@ -18,12 +18,13 @@
       <section class="section">
         <Gallery />
       </section>
-	  <section class="section">
+      <section class="section">
         <div>
+          <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
           <RichText :content="step3iiif" contentType="markdown" />
           <urlInput @updateIiif="updateIiifData" />
         </div>
-	  </section>
+      </section>
       <hr />
 
       <section class="section">
