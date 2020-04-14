@@ -6,6 +6,7 @@
       :museum-info="HeaderData.museumInfo"
       :has-search="HeaderData.hasSearch"
       :force-on-dark="HeaderData.forceOnDark"
+      :baseUrl="'https://www.getty.edu'"
     />
     <Hero name="Content" :data="heroData" />
     <section>
@@ -14,6 +15,7 @@
       </div>
     </section>
     <Footer
+      :baseUrl="'https://www.getty.edu'"
       :primary-nav="FooterData.primaryNavigation"
       :museum-info="FooterData.museumInfo"
       :nav-grid="FooterData.navGrid"
@@ -33,18 +35,18 @@ export default {
   components: {
     Header,
     Hero,
-    Footer,
+    Footer
   },
-  data: function () {
+  data: function() {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
       heroData: {
         title: "Animal Crossing: Getty Images",
-        backgroundColor: "garden",
-      },
+        backgroundColor: "garden"
+      }
     };
-  },
+  }
 };
 </script>
 

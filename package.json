@@ -28,7 +28,7 @@
     "@beyonk/google-fonts-webpack-plugin": "^1.2.3",
     "@sentry/browser": "^5.15.4",
     "@sentry/integrations": "^5.15.4",
-    "@thegetty/getty-ui": "^1.24.0",
+    "@thegetty/getty-ui": "^1.25.0",
     "@vxna/optimize-three-webpack-plugin": "^3.0.1",
     "axios": "^0.19.2",
     "file-saver": "^2.0.2",
