@@ -3,7 +3,7 @@
     <input
       class="iiif-input"
       placeholder="IIIF Url Goes Here"
-      v-model="iiifUrl"
+      v-model="iiifManifestUrl"
     />
     <button class="a-btn a-btn--text" @click="updateUrl">Submit</button>
   </div>
@@ -15,12 +15,12 @@ export default {
   name: "UrlInput",
   data() {
     return {
-      iiifUrl: undefined
+      iiifManifestUrl: undefined
     };
   },
   methods: {
     updateUrl() {
-      this.$emit("updateUrl", this.iiifUrl);
+      this.$emit("updateIiif", this.iiifManifestUrl);
     }
   }
 };

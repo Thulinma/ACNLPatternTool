@@ -14,7 +14,7 @@
         </div>
         <div>
           <RichText :content="step3iiif" contentType="markdown" />
-          <urlInput @updateUrl="updateIiifUrl" />
+          <urlInput @updateIiif="updateIiifData" />
         </div>
       </section>
 
@@ -291,16 +291,16 @@ export default {
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
       localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
     },
-    updateIiifUrl(url) {
-      // TODO: get info from iiif url
+    updateIiifData(manifestUrl) {
+      // TODO: extract data from manifest url
       this.searchResult = {
         full_name: "placeholder",
-        iiif_url: url,
-        large_iiif_url: url,
+        iiif_url: manifestUrl,
+        large_iiif_url: manifestUrl,
         short_name: "placeholder",
         webpage: undefined
       };
-      this.$set(this.iiif, "url", url);
+      this.$set(this.iiif, "url", manifestUrl);
     }
   },
   mounted: function() {
