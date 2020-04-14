@@ -166,7 +166,7 @@ async function generateACNLQR(newData) {
   // bgCtx.fillRect(0, -80, 16, 160);
   // bgCtx.fillRect(-32, -80, 16, 160);
   //Copy background to main canvas
-  ctx.fillStyle = "#17B692";
+  ctx.fillStyle = "#FFE6F3";
   ctx.fillRect(0, 0, width, height);
 
   //Draw the pattern itself to canvas
