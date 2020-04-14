@@ -224,30 +224,12 @@ export default {
         "Please provide a valid pattern name, town name, and player name for this pattern."
       );
     },
-    async onOpenDB() {
-      // this.$router.push("/browse");
-    },
     // onLocalSave() {
     //   localStorage.setItem(
     //     "acnl_" + this.drawingTool.fullHash,
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    picksToLocal() {
-      for (const i in this.pickPatterns) {
-        localStorage.setItem(
-          "acnl_" + this.pickPatterns[i].fullHash,
-          lzString.compressToUTF16(this.pickPatterns[i].toString())
-        );
-      }
-    },
-
-    onChangedCurrentColor: function(idx) {
-      if (this.drawingTool.currentColor === idx) return;
-      this.drawingTool.currentColor = idx;
-      this.drawingTool.onColorChange();
-      logger.info(`changed current color: ${idx}`);
-    },
     onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
