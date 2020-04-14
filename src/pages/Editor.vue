@@ -21,7 +21,6 @@
       <section class="section">
         <div>
           <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
-          <RichText :content="step3iiif" contentType="markdown" />
           <urlInput @updateIiif="updateIiifData" />
         </div>
       </section>
@@ -76,7 +75,6 @@ import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
 import step1Text from "../data/step1_text.md";
-import step3iiif from "../data/step3_iiif.md";
 import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
@@ -130,7 +128,7 @@ export default {
       qrInstructions: qrInstructions,
       step1Text,
       introText,
-      step3iiif,
+	  step1Text,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",

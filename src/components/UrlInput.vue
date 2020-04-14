@@ -44,6 +44,7 @@ export default {
 .url-input-container {
   display: flex;
   align-items: stretch;
+  max-width: 93%;
   margin-top: 4px;
 }
 .a-btn--text {
