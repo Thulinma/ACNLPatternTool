@@ -8,27 +8,23 @@
     <section>
       <div class="columns">
         <div class="half-column">
-          boop
+          <h1 class="f-heading-5">Step 2: Select the crop for your artwork</h1>
+          <ImageLoader
+            class="test"
+            :pattern-type="patType"
+            :iiif-url="iiif.url"
+            @converted="onConvert"
+          />
         </div>
         <div class="half-column">
-          boop
+          <h1 class="f-heading-5">
+            Step 3: Import your artwork into Animal Crossing
+          </h1>
+          <ACNLQRGenerator :pattern="qrCode" />
+          <button @click="downPNG">Save image</button>
+          <RichText :content="qrInstructions" contentType="markdown" />
         </div>
       </div>
-    </section>
-    <section>
-      <RichText :content="step2" contentType="markdown" />
-      <ImageLoader
-        class=""
-        :pattern-type="patType"
-        :iiif-url="iiif.url"
-        @converted="onConvert"
-      />
-    </section>
-
-    <section>
-      <RichText :content="step3" contentType="markdown" />
-      <ACNLQRGenerator :pattern="qrCode" />
-      <button @click="downPNG">Save image</button>
     </section>
 
     <img
@@ -45,8 +41,7 @@
 
 <script>
 import introText from "../data/intro_text.md";
-import step2 from "../data/step2.md";
-import step3 from "../data/step3.md";
+import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
@@ -96,8 +91,7 @@ export default {
 
   data: function() {
     return {
-      step2: step2,
-      step3: step3,
+      qrInstructions: qrInstructions,
       introText: introText,
       iiif: {
         title: "Jeanne (Spring)",
@@ -408,19 +402,23 @@ export default {
 </script>
 
 <style lang="scss">
+section {
+  margin-top: 48px;
+}
 .columns {
   display: flex;
 }
 .half-column {
   flex: 1;
-  padding: 12px;
 }
 .half-column:first-child {
+  padding: 12px 12px 12px 0;
   margin-right: 4px;
 }
 .half-column:last-child {
+  padding: 12px 0 12px 12px;
   margin-left: 4px;
-  border-left: 1px solid black;
+  border-left: 1px solid #e6e6e6;
 }
 
 .column-border {
