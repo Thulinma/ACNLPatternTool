@@ -14,7 +14,7 @@
         </div>
         <div>
           <RichText :content="step3iiif" contentType="markdown" />
-          <urlInput :value="iiif" />
+          <urlInput @updateUrl="updateIiifUrl" />
         </div>
       </section>
 
@@ -161,18 +161,18 @@ export default {
     };
   },
   computed: {
-    patAuthor() {
-      //calculate author here, max length 9
-      return "Author name";
-    },
-    patTitle() {
-      //calculate pattern title here, max length 20
-      return "Artwork title";
-    },
-    patTown() {
-      // this could stay in data (what should be town name?) - max length 9
-      return "Town name";
-    }
+    // patAuthor() {
+    //   //calculate author here, max length 9
+    //   return "Author name";
+    // },
+    // patTitle() {
+    //   //calculate pattern title here, max length 20
+    //   return "Artwork title";
+    // },
+    // patTown() {
+    //   // this could stay in data (what should be town name?) - max length 9
+    //   return "Town name";
+    // }
   },
   methods: {
     async onPublish() {
@@ -199,31 +199,31 @@ export default {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title + ".png");
     },
-    patInfoSave(publish = false) {
-      const patTitle = this.patTitle.trim();
-      const patTown = this.patTown.trim();
-      const patAuthor = this.patAuthor.trim();
-      const titleCheck = patTitle && patTitle !== "Empty";
-      const townCheck = patTown && patTown !== "Unknown";
-      const nameCheck = patAuthor && patAuthor !== "Unknown";
-      if (titleCheck && townCheck && nameCheck) {
-        this.drawingTool.title = this.patTitle;
-        if (this.drawingTool.creator[0] !== this.patAuthor)
-          this.drawingTool.creator = this.patAuthor;
-        if (this.drawingTool.town[0] !== this.patTown)
-          this.drawingTool.town = this.patTown;
-        if (this.drawingTool.patternType !== this.patType) {
-          this.drawingTool.patternType = this.patType;
-          this.patTypeName = this.drawingTool.typeInfo.name;
-        }
-        this.patInfoModal = false;
-        if (publish) this.onPublish();
-        return;
-      }
-      alert(
-        "Please provide a valid pattern name, town name, and player name for this pattern."
-      );
-    },
+    // patInfoSave(publish = false) {
+    //   const patTitle = this.patTitle.trim();
+    //   const patTown = this.patTown.trim();
+    //   const patAuthor = this.patAuthor.trim();
+    //   const titleCheck = patTitle && patTitle !== "Empty";
+    //   const townCheck = patTown && patTown !== "Unknown";
+    //   const nameCheck = patAuthor && patAuthor !== "Unknown";
+    //   if (titleCheck && townCheck && nameCheck) {
+    //     this.drawingTool.title = this.patTitle;
+    //     if (this.drawingTool.creator[0] !== this.patAuthor)
+    //       this.drawingTool.creator = this.patAuthor;
+    //     if (this.drawingTool.town[0] !== this.patTown)
+    //       this.drawingTool.town = this.patTown;
+    //     if (this.drawingTool.patternType !== this.patType) {
+    //       this.drawingTool.patternType = this.patType;
+    //       this.patTypeName = this.drawingTool.typeInfo.name;
+    //     }
+    //     this.patInfoModal = false;
+    //     if (publish) this.onPublish();
+    //     return;
+    //   }
+    //   alert(
+    //     "Please provide a valid pattern name, town name, and player name for this pattern."
+    //   );
+    // },
     // onLocalSave() {
     //   localStorage.setItem(
     //     "acnl_" + this.drawingTool.fullHash,
@@ -304,10 +304,21 @@ export default {
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
       localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
     },
-    loadAuthor() {
-      this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
-      this.patAuthor = this.drawingTool.creator[0];
-      this.patTown = this.drawingTool.town[0];
+    // loadAuthor() {
+    //   this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
+    //   this.patAuthor = this.drawingTool.creator[0];
+    //   this.patTown = this.drawingTool.town[0];
+    // },
+    updateIiifUrl(url) {
+      // TODO: get info from iiif url
+      this.searchResult = {
+        full_name: "placeholder",
+        iiif_url: url,
+        large_iiif_url: url,
+        short_name: "placeholder",
+        webpage: undefined
+      };
+      this.$set(this.iiif, "url", url);
     }
   },
   mounted: function() {

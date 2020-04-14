@@ -1,33 +1,46 @@
 <template>
-  <div>
+  <div class="url-input-container">
     <input
       class="iiif-input"
       placeholder="IIIF Url Goes Here"
-      v-model="value.url"
+      v-model="iiifUrl"
     />
+    <button class="a-btn a-btn--text" @click="updateUrl">Submit</button>
   </div>
 </template>
 
 <script>
+import { Button } from "@thegetty/getty-ui";
 export default {
   name: "UrlInput",
-  props: {
-    value: {
-      type: Object,
-      required: true
-    }
+  data() {
+    return {
+      iiifUrl: undefined
+    };
   },
-  watch: {
-    value() {
-      this.$emit("input", this.value);
+  methods: {
+    updateUrl() {
+      this.$emit("updateUrl", this.iiifUrl);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.iiif-input {
-  width: 80%;
-  margin: 1em;
+.url-input-container {
+  display: flex;
+  align-items: stretch;
+  margin-top: 4px;
+}
+.a-btn--text {
+  font-size: 15px;
+  padding: 11px 16px;
+  background-color: #1947b8;
+}
+input {
+  flex-grow: 1;
+  margin-right: 4px;
+  padding: 0 10px;
+  border: 1px solid black;
 }
 </style>
