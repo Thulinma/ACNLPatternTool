@@ -304,13 +304,13 @@ async function generateACNLQR(newData) {
   ctx.font = "7pt Graphik Web";
   drawTxtWithBg(
     width / 2,
-    height - 2 - (height - pattHeight) / 4,
+    height - (height - pattHeight) / 4,
     "experiments.getty.edu/animal-crossing-artwork-generator",
     "#1a47b8"
   );
 
   const image = document.getElementById("gettylogo");
-  ctx.drawImage(image, 14, height - 36);
+  ctx.drawImage(image, 14, height - 28);
 
   //Prepare pretty side decoration
   bgCanvas.width = 3;
