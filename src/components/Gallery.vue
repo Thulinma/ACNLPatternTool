@@ -1,22 +1,21 @@
 <template>
   <div>
-    <div>
-      <h1 class="f-heading-5">Getty museum images</h1>
-      <!-- image grid -->
-      <div class="l-quarters">
-        <div
-          v-for="(img, index) in images"
-          class="l-quarters__quarter"
-          @click="changeImage(index)"
-        >
-          <img :src="img.src" :class="getClass(index)" />
-        </div>
-      </div>
-      <!-- selected image preview -->
-      <div v-if="selectedImageIndex > -1" class="selected-container">
-        <img :src="images[selectedImageIndex].qrSrc" />
+    <h1 class="f-heading-5">Getty museum artwork examples</h1>
+    <!-- image grid -->
+    <div class="columns is-mobile is-multiline">
+      <div
+        v-for="(img, index) in images"
+        class="column is-one-quarter"
+        @click="changeImage(index)"
+      >
+        <img :src="img.src" :class="getClass(index)" />
       </div>
     </div>
+    <!-- selected image preview -->
+    <div v-if="selectedImageIndex > -1" class="selected-container">
+      <img :src="images[selectedImageIndex].qrSrc" />
+    </div>
+    <div></div>
   </div>
 </template>
 
@@ -61,6 +60,34 @@ export default {
           src: yawn,
           qrSrc: yawnQR,
           title: "Yawn Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: yawn,
+          qrSrc: yawnQR,
+          title: "Yawn Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: irises,
+          qrSrc: irisesQR,
+          title: "Irises Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: yawn,
+          qrSrc: yawnQR,
+          title: "Yawn Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: irises,
+          qrSrc: irisesQR,
+          title: "Irises Title"
         }
       ]
     };
@@ -72,9 +99,9 @@ export default {
     },
     getClass(index) {
       if (index === this.selectedImageIndex) {
-        return "selected";
+        return "thumb selected";
       }
-      return "";
+      return "thumb";
     }
   }
 };
@@ -90,7 +117,10 @@ export default {
   justify-content: center;
   margin-top: 20px;
 }
+.thumbnail {
+  width: 100%;
+}
 .selected {
-  border: 3px solid blue;
+  border: 3px solid pink;
 }
 </style>
