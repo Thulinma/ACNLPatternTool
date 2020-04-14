@@ -8,8 +8,14 @@
       <hr />
 
       <section class="section">
-        <h1 class="f-heading-5">Step 1: Select a work of art</h1>
-        <Search @input="onSearchSelect" />
+        <div class="section">
+          <h1 class="f-heading-5">Step 1: Select a work of art</h1>
+          <Search @input="onSearchSelect" />
+        </div>
+        <div>
+          <RichText :content="step3iiif" contentType="markdown" />
+          <urlInput :value="iiif" />
+        </div>
       </section>
 
       <hr />
@@ -44,9 +50,17 @@
 
       <hr />
 
-      <section>
+      <section class="section">
         <Gallery />
       </section>
+
+      <hr />
+
+      <section class="section">
+        <h1 class="f-heading-5">Credits</h1>
+        <hr />
+      </section>
+
       <img
         id="gettylogo"
         class="hidden"
@@ -61,6 +75,7 @@
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
+import step3iiif from "../data/step3_iiif.md";
 import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
@@ -74,8 +89,6 @@ import origin from "/libs/origin";
 import logger from "/utils/logger";
 import lzString from "lz-string";
 import { saveAs } from "file-saver";
-import JSZip from "jszip";
-import barcodeSvg from "/assets/icons/bx-barcode-reader.svg";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
 export default {
@@ -114,7 +127,8 @@ export default {
       gettyLogo,
       saveIcon,
       qrInstructions: qrInstructions,
-      introText: introText,
+      introText,
+      step3iiif,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
@@ -135,7 +149,6 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      barcodeSvg,
       pubStyleA: "",
       pubStyleB: "",
       pubStyleC: "",
@@ -181,73 +194,6 @@ export default {
         );
       }
       this.publishModal = false;
-    },
-    zipPicksAsACNL() {
-      let zip = new JSZip();
-      const titles = [];
-      for (const i in this.pickPatterns) {
-        let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)) {
-          dt = new DrawingTool(dt);
-        }
-        let title = dt.title + ".acnl";
-        let k = 1;
-        while (titles.includes(title)) {
-          title = dt.title + "(" + k + ")" + ".ancl";
-          k++;
-        }
-        zip.file(title, dt.toBytes());
-        titles.push(title);
-      }
-      zip.generateAsync({ type: "blob" }).then(d => {
-        saveAs(d, "patterns.zip");
-      });
-    },
-    async zipPicksAsPNG() {
-      let zip = new JSZip();
-      const titles = [];
-      for (const i in this.pickPatterns) {
-        let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)) {
-          dt = new DrawingTool(dt);
-        }
-        const img = await generateACNLQR(dt);
-        let title = dt.title + ".png";
-        let k = 1;
-        while (titles.includes(title)) {
-          title = dt.title + "(" + k + ")" + ".png";
-          k++;
-        }
-        zip.file(title, img.substr(22), { base64: true });
-        titles.push(title);
-      }
-      zip.generateAsync({ type: "blob" }).then(d => {
-        saveAs(d, "patterns.zip");
-      });
-    },
-    async zipPicksAsBoth() {
-      let zip = new JSZip();
-      const titles = [];
-      for (const i in this.pickPatterns) {
-        let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)) {
-          dt = new DrawingTool(dt);
-        }
-        let ancl_title = dt.title + ".ancl";
-        let k = 1;
-        while (titles.includes(ancl_title)) {
-          ancl_title = dt.title + "(" + k + ")" + ".ancl";
-          k++;
-        }
-        const img_title = ancl_title.replace(".ancl", ".png");
-        zip.file(ancl_title, dt.toBytes());
-        const img = await generateACNLQR(dt);
-        zip.file(img_title, img.substr(22), { base64: true });
-        titles.push(ancl_title);
-      }
-      zip.generateAsync({ type: "blob" }).then(d => {
-        saveAs(d, "patterns.zip");
-      });
     },
     async downPNG() {
       const img = await generateACNLQR(this.drawingTool);
