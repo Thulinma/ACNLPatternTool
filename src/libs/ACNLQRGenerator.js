@@ -166,7 +166,7 @@ async function generateACNLQR(newData) {
   // bgCtx.fillRect(0, -80, 16, 160);
   // bgCtx.fillRect(-32, -80, 16, 160);
   //Copy background to main canvas
-  ctx.fillStyle = ctx.createPattern(bgCanvas, "repeat");
+  ctx.fillStyle = "#FFFFFF";
   ctx.fillRect(0, 0, width, height);
 
   //Draw the pattern itself to canvas
@@ -274,20 +274,20 @@ async function generateACNLQR(newData) {
     const txtProps = ctx.measureText(txt);
     var h =
       txtProps.fontBoundingBoxAscent + txtProps.fontBoundingBoxDescent + 4;
-    var w = txtProps.width - h / 2;
-    ctx.fillStyle = txtBg;
-    ctx.strokeStyle = fore;
-    //Calculate background
-    ctx.beginPath();
-    ctx.arc(x - w / 2, y, h / 2, 0.5 * Math.PI, 1.5 * Math.PI);
-    ctx.lineTo(x + w / 2, y - h / 2);
-    ctx.arc(x + w / 2, y, h / 2, 1.5 * Math.PI, 0.5 * Math.PI);
-    ctx.lineTo(x + -w / 2, y + h / 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "#00000088";
-    ctx.strokeStyle = "#00000088";
-    ctx.fillText(txt, x + 2, y + 2);
+    var w = txtProps.width; // - h / 2;
+    // ctx.fillStyle = txtBg;
+    // ctx.strokeStyle = fore;
+    // //Calculate background
+    // ctx.beginPath();
+    // ctx.arc(x - w / 2, y, h / 2, 0.5 * Math.PI, 1.5 * Math.PI);
+    // ctx.lineTo(x + w / 2, y - h / 2);
+    // ctx.arc(x + w / 2, y, h / 2, 1.5 * Math.PI, 0.5 * Math.PI);
+    // ctx.lineTo(x + -w / 2, y + h / 2);
+    // ctx.fill();
+    // ctx.stroke();
+    // ctx.fillStyle = "#00000088";
+    // ctx.strokeStyle = "#00000088";
+    // ctx.fillText(txt, x + 2, y + 2);
     ctx.fillStyle = fore;
     ctx.strokeStyle = fore;
     ctx.fillText(txt, x, y);
@@ -295,39 +295,22 @@ async function generateACNLQR(newData) {
 
   //Write text
   ctx.textBaseline = "middle";
-  ctx.textAlign = "center";
+  ctx.textAlign = "left";
+  ctx.font = "600 10pt Graphik Web";
+  drawTxtWithBg(14, (height - pattHeight) / 3, drawingTool.title, "#000000");
 
-  if (bytes.byteLength > 620) {
-    ctx.font = "15pt Calibri";
-    drawTxtWithBg(
-      pattCenter,
-      (height - pattHeight) / 4 + (path3D ? 4 : 0),
-      drawingTool.title,
-      "#FFFFFF"
-    );
-    ctx.font = "10pt Calibri";
-    drawTxtWithBg(
-      pattCenter,
-      height - (height - pattHeight) / 4,
-      "By " + drawingTool.creator[0] + " from " + drawingTool.town[0],
-      "#FFFFFF"
-    );
-  } else {
-    ctx.font = "15pt Calibri";
-    drawTxtWithBg(
-      width / 2,
-      (height - pattHeight) / 4 - 2,
-      drawingTool.title,
-      "#FFFFFF"
-    );
-    ctx.font = "10pt Calibri";
-    drawTxtWithBg(
-      width / 2,
-      height - 2 - (height - pattHeight) / 4,
-      "By " + drawingTool.creator[0] + " from " + drawingTool.town[0],
-      "#FFFFFF"
-    );
-  }
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "center";
+  ctx.font = "7pt Graphik Web";
+  drawTxtWithBg(
+    width / 2,
+    height - 2 - (height - pattHeight) / 4,
+    "experiments.getty.edu/animal-crossing-artwork-generator",
+    "#1a47b8"
+  );
+
+  const image = document.getElementById("gettylogo");
+  ctx.drawImage(image, 14, height - 36);
 
   //Prepare pretty side decoration
   bgCanvas.width = 3;
@@ -353,14 +336,14 @@ async function generateACNLQR(newData) {
       qrSize * pixelSize + 2 * spc
     );
     //Draw border decorations
-    ctx.fillStyle = borderDeco;
-    ctx.fillRect(x - 3 - spc, y - spc, 3, qrSize * pixelSize + 2 * spc);
-    ctx.fillRect(
-      x + qrSize * pixelSize + spc,
-      y - spc,
-      3,
-      qrSize * pixelSize + 2 * spc
-    );
+    // ctx.fillStyle = borderDeco;
+    // ctx.fillRect(x - 3 - spc, y - spc, 3, qrSize * pixelSize + 2 * spc);
+    // ctx.fillRect(
+    //   x + qrSize * pixelSize + spc,
+    //   y - spc,
+    //   3,
+    //   qrSize * pixelSize + 2 * spc
+    // );
     //Draw all black blocks (BG is already white, after all!)
     ctx.fillStyle = "#000000";
     for (let inputY = 0; inputY < qrSize; inputY++) {

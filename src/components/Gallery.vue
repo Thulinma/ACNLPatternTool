@@ -99,9 +99,9 @@ export default {
     },
     getClass(index) {
       if (index === this.selectedImageIndex) {
-        return "thumb selected";
+        return "thumbnail selected";
       }
-      return "thumb";
+      return "thumbnail";
     }
   }
 };
@@ -117,10 +117,10 @@ export default {
   justify-content: center;
   margin-top: 20px;
 }
-.thumbnail {
-  width: 100%;
-}
 .selected {
   border: 3px solid pink;
+}
+.thumbnail {
+  width: 100%;
 }
 </style>
