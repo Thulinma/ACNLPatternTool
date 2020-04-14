@@ -1,11 +1,15 @@
 <template>
-  <div class="content">
-    <section>
+  <div>
+    <section class="content">
       <RichText :content="introText" contentType="markdown" />
+    </section>
+
+    <section class="content">
+      <h1 class="f-heading-5">Step 1: Select a work of art</h1>
       <Search @input="onSearchSelect" />
     </section>
 
-    <section>
+    <section class="content">
       <div class="columns">
         <div class="half-column">
           <h1 class="f-heading-5">Step 2: Select the crop for your artwork</h1>
@@ -20,8 +24,13 @@
           <h1 class="f-heading-5">
             Step 3: Import your artwork into Animal Crossing
           </h1>
-          <ACNLQRGenerator :pattern="qrCode" />
-          <button @click="downPNG">Save image</button>
+          <div class="generated-image">
+            <ACNLQRGenerator :pattern="qrCode" />
+            <span class="save-button" @click="downPNG">
+              <a>Download artwork and QR code </a
+              ><object class="save-icon" :data="saveIcon"></object>
+            </span>
+          </div>
           <RichText :content="qrInstructions" contentType="markdown" />
         </div>
       </div>
@@ -40,6 +49,7 @@
 </template>
 
 <script>
+import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
 import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
@@ -91,6 +101,7 @@ export default {
 
   data: function() {
     return {
+      saveIcon: saveIcon,
       qrInstructions: qrInstructions,
       introText: introText,
       iiif: {
@@ -402,8 +413,13 @@ export default {
 </script>
 
 <style lang="scss">
-section {
+.content {
   margin-top: 48px;
+  padding: 26px 36px;
+}
+.content a {
+  color: #1a47b8;
+  text-decoration: none;
 }
 .columns {
   display: flex;
@@ -420,17 +436,24 @@ section {
   margin-left: 4px;
   border-left: 1px solid #e6e6e6;
 }
-
-.column-border {
-  border-left: 1px solid black;
-}
-.content {
-  padding: 26px 36px;
+.generated-image {
+  margin-bottom: 40px;
 }
 .hidden {
   display: none;
 }
 .o-hero__title {
   font-size: 28px !important;
+}
+.save-button {
+  width: auto;
+  display: flex;
+  align-items: center;
+}
+.save-icon {
+  margin-left: 12px;
+  height: 12px;
+  width: 12px;
+  cursor: pointer;
 }
 </style>

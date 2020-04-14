@@ -1,5 +1,4 @@
-# Create your own museum art
+# Create your own virtual gallery in Animal Crossing using real museum art.
 
-Browse Getty open content, select an image, and covert it into a virtual piece of art for your island
-
-## Step 1: find and select an image
+Here is some brief intro copy that tells the user what this tool is. Let’s get started!  
+Need some inspiration? [View some Getty examples]().

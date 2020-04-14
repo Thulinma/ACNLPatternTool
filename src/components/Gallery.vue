@@ -108,9 +108,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.f-heading-5 {
-  margin-bottom: 28px;
-}
 .selected-container {
   width: 100%;
   display: flex;
