@@ -453,10 +453,12 @@ export default {
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        let title = dt.title + ".acnl";
+        let ext = ".acnl";
+        if (dt.pattern instanceof ACNHFormat){ext = ".acnh";}
+        let title = dt.title + ext;
         let k = 1;
         while(titles.includes(title)) {
-          title = dt.title + "(" + k + ")" + ".ancl";
+          title = dt.title + "(" + k + ")" + ext;
           k++;
         }
         zip.file(title, dt.toBytes());
@@ -488,13 +490,15 @@ export default {
       for (const i in this.pickPatterns){
         let dt = this.pickPatterns[i];
         if (!(dt instanceof DrawingTool)){dt = new DrawingTool(dt);}
-        let ancl_title = dt.title + ".ancl";
+        let ext = ".acnl";
+        if (dt.pattern instanceof ACNHFormat){ext = ".acnh";}
+        let ancl_title = dt.title + ext;
         let k = 1;
         while(titles.includes(ancl_title)) {
-          ancl_title = dt.title + "(" + k + ")" + ".ancl";
+          ancl_title = dt.title + "(" + k + ")" + ext;
           k++;
         }
-        const img_title = ancl_title.replace(".ancl", ".png");
+        const img_title = ancl_title.replace(ext, ".png");
         zip.file(ancl_title, dt.toBytes());
         const img = await generateACNLQR(dt);
         zip.file(img_title, img.substr(22), {base64:true});
@@ -508,28 +512,31 @@ export default {
     },
     async downTex(){
       const img = this.$refs.canvas3.toDataURL("image/png");
-      saveAs(img, this.drawingTool.title+".png");
+      saveAs(img, this.drawingTool.title+"_texture.png");
     },
     patInfoSave(publish=false){
       const patTitle = this.patTitle.trim();
       const patTown = this.patTown.trim();
       const patAuthor = this.patAuthor.trim();
-      const titleCheck = patTitle && patTitle !== 'Empty';
-      const townCheck = patTown && patTown !== 'Unknown';
-      const nameCheck = patAuthor && patAuthor !== 'Unknown';
-      if (titleCheck && townCheck && nameCheck){
-        this.drawingTool.title = this.patTitle;
-        if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
-        if (this.drawingTool.town[0] !== this.patTown) this.drawingTool.town = this.patTown;
-        if (this.drawingTool.patternType !== this.patType){
-          this.drawingTool.patternType = this.patType;
-          this.patTypeName = this.drawingTool.typeInfo.name;
-        }
-        this.patInfoModal = false;
-        if (publish) this.onPublish();
-        return;
+      this.drawingTool.title = this.patTitle;
+      if (this.drawingTool.creator[0] !== this.patAuthor) this.drawingTool.creator = this.patAuthor;
+      if (this.drawingTool.town[0] !== this.patTown) this.drawingTool.town = this.patTown;
+      if (this.drawingTool.patternType !== this.patType){
+        this.drawingTool.patternType = this.patType;
+        this.patTypeName = this.drawingTool.typeInfo.name;
       }
-      alert('Please provide a valid pattern name, town name, and player name for this pattern.');
+      if (publish){
+        const titleCheck = patTitle && patTitle !== 'Empty';
+        const townCheck = patTown && patTown !== 'Unknown';
+        const nameCheck = patAuthor && patAuthor !== 'Unknown';
+        if (titleCheck && townCheck && nameCheck){
+          this.onPublish();
+        }else{
+          alert('Please provide a valid pattern name, town name, and player name for this pattern.');
+          return;
+        }
+      }
+      this.patInfoModal = false;
     },
     async onOpenDB(){
       this.$router.push("/browse");
@@ -550,7 +557,9 @@ export default {
     },
     downACNL(){
       const blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
-      saveAs(blob, this.drawingTool.title+".acnl");
+      let ext = ".acnl";
+      if (this.drawingTool.pattern instanceof ACNHFormat){ext = ".acnh";}
+      saveAs(blob, this.drawingTool.title+ext);
     },
     onColorPicked: function(color) {
       const currentColor = this.drawingTool.currentColor;

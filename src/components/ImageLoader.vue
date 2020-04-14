@@ -171,7 +171,11 @@ export default {
               this.draw.setPixel(x, y, [imgdata.data[i], imgdata.data[i+1], imgdata.data[i+2]]);
             }
           }
-          this.draw.title = this.fileName.substring(0, 16)+" "+(x+1)+"x"+(y+1);
+          if (!x && !y){
+            this.draw.title = this.fileName;
+          }else{
+            this.draw.title = this.fileName.substring(0, 16)+" "+(x+1)+"x"+(y+1);
+          }
           this.draw.onLoad();
           this.outputs.push(this.draw.toString());
 
