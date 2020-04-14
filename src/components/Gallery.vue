@@ -132,7 +132,7 @@ export default {
 }
 
 .gallery-column {
-  flex: 1 0 21%;
-  margin: 1em;
+  flex: 1 0 20%;
+  margin: 10px;
 }
 </style>
