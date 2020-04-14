@@ -1,23 +1,28 @@
 //ACNL data layout.
 //
-//QR codes are blocks of 540 bytes each, providing this data in sequence:
+//QR codes are blocks of 540 bytes (normal) or 620 bytes (pro) each, providing this data in sequence:
 //
-//0x 00 - 0x 29 ( 42) = Pattern Title
+//0x 00 - 0x 29 ( 42) = Pattern Title (21 chars)
 //0x 2A - 0x 2B (  2) = User ID
-//0x 2C - 0x 3F ( 20) = User Name
+//0x 2C - 0x 3D ( 18) = User Name (9 chars)
+//0x 3E         (  1) = Gender
+//0x 3F         (  1) = Zero padding(?)
 //0x 40 - 0x 41 (  2) = Town ID
-//0x 42 - 0x 55 ( 20) = Town Name
-//0x 56 - 0x 57 (  2) = Unknown A (values are usually random - changing seems to have no effect)
+//0x 42 - 0x 53 ( 18) = Town Name (9 chars)
+//0x 54         (  1) = Language
+//0x 55         (  1) = Zero padding(?)
+//0x 56         (  1) = Country
+//0x 57         (  1) = Region
 //0x 58 - 0x 66 ( 15) = Color code indexes
-//0x 67         (  1) = Unknown B (value is usually random - changing seems to have no effect)
-//0x 68         (  1) = Unknown C (seems to always be 0x0A or 0x00)
+//0x 67         (  1) = "color" (probably a lookup for most prevalent color?)
+//0x 68         (  1) = "looks" (probably a lookup for "quality"? Seems to always be 0x0A or 0x00)
 //0x 69         (  1) = Pattern type (see below)
-//0x 6A - 0x 6B (  2) = Unknown D (seems to always be 0x0000)
+//0x 6A - 0x 6B (  2) = Zero padding(?)
 //0x 6C - 0x26B (512) = Pattern Data 1 (mandatory)
 //0x26C - 0x46B (512) = Pattern Data 2 (optional)
 //0x46C - 0x66B (512) = Pattern Data 3 (optional)
 //0x66C - 0x86B (512) = Pattern Data 4 (optional)
-//0x86C - 0x86F (  4) = Zero padding (optional)
+//0x86C - 0x86F (  4) = Zero padding
 //
 // Pattern types:
 // 0x00 = Fullsleeve dress (pro)
@@ -30,6 +35,8 @@
 // 0x07 = Hat
 // 0x08 = Standee (pro)
 // 0x09 = Plain pattern (easel)
+// 0x0A = unknown (non-pro)
+// 0x0B = unknown (non-pro)
 
 import fnv1a128 from "./fnv1a.js";
 
