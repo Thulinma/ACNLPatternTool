@@ -20,6 +20,8 @@ import {
   GLTFLoader
 } from '@three/loaders/GLTFLoader';
 import injected from "../utils/injected";
+import ACNLFormat from '/libs/ACNLFormat';
+import ACNHFormat from '/libs/ACNHFormat';
 
 export default {
   name: "IconGenerator",
@@ -53,14 +55,16 @@ export default {
       const bytes = drawingTool.toBytes();
       const renderCanvas = document.createElement("canvas");
       //Check if we should 3D render or not
-      let path3D;
-      switch (drawingTool.patternType){
-        case 0: path3D = injected.dress_long; break;
-        case 1: path3D = injected.dress_half; break;
-        case 2: path3D = injected.dress_none; break;
-        case 3: path3D = injected.shirt_long; break;
-        case 4: path3D = injected.shirt_half; break;
-        case 5: path3D = injected.shirt_none; break;
+      let path3D = null;
+      if (drawingTool.pattern instanceof ACNLFormat){
+        switch (drawingTool.patternType){
+          case 0: path3D = injected.dress_long; break;
+          case 1: path3D = injected.dress_half; break;
+          case 2: path3D = injected.dress_none; break;
+          case 3: path3D = injected.shirt_long; break;
+          case 4: path3D = injected.shirt_half; break;
+          case 5: path3D = injected.shirt_none; break;
+        }
       }
       if (path3D){
         //We need to 3D render!
