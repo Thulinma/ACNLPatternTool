@@ -6,6 +6,7 @@
       :museum-info="HeaderData.museumInfo"
       :has-search="HeaderData.hasSearch"
       :force-on-dark="false"
+      :baseUrl="'https://www.getty.edu'"
     />
     <Hero name="Content" :data="heroData" />
     <section>
@@ -14,6 +15,7 @@
       </div>
     </section>
     <Footer
+      :baseUrl="'https://www.getty.edu'"
       :primary-nav="FooterData.primaryNavigation"
       :museum-info="FooterData.museumInfo"
       :nav-grid="FooterData.navGrid"

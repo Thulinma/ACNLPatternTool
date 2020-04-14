@@ -21,9 +21,9 @@
       <hr />
 
       <section class="section">
-        <div class="columns">
-          <div class="half-column">
-            <h1 class="f-heading-5">
+        <div class="l-halves">
+          <div class="l-halves__half">
+            <h1 id="step2" ref="step2" class="f-heading-5">
               Step 2: Select the crop for your artwork
             </h1>
             <ImageLoader
@@ -32,7 +32,7 @@
               @converted="onConvert"
             />
           </div>
-          <div class="half-column">
+          <div class="l-halves__half leftborder">
             <h1 class="f-heading-5">
               Step 3: Import your artwork into Animal Crossing
             </h1>
@@ -160,20 +160,6 @@ export default {
       origin
     };
   },
-  computed: {
-    // patAuthor() {
-    //   //calculate author here, max length 9
-    //   return "Author name";
-    // },
-    // patTitle() {
-    //   //calculate pattern title here, max length 20
-    //   return "Artwork title";
-    // },
-    // patTown() {
-    //   // this could stay in data (what should be town name?) - max length 9
-    //   return "Town name";
-    // }
-  },
   methods: {
     async onPublish() {
       let uplStatus = await origin.upload(
@@ -259,6 +245,7 @@ export default {
     onSearchSelect: function(data) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
+      this.$refs["step2"].scrollIntoView();
     },
     onConvert: function(patterns) {
       // this.convertImage = false;
@@ -304,11 +291,6 @@ export default {
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
       localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
     },
-    // loadAuthor() {
-    //   this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
-    //   this.patAuthor = this.drawingTool.creator[0];
-    //   this.patTown = this.drawingTool.town[0];
-    // },
     updateIiifUrl(url) {
       // TODO: get info from iiif url
       this.searchResult = {
@@ -370,19 +352,8 @@ export default {
   color: #1a47b8;
   text-decoration: none;
 }
-.columns {
-  display: flex;
-}
-.half-column {
-  width: 50%;
-}
-.half-column:first-child {
-  padding: 12px 12px 12px 0;
-  margin-right: 4px;
-}
-.half-column:last-child {
+.leftborder {
   padding: 12px 0 12px 12px;
-  margin-left: 4px;
   border-left: 1px solid #e6e6e6;
 }
 .generated-image {

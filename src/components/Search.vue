@@ -16,12 +16,22 @@
     >
 
     <ol>
-      <li v-for="match of matches" @click="choose(match)" :key="match.webpage">
+      <li
+        v-for="match of currentResults"
+        @click="choose(match)"
+        :key="match.webpage"
+      >
         {{ match.full_name }}
         <a :href="match.webpage">view in collection</a>
         <img :key="match.webpage" :src="match.iiif_url" />
       </li>
     </ol>
+    <button @click="prevPage" :disabled="currentSearchPage == 0">
+      prev
+    </button>
+    <button @click="nextPage" :disabled="onLastSearchPage">
+      next
+    </button>
   </div>
 </template>
 <script>
@@ -37,6 +47,8 @@ export default {
       query: "",
       matches: [],
       maxSearch: 250,
+      itemsPerPage: 16,
+      currentSearchPage: 0,
       imageData: NoC_US,
     };
   },
@@ -47,23 +59,38 @@ export default {
       }
       return "results";
     },
+    currentResults() {
+      return this.matches.slice(this.startIndex, this.lastIndex);
+    },
+    startIndex() {
+      return this.currentSearchPage * this.itemsPerPage;
+    },
+    lastIndex() {
+      return this.startIndex + this.itemsPerPage;
+    },
+    onLastSearchPage() {
+      return this.lastIndex >= this.matches.length;
+    },
   },
   methods: {
     choose(match) {
       this.$emit("input", match);
     },
+    prevPage() {
+      this.currentSearchPage = this.currentSearchPage - 1;
+    },
+    nextPage() {
+      this.currentSearchPage = this.currentSearchPage + 1;
+    },
     search() {
       this.query = this.value;
       this.matches = [];
-      console.log("searching imageData...", this.query);
+      this.currentSearchPage = 0;
       for (let _line of this.imageData.split("\n")) {
         const _upper = _line.split("|")[0].toUpperCase();
         const _query = this.query.toUpperCase();
         if (_upper.indexOf(_query) > -1) {
           this.matches.push(extractData(_line));
-        }
-        if (this.maxSearch <= this.matches.length) {
-          break;
         }
       }
     },

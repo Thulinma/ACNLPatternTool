@@ -2,12 +2,18 @@ import Vue from "vue";
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 
-Sentry.init({
-  dsn:
-    "https://0ceef9680626415687568c7bd41ccbf8@o294689.ingest.sentry.io/5199201",
-  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
-});
-
+if (
+  (location != undefined &&
+    location.href &&
+    location.href.indexOf("localhost") == -1) ||
+  location == undefined
+) {
+  Sentry.init({
+    dsn:
+      "https://0ceef9680626415687568c7bd41ccbf8@o294689.ingest.sentry.io/5199201",
+    integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+  });
+}
 import App from "/App.vue";
 import i18n from "/i18n"; // use i18n
 import PortalVue from "portal-vue";
