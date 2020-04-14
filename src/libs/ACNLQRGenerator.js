@@ -5,7 +5,7 @@ import logger from "/utils/logger";
 import {
   QRCodeEncoder,
   QRCodeDecoderErrorCorrectionLevel,
-  EncodeHintType,
+  EncodeHintType
 } from "@zxing/library";
 
 //for 3D renders
@@ -17,7 +17,7 @@ import {
   PerspectiveCamera,
   Mesh,
   MeshBasicMaterial,
-  WebGLRenderer,
+  WebGLRenderer
 } from "@three/core";
 import { GLTFLoader } from "@three/loaders/GLTFLoader";
 import injected from "/utils/injected";
@@ -132,7 +132,7 @@ async function generateACNLQR(newData) {
   //Calculate sizes for various bits
   const spc = 8;
   let sQR = 0;
-  codes.forEach((c) => {
+  codes.forEach(c => {
     if (c.getMatrix().getWidth() * 2 > sQR) {
       sQR = c.getMatrix().getWidth() * 2;
     }
@@ -166,7 +166,7 @@ async function generateACNLQR(newData) {
   // bgCtx.fillRect(0, -80, 16, 160);
   // bgCtx.fillRect(-32, -80, 16, 160);
   //Copy background to main canvas
-  ctx.fillStyle = "#FFFFFF";
+  ctx.fillStyle = "#17B692";
   ctx.fillRect(0, 0, width, height);
 
   //Draw the pattern itself to canvas
@@ -193,7 +193,7 @@ async function generateACNLQR(newData) {
     const renderer = new WebGLRenderer({
       alpha: true,
       canvas: threeCanvas,
-      antialias: true,
+      antialias: true
     });
     const scene = new Scene();
     const camera = new PerspectiveCamera(
@@ -210,17 +210,17 @@ async function generateACNLQR(newData) {
     texture.flipY = false;
     texture.magFilter = NearestFilter;
     const texMat = new MeshBasicMaterial({ map: texture });
-    const loadModel = (x) => {
-      return new Promise((resolve) => {
+    const loadModel = x => {
+      return new Promise(resolve => {
         let loader = new GLTFLoader();
-        loader.parse(JSON.stringify(x), "", (gltf) => {
+        loader.parse(JSON.stringify(x), "", gltf => {
           resolve(gltf);
         });
       });
     };
     const gltf = await loadModel(path3D);
     model = gltf.scene.children[0];
-    model.traverse((child) => {
+    model.traverse(child => {
       if (child instanceof Mesh) {
         child.material = texMat;
       }
