@@ -119,8 +119,18 @@ export default {
             fr.readAsArrayBuffer(f);
           });
 
-          if (pattern.byteLength == 522752){
-            //garden.dat
+          if (pattern.byteLength == 11283104){
+            //ACNH decrypted save
+            //50 regular patterns of 680 bytes each are stored in main.dat starting at offset 1930000
+            //50 pro patterns of 2216 bytes each are stored in main.dat starting at offset 1964000
+            //1 regular pattern (town flag) of 680 bytes in main.dat starting at offset 2074800
+            //8 pro patterns (able sisters) of 2216 bytes each are stored in main.dat starting at offset 2075480
+            for (let i = 0; i < 50; ++i){addResult(new Uint8Array(pattern, 1930000+680*i, 680));}
+            for (let i = 0; i < 50; ++i){addResult(new Uint8Array(pattern, 1964000+2216*i, 2216));}
+            addResult(new Uint8Array(pattern, 2074800, 680));
+            for (let i = 0; i < 8; ++i){addResult(new Uint8Array(pattern, 2075480+2216*i, 2216));}
+          } else if (pattern.byteLength == 522752){
+            //ACNL garden.dat
             for (let i = 0; i < 10; ++i){
               addResult(new Uint8Array(pattern, 0xCC+2160*i, 2160));
             }
@@ -131,7 +141,7 @@ export default {
               addResult(new Uint8Array(pattern, 0x80+0x05c8b4+2160*i, 2160));
             }
           }else if (pattern.byteLength == 563968){
-            //garden_plus.dat
+            //ACNL garden_plus.dat
             for (let i = 0; i < 10; ++i){
               addResult(new Uint8Array(pattern, 0xCC+2160*i, 2160));
             }
