@@ -1,16 +1,26 @@
 <template>
-  <div>
-    <input
-      name="search"
-      ref="input"
-      v-model="value"
-      @keyup.enter="search"
-      placeholder="Search the Getty's Open Content Images "
-    />
-    <button ref="search" name="search" @click="search">
-      Search
-    </button>
+  <div class="spacing_top">
+    <h1 class="f-heading-4">A. Browse the Getty Museum Collection</h1>
 
+    <div class="m-search-input">
+      <input
+        name="search"
+        ref="input"
+        type="search"
+        v-model="value"
+        @keyup.enter="search"
+        placeholder="Search the Getty's Open Content Images "
+      />
+      <button
+        ref="search"
+        name="search"
+        @click="search"
+        class="a-btn a-btn--text"
+      >
+        <Icon :name="'search'" />
+      </button>
+    </div>
+    <hr />
     <span v-if="query" ref="summary"
       >Showing {{ matches.length }} {{ resultText }} for '{{ query }}'</span
     >
@@ -37,10 +47,11 @@
 <script>
 import NoC_US from "../data/NoC-US.txt";
 import { extractData } from "../libs/ExtractData.js";
+import { Icon } from "@thegetty/getty-ui";
 
 export default {
   name: "Search",
-
+  components: { Icon },
   data() {
     return {
       value: "",
@@ -49,7 +60,7 @@ export default {
       maxSearch: 250,
       itemsPerPage: 16,
       currentSearchPage: 0,
-      imageData: NoC_US,
+      imageData: NoC_US
     };
   },
   computed: {
@@ -70,7 +81,7 @@ export default {
     },
     onLastSearchPage() {
       return this.lastIndex >= this.matches.length;
-    },
+    }
   },
   methods: {
     choose(match) {
@@ -93,8 +104,8 @@ export default {
           this.matches.push(extractData(_line));
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style type="text/css" scoped>
@@ -107,11 +118,14 @@ li {
   margin-left: 3em;
 }
 
-input {
-  width: 100%;
-  font-size: 120%;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  padding: 0.25em;
+.a-btn--text:hover {
+  background: transparent;
+}
+.spacing_top {
+  margin-top: 1.2em;
+}
+input[type="search"] {
+  font-size: 20px;
+  font-weight: 600;
 }
 </style>

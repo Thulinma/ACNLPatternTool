@@ -8,8 +8,15 @@
       <hr />
 
       <section class="section">
-        <h1 id="step1" class="f-heading-5">Step 1: Select a work of art</h1>
+        <h1 id="step1" class="f-heading-5">
+          Step 1: Select an image
+        </h1>
+        <RichText :content="step1Text" contentType="markdown" />
+
         <Search @input="onSearchSelect" />
+      </section>
+      <section>
+        <Gallery />
       </section>
 
       <hr />
@@ -44,10 +51,6 @@
 
       <hr />
 
-      <section>
-        <Gallery />
-      </section>
-
       <img
         id="gettylogo"
         class="hidden"
@@ -60,6 +63,7 @@
 <script>
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
+import step1Text from "../data/step1_text.md";
 import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
@@ -113,6 +117,7 @@ export default {
       saveIcon: saveIcon,
       qrInstructions: qrInstructions,
       introText: introText,
+      step1Text: step1Text,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
