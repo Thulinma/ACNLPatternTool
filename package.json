@@ -37,6 +37,7 @@
     "jszip": "^3.2.2",
     "lodash": "^4.17.15",
     "lz-string": "^1.4.4",
+    "netlify-cli": "^2.46.0",
     "portal-vue": "^2.1.7",
     "signale": "^1.4.0",
     "three": "^0.113.2",
