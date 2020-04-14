@@ -8,16 +8,16 @@
       <hr />
 
       <section class="section">
-        <h1 class="f-heading-5">Step 1: Select a work of art</h1>
+        <h1 id="step1" class="f-heading-5">Step 1: Select a work of art</h1>
         <Search @input="onSearchSelect" />
       </section>
 
       <hr />
 
       <section class="section">
-        <div class="columns">
-          <div class="half-column">
-            <h1 class="f-heading-5">
+        <div class="l-halves">
+          <div class="l-halves__half">
+            <h1 id="step2" ref="step2" class="f-heading-5">
               Step 2: Select the crop for your artwork
             </h1>
             <ImageLoader
@@ -26,7 +26,7 @@
               @converted="onConvert"
             />
           </div>
-          <div class="half-column">
+          <div class="l-halves__half leftborder">
             <h1 class="f-heading-5">
               Step 3: Import your artwork into Animal Crossing
             </h1>
@@ -85,12 +85,12 @@ export default {
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
-    RichText,
+    RichText
   },
-  beforeRouteUpdate: function (to, from, next) {
+  beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then((r) => {
+        origin.view(to.hash.substring(3)).then(r => {
           this.drawingTool.load(r);
         });
         next();
@@ -108,7 +108,7 @@ export default {
     next();
   },
 
-  data: function () {
+  data: function() {
     return {
       saveIcon: saveIcon,
       qrInstructions: qrInstructions,
@@ -117,7 +117,7 @@ export default {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
         url:
-          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg",
+          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg"
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -142,7 +142,7 @@ export default {
       pubTypeC: "",
       pubNSFW: "",
       // publishModal: false,
-      origin,
+      origin
     };
   },
   computed: {
@@ -157,7 +157,7 @@ export default {
     patTown() {
       // this could stay in data (what should be town name?) - max length 9
       return "Town name";
-    },
+    }
   },
   methods: {
     async onPublish() {
@@ -197,7 +197,7 @@ export default {
         zip.file(title, dt.toBytes());
         titles.push(title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -219,7 +219,7 @@ export default {
         zip.file(title, img.substr(22), { base64: true });
         titles.push(title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -243,7 +243,7 @@ export default {
         zip.file(img_title, img.substr(22), { base64: true });
         titles.push(ancl_title);
       }
-      zip.generateAsync({ type: "blob" }).then((d) => {
+      zip.generateAsync({ type: "blob" }).then(d => {
         saveAs(d, "patterns.zip");
       });
     },
@@ -294,13 +294,13 @@ export default {
       }
     },
 
-    onChangedCurrentColor: function (idx) {
+    onChangedCurrentColor: function(idx) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
       logger.info(`changed current color: ${idx}`);
     },
-    onLoad: async function (t) {
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -323,14 +323,15 @@ export default {
       */
       return;
     },
-    extLoad: function (data) {
+    extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function (data) {
+    onSearchSelect: function(data) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
+      this.$refs["step2"].scrollIntoView();
     },
-    onConvert: function (patterns) {
+    onConvert: function(patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -349,23 +350,23 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    extMultiLoad: function (data) {
+    extMultiLoad: function(data) {
       this.multiName = "Load which?";
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
-    onQROpen: function () {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    pickPattern: function (p) {
+    pickPattern: function(p) {
       this.extLoad(p);
       this.pickPatterns = false;
     },
-    closePicks: function () {
+    closePicks: function() {
       this.pickPatterns = false;
     },
-    onMainMenu: function () {
+    onMainMenu: function() {
       // this.$router.push("/");
       this.mainMenu = true;
     },
@@ -378,9 +379,9 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
+    }
   },
-  mounted: function () {
+  mounted: function() {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -394,7 +395,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then((r) => {
+        origin.view(hash.substring(2)).then(r => {
           this.drawingTool.load(r);
         });
       } else {
@@ -405,7 +406,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
@@ -417,7 +418,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
@@ -429,19 +430,8 @@ export default {
   color: #1a47b8;
   text-decoration: none;
 }
-.columns {
-  display: flex;
-}
-.half-column {
-  width: 50%;
-}
-.half-column:first-child {
-  padding: 12px 12px 12px 0;
-  margin-right: 4px;
-}
-.half-column:last-child {
+.leftborder {
   padding: 12px 0 12px 12px;
-  margin-left: 4px;
   border-left: 1px solid #e6e6e6;
 }
 .generated-image {
