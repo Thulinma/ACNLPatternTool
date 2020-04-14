@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="f-heading-5">Getty museum artwork examples</h1>
+    <h1 class="f-heading-4">B. Select on of our favorites</h1>
     <!-- image grid -->
     <div class="gallery">
       <div
@@ -64,6 +64,27 @@ export default {
         {
           alt: "image alt",
           id: "123",
+          src: irises,
+          qrSrc: irisesQR,
+          title: "Irises Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: yawn,
+          qrSrc: yawnQR,
+          title: "Yawn Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: irises,
+          qrSrc: irisesQR,
+          title: "Irises Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
           src: yawn,
           qrSrc: yawnQR,
           title: "Yawn Title"
@@ -88,6 +109,13 @@ export default {
           src: irises,
           qrSrc: irisesQR,
           title: "Irises Title"
+        },
+        {
+          alt: "image alt",
+          id: "123",
+          src: yawn,
+          qrSrc: yawnQR,
+          title: "Yawn Title"
         }
       ]
     };
@@ -129,7 +157,7 @@ export default {
 }
 
 .gallery-column {
-  flex: 1 0 20%;
+  flex: 1 0;
   margin: 8px;
 }
 </style>

@@ -8,16 +8,23 @@
       <hr />
 
       <section class="section">
-        <div class="section">
-          <h1 class="f-heading-5">Step 1: Select a work of art</h1>
-          <Search @input="onSearchSelect" />
-        </div>
+        <h1 id="step1" class="f-heading-5">
+          Step 1: Select an image
+        </h1>
+        <RichText :content="step1Text" contentType="markdown" />
+
+        <Search @input="onSearchSelect" />
+      </section>
+      <section class="section">
+        <Gallery />
+      </section>
+      <section class="section">
         <div>
+          <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
           <RichText :content="step3iiif" contentType="markdown" />
           <urlInput @updateIiif="updateIiifData" />
         </div>
       </section>
-
       <hr />
 
       <section class="section">
@@ -51,16 +58,9 @@
       <hr />
 
       <section class="section">
-        <Gallery />
-      </section>
-
-      <hr />
-
-      <section class="section">
         <h1 class="f-heading-5">Credits</h1>
         <hr />
       </section>
-
       <img
         id="gettylogo"
         class="hidden"
@@ -75,6 +75,7 @@
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
+import step1Text from "../data/step1_text.md";
 import step3iiif from "../data/step3_iiif.md";
 import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
@@ -127,6 +128,7 @@ export default {
       gettyLogo,
       saveIcon,
       qrInstructions: qrInstructions,
+      step1Text,
       introText,
       step3iiif,
       iiif: {
