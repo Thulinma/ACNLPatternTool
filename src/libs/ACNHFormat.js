@@ -338,11 +338,11 @@ class ACNHFormat{
   }
   ///Returns FNV-1a 128-bit hash of the pixel data only
   pixelHash(){
-    return 0;//return fnv1a128(this.b, 0x58, (this.width > 32) ? (20+512*4) : (20+512));
+    return fnv1a128(this.b, 0x78, (this.width > 32) ? (45+512*4) : (45+512));
   }
   ///Returns FNV-1a 128-bit hash of the whole pattern
   fullHash(){
-    return 0;//fnv1a128(this.b, 0, this.byteLength);
+    return fnv1a128(this.b, 0, this.byteLength);
   }
   static widthForType(t){
     return ACNHFormat.typeInfo[t].size;
@@ -377,7 +377,7 @@ class ACNHFormat{
     r = Math.round(r*255);
     g = Math.round(g*255);
     b = Math.round(b*255);
-    hex = (r*65536+g*256+b).toString(16,6);
+    let hex = (r*65536+g*256+b).toString(16,6);
     while(hex.length<6) hex = '0'+hex;
     return hex.toUpperCase();
   }
