@@ -41,26 +41,19 @@ export default {
   components: {
     Header,
     Hero,
-    Footer,
+    Footer
   },
-  data: function() {
+  data: function () {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
       heroImg,
       heroData: {
-        title: "Animal Crossing: Getty Images",
-        backgroundColor: "white",
-      },
-    };
-  },
-  computed: {
-    cssVars() {
-      return {
-        heroImg: heroImg,
-      };
-    },
-  },
+        title: "Animal Crossing Art Generator",
+        backgroundColor: "white"
+      }
+    }
+  }
 };
 </script>
 
