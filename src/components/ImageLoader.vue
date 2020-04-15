@@ -88,6 +88,7 @@ export default {
     },
 
     onCrop({ coordinates, canvas }) {
+      console.log(coordinates);
       if (!(canvas instanceof HTMLCanvasElement)) {
         return;
       }
