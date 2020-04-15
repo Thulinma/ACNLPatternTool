@@ -1,0 +1,164 @@
+{
+  "@context": "http://www.shared-canvas.org/ns/context.json",
+  "@id": "https://ids.si.edu/ids/manifest/NPG-B8000090A",
+  "@type": "sc:Manifest",
+  "label": "NPG-B8000090A",
+  "logo": "https://ids.si.edu/SI_Sunburst_40px.jpg",
+  "metadata": [
+    {
+      "label": "Title",
+      "value": "First Lady Michelle Obama"
+    },
+    {
+      "label": "Guid",
+      "value": "http://n2t.net/ark:/65665/sm4a15ef680-6589-4057-a168-f5b03a143a05"
+    },
+    {
+      "label": "Data Source",
+      "value": "National Portrait Gallery"
+    },
+    {
+      "label": "Artist",
+      "value": "Amy Sherald, born 1973"
+    },
+    {
+      "label": "Sitter",
+      "value": "Michelle Obama, born 17 Jan 1964"
+    },
+    {
+      "label": "Medium",
+      "value": "Oil on linen"
+    },
+    {
+      "label": "Dimensions",
+      "value": "Stretcher: 183.2 × 152.7 × 7 cm (72 1/8 × 60 1/8 × 2 3/4\")"
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "Born Chicago, Illinois"
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "Michelle Obama remembers growing up on the South Side of Chicago and thinking, “being smart is cooler than anything in the world.” After earning degrees from Princeton University and Harvard Law School, she joined Sidley Austin LLP, where she met Barack Obama in 1989. Guided by the desire to improve her community, she left the firm in the mid-1990s to begin a career in public service. She directed community and external affairs for the University of Chicago Medical Center prior to moving to Washington in 2009."
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "During her husband’s two presidential campaigns, Mrs. Obama delivered poignant speeches that centered on her family’s commitment to serving others and highlighted the importance of her role as a parent. As first lady, she focused on women’s rights, LGBTQ rights, children’s health, and military families."
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "Mrs. Obama selected Amy Sherald, winner of the 2016 Outwin Boochever Portrait Competition, to create her official portrait for the museum. The Baltimore-based artist considers the former first lady to be someone “women can relate to—no matter what shape, size, race, or color. . . . We see our best selves in her.” Here, she portrays Mrs. Obama as both confident and approachable, in a dress by Michelle Smith’s label Milly."
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "Nacida en Chicago, Illinois"
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "Michelle Obama recuerda que cuando era niña en el South Side de Chicago pensaba que “ser inteligente es lo más cool del mundo”. Luego de graduarse en la Universidad de Princeton y la Escuela de Derecho de Harvard, se integró a la firma Sidley Austin LLP, donde conoció a Barack Obama en 1989. Guiada por el deseo de mejorar su comunidad, renunció a la firma a mediados de los años noventa para hacer carrera en el servicio público. Antes de trasladarse a Washington en 2009, fue directora de asuntos externos y comunitarios en el Centro Médico de la Universidad de Chicago."
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "Durante las dos campañas presidenciales de su esposo, la Sra. Obama pronunció emotivos discursos que subrayaban la dedicación de su familia a servir a la sociedad y la importancia de su papel como madre. Su labor como primera dama se centró en los derechos de la mujer y la comunidad LGBTQ, la salud infantil y las familias de los que sirven en las fuerzas armadas."
+    },
+    {
+      "label": "Exhibition Label",
+      "value": "La Sra. Obama seleccionó a Amy Sherald, gana­dora del Certamen de Retratos Outwin Boochever 2016, para que creara su retrato oficial para el museo. La artista, radicada en Baltimore, considera que la ex primera dama es alguien “con quien pueden identificarse las mujeres, sin importar su figura, talla, raza o color. . . . En ella vemos lo mejor de nosotras”. Aquí la presenta como una persona segura y accesible, con un vestido de la línea Milly de Michelle Smith."
+    },
+    {
+      "label": "Place",
+      "value": "United States\\Maryland\\Baltimore Independent City\\Baltimore"
+    },
+    {
+      "label": "Credit Line",
+      "value": "National Portrait Gallery, Smithsonian Institution; Gift of Kate Capshaw and Steven Spielberg; Judith Kern and Kent Whealy; Tommie L. Pegues and Donald A. Capoccia; Clarence, DeLoise, and Brenda Gaines; Jonathan and Nancy Lee Kemper; The Stoneridge Fund of Amy and Marc Meadows; Robert E. Meyerhoff and Rheda Becker; Catherine and Michael Podell; Mark and Cindy Aron; Lyndon J. Barrois and Janine Sherman Barrois; The Honorable John and Louise Bryson; Paul and Rose Carter; Bob and Jane Clark; Lisa R. Davis; Shirley Ross Davis and Family; Alan and Lois Fern; Conrad and Constance Hipkins; Sharon and John Hoffman; Audrey M. Irmas; John Legend and Chrissy Teigen; Eileen Harris Norton; Helen Hilton Raiser; Philip and Elizabeth Ryan; Roselyne Chroman Swig; Josef Vascovitz and Lisa Goodman; Eileen Baird; Dennis and Joyce Black Family Charitable Foundation; Shelley Brazier; Aryn Drake-Lee; Andy and Teri Goodman; Randi Charno Levine and Jeffrey E. Levine; Fred M. Levin and Nancy Livingston, The Shenson Foundation; Monique Meloche Gallery, Chicago; Arthur Lewis and Hau Nguyen; Sara and John Schram; Alyssa Taubman and Robert Rothman"
+    },
+    {
+      "label": "Unique Media Name",
+      "value": "NPG-B8000090A"
+    },
+    {
+      "label": "Object number",
+      "value": "NPG.2018.15"
+    },
+    {
+      "label": "Date",
+      "value": "2018"
+    },
+    {
+      "label": "Type",
+      "value": "Painting"
+    },
+    {
+      "label": "Topic",
+      "value": "Costume\\Jewelry\\Earring"
+    },
+    {
+      "label": "Topic",
+      "value": "Costume\\Jewelry\\Ring"
+    },
+    {
+      "label": "Topic",
+      "value": "Indeterminable"
+    },
+    {
+      "label": "Topic",
+      "value": "Painting"
+    },
+    {
+      "label": "Topic",
+      "value": "Michelle Obama: Female"
+    },
+    {
+      "label": "Topic",
+      "value": "Michelle Obama: Law and Law Enforcement\\Lawyer"
+    },
+    {
+      "label": "Topic",
+      "value": "Michelle Obama: Politics and Government\\First Lady\\First Lady of US"
+    },
+    {
+      "label": "Topic",
+      "value": "Portrait"
+    }
+  ],
+  "license": "https://www.si.edu/termsofuse",
+  "attribution": "Smithsonian Institution",
+  "sequences": [
+    {
+      "@context": "http://iiif.io/api/presentation/2/context.json",
+      "@id": "https://ids.si.edu/ids/manifest/NPG-B8000090A",
+      "@type": "sc:Sequence",
+      "canvases": [
+        {
+          "@id": "https://ids.si.edu/ids/iiif/canvas-NPG-B8000090A",
+          "@type": "sc:Canvas",
+          "label": "image NPG-B8000090A",
+          "height": 4000,
+          "width": 3337,
+          "images": [
+            {
+              "@context": "http://iiif.io/api/presentation/2/context.json",
+              "@id": "https://ids.si.edu/ids/iiif/NPG-B8000090A",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "https://ids.si.edu/ids/iiif/NPG-B8000090A/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "height": 4000,
+                "width": 3337,
+                "format": "image/jpeg",
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://ids.si.edu/ids/iiif/NPG-B8000090A",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "https://ids.si.edu/ids/iiif/NPG-B8000090A"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
