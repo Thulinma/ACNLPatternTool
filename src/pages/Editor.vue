@@ -170,7 +170,8 @@ export default {
         return;
       }
       window.scrollTo({
-
+        top: scroll,
+        behavior: "smooth"
       });
     },
 
