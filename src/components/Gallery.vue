@@ -1,6 +1,5 @@
 <template>
   <div ref="gallery-section">
-    <h1 class="f-heading-3">B. Select one of our favorites</h1>
     <!-- image grid -->
     <div class="gallery" ref="gallery">
       <div
@@ -28,7 +27,7 @@ export default {
   data: function() {
     return {
       selectedImageIndex: -1,
-      images: examples,
+      images: examples
     };
   },
   computed: {},
@@ -45,7 +44,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     },
 
@@ -75,8 +74,8 @@ export default {
         return url;
       }
       return img.iiif_url;
-    },
-  },
+    }
+  }
 };
 </script>
 

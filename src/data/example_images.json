@@ -145,8 +145,8 @@
       "full_height": 1200,
       "width": 948,
       "height": 948,
-      "left": 41,
-      "top": 41
+      "left": 0,
+      "top": 56
     }
   },
   {
@@ -165,18 +165,18 @@
     }
   },
   {
-    "short_name": "Bacchante with an A…",
-    "full_name": "Bacchante with an Ape",
-    "iiif_url": "https://media.getty.edu/iiif/image/c5d8ae7e-4e86-425b-a3b6-793d97bd0afa/full/!150,150/0/default.jpg",
-    "large_iiif_url": "https://media.getty.edu/iiif/image/c5d8ae7e-4e86-425b-a3b6-793d97bd0afa/full/!1200,1200/0/default.jpg",
-    "webpage": "https://www.getty.edu/art/collection/objects/tms:845",
+    "short_name": "Two Men in Armor fo…",
+    "full_name": "Two Men in Armor for a Tournament Contest",
+    "iiif_url": "https://media.getty.edu/iiif/image/0b14cfbb-6330-4c02-95fa-67c3d4b1aa16/full/!150,150/0/default.jpg",
+    "large_iiif_url": "https://media.getty.edu/iiif/image/0b14cfbb-6330-4c02-95fa-67c3d4b1aa16/full/!1200,1200/0/default.jpg",
+    "webpage": "https://www.getty.edu/art/collection/objects/tms:5896",
     "crop": {
-      "full_width": 1041,
+      "full_width": 805,
       "full_height": 1200,
-      "width": 971,
-      "height": 971,
-      "left": 12,
-      "top": 63
+      "width": 805,
+      "height": 805,
+      "left": 0,
+      "top": 199
     }
   }
 ]
