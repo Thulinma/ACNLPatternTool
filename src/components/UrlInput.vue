@@ -11,14 +11,14 @@
       </div>
     </div>
     <div class="l-halves__half">
-      <RichText :content="step3iiif" contentType="markdown" />
+      <RichText :content="step1iiif" contentType="markdown" />
     </div>
   </div>
 </template>
 
 <script>
 import { Button, RichText } from "@thegetty/getty-ui";
-import step3iiif from "../data/step3_iiif.md";
+import step1iiif from "../data/step1_iiif.md";
 
 export default {
   name: "UrlInput",
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       iiifManifestUrl: undefined,
-      step3iiif
+      step1iiif
     };
   },
   methods: {

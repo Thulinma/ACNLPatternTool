@@ -128,7 +128,6 @@ export default {
       qrInstructions: qrInstructions,
       step1Text,
       introText,
-      step1Text,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
