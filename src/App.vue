@@ -52,11 +52,11 @@ export default {
 
 <style lang="scss">
 .container {
-  padding: 72px 10px;
+  padding: 72px 10px 0 10px;
 }
 @media (max-width: 500px) {
   .container {
-    padding: 36px 6px;
+    padding: 36px 6px 0 6px;
   }
 }
 .o-hero--content .o-hero__inner {
