@@ -1,23 +1,25 @@
 <template>
   <div>
     <div class="content">
+      <!-- Introduction -->
       <section class="section">
         <RichText :content="introText" contentType="markdown" />
       </section>
-
       <hr />
 
+      <!-- Step 1 -->
       <section class="section">
         <h1 id="step1" class="f-heading-5">
           Step 1: Select an image
         </h1>
         <RichText :content="step1Text" contentType="markdown" />
-
         <Search @input="onSearchSelect" />
       </section>
+
       <section class="section">
         <Gallery />
       </section>
+
       <section class="section">
         <div>
           <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
@@ -28,6 +30,7 @@
 
       <section class="section">
         <div class="l-halves">
+          <!-- Step 2 -->
           <div class="l-halves__half">
             <h1 id="step2" ref="step2" class="f-heading-5">
               Step 2: Select the crop for your artwork
@@ -38,6 +41,7 @@
               @converted="onConvert"
             />
           </div>
+          <!-- Step 3 -->
           <div class="l-halves__half leftborder">
             <h1 class="f-heading-5">
               Step 3: Import your artwork into Animal Crossing
@@ -53,13 +57,14 @@
           </div>
         </div>
       </section>
+      <hr class="hr-dark" />
 
-      <hr />
-
+      <!-- credits -->
       <section class="section">
-        <h1 class="f-heading-5">Credits</h1>
-        <hr />
+        <Credits />
       </section>
+
+      <!-- hidden image used for QR code image -->
       <img
         id="gettylogo"
         class="hidden"
@@ -71,6 +76,7 @@
 </template>
 
 <script>
+import Credits from "/components/Credits.vue";
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
@@ -93,6 +99,7 @@ import generateACNLQR from "/libs/ACNLQRGenerator";
 export default {
   name: "Editor",
   components: {
+    Credits,
     UrlInput,
     Search,
     ImageLoader,
