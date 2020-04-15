@@ -2,7 +2,7 @@
   <div class="spacing_top">
     <h1 class="f-heading-4">A. Browse the Getty Museum Collection</h1>
 
-    <div class="m-search-input">
+    <div class="m-search-input" ref="searchInput">
       <input
         name="search"
         ref="input"
@@ -22,10 +22,11 @@
     </div>
     <hr />
     <span v-if="query" ref="summary"
-      >Showing {{ matches.length }} {{ resultText }} for '{{ query }}'</span
+      >Showing {{ startIndex + 1 }} - {{ lastIndex }} of {{ matches.length }}
+      {{ resultText }} for '{{ query }}'</span
     >
 
-    <ol>
+    <ol ref="searchResults">
       <li v-for="match of currentResults" :key="match.webpage">
         <img
           :key="match.webpage"
@@ -66,7 +67,7 @@ export default {
       query: "",
       matches: [],
       maxSearch: 250,
-      itemsPerPage: 16,
+      itemsPerPage: 8,
       currentSearchPage: 0,
       imageData: NoC_US,
     };
@@ -97,9 +98,11 @@ export default {
     },
     prevPage() {
       this.currentSearchPage = this.currentSearchPage - 1;
+      this.$refs["searchInput"].scrollIntoView();
     },
     nextPage() {
       this.currentSearchPage = this.currentSearchPage + 1;
+      this.$refs["searchInput"].scrollIntoView();
     },
     search() {
       this.query = this.value;
@@ -141,7 +144,7 @@ ol {
 }
 li {
   /*overflow: auto;*/
-  flex: 1 0 20%;
+  flex: 1 0 22%;
 }
 
 .a-btn--text:hover {

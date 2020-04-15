@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div ref="gallery-section">
     <h1 class="f-heading-4">B. Select one of our favorites</h1>
     <!-- image grid -->
-    <div class="gallery">
+    <div class="gallery" ref="gallery">
       <div
         v-for="(img, index) in images"
         class="gallery-column"
@@ -20,10 +20,10 @@ export default {
   name: "Gallery",
   components: {},
 
-  data: function () {
+  data: function() {
     return {
       selectedImageIndex: -1,
-      images: examples
+      images: examples,
     };
   },
   computed: {},
@@ -31,6 +31,7 @@ export default {
     changeImage(index) {
       this.selectedImageIndex = index;
       this.$emit("selectedExample", index);
+      this.$refs["gallery-section"].scrollIntoView();
     },
     getClass(index) {
       if (index === this.selectedImageIndex) {
@@ -58,8 +59,8 @@ export default {
         return url;
       }
       return img.iiif_url;
-    }
-  }
+    },
+  },
 };
 </script>
 
