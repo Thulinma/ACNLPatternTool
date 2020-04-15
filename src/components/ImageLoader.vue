@@ -42,13 +42,13 @@ import DrawingTool from "/libs/DrawingTool";
 export default {
   name: "ImageLoader",
   components: {
-    Cropper,
+    Cropper
   },
   props: {
     patternType: Number,
     iiifUrl: {
-      type: String,
-    },
+      type: String
+    }
   },
   data: function() {
     return {
@@ -60,7 +60,7 @@ export default {
       fileName: "",
       muralWide: 1,
       muralTall: 1,
-      outputs: [],
+      outputs: []
     };
   },
   mounted() {
@@ -202,7 +202,7 @@ export default {
               this.draw.setPixel(x, y, [
                 imgdata.data[i],
                 imgdata.data[i + 1],
-                imgdata.data[i + 2],
+                imgdata.data[i + 2]
               ]);
             }
           }
@@ -242,7 +242,7 @@ export default {
           this.draw.findRGB([
             imgdata.data[i],
             imgdata.data[i + 1],
-            imgdata.data[i + 2],
+            imgdata.data[i + 2]
           ])
         ].c++;
       }
@@ -274,7 +274,7 @@ export default {
           this.draw.findYUV([
             imgdata.data[i],
             imgdata.data[i + 1],
-            imgdata.data[i + 2],
+            imgdata.data[i + 2]
           ])
         ].c++;
       }
@@ -316,10 +316,10 @@ export default {
         pixels.push({
           r: imgdata.data[i],
           g: imgdata.data[i + 1],
-          b: imgdata.data[i + 2],
+          b: imgdata.data[i + 2]
         });
       }
-      const medianCut = (pixels) => {
+      const medianCut = pixels => {
         let l = Math.floor(pixels.length / 2);
         let r_min = null;
         let r_max = null;
@@ -362,7 +362,7 @@ export default {
         }
         return [pixels.slice(0, l), pixels.slice(l)];
       };
-      const medianMultiCut = (buckets) => {
+      const medianMultiCut = buckets => {
         let res = [];
         for (let i in buckets) {
           const newBuck = medianCut(buckets[i]);
@@ -385,7 +385,7 @@ export default {
       let uniqCol = new Set();
 
       //Pushes average color of given bucket onto colors.
-      const pushAvg = (b) => {
+      const pushAvg = b => {
         let r_avg = 0;
         let g_avg = 0;
         let b_avg = 0;
@@ -397,7 +397,7 @@ export default {
         let rgb = [
           Math.round(r_avg / b.length),
           Math.round(g_avg / b.length),
-          Math.round(b_avg / b.length),
+          Math.round(b_avg / b.length)
         ];
         let idx = this.draw.findRGB(rgb);
         if (!uniqCol.has(idx)) {
@@ -575,8 +575,8 @@ export default {
 
     getAspectRatio() {
       return this.muralWide / this.muralTall;
-    },
-  },
+    }
+  }
 };
 </script>
 
