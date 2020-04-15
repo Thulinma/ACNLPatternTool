@@ -46,7 +46,7 @@
       <a
         class="f-body-1 a-link"
         href="#"
-        @click="prevPage"
+        @click.prevent="prevPage"
         v-if="currentSearchPage != 0"
       >
         <span class="a-link__label">
@@ -56,7 +56,7 @@
       <a
         class="f-body-1 a-link"
         href="#"
-        @click="nextPage"
+        @click.prevent="nextPage"
         v-if="onLastSearchPage == false"
       >
         <span class="a-link__label">
@@ -123,8 +123,12 @@ export default {
       this.scrollTo(this.$refs["searchInput"]);
     },
     scrollTo(el) {
+      const scroll = el.offsetTop - 110;
+      if (window.pageYOffset - 220 <= scroll) {
+        return;
+      }
       window.scrollTo({
-        top: el.offsetTop - 110,
+        top: scroll,
         behavior: "smooth",
       });
     },
