@@ -308,10 +308,10 @@ async function generateACNLQR(newData) {
   ctx.textAlign = "center";
   ctx.font = "7pt Graphik Web";
   drawTxtWithBg(
-    width / 2,
+    348,
     height - (height - pattHeight) / 4,
-    "experiments.getty.edu/animal-crossing-artwork-generator",
-    "#1a47b8"
+    "experiments.getty.edu/ac-art-generator",
+    "#1a1a1a"
   );
 
   const image = document.getElementById("gettylogo");
