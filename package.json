@@ -40,6 +40,7 @@
         "netlify-cli": "^2.46.0",
         "portal-vue": "^2.1.7",
         "signale": "^1.4.0",
+        "smoothscroll-polyfill": "^0.4.4",
         "three": "^0.113.2",
         "ulog": "^1.1.0",
         "unorm": "^1.6.0",
