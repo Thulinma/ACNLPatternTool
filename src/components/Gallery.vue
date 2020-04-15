@@ -8,7 +8,7 @@
         class="gallery-column"
         @click="changeImage(index)"
       >
-        <img :src="img.thumbnail" :class="getClass(index)" />
+        <img :src="getThumbnailUrl(img)" :class="getClass(index)" />
       </div>
     </div>
   </div>
@@ -20,10 +20,10 @@ export default {
   name: "Gallery",
   components: {},
 
-  data: function () {
+  data: function() {
     return {
       selectedImageIndex: -1,
-      images: examples
+      images: examples,
     };
   },
   computed: {},
@@ -37,8 +37,26 @@ export default {
         return "thumbnail selected";
       }
       return "thumbnail";
-    }
-  }
+    },
+    getThumbnailUrl(img) {
+      if (img.crop && img.crop.width) {
+        let url = img.iiif_url.replace(
+          "/full/",
+          "/" +
+            img.crop.top * 6 +
+            "," +
+            img.crop.left * 6 +
+            "," +
+            img.crop.width * 8 +
+            "," +
+            img.crop.height * 8 +
+            "/"
+        );
+        return url;
+      }
+      return img.iiif_url;
+    },
+  },
 };
 </script>
 
