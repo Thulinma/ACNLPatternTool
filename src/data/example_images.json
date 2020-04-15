@@ -5,7 +5,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Still Life with App…",
@@ -13,7 +13,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/858fa8ac-671a-4ab1-a9d3-1d039e59ef62/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/858fa8ac-671a-4ab1-a9d3-1d039e59ef62/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:931",
-    "crop": { "width": 764, "height": 764, "left": 49, "top": 0 }
+    "crop": {"full_width": 1200, "full_height": 964, "width": 764, "height": 764, "left": 49, "top": 0 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -21,7 +21,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -29,7 +29,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -37,7 +37,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -45,7 +45,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -53,7 +53,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -61,7 +61,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -69,7 +69,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
 
   {
@@ -78,7 +78,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -86,7 +86,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
@@ -94,6 +94,6 @@
     "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "crop": {"full_width": 937, "full_height": 1200, "width": 666, "height": 666, "left": 115, "top": 181 }
   }
 ]

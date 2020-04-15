@@ -20,10 +20,10 @@ export default {
   name: "Gallery",
   components: {},
 
-  data: function() {
+  data: function () {
     return {
       selectedImageIndex: -1,
-      images: examples,
+      images: examples
     };
   },
   computed: {},
@@ -40,24 +40,26 @@ export default {
     },
     getThumbnailUrl(img) {
       if (img.crop && img.crop.width) {
-        // use an absolute width and height to fit our square
+        const fullWidth = img.crop.full_width;
+        const fullHeight = img.crop.full_height;
+
         let url = img.iiif_url.replace(
           "/full/",
-          "/" +
-            img.crop.top * 6 +
+          "/pct:" +
+            Math.round((img.crop.left / fullWidth) * 100) +
             "," +
-            img.crop.left * 6 +
+            Math.round((img.crop.top / fullHeight) * 100) +
             "," +
-            666 * 8 +
+            Math.round((img.crop.width / fullWidth) * 100) +
             "," +
-            666 * 8 +
+            Math.round((img.crop.height / fullHeight) * 100) +
             "/"
         );
         return url;
       }
       return img.iiif_url;
-    },
-  },
+    }
+  }
 };
 </script>
 
