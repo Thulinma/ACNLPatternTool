@@ -61,14 +61,14 @@
       <hr class="hr-dark" />
       <RichText :content="step4Text" contentType="markdown" />
       <div class="l-thirds">
-        <div class="l-thirds__third">
-          <img src="/images/IMG_20200415_083020.jpg" />
+        <div class="l-thirds__one-third">
+          <img :src="share1" class="third" />
         </div>
-        <div class="l-thirds__third">
-          <img :src="share2" />
+        <div class="l-thirds__one-third">
+          <img :src="share2" class="third" />
         </div>
-        <div class="l-thirds__third">
-          <img :data="share3" />
+        <div class="l-thirds__one-third">
+          <img :src="share3" class="third" />
         </div>
       </div>
       <hr class="hr-dark" />
@@ -93,9 +93,9 @@
 import Credits from "/components/Credits.vue";
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
-import { share1 } from "/assets/images/IMG_20200415_083020.jpg";
+import share1 from "/assets/images/IMG_7807.JPG";
 import share2 from "/assets/images/IMG_20200415_083020.jpg";
-import share3 from "/assets/images/IMG_20200415_083020.jpg";
+import share3 from "/assets/images/IMG_7822.JPG";
 import introText from "../data/intro_text.md";
 import step1Text from "../data/step1_text.md";
 import step4Text from "../data/step4.md";
@@ -158,7 +158,7 @@ export default {
       step1Text,
       step4Text,
       introText,
-      share2: `url("../../assets/images/IMG_20200415_083020.jpg"')`,
+      share2,
       share1,
       share3,
       iiif: {
