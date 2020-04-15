@@ -13,7 +13,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/858fa8ac-671a-4ab1-a9d3-1d039e59ef62/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/858fa8ac-671a-4ab1-a9d3-1d039e59ef62/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:931",
-    "crop": { "width": 964, "height": 964, "left": 49, "top": 0 }
+    "crop": { "width": 764, "height": 764, "left": 49, "top": 0 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",

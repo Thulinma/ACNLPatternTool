@@ -47,9 +47,9 @@ export default {
             "," +
             img.crop.left * 6 +
             "," +
-            img.crop.width * 8 +
+            666 * 8 +
             "," +
-            img.crop.height * 8 +
+            666 * 8 +
             "/"
         );
         return url;
