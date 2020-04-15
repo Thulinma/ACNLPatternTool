@@ -40,6 +40,7 @@ export default {
     },
     getThumbnailUrl(img) {
       if (img.crop && img.crop.width) {
+        // use an absolute width and height to fit our square
         let url = img.iiif_url.replace(
           "/full/",
           "/" +
