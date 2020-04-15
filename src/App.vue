@@ -39,13 +39,13 @@ export default {
     Hero,
     Footer
   },
-  data: function() {
+  data: function () {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
       share1,
       heroData: {
-        title: "Animal Crossing: Getty Images",
+        title: "Animal Crossing Art Generator",
         backgroundColor: "white"
       }
     };

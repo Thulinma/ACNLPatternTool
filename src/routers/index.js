@@ -7,12 +7,12 @@ const mode = "history";
 
 const routes = [
   { path: `/`, component: Editor },
-  { path: `/animal-crossing-artwork-generator/`, component: Editor }
+  { path: `/ac-art-generator/`, component: Editor },
 ];
 
 const router = new VueRouter({
   mode,
-  routes
+  routes,
 });
 
 export default router;

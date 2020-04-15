@@ -1,36 +1,36 @@
 // configure cli options
-process.env.PUBLIC_PATH = "/animal-crossing-artwork-generator/";
+process.env.PUBLIC_PATH = "/ac-art-generator/";
 const yargs = require("yargs");
 const argv = yargs
   .option("development", {
     alias: "d",
     describe: "Use development environment",
-    type: "boolean"
+    type: "boolean",
   })
   .option("production", {
     alias: "p",
     describe: "Use production environment",
-    type: "boolean"
+    type: "boolean",
   })
   .option("uncompressed", {
     alias: "u",
     describe: "Produce only uncompressed",
-    type: "boolean"
+    type: "boolean",
   })
   .option("compressed", {
     alias: "c",
     describe: "Produce only compressed",
-    type: "boolean"
+    type: "boolean",
   })
   .option("analyze", {
     alias: "a",
     describe: "Analyze bundle",
-    type: "boolean"
+    type: "boolean",
   })
   .option("test", {
     alias: "t",
     describe: "Test uncompressed",
-    type: "boolean"
+    type: "boolean",
   })
   .conflicts("development", "production")
   .conflicts("uncompressed", "compressed")
@@ -60,7 +60,7 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const {
   webpackConfig,
   webpackDevConfig,
-  webpackProdConfig
+  webpackProdConfig,
 } = require("../config/webpack.config");
 const { pathToBuild, pathToBundleStats } = require("../etc/paths");
 const compress = require("../etc/compress");
@@ -83,7 +83,7 @@ if (argv.analyze)
       generateStatsFile: false,
       statsOptions: { source: true },
       openAnalyzer: true,
-      logLevel: "silent"
+      logLevel: "silent",
     })
   );
 
@@ -94,7 +94,7 @@ compiler.hooks.invalid.tap("invalid", function() {
   signale.pending("Compiling application...");
 });
 
-compiler.hooks.done.tap("done", stats => {
+compiler.hooks.done.tap("done", (stats) => {
   const messages = webpackFormatMessages(stats);
 
   if (!messages.errors.length && !messages.warnings.length) {
@@ -106,18 +106,18 @@ compiler.hooks.done.tap("done", stats => {
 
   if (messages.errors.length) {
     signale.fatal("Application failed to compile.");
-    messages.errors.forEach(e => console.log(e));
+    messages.errors.forEach((e) => console.log(e));
     return;
   }
 
   if (messages.warnings.length) {
     isCompiled = true;
     signale.warn("Application compiled with warnings.");
-    messages.warnings.forEach(w => console.log(w));
+    messages.warnings.forEach((w) => console.log(w));
   }
 });
 
-["SIGINT", "SIGTERM"].forEach(signal => {
+["SIGINT", "SIGTERM"].forEach((signal) => {
   process.on(signal, () => {
     console.log("");
     process.exit();
@@ -153,10 +153,10 @@ compiler.hooks.done.tap("done", stats => {
       noInfo: true,
       quiet: true,
       contentBase: pathToBuild,
-      historyApiFallback: true
+      historyApiFallback: true,
     });
 
-    webpackDevServer.listen(DEV_PORT, DEV_HOST, error => {
+    webpackDevServer.listen(DEV_PORT, DEV_HOST, (error) => {
       if (error) return console.log(error);
     });
     signale.success(`Testing server deployed on build!`);

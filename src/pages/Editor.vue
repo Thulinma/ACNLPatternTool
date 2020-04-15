@@ -14,7 +14,7 @@
       <!-- Step 1 -->
       <section class="section">
         <h1 id="step1">
-          Step 1: Select an image
+          Step 1: Select some art
         </h1>
         <RichText :content="step1Text" contentType="markdown" />
         <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
@@ -31,7 +31,7 @@
           <!-- Step 2 -->
           <div class="l-halves__half">
             <h1 id="step2" ref="step2">
-              Step 2: Select the crop for your artwork
+              Step 2: Select the crop for your art
             </h1>
             <div class="column-content">
               <ImageLoader
@@ -45,7 +45,7 @@
           <!-- Step 3 -->
           <div class="l-halves__half leftborder">
             <h1>
-              Step 3: Import your artwork into Animal Crossing
+              Step 3: Import your art into Animal Crossing
             </h1>
             <div class="column-content">
               <div class="generated-image">
@@ -145,7 +145,7 @@ export default {
     ACNLQRGenerator,
     RichText
   },
-  beforeRouteUpdate: function(to, from, next) {
+  beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
         origin.view(to.hash.substring(3)).then(r => {
@@ -166,7 +166,7 @@ export default {
     next();
   },
 
-  data: function() {
+  data: function () {
     return {
       gettyLogo,
       saveIcon,
@@ -246,7 +246,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function(t) {
+    onLoad: async function (t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -266,17 +266,17 @@ export default {
       */
       return;
     },
-    extLoad: function(data) {
+    extLoad: function (data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function(data, scroll = true) {
+    onSearchSelect: function (data, scroll = true) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
     },
-    onConvert: function(patterns) {
+    onConvert: function (patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -294,7 +294,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function() {
+    onQROpen: function () {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -307,7 +307,7 @@ export default {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
     }
   },
-  mounted: function() {
+  mounted: function () {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =

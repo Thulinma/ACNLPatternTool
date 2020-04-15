@@ -153,7 +153,7 @@ const htmlWebpackOptions = {
   inject: true,
   hash: true,
   template: pathToPublicIndex,
-  title: "Animal Crossing Pattern Tool"
+  title: "Animal Crossing Art Generator"
 };
 
 const plugins = [
