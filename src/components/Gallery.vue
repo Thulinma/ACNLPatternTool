@@ -20,7 +20,7 @@ export default {
   name: "Gallery",
   components: {},
 
-  data: function () {
+  data: function() {
     return {
       selectedImageIndex: -1,
       images: examples
@@ -64,28 +64,44 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.selected-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-.selected {
-  border: 3px solid pink;
-}
-
-.thumbnail {
-  width: 100%;
-}
-
 .gallery {
   display: flex;
-  flex-flow: row;
-  flex-wrap: wrap;
+  flex-wrap: no-wrap;
+  margin: 24px 0;
 }
-
 .gallery-column {
   flex: 1 0;
-  margin: 8px;
+  margin: 0 6px;
+}
+.gallery-column:first-child {
+  margin-left: 0;
+}
+.gallery-column:last-child {
+  margin-right: 0;
+}
+@media (max-width: 767px) {
+  .gallery {
+    flex-wrap: wrap;
+  }
+  .gallery-column {
+    flex: 1 0 15%;
+    margin: 3px;
+  }
+  .gallery-column:first-child,
+  .gallery-column:last-child {
+    margin: 3px;
+  }
+}
+@media (max-width: 500px) {
+  .gallery-column {
+    flex: 1 0 13%;
+  }
+}
+.selected {
+  border: 6px solid white;
+  outline: 2px solid #675102;
+}
+.thumbnail {
+  width: 100%;
 }
 </style>
