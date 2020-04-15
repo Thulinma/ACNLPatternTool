@@ -359,7 +359,6 @@ export default {
   }
   .l-halves .l-halves__half {
     margin-left: 0px;
-    border: 2px solid green;
     width: 100%;
   }
   .leftborder {
