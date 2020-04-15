@@ -8,12 +8,12 @@
     "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
   },
   {
-    "short_name": "Self-Portrait, Yawn…",
-    "full_name": "Self-Portrait, Yawning",
-    "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
-    "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
-    "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
-    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+    "short_name": "Still Life with App…",
+    "full_name": "Still Life with Apples",
+    "iiif_url": "https://media.getty.edu/iiif/image/858fa8ac-671a-4ab1-a9d3-1d039e59ef62/full/!150,150/0/default.jpg",
+    "large_iiif_url": "https://media.getty.edu/iiif/image/858fa8ac-671a-4ab1-a9d3-1d039e59ef62/full/!1200,1200/0/default.jpg",
+    "webpage": "https://www.getty.edu/art/collection/objects/tms:931",
+    "crop": { "width": 964, "height": 964, "left": 49, "top": 0 }
   },
   {
     "short_name": "Self-Portrait, Yawn…",
