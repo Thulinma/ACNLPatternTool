@@ -1,7 +1,5 @@
 <template>
   <div class="spacing_top">
-    <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
-
     <div class="m-search-input" ref="searchInput">
       <input
         name="search"
@@ -87,7 +85,7 @@ export default {
       maxSearch: 250,
       itemsPerPage: 8,
       currentSearchPage: 0,
-      imageData: NoC_US,
+      imageData: NoC_US
     };
   },
   computed: {
@@ -108,7 +106,7 @@ export default {
     },
     onLastSearchPage() {
       return this.lastIndex >= this.matches.length;
-    },
+    }
   },
   methods: {
     choose(match) {
@@ -129,7 +127,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     },
     search() {
@@ -157,8 +155,8 @@ export default {
           this.matches.push(extractData(_line));
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style type="text/css" scoped>
@@ -167,7 +165,6 @@ ol {
   flex-flow: row;
   flex-wrap: wrap;
   min-height: 0px;
-  padding-top: 1em;
 }
 li {
   /*overflow: auto;*/

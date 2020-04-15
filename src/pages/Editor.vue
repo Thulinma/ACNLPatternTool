@@ -3,24 +3,24 @@
     <div class="content">
       <!-- Introduction -->
       <section class="section">
-        <h1 class="f-heading-3">
-          Add real museum art to your Animal Crossing game using the Art
-          Generator
-        </h1>
+        <h3 class="f-heading-3">
+          Add real museum art to your Animal Crossing game using the [Insert
+          tool name]
+        </h3>
         <RichText :content="introText" contentType="markdown" />
       </section>
       <hr />
 
       <!-- Step 1 -->
       <section class="section">
-        <h1 id="step1" class="f-heading-5">
+        <h1 id="step1">
           Step 1: Select some art
         </h1>
         <RichText :content="step1Text" contentType="markdown" />
+        <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
         <Search @input="onSearchSelect" />
-      </section>
 
-      <section class="section">
+        <h3 class="f-heading-3">B. Select one of our favorites</h3>
         <Gallery @selectedExample="loadFromExample" />
       </section>
 
@@ -30,55 +30,64 @@
         <div class="l-halves">
           <!-- Step 2 -->
           <div class="l-halves__half">
-            <h1 id="step2" ref="step2" class="f-heading-5">
+            <h1 id="step2" ref="step2">
               Step 2: Select the crop for your art
             </h1>
-            <ImageLoader
-              :pattern-type="patType"
-              :iiif-url="iiif.url"
-              @converted="onConvert"
-              ref="imageloader"
-            />
+            <div class="column-content">
+              <ImageLoader
+                :pattern-type="patType"
+                :iiif-url="iiif.url"
+                @converted="onConvert"
+                ref="imageloader"
+              />
+            </div>
           </div>
           <!-- Step 3 -->
           <div class="l-halves__half leftborder">
-            <h1 class="f-heading-5">
+            <h1>
               Step 3: Import your art into Animal Crossing
             </h1>
-            <div class="generated-image">
-              <ACNLQRGenerator :pattern="qrCode" />
-              <span class="save-button" @click="downPNG">
-                <a>Download artwork and QR code </a
-                ><object class="save-icon" :data="saveIcon"></object>
-              </span>
+            <div class="column-content">
+              <div class="generated-image">
+                <ACNLQRGenerator :pattern="qrCode" />
+                <span class="save-button" @click="downPNG">
+                  <a>Download artwork and QR code </a
+                  ><object class="save-icon" :data="saveIcon"></object>
+                </span>
+              </div>
+              <RichText :content="qrInstructions" contentType="markdown" />
             </div>
-            <RichText :content="qrInstructions" contentType="markdown" />
           </div>
         </div>
       </section>
       <hr />
-      <h2 class="f-heading-5">Step 4: Share with us</h2>
-      <RichText :content="step4Text" contentType="markdown" />
 
-      <div class="l-thirds top-padding">
-        <div class="l-thirds__one-third">
-          <img :src="share1" class="third" />
+      <!-- Step 4 -->
+      <section class="section">
+        <h1>Step 4: Share with us</h1>
+        <RichText :content="step4Text" contentType="markdown" />
+
+        <div class="l-thirds top-padding">
+          <div class="l-thirds__one-third">
+            <img :src="share1" class="third" />
+          </div>
+          <div class="l-thirds__one-third">
+            <img :src="share2" class="third" />
+          </div>
+          <div class="l-thirds__one-third">
+            <img :src="share3" class="third" />
+          </div>
         </div>
-        <div class="l-thirds__one-third">
-          <img :src="share2" class="third" />
-        </div>
-        <div class="l-thirds__one-third">
-          <img :src="share3" class="third" />
-        </div>
-      </div>
-      <hr class="top-padding top-margin4" />
+      </section>
+      <hr />
+
       <section class="section">
         <div id="iiifloader">
-          <h1 class="f-heading-4">Use our tool with any IIIF image</h1>
+          <h1>Use our tool with any IIIF image</h1>
           <urlInput @updateIiif="updateIiifData" />
         </div>
       </section>
-
+      <hr class="hr-dark" />
       <!-- credits -->
       <section class="section">
         <Credits />
@@ -139,7 +148,7 @@ export default {
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then((r) => {
+        origin.view(to.hash.substring(3)).then(r => {
           this.drawingTool.load(r);
         });
         next();
@@ -309,7 +318,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then((r) => {
+        origin.view(hash.substring(2)).then(r => {
           this.drawingTool.load(r);
         });
       } else {
@@ -320,7 +329,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
@@ -359,6 +368,9 @@ export default {
     border: none;
   }
 }
+.column-content {
+  margin-top: 36px;
+}
 .generated-image {
   margin-bottom: 40px;
 }
@@ -380,7 +392,7 @@ export default {
   cursor: pointer;
 }
 .section {
-  margin-bottom: 48px;
+  margin-bottom: 80px;
 }
 .hero {
   width: 100%;

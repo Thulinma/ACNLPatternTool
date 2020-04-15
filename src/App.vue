@@ -55,21 +55,23 @@ export default {
 
 <style lang="scss">
 .container {
-  padding: 72px 10px 0 10px;
+  padding: 0 10px 0 10px;
 }
 @media (max-width: 500px) {
   .container {
     padding: 36px 6px 0 6px;
   }
 }
-.o-hero--content .o-hero__inner {
-  padding-top: inherit !important;
-  height: inherit !important;
-}
-
 body {
   font-size: 15px;
   color: #1a1a1a;
+}
+p {
+  font-size: 15px;
+  margin-top: 12px !important;
+}
+li {
+  font-size: 15px;
 }
 
 h1 {
@@ -87,10 +89,16 @@ h2 {
 h3 {
   font-size: 1.2 em;
   font-weight: 400;
-  margin-top: 8px;
+  margin-top: 40px;
 }
-
 a {
   color: #1a47b8;
+}
+.o-hero--content .o-hero__inner {
+  padding-top: inherit !important;
+  height: inherit !important;
+}
+.g-header__inner a {
+  color: black;
 }
 </style>
