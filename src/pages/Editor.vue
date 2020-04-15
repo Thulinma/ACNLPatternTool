@@ -7,7 +7,11 @@
           Add real museum art to your Animal Crossing game using the [Insert
           tool name]
         </h3>
-        <RichText :content="introText" contentType="markdown" />
+        <div class="l-thirds">
+          <div class="l-thirds__two-thirds">
+            <RichText :content="introText" contentType="markdown" />
+          </div>
+        </div>
       </section>
       <hr />
 
@@ -16,7 +20,11 @@
         <h1 id="step1">
           Step 1: Select some art
         </h1>
-        <RichText :content="step1Text" contentType="markdown" />
+        <div class="l-thirds">
+          <div class="l-thirds__two-thirds">
+            <RichText :content="step1Text" contentType="markdown" />
+          </div>
+        </div>
         <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
         <Search @input="onSearchSelect" />
 
@@ -372,6 +380,7 @@ export default {
     margin-left: 0px;
   }
 
+  .l-thirds .l-thirds__two-thirds,
   .l-thirds .l-thirds__one-third {
     margin-left: 0px;
     width: 100%;
