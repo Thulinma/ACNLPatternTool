@@ -96,6 +96,10 @@ import logger from "/utils/logger";
 import lzString from "lz-string";
 import { saveAs } from "file-saver";
 import generateACNLQR from "/libs/ACNLQRGenerator";
+if (typeof window !== "undefined") {
+  let smoothscroll = require("smoothscroll-polyfill");
+  smoothscroll.polyfill();
+}
 
 export default {
   name: "Editor",
@@ -159,6 +163,12 @@ export default {
     };
   },
   methods: {
+    scrollTo(el) {
+      window.scrollTo({
+        top: el.offsetTop - 110,
+        behavior: "smooth",
+      });
+    },
     async downPNG() {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title + ".png");
@@ -221,7 +231,7 @@ export default {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
-        this.$refs["step2"].scrollIntoView();
+        this.scrollTo(this.$refs["step2"]);
       }
     },
     onConvert: function(patterns) {

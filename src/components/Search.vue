@@ -58,6 +58,11 @@ import NoC_US from "../data/NoC-US.txt";
 import { extractData } from "../libs/ExtractData.js";
 import { Icon } from "@thegetty/getty-ui";
 import "unorm";
+if (typeof window !== "undefined") {
+  let smoothscroll = require("smoothscroll-polyfill");
+  smoothscroll.polyfill();
+}
+
 export default {
   name: "Search",
   components: { Icon },
@@ -98,11 +103,17 @@ export default {
     },
     prevPage() {
       this.currentSearchPage = this.currentSearchPage - 1;
-      this.$refs["searchInput"].scrollIntoView();
+      this.scrollTo(this.$refs["searchInput"]);
     },
     nextPage() {
       this.currentSearchPage = this.currentSearchPage + 1;
-      this.$refs["searchInput"].scrollIntoView();
+      this.scrollTo(this.$refs["searchInput"]);
+    },
+    scrollTo(el) {
+      window.scrollTo({
+        top: el.offsetTop - 110,
+        behavior: "smooth",
+      });
     },
     search() {
       this.query = this.value;

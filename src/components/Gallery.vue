@@ -16,6 +16,11 @@
 
 <script>
 import examples from "../data/example_images.json";
+if (typeof window !== "undefined") {
+  let smoothscroll = require("smoothscroll-polyfill");
+  smoothscroll.polyfill();
+}
+
 export default {
   name: "Gallery",
   components: {},
@@ -31,7 +36,13 @@ export default {
     changeImage(index) {
       this.selectedImageIndex = index;
       this.$emit("selectedExample", index);
-      this.$refs["gallery-section"].scrollIntoView();
+      this.scrollTo(this.$refs["gallery-section"]);
+    },
+    scrollTo(el) {
+      window.scrollTo({
+        top: el.offsetTop - 110,
+        behavior: "smooth",
+      });
     },
     getClass(index) {
       if (index === this.selectedImageIndex) {
