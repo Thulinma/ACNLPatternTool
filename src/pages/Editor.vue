@@ -20,12 +20,6 @@
         <Gallery @selectedExample="loadFromExample" />
       </section>
 
-      <section class="section">
-        <div id="iiifloader">
-          <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
-          <urlInput @updateIiif="updateIiifData" />
-        </div>
-      </section>
       <hr />
 
       <section class="section">
@@ -59,6 +53,7 @@
         </div>
       </section>
       <hr class="hr-dark" />
+      <h2 class="f-heading-5">Step 4: Share with us</h2>
       <RichText :content="step4Text" contentType="markdown" />
       <div class="l-thirds">
         <div class="l-thirds__one-third">
@@ -72,6 +67,12 @@
         </div>
       </div>
       <hr class="hr-dark" />
+      <section class="section">
+        <div id="iiifloader">
+          <h1 class="f-heading-4">Use our tool with any IIIF image</h1>
+          <urlInput @updateIiif="updateIiifData" />
+        </div>
+      </section>
 
       <!-- credits -->
       <section class="section">
@@ -375,5 +376,10 @@ export default {
 }
 .section {
   margin-bottom: 48px;
+}
+.hero {
+  width: 100%;
+  max-height: 10em;
+  overflow: hidden;
 }
 </style>

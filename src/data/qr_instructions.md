@@ -1,7 +1,7 @@
-To scan QR codes in Animal Crossing New Horizons, you will need to do the following:
+Download and save your QR code. Add your artwork to your Animal Crossing: New Horizons game via NookLink.
 
-1. Download the Nintendo Switch Online app for your mobile device
-2. Link your Nintendo account
-3. From the 'Game-Specific Services' section, select Animal Crossing New Horizons
-4. Select 'Designs'
-5. Scan QR Code
+1. Get the Nintendo Switch App and set up NookLink to connect your real-life smartphone to your Animal Crossing Nintendo Switch.
+2. Scan your QR code using the Nintendo Switch App
+3. In Animal Crossing, use your NookPhone to download designs into your custom designs app.
+
+More detailed step-by-step instructions here.

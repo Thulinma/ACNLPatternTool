@@ -1,6 +1,6 @@
 <template>
   <div class="spacing_top">
-    <h1 class="f-heading-4">A. Browse the Getty Museum Collection</h1>
+    <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
 
     <div class="m-search-input" ref="searchInput">
       <input
