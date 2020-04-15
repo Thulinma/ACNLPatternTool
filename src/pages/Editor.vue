@@ -164,11 +164,16 @@ export default {
   },
   methods: {
     scrollTo(el) {
+      const scroll = el.offsetTop - 110;
+      if (window.pageYOffset - 220 <= scroll) {
+        return;
+      }
       window.scrollTo({
-        top: el.offsetTop - 110,
+        top: scroll,
         behavior: "smooth",
       });
     },
+
     async downPNG() {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title + ".png");
