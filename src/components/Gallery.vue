@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="f-heading-4">B. Select on of our favorites</h1>
+    <h1 class="f-heading-4">B. Select one of our favorites</h1>
     <!-- image grid -->
     <div class="gallery">
       <div
