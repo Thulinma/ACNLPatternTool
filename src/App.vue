@@ -41,19 +41,19 @@ export default {
   components: {
     Header,
     Hero,
-    Footer
+    Footer,
   },
-  data: function () {
+  data: function() {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
       heroImg,
       heroData: {
         title: "Animal Crossing Art Generator",
-        backgroundColor: "white"
-      }
-    }
-  }
+        backgroundColor: "white",
+      },
+    };
+  },
 };
 </script>
 
@@ -103,6 +103,7 @@ a {
   background-size: cover;
   height: 380px;
   width: 100%;
+}
 
 .o-hero--content .o-hero__inner {
   padding-top: inherit !important;
