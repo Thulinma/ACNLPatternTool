@@ -89,7 +89,6 @@ import Gallery from "/components/Gallery.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
 import Search from "/components/Search.vue";
 import DrawingTool from "/libs/DrawingTool";
-import ACNLFormat from "/libs/ACNLFormat";
 import origin from "/libs/origin";
 import logger from "/utils/logger";
 import lzString from "lz-string";
@@ -150,43 +149,14 @@ export default {
       fragment: "",
       patType: 9,
       patTypeName: "",
-      pickPatterns: false,
       multiName: "Local storage",
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      pubStyleA: "",
-      pubStyleB: "",
-      pubStyleC: "",
-      pubTypeA: "",
-      pubTypeB: "",
-      pubTypeC: "",
-      pubNSFW: "",
-      // publishModal: false,
       origin
     };
   },
   methods: {
-    async onPublish() {
-      let uplStatus = await origin.upload(
-        btoa(this.drawingTool.toString()),
-        this.pubStyleA,
-        this.pubStyleB,
-        this.pubStyleC,
-        this.pubTypeA,
-        this.pubTypeB,
-        this.pubTypeC,
-        this.pubNSFW
-      );
-      if (uplStatus["upload"]) {
-        this.$router.push({ hash: "H:" + uplStatus["upload"] });
-      } else if (uplStatus.includes("error")) {
-        window.alert(
-          "A pattern just like this already exists in the database!"
-        );
-      }
-      this.publishModal = false;
-    },
     async downPNG() {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title + ".png");
@@ -226,9 +196,6 @@ export default {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
-      // this.patTitle = this.drawingTool.title;
-      // this.patAuthor = this.drawingTool.creator[0];
-      // this.patTown = this.drawingTool.town[0];
 
       // need to wait 2 ticks before access ref in portal
       // AFTER setting isOpenModal to true
@@ -261,7 +228,6 @@ export default {
         this.extLoad(patterns[0]);
       } else {
         this.multiName = "Conversion result";
-        this.pickPatterns = patterns;
         this.allowMoveToLocal = true;
       }
       if (this.searchResult && this.searchResult.short_name) {
@@ -272,30 +238,9 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    extMultiLoad: function(data) {
-      this.multiName = "Load which?";
-      this.pickPatterns = data;
-      this.allowMoveToLocal = true;
-    },
     onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
-    },
-    pickPattern: function(p) {
-      this.extLoad(p);
-      this.pickPatterns = false;
-    },
-    closePicks: function() {
-      this.pickPatterns = false;
-    },
-    onMainMenu: function() {
-      // this.$router.push("/");
-      this.mainMenu = true;
-    },
-    saveAuthor() {
-      this.storedAuthorHuman =
-        this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
-      localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
     },
     updateIiifData(manifestUrl) {
       // TODO: extract data from manifest url
@@ -315,9 +260,6 @@ export default {
       this.storedAuthorHuman =
         this.drawingTool.creator[0] + " / " + this.drawingTool.town[0];
     }
-    // this.drawingTool.addCanvas(this.$refs.canvas1, { grid: true });
-    // this.drawingTool.addCanvas(this.$refs.canvas2);
-    // this.drawingTool.addCanvas(this.$refs.canvas3);
     this.allTypes = this.drawingTool.allTypes;
     this.drawingTool.onLoad(this.onLoad);
     if (this.$router.currentRoute.hash.length > 1) {
