@@ -22,7 +22,7 @@ const axios = require("axios");
  * @param  {Number} size       The number of pixels on the longest side for the IIIF image
  * @return {ParsedData}            The data parsed into a usable form.
  */
-export function extractData(dataString, size = 300, full_size = 1200) {
+export function extractData(dataString, size = 150, full_size = 1200) {
   let full_name, id, uuid, artist;
   [full_name, id, uuid, artist] = dataString.split("|");
 
@@ -30,12 +30,8 @@ export function extractData(dataString, size = 300, full_size = 1200) {
   const bigurl = `https://media.getty.edu/iiif/image/${uuid}/full/!${full_size},${full_size}/0/default.jpg`;
   const link = `https://www.getty.edu/art/collection/objects/tms:${id}`;
 
-  let name = full_name;
-  if (name.length > 20) {
-    name = name.substr(0, 19) + "…";
-  }
   return {
-    short_name: name,
+    short_name: truncateName(full_name),
     full_name: full_name,
     iiif_url: url,
     large_iiif_url: bigurl,
@@ -44,21 +40,47 @@ export function extractData(dataString, size = 300, full_size = 1200) {
   };
 }
 
+function truncateName(name) {
+  if (name.length > 20) {
+    name = name.substr(0, 19) + "…";
+  }
+  return name;
+}
+
 export async function getIIIFData(manifestURL, size = 150, full_size = 1200) {
-  let iiif_url = await getIIIFThumbnail(manifestURL, size);
+  let manifest = await getIIIFManifest(manifestURL);
+  let iiif_url = getIIIFThumbnail(manifest, size);
   let iiif_full_url = iiif_url.replace(
     `!${size},${size}`,
     `!${full_size},${full_size}`
   );
 
+  let label = "";
+  if (manifest.label) {
+    label = manifest.label;
+  }
+
   return {
-    short_name: "placeholder",
-    full_name: "placeholder",
+    short_name: label,
+    full_name: label,
     iiif_url: iiif_url,
     large_iiif_url: iiif_full_url,
     artist: "placeholder",
     webpage: "placeholder"
   };
+}
+
+export async function getIIIFManifest(manifestURL) {
+  let response = null;
+  try {
+    response = await axios.get(manifestURL);
+  } catch (error) {}
+
+  if (!response) {
+    return null;
+  }
+
+  return response.data;
 }
 
 /**
@@ -70,18 +92,7 @@ export async function getIIIFData(manifestURL, size = 150, full_size = 1200) {
  *                       image service attached.
  * @return {String}             The URL to the thumbnail
  */
-export async function getIIIFThumbnail(manifestURL, size = 300) {
-  let response = null;
-  try {
-    response = await axios.get(manifestURL);
-  } catch (error) {}
-
-  if (!response) {
-    return null;
-  }
-
-  const manifest = response.data;
-
+export function getIIIFThumbnail(manifest, size = 300) {
   // Happiest path: has a IIIF Service.
   if (
     manifest.thumbnail &&
