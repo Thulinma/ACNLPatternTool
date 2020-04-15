@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="f-heading-4">B. Select on of our favorites</h1>
+    <h1 class="f-heading-4">B. Select one of our favorites</h1>
     <!-- image grid -->
     <div class="gallery">
       <div
@@ -8,7 +8,7 @@
         class="gallery-column"
         @click="changeImage(index)"
       >
-        <img :src="img.thumbnail" :class="getClass(index)" />
+        <img :src="getThumbnailUrl(img)" :class="getClass(index)" />
       </div>
     </div>
   </div>
@@ -37,6 +37,27 @@ export default {
         return "thumbnail selected";
       }
       return "thumbnail";
+    },
+    getThumbnailUrl(img) {
+      if (img.crop && img.crop.width) {
+        const fullWidth = img.crop.full_width;
+        const fullHeight = img.crop.full_height;
+
+        let url = img.iiif_url.replace(
+          "/full/",
+          "/pct:" +
+            Math.round((img.crop.left / fullWidth) * 100) +
+            "," +
+            Math.round((img.crop.top / fullHeight) * 100) +
+            "," +
+            Math.round((img.crop.width / fullWidth) * 100) +
+            "," +
+            Math.round((img.crop.height / fullHeight) * 100) +
+            "/"
+        );
+        return url;
+      }
+      return img.iiif_url;
     }
   }
 };
