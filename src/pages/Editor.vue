@@ -95,6 +95,7 @@ import origin from "/libs/origin";
 import logger from "/utils/logger";
 import lzString from "lz-string";
 import { saveAs } from "file-saver";
+import { getIIIFData } from "../libs/ExtractData";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 if (typeof window !== "undefined") {
   let smoothscroll = require("smoothscroll-polyfill");
@@ -110,9 +111,9 @@ export default {
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
-    RichText,
+    RichText
   },
-  beforeRouteUpdate: function(to, from, next) {
+  beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
         origin.view(to.hash.substring(3)).then((r) => {
@@ -133,7 +134,7 @@ export default {
     next();
   },
 
-  data: function() {
+  data: function () {
     return {
       gettyLogo,
       saveIcon,
@@ -144,7 +145,7 @@ export default {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
         url:
-          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg",
+          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg"
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -159,7 +160,7 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      origin,
+      origin
     };
   },
   methods: {
@@ -170,7 +171,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     },
 
@@ -209,7 +210,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function(t) {
+    onLoad: async function (t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -229,17 +230,17 @@ export default {
       */
       return;
     },
-    extLoad: function(data) {
+    extLoad: function (data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function(data, scroll = true) {
+    onSearchSelect: function (data, scroll = true) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
     },
-    onConvert: function(patterns) {
+    onConvert: function (patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -257,7 +258,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function() {
+    onQROpen: function () {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -267,18 +268,10 @@ export default {
       this.$refs["imageloader"].setCropData(currentExample.crop);
     },
     updateIiifData(manifestUrl) {
-      // TODO: extract data from manifest url
-      this.searchResult = {
-        full_name: "placeholder",
-        iiif_url: manifestUrl,
-        large_iiif_url: manifestUrl,
-        short_name: "placeholder",
-        webpage: undefined,
-      };
-      this.$set(this.iiif, "url", manifestUrl);
-    },
+      getIIIFData(manifestUrl).then(this.onSearchSelect);
+    }
   },
-  mounted: function() {
+  mounted: function () {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -312,7 +305,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 

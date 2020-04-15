@@ -2,6 +2,7 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { extractData, getIIIFThumbnail } from "./ExtractData.js";
 import testManifest from "../../test/data/manifest";
+import smithsonianManifest from "../../test/data/smithsonian_manifest";
 
 // This sets the mock adapter on the default instance
 var mock = new MockAdapter(axios);
@@ -12,7 +13,7 @@ describe("extractData", () => {
 
   it("extracts a url from data", () => {
     let url =
-      "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!300,300/0/default.jpg";
+      "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!150,150/0/default.jpg";
     expect(extractData(sampleData).iiif_url).toBe(url);
   });
 
@@ -82,6 +83,15 @@ describe("getIIIFThumbnail", () => {
     mock.onGet(manifestURL).reply(200, manifestData);
     expect(await getIIIFThumbnail(manifestURL, 600)).toEqual(
       "https://media.getty.edu/iiif/image/non-iiif-service/full/!300,300/0/default.jpg"
+    );
+  });
+
+  it("handles manifests without thumbnails", async () => {
+    const smithsonianData = JSON.parse(JSON.stringify(smithsonianManifest));
+
+    mock.onGet(manifestURL).reply(200, smithsonianData);
+    expect(await getIIIFThumbnail(manifestURL, 600)).toEqual(
+      "https://ids.si.edu/ids/iiif/NPG-B8000090A/full/!600,600/0/default.jpg"
     );
   });
 
