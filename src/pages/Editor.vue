@@ -81,14 +81,16 @@
       </section>
       <hr />
 
+      <!-- IIIF section -->
       <section class="section">
         <div id="iiifloader">
           <h1>Use our tool with any IIIF image</h1>
-          <urlInput @updateIiif="updateIiifData" />
+          <IIIFInput @updateIiif="updateIiifData" />
         </div>
       </section>
       <hr class="hr-dark" />
-      <!-- credits -->
+
+      <!-- Credits -->
       <section class="section">
         <Credits />
       </section>
@@ -117,7 +119,7 @@ import step4Text from "../data/step4.md";
 import qrInstructions from "../data/qr_instructions.md";
 import examples from "../data/example_images.json";
 import { RichText } from "@thegetty/getty-ui";
-import UrlInput from "/components/UrlInput.vue";
+import IIIFInput from "/components/IIIFInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import Gallery from "/components/Gallery.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -138,14 +140,14 @@ export default {
   name: "Editor",
   components: {
     Credits,
-    UrlInput,
+    IIIFInput,
     Search,
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
     RichText
   },
-  beforeRouteUpdate: function (to, from, next) {
+  beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
         origin.view(to.hash.substring(3)).then(r => {
@@ -166,7 +168,7 @@ export default {
     next();
   },
 
-  data: function () {
+  data: function() {
     return {
       gettyLogo,
       saveIcon,
@@ -246,7 +248,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function (t) {
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -266,17 +268,17 @@ export default {
       */
       return;
     },
-    extLoad: function (data) {
+    extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function (data, scroll = true) {
+    onSearchSelect: function(data, scroll = true) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
     },
-    onConvert: function (patterns) {
+    onConvert: function(patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -294,7 +296,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function () {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -307,7 +309,7 @@ export default {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
     }
   },
-  mounted: function () {
+  mounted: function() {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -353,20 +355,6 @@ export default {
 .leftborder {
   padding-left: 12px;
   border-left: 1px solid #e6e6e6;
-}
-@media (max-width: 767px) {
-  .l-halves {
-    margin-left: 0px;
-  }
-  .l-halves .l-halves__half {
-    margin-left: 0px;
-    width: 100%;
-  }
-  .leftborder {
-    margin-top: 20px;
-    padding: 0;
-    border: none;
-  }
 }
 .column-content {
   margin-top: 36px;
