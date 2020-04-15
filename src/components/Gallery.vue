@@ -39,11 +39,16 @@ export default {
       this.scrollTo(this.$refs["gallery-section"]);
     },
     scrollTo(el) {
+      const scroll = el.offsetTop - 110;
+      if (window.pageYOffset - 220 <= scroll) {
+        return;
+      }
       window.scrollTo({
-        top: el.offsetTop - 110,
+        top: scroll,
         behavior: "smooth",
       });
     },
+
     getClass(index) {
       if (index === this.selectedImageIndex) {
         return "thumbnail selected";
