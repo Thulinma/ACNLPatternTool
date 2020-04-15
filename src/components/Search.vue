@@ -42,7 +42,7 @@
         >
       </li>
     </ol>
-    <div v-if="query">
+    <div v-if="query" class="paginate">
       <a
         class="f-body-1 a-link"
         href="#"
@@ -199,5 +199,14 @@ input[type="search"] {
   display: block;
   padding-top: 1em;
   padding-bottom: 1em;
+}
+
+.paginate {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  border-top: 1px solid #aeaeae;
+  padding-top: 0.2em;
+  margin-top: 1em;
 }
 </style>
