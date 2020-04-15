@@ -1,6 +1,6 @@
 <template>
   <div ref="gallery-section">
-    <h1 class="f-heading-4">B. Select one of our favorites</h1>
+    <h1 class="f-heading-3">B. Select one of our favorites</h1>
     <!-- image grid -->
     <div class="gallery" ref="gallery">
       <div

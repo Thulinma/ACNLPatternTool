@@ -3,6 +3,10 @@
     <div class="content">
       <!-- Introduction -->
       <section class="section">
+        <h1 class="f-heading-3">
+          Add real museum art to your Animal Crossing game using the [Insert
+          tool name]
+        </h1>
         <RichText :content="introText" contentType="markdown" />
       </section>
       <hr />
@@ -20,12 +24,6 @@
         <Gallery @selectedExample="loadFromExample" />
       </section>
 
-      <section class="section">
-        <div id="iiifloader">
-          <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
-          <urlInput @updateIiif="updateIiifData" />
-        </div>
-      </section>
       <hr />
 
       <section class="section">
@@ -58,9 +56,11 @@
           </div>
         </div>
       </section>
-      <hr class="hr-dark" />
+      <hr />
+      <h2 class="f-heading-5">Step 4: Share with us</h2>
       <RichText :content="step4Text" contentType="markdown" />
-      <div class="l-thirds">
+
+      <div class="l-thirds top-padding">
         <div class="l-thirds__one-third">
           <img :src="share1" class="third" />
         </div>
@@ -71,7 +71,13 @@
           <img :src="share3" class="third" />
         </div>
       </div>
-      <hr class="hr-dark" />
+      <hr class="top-padding top-margin4" />
+      <section class="section">
+        <div id="iiifloader">
+          <h1 class="f-heading-4">Use our tool with any IIIF image</h1>
+          <urlInput @updateIiif="updateIiifData" />
+        </div>
+      </section>
 
       <!-- credits -->
       <section class="section">
@@ -128,9 +134,9 @@ export default {
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
-    RichText
+    RichText,
   },
-  beforeRouteUpdate: function (to, from, next) {
+  beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
         origin.view(to.hash.substring(3)).then((r) => {
@@ -151,7 +157,7 @@ export default {
     next();
   },
 
-  data: function () {
+  data: function() {
     return {
       gettyLogo,
       saveIcon,
@@ -166,7 +172,7 @@ export default {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
         url:
-          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg"
+          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg",
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -181,7 +187,7 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      origin
+      origin,
     };
   },
   methods: {
@@ -192,7 +198,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     },
 
@@ -231,7 +237,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function (t) {
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -251,17 +257,17 @@ export default {
       */
       return;
     },
-    extLoad: function (data) {
+    extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function (data, scroll = true) {
+    onSearchSelect: function(data, scroll = true) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
     },
-    onConvert: function (patterns) {
+    onConvert: function(patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -279,7 +285,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function () {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -290,9 +296,9 @@ export default {
     },
     updateIiifData(manifestUrl) {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
-    }
+    },
   },
-  mounted: function () {
+  mounted: function() {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -326,7 +332,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 
@@ -336,7 +342,7 @@ export default {
   text-decoration: none;
 }
 .leftborder {
-  padding: 12px 0 12px 12px;
+  padding-left: 12px;
   border-left: 1px solid #e6e6e6;
 }
 @media (max-width: 767px) {
@@ -375,5 +381,18 @@ export default {
 }
 .section {
   margin-bottom: 48px;
+}
+.hero {
+  width: 100%;
+  max-height: 10em;
+  overflow: hidden;
+}
+
+.top-padding {
+  padding-top: 2em;
+}
+
+.top-margin4 {
+  margin-top: 4em;
 }
 </style>
