@@ -21,7 +21,7 @@
       </section>
 
       <section class="section">
-        <div>
+        <div id="iiifloader">
           <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
           <urlInput @updateIiif="updateIiifData" />
         </div>
