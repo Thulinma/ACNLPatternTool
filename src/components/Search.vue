@@ -20,8 +20,7 @@
         <Icon :name="'search'" />
       </button>
     </div>
-    <hr />
-    <span v-if="query" ref="summary"
+    <span v-if="query" ref="summary" class="summary"
       >Showing {{ startIndex + 1 }} - {{ lastIndex }} of {{ matches.length }}
       {{ resultText }} for '{{ query }}'</span
     >
@@ -36,7 +35,7 @@
         />
         <p class="f-body-1" @click="choose(match)">
           {{ match.full_name
-          }}<span v-if="match.artist">by {{ match.artist }}</span>
+          }}<span v-if="match.artist"> by {{ match.artist }}</span>
         </p>
         <a class="f-body-1 a-link" :href="match.webpage"
           ><span class="a-link__label">view in collection</span></a
@@ -44,12 +43,26 @@
       </li>
     </ol>
     <div v-if="query">
-      <button @click="prevPage" :disabled="currentSearchPage == 0">
-        prev
-      </button>
-      <button @click="nextPage" :disabled="onLastSearchPage">
-        next
-      </button>
+      <a
+        class="f-body-1 a-link"
+        href="#"
+        @click="prevPage"
+        v-if="currentSearchPage != 0"
+      >
+        <span class="a-link__label">
+          prev
+        </span>
+      </a>
+      <a
+        class="f-body-1 a-link"
+        href="#"
+        @click="nextPage"
+        v-if="onLastSearchPage == false"
+      >
+        <span class="a-link__label">
+          next
+        </span>
+      </a>
     </div>
   </div>
 </template>
@@ -152,10 +165,12 @@ ol {
   flex-flow: row;
   flex-wrap: wrap;
   min-height: 0px;
+  padding-top: 1em;
 }
 li {
   /*overflow: auto;*/
   flex: 1 0 22%;
+  padding-bottom: 1em;
 }
 
 .a-btn--text:hover {
@@ -171,5 +186,14 @@ input[type="search"] {
 
 .gallery_img {
   max-width: 90%;
+  min-width: 50%;
+}
+.m-search-input {
+}
+
+.summary {
+  display: block;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 </style>
