@@ -51,6 +51,14 @@ export default {
 </script>
 
 <style lang="scss">
+.container {
+  padding: 72px 10px;
+}
+@media (max-width: 500px) {
+  .container {
+    padding: 36px 6px;
+  }
+}
 .o-hero--content .o-hero__inner {
   padding-top: inherit !important;
   height: inherit !important;

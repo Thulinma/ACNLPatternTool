@@ -572,6 +572,6 @@ canvas.ImageLoader {
   border: 1px solid gray;
 }
 .vue-advanced-cropper {
-  max-width: 93% !important;
+  max-width: 100% !important;
 }
 </style>
