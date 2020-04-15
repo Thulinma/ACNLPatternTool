@@ -384,6 +384,7 @@ export default {
   .l-thirds .l-thirds__one-third {
     margin-left: 0px;
     width: 100%;
+    margin-bottom: 12px;
   }
 }
 .column-content {
