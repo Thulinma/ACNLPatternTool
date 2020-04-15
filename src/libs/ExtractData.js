@@ -23,8 +23,8 @@ const axios = require("axios");
  * @return {ParsedData}            The data parsed into a usable form.
  */
 export function extractData(dataString, size = 150, full_size = 1200) {
-  let full_name, id, uuid;
-  [full_name, id, uuid] = dataString.split("|");
+  let full_name, id, uuid, artist;
+  [full_name, id, uuid, artist] = dataString.split("|");
 
   const url = `https://media.getty.edu/iiif/image/${uuid}/full/!${size},${size}/0/default.jpg`;
   const bigurl = `https://media.getty.edu/iiif/image/${uuid}/full/!${full_size},${full_size}/0/default.jpg`;
@@ -39,6 +39,7 @@ export function extractData(dataString, size = 150, full_size = 1200) {
     full_name: full_name,
     iiif_url: url,
     large_iiif_url: bigurl,
+    artist: artist,
     webpage: link,
   };
 }
@@ -72,7 +73,9 @@ export async function getIIIFThumbnail(manifestURL, size = 300) {
       "http://iiif.io/api/image/2/context.json"
   ) {
     const thumbnailId = manifest.thumbnail.service["@id"];
-    return `${manifest.thumbnail.service["@id"]}/full/!${size},${size}/0/default.jpg`;
+    return `${
+      manifest.thumbnail.service["@id"]
+    }/full/!${size},${size}/0/default.jpg`;
   }
 
   // Happy path:  Has a thumbnail defined, but it's not IIIF-compatible

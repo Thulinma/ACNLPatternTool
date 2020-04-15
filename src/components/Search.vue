@@ -32,6 +32,7 @@
         :key="match.webpage"
       >
         {{ match.full_name }}
+        <span v-if="match.artist">by {{ match.artist }}</span>
         <a :href="match.webpage">view in collection</a>
         <img :key="match.webpage" :src="match.iiif_url" />
       </li>
@@ -60,7 +61,7 @@ export default {
       maxSearch: 250,
       itemsPerPage: 16,
       currentSearchPage: 0,
-      imageData: NoC_US
+      imageData: NoC_US,
     };
   },
   computed: {
@@ -81,7 +82,7 @@ export default {
     },
     onLastSearchPage() {
       return this.lastIndex >= this.matches.length;
-    }
+    },
   },
   methods: {
     choose(match) {
@@ -104,8 +105,8 @@ export default {
           this.matches.push(extractData(_line));
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style type="text/css" scoped>
