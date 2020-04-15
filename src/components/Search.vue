@@ -45,20 +45,20 @@
         class="f-body-1 a-link"
         href="#"
         @click.prevent="prevPage"
-        v-if="currentSearchPage != 0"
+        :class="currentSearchPage != 0 ? '' : 'disabled'"
       >
         <span class="a-link__label">
-          prev
+          Previous
         </span>
       </a>
       <a
         class="f-body-1 a-link"
         href="#"
         @click.prevent="nextPage"
-        v-if="onLastSearchPage == false"
+        :class="onLastSearchPage == false ? '' : 'disabled'"
       >
         <span class="a-link__label">
-          next
+          Next
         </span>
       </a>
     </div>
@@ -85,7 +85,7 @@ export default {
       maxSearch: 250,
       itemsPerPage: 8,
       currentSearchPage: 0,
-      imageData: NoC_US
+      imageData: NoC_US,
     };
   },
   computed: {
@@ -106,17 +106,23 @@ export default {
     },
     onLastSearchPage() {
       return this.lastIndex >= this.matches.length;
-    }
+    },
   },
   methods: {
     choose(match) {
       this.$emit("input", match);
     },
     prevPage() {
+      if (this.currentSearchPage - 1 < 0) {
+        return;
+      }
       this.currentSearchPage = this.currentSearchPage - 1;
       this.scrollTo(this.$refs["searchInput"]);
     },
     nextPage() {
+      if (this.onLastSearchPage) {
+        return;
+      }
       this.currentSearchPage = this.currentSearchPage + 1;
       this.scrollTo(this.$refs["searchInput"]);
     },
@@ -127,7 +133,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     },
     search() {
@@ -155,8 +161,8 @@ export default {
           this.matches.push(extractData(_line));
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style type="text/css" scoped>
@@ -203,5 +209,16 @@ input[type="search"] {
   border-top: 1px solid #aeaeae;
   padding-top: 0.2em;
   margin-top: 1em;
+}
+
+.paginate > .a-link + .a-link {
+  padding-left: 2em;
+}
+
+a.disabled,
+a.disabled:hover,
+a.disabled .a-link__label:hover {
+  color: #1a1a1a;
+  text-decoration: none !important;
 }
 </style>
