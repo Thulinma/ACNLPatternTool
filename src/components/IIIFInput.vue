@@ -8,7 +8,10 @@
         placeholder="Paste IIIF Url Here"
         v-model="iiifManifestUrl"
       />
-      <Button name="search" class="a-btn a-btn--text" @click="updateUrl"
+      <Button
+        name="search"
+        class="a-btn a-btn--text"
+        :eventBindings="{ click: updateUrl }"
         >Submit</Button
       >
     </div>
@@ -42,6 +45,7 @@ export default {
   },
   methods: {
     updateUrl() {
+      console.log("updateUrl");
       this.$emit("updateIiif", this.iiifManifestUrl);
     }
   }
