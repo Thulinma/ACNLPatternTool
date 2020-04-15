@@ -1,0 +1,10 @@
+[
+  {
+    "short_name": "Self-Portrait, Yawn…",
+    "full_name": "Self-Portrait, Yawning",
+    "iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!150,150/0/default.jpg",
+    "large_iiif_url": "https://media.getty.edu/iiif/image/6d1f1a1c-e0ce-46de-b969-5bff83633c1b/full/!1200,1200/0/default.jpg",
+    "webpage": "https://www.getty.edu/art/collection/objects/tms:663",
+    "crop": { "width": 666, "height": 666, "left": 115, "top": 181 }
+  }
+]

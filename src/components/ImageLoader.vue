@@ -9,6 +9,9 @@
       @change="onCrop"
     />
 
+    <!-- Hide me in production--only needed to extract coordinates -->
+    <button @click="debug">debug button</button>
+
     <!-- These are part of the rendering pipeline.  I think we could
     get rid of the preview one, but I don't know 100%, and it didn't seem
     worth the time to dig in. -->
@@ -46,7 +49,7 @@ export default {
       type: String
     }
   },
-  data: function() {
+  data: function () {
     return {
       convert_method: "quantize",
       convert_quality: "high",
@@ -74,6 +77,15 @@ export default {
     defSize(opt) {
       return { height: opt.imageHeight, width: opt.imageWidth };
     },
+    debug() {
+      let debugData = this.$refs.cropper.getResult();
+      console.log(debugData.coordinates);
+    },
+    setCropData(cropData) {
+      console.log("cropping");
+      this.$refs.cropper.setCoordinates(cropData);
+    },
+
     onCrop({ coordinates, canvas }) {
       if (!(canvas instanceof HTMLCanvasElement)) {
         return;
@@ -265,7 +277,7 @@ export default {
           ])
         ].c++;
       }
-      palette.sort(function(a, b) {
+      palette.sort(function (a, b) {
         if (a.c > b.c) {
           return -1;
         }
@@ -306,7 +318,7 @@ export default {
           b: imgdata.data[i + 2]
         });
       }
-      const medianCut = pixels => {
+      const medianCut = (pixels) => {
         let l = Math.floor(pixels.length / 2);
         let r_min = null;
         let r_max = null;
@@ -349,7 +361,7 @@ export default {
         }
         return [pixels.slice(0, l), pixels.slice(l)];
       };
-      const medianMultiCut = buckets => {
+      const medianMultiCut = (buckets) => {
         let res = [];
         for (let i in buckets) {
           const newBuck = medianCut(buckets[i]);
@@ -372,7 +384,7 @@ export default {
       let uniqCol = new Set();
 
       //Pushes average color of given bucket onto colors.
-      const pushAvg = b => {
+      const pushAvg = (b) => {
         let r_avg = 0;
         let g_avg = 0;
         let b_avg = 0;
@@ -501,7 +513,7 @@ export default {
         }
         myPal(i / 4, imgdata.data[i], imgdata.data[i + 1], imgdata.data[i + 2]);
       }
-      palette.sort(function(a, b) {
+      palette.sort(function (a, b) {
         if (a.c > b.c) {
           return -1;
         }
