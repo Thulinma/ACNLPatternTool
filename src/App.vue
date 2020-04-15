@@ -9,7 +9,11 @@
       :baseUrl="'https://www.getty.edu'"
     />
     <Hero name="Content" :data="heroData" />
-    <img :src="share1" class="hero" />
+    <div
+      :style="{ backgroundImage: `url('${heroImg}')` }"
+      class="heroImage"
+    ></div>
+
     <section>
       <div class="container">
         <router-view></router-view>
@@ -31,7 +35,7 @@ import "@thegetty/getty-ui/dist/getty-ui.css";
 import HeaderData from "@thegetty/getty-ui/src/components/globals/header/data.json";
 import FooterData from "@thegetty/getty-ui/src/components/globals/footer/data.json";
 import { Header, Footer, Hero, RichText } from "@thegetty/getty-ui";
-import share1 from "/assets/images/IMG_7807.JPG";
+import heroImg from "/assets/images/IMG_7794_edit.jpg";
 export default {
   name: "App",
   components: {
@@ -43,12 +47,19 @@ export default {
     return {
       HeaderData: HeaderData,
       FooterData: FooterData,
-      share1,
+      heroImg,
       heroData: {
         title: "Animal Crossing: Getty Images",
         backgroundColor: "white",
       },
     };
+  },
+  computed: {
+    cssVars() {
+      return {
+        heroImg: heroImg,
+      };
+    },
   },
 };
 </script>
@@ -92,5 +103,11 @@ h3 {
 
 a {
   color: #1a47b8;
+}
+.heroImage {
+  background-position: center;
+  background-size: cover;
+  height: 380px;
+  width: 100%;
 }
 </style>
