@@ -49,7 +49,7 @@
 import NoC_US from "../data/NoC-US.txt";
 import { extractData } from "../libs/ExtractData.js";
 import { Icon } from "@thegetty/getty-ui";
-
+import "unorm";
 export default {
   name: "Search",
   components: { Icon },
@@ -99,9 +99,23 @@ export default {
       this.matches = [];
       this.currentSearchPage = 0;
       for (let _line of this.imageData.split("\n")) {
-        const _upper = _line.split("|")[0].toUpperCase();
-        const _query = this.query.toUpperCase();
-        if (_upper.indexOf(_query) > -1) {
+        let cols = _line.split("|");
+        const _upper = cols[0]
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase();
+        const _query = this.query
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase();
+        let _artist = "";
+        if (cols.length > 3 && cols[3] != undefined) {
+          _artist = cols[3]
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toUpperCase();
+        }
+        if (_upper.indexOf(_query) > -1 || _artist.indexOf(_query) > -1) {
           this.matches.push(extractData(_line));
         }
       }
