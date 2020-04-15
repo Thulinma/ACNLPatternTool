@@ -8,122 +8,29 @@
         class="gallery-column"
         @click="changeImage(index)"
       >
-        <img :src="img.src" :class="getClass(index)" />
+        <img :src="img.thumbnail" :class="getClass(index)" />
       </div>
     </div>
-    <!-- selected image preview -->
-    <div v-if="selectedImageIndex > -1" class="selected-container">
-      <img :src="images[selectedImageIndex].qrSrc" />
-    </div>
-    <div></div>
   </div>
 </template>
 
 <script>
-import irises from "/assets/images/irises.png";
-import irisesQR from "/assets/images/irises-qr.png";
-import yawn from "/assets/images/yawn.png";
-import yawnQR from "/assets/images/yawn-qr.png";
-
+import examples from "../data/example_images.json";
 export default {
   name: "Gallery",
   components: {},
 
-  data: function() {
+  data: function () {
     return {
       selectedImageIndex: -1,
-      images: [
-        {
-          alt: "image alt",
-          id: "123",
-          src: irises,
-          qrSrc: irisesQR,
-          title: "Irises Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: yawn,
-          qrSrc: yawnQR,
-          title: "Yawn Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: irises,
-          qrSrc: irisesQR,
-          title: "Irises Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: yawn,
-          qrSrc: yawnQR,
-          title: "Yawn Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: irises,
-          qrSrc: irisesQR,
-          title: "Irises Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: yawn,
-          qrSrc: yawnQR,
-          title: "Yawn Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: irises,
-          qrSrc: irisesQR,
-          title: "Irises Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: yawn,
-          qrSrc: yawnQR,
-          title: "Yawn Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: irises,
-          qrSrc: irisesQR,
-          title: "Irises Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: yawn,
-          qrSrc: yawnQR,
-          title: "Yawn Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: irises,
-          qrSrc: irisesQR,
-          title: "Irises Title"
-        },
-        {
-          alt: "image alt",
-          id: "123",
-          src: yawn,
-          qrSrc: yawnQR,
-          title: "Yawn Title"
-        }
-      ]
+      images: examples
     };
   },
   computed: {},
   methods: {
     changeImage(index) {
       this.selectedImageIndex = index;
+      this.$emit("selectedExample", index);
     },
     getClass(index) {
       if (index === this.selectedImageIndex) {

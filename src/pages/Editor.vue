@@ -17,7 +17,7 @@
       </section>
 
       <section class="section">
-        <Gallery />
+        <Gallery @selectedExample="loadFromExample" />
       </section>
 
       <section class="section">
@@ -39,6 +39,7 @@
               :pattern-type="patType"
               :iiif-url="iiif.url"
               @converted="onConvert"
+              ref="imageloader"
             />
           </div>
           <!-- Step 3 -->
@@ -69,7 +70,7 @@
         id="gettylogo"
         class="hidden"
         :src="gettyLogo"
-        style="border:1px solid blue;"
+        style="border: 1px solid blue;"
       />
     </div>
   </div>
@@ -82,6 +83,7 @@ import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
 import step1Text from "../data/step1_text.md";
 import qrInstructions from "../data/qr_instructions.md";
+import examples from "../data/example_images.json";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
@@ -106,10 +108,10 @@ export default {
     ACNLQRGenerator,
     RichText
   },
-  beforeRouteUpdate: function(to, from, next) {
+  beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then(r => {
+        origin.view(to.hash.substring(3)).then((r) => {
           this.drawingTool.load(r);
         });
         next();
@@ -127,7 +129,7 @@ export default {
     next();
   },
 
-  data: function() {
+  data: function () {
     return {
       gettyLogo,
       saveIcon,
@@ -192,7 +194,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function(t) {
+    onLoad: async function (t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -212,15 +214,15 @@ export default {
       */
       return;
     },
-    extLoad: function(data) {
+    extLoad: function (data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function(data) {
+    onSearchSelect: function (data) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       this.$refs["step2"].scrollIntoView();
     },
-    onConvert: function(patterns) {
+    onConvert: function (patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -238,9 +240,14 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function() {
+    onQROpen: function () {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
+    },
+    loadFromExample(exampleNumber) {
+      let currentExample = examples[exampleNumber];
+      this.onSearchSelect(currentExample);
+      this.$refs["imageloader"].setCropData(currentExample.crop);
     },
     updateIiifData(manifestUrl) {
       // TODO: extract data from manifest url
@@ -254,7 +261,7 @@ export default {
       this.$set(this.iiif, "url", manifestUrl);
     }
   },
-  mounted: function() {
+  mounted: function () {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -265,7 +272,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then(r => {
+        origin.view(hash.substring(2)).then((r) => {
           this.drawingTool.load(r);
         });
       } else {
@@ -276,7 +283,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", e => {
+    document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
