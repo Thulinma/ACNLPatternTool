@@ -21,7 +21,6 @@
       <section class="section">
         <div>
           <h1 class="f-heading-4">C. Use an IIIF image from another museum</h1>
-          <RichText :content="step3iiif" contentType="markdown" />
           <urlInput @updateIiif="updateIiifData" />
         </div>
       </section>
@@ -76,7 +75,6 @@ import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
 import step1Text from "../data/step1_text.md";
-import step3iiif from "../data/step3_iiif.md";
 import qrInstructions from "../data/qr_instructions.md";
 import { RichText } from "@thegetty/getty-ui";
 import UrlInput from "/components/UrlInput.vue";
@@ -130,7 +128,6 @@ export default {
       qrInstructions: qrInstructions,
       step1Text,
       introText,
-      step3iiif,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
@@ -347,9 +344,6 @@ export default {
 </script>
 
 <style lang="scss">
-.content {
-  padding: 74px 36px;
-}
 .content a {
   color: #1a47b8;
   text-decoration: none;
@@ -357,6 +351,20 @@ export default {
 .leftborder {
   padding: 12px 0 12px 12px;
   border-left: 1px solid #e6e6e6;
+}
+@media (max-width: 767px) {
+  .l-halves {
+    margin-left: 0px;
+  }
+  .l-halves .l-halves__half {
+    margin-left: 0px;
+    width: 100%;
+  }
+  .leftborder {
+    margin-top: 20px;
+    padding: 0;
+    border: none;
+  }
 }
 .generated-image {
   margin-bottom: 40px;

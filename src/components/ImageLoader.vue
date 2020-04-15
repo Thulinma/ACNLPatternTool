@@ -12,12 +12,18 @@
     <!-- These are part of the rendering pipeline.  I think we could
     get rid of the preview one, but I don't know 100%, and it didn't seem
     worth the time to dig in. -->
-    <canvas v-show="false" ref="preview" />
-    <canvas v-show="false" ref="postview" width="64" height="64" />
+    <canvas v-show="false" ref="preview" class="ImageLoader" />
+    <canvas
+      v-show="false"
+      ref="postview"
+      width="64"
+      height="64"
+      class="ImageLoader"
+    />
     <canvas
       v-show="false"
       ref="postmix"
-      class="postview"
+      class="postview ImageLoader"
       width="256"
       height="256"
     />
@@ -561,8 +567,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-canvas {
+<style lang="scss">
+canvas.ImageLoader {
   border: 1px solid gray;
+}
+.vue-advanced-cropper {
+  max-width: 100% !important;
 }
 </style>
