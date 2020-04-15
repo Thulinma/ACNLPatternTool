@@ -163,8 +163,6 @@ export default {
 </script>
 <style type="text/css" scoped>
 ol {
-  max-height: 40em;
-  overflow-y: scroll;
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
