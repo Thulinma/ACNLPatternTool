@@ -17,8 +17,7 @@
       </section>
 
       <section class="section">
-        <Gallery />
-        <button @click="loadFromExample(0)">Load Example</button>
+        <Gallery @selectedExample="loadFromExample" />
       </section>
 
       <section class="section">
