@@ -7,7 +7,11 @@
           Add real museum art to your Animal Crossing game using the [Insert
           tool name]
         </h3>
-        <RichText :content="introText" contentType="markdown" />
+        <div class="l-thirds">
+          <div class="l-thirds__two-thirds">
+            <RichText :content="introText" contentType="markdown" />
+          </div>
+        </div>
       </section>
       <hr />
 
@@ -16,7 +20,11 @@
         <h1 id="step1">
           Step 1: Select some art
         </h1>
-        <RichText :content="step1Text" contentType="markdown" />
+        <div class="l-thirds">
+          <div class="l-thirds__two-thirds">
+            <RichText :content="step1Text" contentType="markdown" />
+          </div>
+        </div>
         <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
         <Search @input="onSearchSelect" />
 
@@ -143,12 +151,12 @@ export default {
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
-    RichText
+    RichText,
   },
-  beforeRouteUpdate: function (to, from, next) {
+  beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then(r => {
+        origin.view(to.hash.substring(3)).then((r) => {
           this.drawingTool.load(r);
         });
         next();
@@ -166,7 +174,7 @@ export default {
     next();
   },
 
-  data: function () {
+  data: function() {
     return {
       gettyLogo,
       saveIcon,
@@ -181,7 +189,7 @@ export default {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
         url:
-          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg"
+          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg",
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -196,7 +204,7 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      origin
+      origin,
     };
   },
   methods: {
@@ -207,7 +215,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     },
 
@@ -246,7 +254,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function (t) {
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -266,17 +274,17 @@ export default {
       */
       return;
     },
-    extLoad: function (data) {
+    extLoad: function(data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function (data, scroll = true) {
+    onSearchSelect: function(data, scroll = true) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
     },
-    onConvert: function (patterns) {
+    onConvert: function(patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -294,7 +302,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function () {
+    onQROpen: function() {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -305,9 +313,9 @@ export default {
     },
     updateIiifData(manifestUrl) {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
-    }
+    },
   },
-  mounted: function () {
+  mounted: function() {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -318,7 +326,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then(r => {
+        origin.view(hash.substring(2)).then((r) => {
           this.drawingTool.load(r);
         });
       } else {
@@ -329,7 +337,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", e => {
+    document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
@@ -341,7 +349,7 @@ export default {
         return;
       }
     });
-  }
+  },
 };
 </script>
 
@@ -366,6 +374,16 @@ export default {
     margin-top: 20px;
     padding: 0;
     border: none;
+  }
+
+  .l-thirds {
+    margin-left: 0px;
+  }
+
+  .l-thirds .l-thirds__two-thirds,
+  .l-thirds .l-thirds__one-third {
+    margin-left: 0px;
+    width: 100%;
   }
 }
 .column-content {
