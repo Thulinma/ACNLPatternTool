@@ -26,23 +26,30 @@
     >
 
     <ol>
-      <li
-        v-for="match of currentResults"
-        @click="choose(match)"
-        :key="match.webpage"
-      >
-        {{ match.full_name }}
-        <span v-if="match.artist">by {{ match.artist }}</span>
-        <a :href="match.webpage">view in collection</a>
-        <img :key="match.webpage" :src="match.iiif_url" />
+      <li v-for="match of currentResults" :key="match.webpage">
+        <img
+          :key="match.webpage"
+          class="gallery_img"
+          :src="match.iiif_url"
+          @click="choose(match)"
+        />
+        <p class="f-body-1" @click="choose(match)">
+          {{ match.full_name
+          }}<span v-if="match.artist">by {{ match.artist }}</span>
+        </p>
+        <a class="f-body-1 a-link" :href="match.webpage"
+          ><span class="a-link__label">view in collection</span></a
+        >
       </li>
     </ol>
-    <button @click="prevPage" :disabled="currentSearchPage == 0">
-      prev
-    </button>
-    <button @click="nextPage" :disabled="onLastSearchPage">
-      next
-    </button>
+    <div v-if="query">
+      <button @click="prevPage" :disabled="currentSearchPage == 0">
+        prev
+      </button>
+      <button @click="nextPage" :disabled="onLastSearchPage">
+        next
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -113,10 +120,14 @@ export default {
 ol {
   max-height: 40em;
   overflow-y: scroll;
-  list-style: decimal;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  min-height: 0px;
 }
 li {
-  margin-left: 3em;
+  /*overflow: auto;*/
+  flex: 1 0 20%;
 }
 
 .a-btn--text:hover {
@@ -128,5 +139,9 @@ li {
 input[type="search"] {
   font-size: 20px;
   font-weight: 600;
+}
+
+.gallery_img {
+  max-width: 90%;
 }
 </style>
