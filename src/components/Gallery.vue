@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div ref="gallery-section">
     <h1 class="f-heading-4">B. Select one of our favorites</h1>
     <!-- image grid -->
-    <div class="gallery">
+    <div class="gallery" ref="gallery">
       <div
         v-for="(img, index) in images"
         class="gallery-column"
@@ -16,6 +16,11 @@
 
 <script>
 import examples from "../data/example_images.json";
+if (typeof window !== "undefined") {
+  let smoothscroll = require("smoothscroll-polyfill");
+  smoothscroll.polyfill();
+}
+
 export default {
   name: "Gallery",
   components: {},
@@ -23,7 +28,7 @@ export default {
   data: function() {
     return {
       selectedImageIndex: -1,
-      images: examples
+      images: examples,
     };
   },
   computed: {},
@@ -31,6 +36,13 @@ export default {
     changeImage(index) {
       this.selectedImageIndex = index;
       this.$emit("selectedExample", index);
+      this.scrollTo(this.$refs["gallery-section"]);
+    },
+    scrollTo(el) {
+      window.scrollTo({
+        top: el.offsetTop - 110,
+        behavior: "smooth",
+      });
     },
     getClass(index) {
       if (index === this.selectedImageIndex) {
@@ -58,8 +70,8 @@ export default {
         return url;
       }
       return img.iiif_url;
-    }
-  }
+    },
+  },
 };
 </script>
 
