@@ -12,7 +12,11 @@
         >Submit</Button
       >
     </div>
-    <RichText :content="step1iiif" contentType="markdown" />
+    <div class="l-thirds">
+      <div class="l-thirds__two-thirds">
+        <RichText :content="step1iiif" contentType="markdown" />
+      </div>
+    </div>
   </div>
 </template>
 
