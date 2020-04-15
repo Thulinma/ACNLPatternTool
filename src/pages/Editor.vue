@@ -59,6 +59,19 @@
         </div>
       </section>
       <hr class="hr-dark" />
+      <RichText :content="step4Text" contentType="markdown" />
+      <div class="l-thirds">
+        <div class="l-thirds__third">
+          <img src="/images/IMG_20200415_083020.jpg" />
+        </div>
+        <div class="l-thirds__third">
+          <img :src="share2" />
+        </div>
+        <div class="l-thirds__third">
+          <img :data="share3" />
+        </div>
+      </div>
+      <hr class="hr-dark" />
 
       <!-- credits -->
       <section class="section">
@@ -80,8 +93,12 @@
 import Credits from "/components/Credits.vue";
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
+import { share1 } from "/assets/images/IMG_20200415_083020.jpg";
+import share2 from "/assets/images/IMG_20200415_083020.jpg";
+import share3 from "/assets/images/IMG_20200415_083020.jpg";
 import introText from "../data/intro_text.md";
 import step1Text from "../data/step1_text.md";
+import step4Text from "../data/step4.md";
 import qrInstructions from "../data/qr_instructions.md";
 import examples from "../data/example_images.json";
 import { RichText } from "@thegetty/getty-ui";
@@ -139,7 +156,11 @@ export default {
       saveIcon,
       qrInstructions: qrInstructions,
       step1Text,
+      step4Text,
       introText,
+      share2: `url("../../assets/images/IMG_20200415_083020.jpg"')`,
+      share1,
+      share3,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",

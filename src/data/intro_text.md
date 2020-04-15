@@ -1,4 +1,5 @@
-# Create your own virtual gallery in Animal Crossing using real museum art.
+# Add real museum art to your Animal Crossing game using the [Insert tool name]
 
-Here is some brief intro copy that tells the user what this tool is. Let’s get started!  
-Need some inspiration? [View some Getty examples]().
+With this tool you can fill your island with art and transform your home into a world-class art gallery. Create your own custom patterns featuring artwork from famous art collections around the world.
+
+Patterns can be used in Animal Crossing to cover walls, floors, make paintings for an easel or wall, tops, and for display on mannequins. Delightful! Let’s get started.
