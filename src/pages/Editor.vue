@@ -47,6 +47,42 @@
                 @converted="onConvert"
                 ref="imageloader"
               />
+
+              <RecordMetadataField
+                v-if="searchResult.full_name"
+                label="Title"
+                :values="searchResult.full_name"
+                labelSuffix=""
+              />
+              <RecordMetadataField
+                v-if="searchResult.artist"
+                label="Creator"
+                :values="searchResult.artist"
+                labelSuffix=""
+              />
+              <RecordMetadataField
+                v-if="searchResult.webpage"
+                label="Link"
+                :values="[
+                  {
+                    name: 'View in collection',
+                    href: searchResult.webpage
+                  }
+                ]"
+                labelSuffix=""
+              />
+              <RecordMetadataField
+                v-if="searchResult.attribution"
+                label="Attribution"
+                :values="searchResult.attribution"
+                labelSuffix=""
+              />
+              <RecordMetadataField
+                v-if="searchResult.license"
+                label="License"
+                :values="searchResult.license"
+                labelSuffix=""
+              />
             </div>
           </div>
           <!-- Step 3 -->
@@ -110,7 +146,7 @@ import step1Text from "../data/step1_text.md";
 import Share from "/components/Share.vue";
 import qrInstructions from "../data/qr_instructions.md";
 import examples from "../data/example_images.json";
-import { RichText } from "@thegetty/getty-ui";
+import { RichText, RecordMetadataField } from "@thegetty/getty-ui";
 import IIIFInput from "/components/IIIFInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import Gallery from "/components/Gallery.vue";
@@ -138,7 +174,8 @@ export default {
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
-    RichText
+    RichText,
+    RecordMetadataField
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
@@ -258,6 +295,10 @@ export default {
       this.drawingTool.load(data);
     },
     onSearchSelect: function (data, scroll = true) {
+      if (!data) {
+        console.log("handle this case");
+        return null;
+      }
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
@@ -385,5 +426,8 @@ export default {
 
 .top-margin4 {
   margin-top: 4em;
+}
+.m-record-metadata-field--horizontal {
+  margin-bottom: 0;
 }
 </style>
