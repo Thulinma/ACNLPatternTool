@@ -49,6 +49,10 @@ function truncateName(name) {
 
 export async function getIIIFData(manifestURL, size = 150, full_size = 1200) {
   let manifest = await getIIIFManifest(manifestURL);
+  if (!manifest) {
+    return null;
+  }
+
   let iiif_url = getIIIFThumbnail(manifest, size);
   let iiif_full_url = iiif_url.replace(
     `!${size},${size}`,
@@ -65,8 +69,10 @@ export async function getIIIFData(manifestURL, size = 150, full_size = 1200) {
     full_name: label,
     iiif_url: iiif_url,
     large_iiif_url: iiif_full_url,
-    artist: "placeholder",
-    webpage: "placeholder"
+    attribution: manifest.attribution,
+    license: manifest.license,
+    artist: null,
+    webpage: null
   };
 }
 
