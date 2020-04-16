@@ -46,20 +46,20 @@
         class="f-body-1 a-link"
         href="#"
         @click.prevent="prevPage"
-        v-if="currentSearchPage != 0"
+        :class="currentSearchPage != 0 ? '' : 'disabled'"
       >
         <span class="a-link__label">
-          prev
+          Previous
         </span>
       </a>
       <a
         class="f-body-1 a-link"
         href="#"
         @click.prevent="nextPage"
-        v-if="onLastSearchPage == false"
+        :class="onLastSearchPage == false ? '' : 'disabled'"
       >
         <span class="a-link__label">
-          next
+          Next
         </span>
       </a>
     </div>
@@ -87,7 +87,7 @@ export default {
       itemsPerPage: 8,
       selected: undefined,
       currentSearchPage: 0,
-      imageData: NoC_US
+      imageData: NoC_US,
     };
   },
   computed: {
@@ -108,7 +108,7 @@ export default {
     },
     onLastSearchPage() {
       return this.lastIndex >= this.matches.length;
-    }
+    },
   },
   methods: {
     choose(match) {
@@ -116,10 +116,16 @@ export default {
       this.$emit("input", match);
     },
     prevPage() {
+      if (this.currentSearchPage - 1 < 0) {
+        return;
+      }
       this.currentSearchPage = this.currentSearchPage - 1;
       this.scrollTo(this.$refs["searchInput"]);
     },
     nextPage() {
+      if (this.onLastSearchPage) {
+        return;
+      }
       this.currentSearchPage = this.currentSearchPage + 1;
       this.scrollTo(this.$refs["searchInput"]);
     },
@@ -130,7 +136,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     },
     search() {
@@ -159,8 +165,8 @@ export default {
           this.matches.push(extractData(_line));
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style type="text/css" scoped>
@@ -218,4 +224,5 @@ a.disabled .a-link__label:hover {
   border: 6px solid white;
   outline: 2px solid #675102;
 }
+
 </style>
