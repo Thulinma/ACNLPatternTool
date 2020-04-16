@@ -41,7 +41,7 @@ export default {
   components: {
     Header,
     Hero,
-    Footer,
+    Footer
   },
   data: function() {
     return {
@@ -50,20 +50,21 @@ export default {
       heroImg,
       heroData: {
         title: "Animal Crossing Art Generator",
-        backgroundColor: "white",
-      },
+        backgroundColor: "white"
+      }
     };
-  },
+  }
 };
 </script>
 
 <style lang="scss">
 .container {
-  padding: 0 10px 0 10px;
+  width: 100%;
+  padding: 0 36px;
 }
-@media (max-width: 500px) {
+@media (max-width: 767px) {
   .container {
-    padding: 36px 6px 0 6px;
+    padding: 0 16px;
   }
 }
 body {
@@ -77,13 +78,11 @@ p {
 li {
   font-size: 15px;
 }
-
 h1 {
   font-size: 1.867em;
   font-weight: 600;
   margin-top: 12px;
 }
-
 h2 {
   font-size: 1.4em;
   font-weight: 500px;
@@ -97,6 +96,7 @@ h3 {
 }
 a {
   color: #1a47b8;
+  cursor: pointer;
 }
 .heroImage {
   background-position: center;
@@ -104,7 +104,6 @@ a {
   height: 380px;
   width: 100%;
 }
-
 .o-hero--content .o-hero__inner {
   padding-top: inherit !important;
   height: inherit !important;

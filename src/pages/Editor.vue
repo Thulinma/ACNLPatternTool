@@ -70,22 +70,10 @@
       </section>
       <hr />
 
-      <!-- Step 4 -->
+      <!-- Step 4: Share -->
       <section class="section">
         <h1>Step 4: Share with us</h1>
-        <RichText :content="step4Text" contentType="markdown" />
-
-        <div class="l-thirds top-padding">
-          <div class="l-thirds__one-third">
-            <img :src="share1" class="third" />
-          </div>
-          <div class="l-thirds__one-third">
-            <img :src="share2" class="third" />
-          </div>
-          <div class="l-thirds__one-third">
-            <img :src="share3" class="third" />
-          </div>
-        </div>
+        <Share />
       </section>
       <hr />
 
@@ -118,12 +106,9 @@
 import Credits from "/components/Credits.vue";
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
-import share1 from "/assets/images/IMG_7807.JPG";
-import share2 from "/assets/images/IMG_20200415_083020.jpg";
-import share3 from "/assets/images/IMG_7822.JPG";
 import introText from "../data/intro_text.md";
 import step1Text from "../data/step1_text.md";
-import step4Text from "../data/step4.md";
+import Share from "/components/Share.vue";
 import qrInstructions from "../data/qr_instructions.md";
 import examples from "../data/example_images.json";
 import { RichText } from "@thegetty/getty-ui";
@@ -150,6 +135,7 @@ export default {
     Credits,
     IIIFInput,
     Search,
+    Share,
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
@@ -182,11 +168,7 @@ export default {
       saveIcon,
       qrInstructions: qrInstructions,
       step1Text,
-      step4Text,
       introText,
-      share2,
-      share1,
-      share3,
       iiif: {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
