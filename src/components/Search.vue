@@ -28,6 +28,7 @@
         <img
           :key="match.webpage"
           class="gallery_img"
+          :class="match.iiif_url == selected ? 'selected' : ''"
           :src="match.iiif_url"
           @click="choose(match)"
         />
@@ -84,6 +85,7 @@ export default {
       matches: [],
       maxSearch: 250,
       itemsPerPage: 8,
+      selected: undefined,
       currentSearchPage: 0,
       imageData: NoC_US
     };
@@ -110,6 +112,7 @@ export default {
   },
   methods: {
     choose(match) {
+      this.selected = match.iiif_url;
       this.$emit("input", match);
     },
     prevPage() {
@@ -132,6 +135,7 @@ export default {
     },
     search() {
       this.query = this.value;
+      this.selected = undefined;
       this.matches = [];
       this.currentSearchPage = 0;
       for (let _line of this.imageData.split("\n")) {
@@ -197,5 +201,21 @@ li {
   border-top: 1px solid #aeaeae;
   padding-top: 0.2em;
   margin-top: 1em;
+}
+
+.paginate > .a-link + .a-link {
+  padding-left: 2em;
+}
+
+a.disabled,
+a.disabled:hover,
+a.disabled .a-link__label:hover {
+  color: #1a1a1a;
+  text-decoration: none !important;
+}
+
+.selected {
+  border: 6px solid white;
+  outline: 2px solid #675102;
 }
 </style>
