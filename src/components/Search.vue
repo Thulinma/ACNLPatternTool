@@ -178,16 +178,10 @@ li {
 .spacing_top {
   margin-top: 1.2em;
 }
-input[type="search"] {
-  font-size: 20px;
-  font-weight: 600;
-}
 
 .gallery_img {
   max-width: 90%;
   min-width: 50%;
-}
-.m-search-input {
 }
 
 .summary {

@@ -13,10 +13,34 @@ hr {
 .s-bg--white {
   background-color: #f5ce3d;
 }
+input {
+  font-size: 1.2em !important;
+  font-weight: 600;
+}
 html {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
+}
+@media (max-width: 767px) {
+  .l-halves {
+    margin-left: 0px;
+  }
+  .l-halves .l-halves__half {
+    margin-left: 0px;
+    width: 100%;
+  }
+  .leftborder {
+    margin-top: 20px;
+    padding: 0;
+    border: none;
+  }
+}
+.l-thirds {
+  margin-left: 0;
+}
+.l-thirds__two-thirds {
+  margin-left: 0;
 }

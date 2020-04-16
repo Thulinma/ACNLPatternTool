@@ -89,14 +89,16 @@
       </section>
       <hr />
 
+      <!-- IIIF section -->
       <section class="section">
         <div id="iiifloader">
           <h1>Use our tool with any IIIF image</h1>
-          <urlInput @updateIiif="updateIiifData" />
+          <IIIFInput @updateIiif="updateIiifData" />
         </div>
       </section>
       <hr class="hr-dark" />
-      <!-- credits -->
+
+      <!-- Credits -->
       <section class="section">
         <Credits />
       </section>
@@ -125,7 +127,7 @@ import step4Text from "../data/step4.md";
 import qrInstructions from "../data/qr_instructions.md";
 import examples from "../data/example_images.json";
 import { RichText } from "@thegetty/getty-ui";
-import UrlInput from "/components/UrlInput.vue";
+import IIIFInput from "/components/IIIFInput.vue";
 import ImageLoader from "/components/ImageLoader.vue";
 import Gallery from "/components/Gallery.vue";
 import ACNLQRGenerator from "/components/ACNLQRGenerator.vue";
@@ -146,17 +148,17 @@ export default {
   name: "Editor",
   components: {
     Credits,
-    UrlInput,
+    IIIFInput,
     Search,
     ImageLoader,
     Gallery,
     ACNLQRGenerator,
-    RichText,
+    RichText
   },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then((r) => {
+        origin.view(to.hash.substring(3)).then(r => {
           this.drawingTool.load(r);
         });
         next();
@@ -189,7 +191,7 @@ export default {
         title: "Jeanne (Spring)",
         short_name: "Jeanne (Spring)",
         url:
-          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg",
+          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg"
       },
       searchResult: {},
       drawingTool: new DrawingTool(),
@@ -204,7 +206,7 @@ export default {
       allowMoveToLocal: true,
       // convertImage: false,
       mainMenu: false,
-      origin,
+      origin
     };
   },
   methods: {
@@ -212,7 +214,7 @@ export default {
       const scroll = el.offsetTop - 110;
       window.scrollTo({
         top: scroll,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     },
 
@@ -310,7 +312,7 @@ export default {
     },
     updateIiifData(manifestUrl) {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
-    },
+    }
   },
   mounted: function() {
     if (localStorage.getItem("author_acnl")) {
@@ -323,7 +325,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then((r) => {
+        origin.view(hash.substring(2)).then(r => {
           this.drawingTool.load(r);
         });
       } else {
@@ -334,7 +336,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
@@ -346,7 +348,7 @@ export default {
         return;
       }
     });
-  },
+  }
 };
 </script>
 
@@ -358,31 +360,6 @@ export default {
 .leftborder {
   padding-left: 12px;
   border-left: 1px solid #e6e6e6;
-}
-@media (max-width: 767px) {
-  .l-halves {
-    margin-left: 0px;
-  }
-  .l-halves .l-halves__half {
-    margin-left: 0px;
-    width: 100%;
-  }
-  .leftborder {
-    margin-top: 20px;
-    padding: 0;
-    border: none;
-  }
-
-  .l-thirds {
-    margin-left: 0px;
-  }
-
-  .l-thirds .l-thirds__two-thirds,
-  .l-thirds .l-thirds__one-third {
-    margin-left: 0px;
-    width: 100%;
-    margin-bottom: 12px;
-  }
 }
 .column-content {
   margin-top: 36px;
