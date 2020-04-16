@@ -1,5 +1,3 @@
-Here comes the nerdy part! (Okay, the even nerdier part.) To use an image from another museum, you’ll need the image’s IIIF manifest. Manifest is software-talk for “web address.”
-
 How? See this [handy list of collections using IIIF](https://iiif.io/community/) (scroll down to see them all): you’ll find friends like the National Gallery of Art, the Frick Collection, Yale University, and the Smithsonian National Portrait Gallery, to name just a few. Search their collections to find a favorite. Then, dive deep with this how-to on [finding a IIIF manifest](https://iiif.io/explainers/using_iiif_resources/#finding-a-iiif-manifest-url).
 
 Tip: Before you use a IIIF manifest, be sure to check the institution’s terms of use to make sure you’re following their rules about important stuff like copyright and image reuse.

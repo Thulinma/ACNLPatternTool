@@ -52,7 +52,7 @@
           <!-- Step 3 -->
           <div class="l-halves__half leftborder">
             <h1>
-              Step 3: Import your art into Animal Crossing
+              Step 3: Import your artwork into Animal Crossing
             </h1>
             <div class="column-content">
               <div class="generated-image">
