@@ -43,7 +43,7 @@
     </ol>
     <div v-if="query" class="paginate">
       <a
-        class="f-body-1 a-link"
+        class="f-body-1 a-link pagination-link"
         href="#"
         @click.prevent="prevPage"
         :class="currentSearchPage != 0 ? '' : 'disabled'"
@@ -53,7 +53,7 @@
         </span>
       </a>
       <a
-        class="f-body-1 a-link"
+        class="f-body-1 a-link pagination-link"
         href="#"
         @click.prevent="nextPage"
         :class="onLastSearchPage == false ? '' : 'disabled'"
@@ -179,7 +179,7 @@ ol {
 li {
   /*overflow: auto;*/
   flex: 1 0 22%;
-  padding-bottom: 1em;
+  padding-bottom: 24px;
 }
 
 .a-btn--text:hover {
@@ -199,13 +199,23 @@ li {
   padding-top: 1em;
   padding-bottom: 1em;
 }
-
+.a-link {
+  padding: 4px 0;
+}
+.a-link:active,
+.a-link:focus {
+  outline: 0;
+  border: none;
+}
+.pagination-link {
+  padding: 12px 0;
+}
 .paginate {
   display: flex;
   justify-content: flex-end;
   flex-direction: row;
   border-top: 1px solid #aeaeae;
-  padding-top: 0.2em;
+
   margin-top: 1em;
 }
 

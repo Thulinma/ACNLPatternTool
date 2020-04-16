@@ -1,13 +1,15 @@
 <template>
   <div>
-    <h1 class="f-heading-5">Credits</h1>
-    <hr />
-    <div class="l-halves">
-      <div class="l-halves__half">
-        <RichText :content="credits_p1" contentType="markdown" />
-      </div>
-      <div class="l-halves__half leftborder">
-        <RichText :content="credits" contentType="markdown" />
+    <h1>Credits</h1>
+    <div class="credits-container">
+      <hr />
+      <div class="l-halves">
+        <div class="l-halves__half">
+          Animal Crossing: New Leaf Pattern Tool
+        </div>
+        <div class="l-halves__half  leftborder">
+          <RichText :content="credits" contentType="markdown" />
+        </div>
       </div>
     </div>
   </div>
@@ -31,3 +33,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.credits-container {
+  margin-top: 60px;
+}
+</style>

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <RichText :content="step4Text" contentType="markdown" />
+    <div class="l-thirds">
+      <div class="l-thirds__two-thirds">
+        <RichText :content="step4Text" contentType="markdown" />
+      </div>
+    </div>
+
     <div class="l-thirds share-image-container">
       <div class="l-thirds__one-third">
         <img :src="share1" class="third" />
