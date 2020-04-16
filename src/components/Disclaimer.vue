@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1>Credits</h1>
-    <div class="credits-container">
+    <h1>Disclaimer</h1>
+    <div class="disclaimer-container">
       <hr />
       <div class="l-thirds__two-thirds">
-        <RichText :content="credits" contentType="markdown" />
+        <RichText :content="disclaimer" contentType="markdown" />
       </div>
     </div>
   </div>
@@ -12,23 +12,23 @@
 
 <script>
 import { RichText } from "@thegetty/getty-ui";
-import credits from "../data/credits.md";
+import disclaimer from "../data/disclaimer.md";
 
 export default {
-  name: "Credits",
+  name: "disclaimer",
   components: {
     RichText
   },
   data() {
     return {
-      credits
+      disclaimer
     };
   }
 };
 </script>
 
 <style lang="scss">
-.credits-container {
+.disclaimer-container {
   margin-top: 60px;
 }
 </style>

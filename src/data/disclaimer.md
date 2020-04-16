@@ -1,0 +1,1 @@
+This project is not affiliated in any way with or endorsed by Nintendo Co., Ltd. or Nintendo of America Inc.  Animal Crossing™ and Nintendo Switch™ are trademarks of Nintendo.

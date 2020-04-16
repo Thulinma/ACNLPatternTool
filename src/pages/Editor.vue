@@ -126,6 +126,11 @@
         <Credits />
       </section>
 
+      <!-- Disclaimer -->
+      <section class="disclaimer">
+        <Disclaimer />
+      </section>
+
       <!-- hidden image used for QR code image -->
       <img
         id="gettylogo"
@@ -139,6 +144,7 @@
 
 <script>
 import Credits from "/components/Credits.vue";
+import Disclaimer from "/components/Disclaimer.vue";
 import gettyLogo from "/assets/images/getty-logo.png";
 import saveIcon from "/assets/images/save-icon.svg";
 import introText from "../data/intro_text.md";
@@ -168,6 +174,7 @@ export default {
   name: "Editor",
   components: {
     Credits,
+    Disclaimer,
     IIIFInput,
     Search,
     Share,

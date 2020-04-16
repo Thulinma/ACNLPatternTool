@@ -1,5 +1,1 @@
-Website  
-[https://acpatterns.com](https://acpatterns.com)
-
-Github  
-[https://github.com/Thulinma/ACNLPatternTool](https://github.com/Thulinma/ACNLPatternTool)
+This project was based on the open source [Animal Crossing Pattern Tool](https://acpatterns.com).  We're super-grateful to them for releasing their code freely and letting us build on top of it.
