@@ -7,7 +7,7 @@
         type="search"
         v-model="value"
         @keyup.enter="search"
-        placeholder="Search the Getty's Open Content Images "
+        placeholder="Search Artwork"
       />
       <button
         ref="search"

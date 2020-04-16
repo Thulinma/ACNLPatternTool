@@ -4,8 +4,7 @@
       <!-- Introduction -->
       <section class="section">
         <h3 class="f-heading-3">
-          Add real museum art to your Animal Crossing game using the [Insert
-          tool name]
+          Add art to your game using the Animal Crossing Art Generator
         </h3>
         <div class="l-thirds">
           <div class="l-thirds__two-thirds">
@@ -18,7 +17,7 @@
       <!-- Step 1 -->
       <section class="section">
         <h1 id="step1">
-          Step 1: Select some art
+          Step 1: Select an artwork
         </h1>
         <div class="l-thirds">
           <div class="l-thirds__two-thirds">
@@ -39,7 +38,7 @@
           <!-- Step 2 -->
           <div class="l-halves__half">
             <h1 id="step2" ref="step2">
-              Step 2: Select the crop for your art
+              Step 2: Select the crop for your artwork
             </h1>
             <div class="column-content">
               <ImageLoader
@@ -53,7 +52,7 @@
           <!-- Step 3 -->
           <div class="l-halves__half leftborder">
             <h1>
-              Step 3: Import your art into Animal Crossing
+              Step 3: Import your artwork into Animal Crossing
             </h1>
             <div class="column-content">
               <div class="generated-image">
@@ -92,7 +91,7 @@
       <!-- IIIF section -->
       <section class="section">
         <div id="iiifloader">
-          <h1>Use our tool with any IIIF image</h1>
+          <h1>Use the art generator with other open-access IIIF images</h1>
           <IIIFInput @updateIiif="updateIiifData" />
         </div>
       </section>
@@ -155,10 +154,10 @@ export default {
     ACNLQRGenerator,
     RichText
   },
-  beforeRouteUpdate: function(to, from, next) {
+  beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then(r => {
+        origin.view(to.hash.substring(3)).then((r) => {
           this.drawingTool.load(r);
         });
         next();
@@ -176,7 +175,7 @@ export default {
     next();
   },
 
-  data: function() {
+  data: function () {
     return {
       gettyLogo,
       saveIcon,
@@ -253,7 +252,7 @@ export default {
     //     lzString.compressToUTF16(this.drawingTool.toString())
     //   );
     // },
-    onLoad: async function(t) {
+    onLoad: async function (t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -273,10 +272,10 @@ export default {
       */
       return;
     },
-    extLoad: function(data) {
+    extLoad: function (data) {
       this.drawingTool.load(data);
     },
-    onSearchSelect: function(data, scroll = true) {
+    onSearchSelect: function (data, scroll = true) {
       this.searchResult = data;
       this.$set(this.iiif, "url", data.large_iiif_url);
       if (scroll) {
@@ -285,7 +284,7 @@ export default {
       // make sure gallery thumbs are visually unselected
       this.$refs["gallery"].selectedImageIndex = -1;
     },
-    onConvert: function(patterns) {
+    onConvert: function (patterns) {
       // this.convertImage = false;
       let title = "untitled";
       if (patterns.length == 1) {
@@ -303,7 +302,7 @@ export default {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
-    onQROpen: function() {
+    onQROpen: function () {
       const patStr = this.drawingTool.toString();
       this.qrCode = patStr;
     },
@@ -319,7 +318,7 @@ export default {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
     }
   },
-  mounted: function() {
+  mounted: function () {
     if (localStorage.getItem("author_acnl")) {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.storedAuthorHuman =
@@ -330,7 +329,7 @@ export default {
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then(r => {
+        origin.view(hash.substring(2)).then((r) => {
           this.drawingTool.load(r);
         });
       } else {
@@ -341,7 +340,7 @@ export default {
       this.drawingTool.render();
     }
 
-    document.addEventListener("keydown", e => {
+    document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key === "Z") {
         this.drawingTool.redo();
         e.preventDefault();
