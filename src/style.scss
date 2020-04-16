@@ -1,5 +1,9 @@
-a {
-  cursor: pointer;
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 hr {
   border: 0px;
@@ -17,12 +21,22 @@ input {
   font-size: 1.2em !important;
   font-weight: 600;
 }
-html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+
+.l-thirds {
+  margin-left: 0px;
+}
+.l-thirds__one-third {
+  margin: 0 12px;
+  width: calc((100% - 265px) / 12 * 4 + 72px);
+}
+.l-thirds__one-third:first-child {
+  margin-left: 0;
+}
+.l-thirds__one-third:last-child {
+  margin-right: 0;
+}
+.l-thirds__two-thirds {
+  margin-left: 0;
 }
 @media (max-width: 767px) {
   .l-halves {
@@ -37,10 +51,22 @@ html {
     padding: 0;
     border: none;
   }
-}
-.l-thirds {
-  margin-left: 0;
-}
-.l-thirds__two-thirds {
-  margin-left: 0;
+  .l-thirds {
+    margin-left: 0px;
+  }
+  .l-thirds__one-third {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 0;
+    width: 100%;
+  }
+  .l-thirds__one-third:first-child {
+    margin-top: 0;
+  }
+  .l-thirds__one-third:last-child {
+    margin-bottom: 0;
+  }
+  .l-thirds__two-thirds {
+    width: 100%;
+  }
 }
