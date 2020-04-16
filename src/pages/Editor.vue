@@ -205,12 +205,7 @@ export default {
       qrInstructions: qrInstructions,
       step1Text,
       introText,
-      iiif: {
-        title: "Jeanne (Spring)",
-        short_name: "Jeanne (Spring)",
-        url:
-          "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg"
-      },
+      iiif: {},
       searchResult: {},
       drawingTool: new DrawingTool(),
       qrCode: false,
@@ -375,6 +370,7 @@ export default {
         return;
       }
     });
+    this.loadFromExample(0);
   }
 };
 </script>

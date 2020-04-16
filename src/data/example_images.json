@@ -5,6 +5,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/8094f61e-e458-42bd-90cf-a0ed0dcc90b9/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:353132",
+    "artist": "Édouard Manet",
     "crop": {
       "full_width": 827,
       "full_height": 1200,
@@ -20,6 +21,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/47afbc5c-4158-4031-9cad-9f7a07c0493f/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/47afbc5c-4158-4031-9cad-9f7a07c0493f/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:787",
+    "artist": "Rembrandt Harmensz. van Rijn",
     "crop": {
       "full_width": 948,
       "full_height": 1200,
@@ -35,6 +37,8 @@
     "iiif_url": "https://media.getty.edu/iiif/image/e5d29650-11f8-4897-9540-54a9dd65b04f/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/e5d29650-11f8-4897-9540-54a9dd65b04f/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:947",
+    "artist": "Vincent van Gogh",
+
     "crop": {
       "full_width": 1200,
       "full_height": 943,
@@ -50,6 +54,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/ae24e239-9456-4475-84da-1fe1d980ae6f/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/ae24e239-9456-4475-84da-1fe1d980ae6f/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:112007",
+    "artist": "Fernand Khnopff",
     "crop": {
       "full_width": 1200,
       "full_height": 1200,
@@ -65,6 +70,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/c6dcb283-5808-4f1b-b093-bdea858442cd/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/c6dcb283-5808-4f1b-b093-bdea858442cd/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:141982",
+    "artist": "Giovanna Garzoni",
     "crop": {
       "full_width": 1200,
       "full_height": 923,
@@ -80,6 +86,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/aafc5325-4bad-4b17-a321-3f97ca77a7f1/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/aafc5325-4bad-4b17-a321-3f97ca77a7f1/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:1088",
+    "artist": "Claude Monet",
     "crop": {
       "full_width": 1200,
       "full_height": 775,
@@ -95,6 +102,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/c32fef63-4ec1-43d1-b442-bb514e119b22/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/c32fef63-4ec1-43d1-b442-bb514e119b22/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:833",
+    "artist": "Jean-Étienne Liotard",
     "crop": {
       "full_width": 965,
       "full_height": 1200,
@@ -110,6 +118,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/131116a9-ab08-4d5b-a19b-0ef246d245dd/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/131116a9-ab08-4d5b-a19b-0ef246d245dd/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:7665",
+    "artist": "Unknown",
     "crop": {
       "full_width": 1020,
       "full_height": 1200,
@@ -125,6 +134,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/60d41620-5280-40eb-82a7-b15e2dd2739e/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/60d41620-5280-40eb-82a7-b15e2dd2739e/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:15204",
+    "artist": "Attributed to the Inscription Painter",
     "crop": {
       "full_width": 936,
       "full_height": 1200,
@@ -140,6 +150,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/a8b779b3-e275-466b-b9db-f2fc215b59a6/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/a8b779b3-e275-466b-b9db-f2fc215b59a6/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:27",
+    "artist": "Paul Cézanne",
     "crop": {
       "full_width": 1200,
       "full_height": 911,
@@ -155,6 +166,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/18b0056f-5f7c-427c-9170-c9e3dbf29ba7/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/18b0056f-5f7c-427c-9170-c9e3dbf29ba7/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:344716",
+    "artist": "Rembrandt Harmensz. van Rijn",
     "crop": {
       "full_width": 927,
       "full_height": 1200,
@@ -170,6 +182,7 @@
     "iiif_url": "https://media.getty.edu/iiif/image/0b14cfbb-6330-4c02-95fa-67c3d4b1aa16/full/!150,150/0/default.jpg",
     "large_iiif_url": "https://media.getty.edu/iiif/image/0b14cfbb-6330-4c02-95fa-67c3d4b1aa16/full/!1200,1200/0/default.jpg",
     "webpage": "https://www.getty.edu/art/collection/objects/tms:5896",
+    "artist": "Unknown",
     "crop": {
       "full_width": 805,
       "full_height": 1200,
