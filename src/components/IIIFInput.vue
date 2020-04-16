@@ -1,6 +1,10 @@
 <template>
   <div>
-    <RichText :content="iiif1" contentType="markdown" />
+    <div class="l-thirds">
+      <div class="l-thirds__two-thirds">
+        <RichText :content="iiif1" contentType="markdown" />
+      </div>
+    </div>
     <!-- Input and Submit Button -->
     <div class="url-input-container">
       <input
@@ -53,6 +57,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.f-heading-3 {
+  margin-top: 60px;
+}
 .url-input-container {
   display: flex;
   align-items: flex-end;
@@ -61,10 +68,9 @@ export default {
 }
 .a-btn--text {
   font-size: 15px;
-  padding: 0 4px;
+  padding: 12px 4px;
   background-color: #fff;
   color: #1947b8;
-  margin-bottom: -4px;
 }
 input {
   border: 0;
@@ -72,6 +78,7 @@ input {
   margin-right: 0px;
   outline: none;
   border-bottom: 1px solid black;
+  padding-bottom: 12px;
 }
 input:focus {
   outline: none !important;

@@ -9,7 +9,6 @@ hr {
   border: 0px;
   border-top: 1px solid #e6e6e6;
   border-style: solid;
-  margin: 12px 0;
 }
 .hr-dark {
   border-top: 1px solid #000000;
@@ -37,6 +36,7 @@ input {
 }
 .l-thirds__two-thirds {
   margin-left: 0;
+  max-width: 800px;
 }
 @media (max-width: 767px) {
   .l-halves {
