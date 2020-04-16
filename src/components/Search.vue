@@ -112,7 +112,6 @@ export default {
   },
   methods: {
     choose(match) {
-      console.log("boop");
       this.selected = match.iiif_url;
       this.$emit("input", match);
     },

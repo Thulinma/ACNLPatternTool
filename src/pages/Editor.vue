@@ -26,7 +26,7 @@
           </div>
         </div>
         <h3 class="f-heading-3">A. Browse the Getty Museum Collection</h3>
-        <Search @input="onSearchSelect" />
+        <Search @input="onSearchSelect" ref="search" />
 
         <h3 class="f-heading-3">B. Select one of our favorites</h3>
         <Gallery @selectedExample="loadFromExample" ref="gallery" />
@@ -282,7 +282,7 @@ export default {
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
-      // visually unselect gallery thumbnail if
+      // make sure gallery thumbs are visually unselected
       this.$refs["gallery"].selectedImageIndex = -1;
     },
     onConvert: function(patterns) {
@@ -309,8 +309,11 @@ export default {
     },
     loadFromExample(exampleNumber) {
       let currentExample = examples[exampleNumber];
-      this.onSearchSelect(currentExample, false);
+      this.searchResult = currentExample;
+      this.$set(this.iiif, "url", currentExample.large_iiif_url);
       this.$refs["imageloader"].setCropData(currentExample.crop);
+      // make sure search thumbs are visually unselected
+      this.$refs["search"].selected = undefined;
     },
     updateIiifData(manifestUrl) {
       getIIIFData(manifestUrl).then(this.onSearchSelect);
