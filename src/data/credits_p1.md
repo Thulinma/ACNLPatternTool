@@ -1,1 +1,1 @@
-This project was based on the open source Animal Crossing Pattern Tool.  We're super-grateful to them for releasing their code freely and letting us build on top of it.  You should check out their work, too!
+This project was based on the open source [Animal Crossing Pattern Tool](https://acpatterns.com).  We're super-grateful to them for releasing their code freely and letting us build on top of it.  You should check out their work, too!

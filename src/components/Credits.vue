@@ -5,9 +5,9 @@
       <hr />
       <div class="l-halves">
         <div class="l-halves__half">
-          Animal Crossing: New Leaf Pattern Tool
+          <RichText :content="credits_p1" contentType="markdown" />
         </div>
-        <div class="l-halves__half  leftborder">
+        <div class="l-halves__half leftborder">
           <RichText :content="credits" contentType="markdown" />
         </div>
       </div>
