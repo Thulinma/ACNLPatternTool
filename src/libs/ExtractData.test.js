@@ -13,7 +13,7 @@ describe("extractData", () => {
 
   it("extracts a url from data", () => {
     let url =
-      "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!150,150/0/default.jpg";
+      "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!300,300/0/default.jpg";
     expect(extractData(sampleData).iiif_url).toBe(url);
   });
 
@@ -57,31 +57,26 @@ describe("getIIIFThumbnail", () => {
   const manifestURL =
     "https://media.getty.edu/iiif/manifest/db44cc30-ac6f-4fe3-ad45-99910a61cb79";
   let manifestData;
-
-  beforeEach(() => {
+  let manifest = beforeEach(() => {
     manifestData = JSON.parse(JSON.stringify(testManifest));
     mock.reset();
   });
 
   it("returns a thumbnail id", async () => {
-    mock.onGet(manifestURL).reply(200, manifestData);
-
-    expect(await getIIIFThumbnail(manifestURL)).toEqual(
+    expect(getIIIFThumbnail(manifestData)).toEqual(
       "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782/full/!300,300/0/default.jpg"
     );
   });
 
   it("lets you pick a returned size", async () => {
-    mock.onGet(manifestURL).reply(200, manifestData);
-    expect(await getIIIFThumbnail(manifestURL, 600)).toEqual(
+    expect(getIIIFThumbnail(manifestData, 600)).toEqual(
       "https://media.getty.edu/iiif/image/0cff9091-e65c-4f63-8da5-44d0c4bc0782/full/!600,600/0/default.jpg"
     );
   });
 
   it("handles manifests without image services, but with thumbnails", async () => {
     delete manifestData.thumbnail.service;
-    mock.onGet(manifestURL).reply(200, manifestData);
-    expect(await getIIIFThumbnail(manifestURL, 600)).toEqual(
+    expect(getIIIFThumbnail(manifestData, 600)).toEqual(
       "https://media.getty.edu/iiif/image/non-iiif-service/full/!300,300/0/default.jpg"
     );
   });
@@ -89,8 +84,7 @@ describe("getIIIFThumbnail", () => {
   it("handles manifests without thumbnails", async () => {
     const smithsonianData = JSON.parse(JSON.stringify(smithsonianManifest));
 
-    mock.onGet(manifestURL).reply(200, smithsonianData);
-    expect(await getIIIFThumbnail(manifestURL, 600)).toEqual(
+    expect(await getIIIFThumbnail(smithsonianData, 600)).toEqual(
       "https://ids.si.edu/ids/iiif/NPG-B8000090A/full/!600,600/0/default.jpg"
     );
   });

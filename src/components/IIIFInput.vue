@@ -1,11 +1,11 @@
 <template>
   <div>
-    <RichText :content="iiifIntro" contentType="markdown" />
-
+    <RichText :content="iiif1" contentType="markdown" />
+    <!-- Input and Submit Button -->
     <div class="url-input-container">
       <input
         class="iiif-input"
-        placeholder="IIIF Url Goes Here"
+        placeholder="Paste IIIF Url Here"
         v-model="iiifManifestUrl"
       />
       <Button
@@ -15,9 +15,11 @@
         >Submit</Button
       >
     </div>
+    <!-- IIIF explanation section -->
     <div class="l-thirds">
       <div class="l-thirds__two-thirds">
-        <RichText :content="step1iiif" contentType="markdown" />
+        <h3 class="f-heading-3">What is IIIF?</h3>
+        <RichText :content="iiif2" contentType="markdown" />
       </div>
     </div>
   </div>
@@ -25,58 +27,53 @@
 
 <script>
 import { Button, RichText } from "@thegetty/getty-ui";
-import step1iiif from "../data/step1_iiif.md";
-import iiifIntro from "../data/iiifIntro.md";
+import iiif1 from "../data/iiif_1.md";
+import iiif2 from "../data/iiif_2.md";
 
 export default {
-  name: "UrlInput",
+  name: "IIIFInput",
   components: {
     RichText,
-    Button,
+    Button
   },
   data() {
     return {
       iiifManifestUrl: undefined,
-      step1iiif,
-      iiifIntro,
+      iiif1,
+      iiif2
     };
   },
   methods: {
     updateUrl() {
       console.log("updateUrl");
       this.$emit("updateIiif", this.iiifManifestUrl);
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .url-input-container {
   display: flex;
-  align-items: stretch;
+  align-items: flex-end;
   max-width: 100%;
-  margin-top: 4px;
+  margin-top: 30px;
 }
 .a-btn--text {
   font-size: 15px;
-  padding: 11px 16px;
+  padding: 0 4px;
   background-color: #fff;
   color: #1947b8;
+  margin-bottom: -4px;
 }
-
 input {
   border: 0;
-  outline: 0;
-}
-input:focus {
-  outline: none !important;
-}
-
-input {
   flex-grow: 1;
   margin-right: 0px;
   outline: none;
-  padding: 0 10px;
   border-bottom: 1px solid black;
+}
+input:focus {
+  outline: none !important;
 }
 </style>

@@ -28,6 +28,7 @@
         <img
           :key="match.webpage"
           class="gallery_img"
+          :class="match.iiif_url == selected ? 'selected' : ''"
           :src="match.iiif_url"
           @click="choose(match)"
         />
@@ -84,6 +85,7 @@ export default {
       matches: [],
       maxSearch: 250,
       itemsPerPage: 8,
+      selected: undefined,
       currentSearchPage: 0,
       imageData: NoC_US,
     };
@@ -110,6 +112,7 @@ export default {
   },
   methods: {
     choose(match) {
+      this.selected = match.iiif_url;
       this.$emit("input", match);
     },
     prevPage() {
@@ -138,6 +141,7 @@ export default {
     },
     search() {
       this.query = this.value;
+      this.selected = undefined;
       this.matches = [];
       this.currentSearchPage = 0;
       for (let _line of this.imageData.split("\n")) {
@@ -184,16 +188,10 @@ li {
 .spacing_top {
   margin-top: 1.2em;
 }
-input[type="search"] {
-  font-size: 20px;
-  font-weight: 600;
-}
 
 .gallery_img {
   max-width: 90%;
   min-width: 50%;
-}
-.m-search-input {
 }
 
 .summary {
@@ -221,4 +219,10 @@ a.disabled .a-link__label:hover {
   color: #1a1a1a;
   text-decoration: none !important;
 }
+
+.selected {
+  border: 6px solid white;
+  outline: 2px solid #675102;
+}
+
 </style>
