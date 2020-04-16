@@ -13,7 +13,7 @@ describe("extractData", () => {
 
   it("extracts a url from data", () => {
     let url =
-      "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!150,150/0/default.jpg";
+      "https://media.getty.edu/iiif/image/ed5f9f87-a007-42a5-b4c8-dd6b588be10a/full/!300,300/0/default.jpg";
     expect(extractData(sampleData).iiif_url).toBe(url);
   });
 
