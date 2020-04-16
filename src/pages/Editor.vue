@@ -29,7 +29,7 @@
         <Search @input="onSearchSelect" />
 
         <h3 class="f-heading-3">B. Select one of our favorites</h3>
-        <Gallery @selectedExample="loadFromExample" />
+        <Gallery @selectedExample="loadFromExample" ref="gallery" />
       </section>
 
       <hr />
@@ -282,6 +282,8 @@ export default {
       if (scroll) {
         this.scrollTo(this.$refs["step2"]);
       }
+      // visually unselect gallery thumbnail if
+      this.$refs["gallery"].selectedImageIndex = -1;
     },
     onConvert: function(patterns) {
       // this.convertImage = false;
