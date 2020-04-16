@@ -22,7 +22,7 @@ const axios = require("axios");
  * @param  {Number} size       The number of pixels on the longest side for the IIIF image
  * @return {ParsedData}            The data parsed into a usable form.
  */
-export function extractData(dataString, size = 150, full_size = 1200) {
+export function extractData(dataString, size = 300, full_size = 1200) {
   let full_name, id, uuid, artist;
   [full_name, id, uuid, artist] = dataString.split("|");
 
