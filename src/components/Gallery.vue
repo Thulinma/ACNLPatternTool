@@ -26,7 +26,7 @@ export default {
 
   data: function() {
     return {
-      selectedImageIndex: -1,
+      selectedImageIndex: 0,
       images: examples
     };
   },
@@ -47,7 +47,6 @@ export default {
         behavior: "smooth"
       });
     },
-
     getClass(index) {
       if (index === this.selectedImageIndex) {
         return "thumbnail selected";

@@ -87,7 +87,7 @@ export default {
       itemsPerPage: 8,
       selected: undefined,
       currentSearchPage: 0,
-      imageData: NoC_US,
+      imageData: NoC_US
     };
   },
   computed: {
@@ -108,7 +108,7 @@ export default {
     },
     onLastSearchPage() {
       return this.lastIndex >= this.matches.length;
-    },
+    }
   },
   methods: {
     choose(match) {
@@ -136,7 +136,7 @@ export default {
       }
       window.scrollTo({
         top: scroll,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     },
     search() {
@@ -165,8 +165,8 @@ export default {
           this.matches.push(extractData(_line));
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style type="text/css" scoped>
@@ -224,5 +224,4 @@ a.disabled .a-link__label:hover {
   border: 6px solid white;
   outline: 2px solid #675102;
 }
-
 </style>
