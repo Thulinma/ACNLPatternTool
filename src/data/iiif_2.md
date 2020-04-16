@@ -1,3 +1,7 @@
-IIIF stands for International Image Interoperability Framework which is a set of standards that help archives, libraries, and museums make the most of their digitized collections. Institutions around the world use IIIF. More about its benefits.
+Here comes the nerdy part! (Okay, the even nerdier part.) To use an image from another museum, you’ll need the image’s IIIF manifest. Manifest is software-talk for “web address.”
 
-To find if an artwork is IIIF-supported, x, y z.
+How? See this [handy list of collections using IIIF](https://iiif.io/community/) (scroll down to see them all): you’ll find friends like the National Gallery of Art, the Frick Collection, Yale University, and the Smithsonian National Portrait Gallery, to name just a few. Search their collections to find a favorite. Then, dive deep with this how-to on [finding a IIIF manifest](https://iiif.io/explainers/using_iiif_resources/#finding-a-iiif-manifest-url).
+
+Tip: Before you use a IIIF manifest, be sure to check the institution’s terms of use to make sure you’re following their rules about important stuff like copyright and image reuse.
+
+But wait, what is IIIF? So glad you asked! IIIF stands for International Image Interoperability Framework, and it’s a technology for showing art online—and creating image tools like this one. More and more museums, libraries, and archives are making their images available using IIIF. At Getty, we’re big on IIIF and hope you will be too. More about [why it’s great](https://iiif.io/community/faq/#what-are-the-benefits-of-iiif).

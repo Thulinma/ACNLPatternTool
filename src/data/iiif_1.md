@@ -1,1 +1,1 @@
-Want to use a work of art from another institution? Paste your IIIF URL below.
+Here comes the nerdy part! (Okay, the even nerdier part.) To use an image from another museum, you’ll need the image’s IIIF manifest. Manifest is software-talk for “web address.”
