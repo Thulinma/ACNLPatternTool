@@ -4,9 +4,9 @@
     <hr />
     <div class="l-halves">
       <div class="l-halves__half">
-        Animal Crossing: New Leaf Pattern Tool
+        <RichText :content="credits_p1" contentType="markdown" />
       </div>
-      <div class="l-halves__half  leftborder">
+      <div class="l-halves__half leftborder">
         <RichText :content="credits" contentType="markdown" />
       </div>
     </div>
@@ -16,6 +16,7 @@
 <script>
 import { RichText } from "@thegetty/getty-ui";
 import credits from "../data/credits.md";
+import credits_p1 from "../data/credits_p1.md";
 
 export default {
   name: "Credits",
@@ -24,7 +25,8 @@ export default {
   },
   data() {
     return {
-      credits
+      credits,
+      credits_p1
     };
   }
 };

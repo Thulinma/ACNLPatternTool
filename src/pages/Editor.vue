@@ -91,7 +91,7 @@
       <!-- IIIF section -->
       <section class="section">
         <div id="iiifloader">
-          <h1>Use the art generator with other IIIF images</h1>
+          <h1>Use the art generator with other open-access IIIF images</h1>
           <IIIFInput @updateIiif="updateIiifData" />
         </div>
       </section>
