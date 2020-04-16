@@ -210,9 +210,6 @@ export default {
   methods: {
     scrollTo(el) {
       const scroll = el.offsetTop - 110;
-      if (window.pageYOffset - 220 <= scroll) {
-        return;
-      }
       window.scrollTo({
         top: scroll,
         behavior: "smooth",
