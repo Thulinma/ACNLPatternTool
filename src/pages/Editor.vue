@@ -406,7 +406,7 @@ export default {
       patType: 9,
       patTypeName: "",
       pickPatterns: false,
-      multiName: "Local storage",
+      multiName: "Local Storage",
       allowMoveToLocal: true,
       convertImage: false,
       mainMenu: false,
@@ -445,7 +445,7 @@ export default {
           tmp[i] = new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(i)));
         }
       }
-      this.multiName = "Local storage";
+      this.multiName = "Local Storage";
       this.pickPatterns = tmp;
       this.allowMoveToLocal = false;
     },
