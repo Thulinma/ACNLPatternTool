@@ -10,16 +10,29 @@
         @mousemove="onColorMousemove($event, i-1)"
         icon-name="color" 
         :icon-color="paletteColors[i-1]"
-        :viewBox="colorBlobViewBox"
+        :viewBox="colorBlobGradientViewBox"
+        :blob="true"
         width="28"
         height="28">
-        <IconColorBlob />
+        <IconColorBlobGradient />
       </IconBase>
+      <!-- <IconColorBlobGradientBase
+        v-for="i in 15"
+        :class="{picked: drawingTool.currentColor === i-1}"
+        :key="i-1"
+        class="blob"
+        @click.native="onColorClick($event, i-1)"
+        @mousemove="onColorMousemove($event, i-1)"
+        icon-name="color" 
+        :icon-color="paletteColors[i-1]"
+        width="28"
+        height="28"
+      /> -->
       <div class="img-border picked">
         <img
           class="blob"
           :class="{picked: drawingTool.currentColor === 15}"
-          :src="transparentBlob"
+          :src="transparentBlob2"
           @click="onColorClick($event, 15)"
           @mousemove="onColorMousemove($event, 15)"
         >
@@ -34,13 +47,16 @@ import DrawingTool from "/libs/DrawingTool";
 // svg icons
 import IconBase from '/components/icons/IconBase.vue';
 import IconColorBlob from '/components/icons/IconColorBlob.vue';
+import IconColorBlobGradient from '/components/icons/IconColorBlobGradient.vue';
 import transparentBlob from '/assets/icons/transparent-blob.svg'
+import transparentBlob2 from '/assets/icons/transparent-blob2.svg'
 
 export default {
   name: "Palette",
   components: {
     IconBase,
     IconColorBlob,
+    IconColorBlobGradient,
   },
   props: {
     drawingTool: DrawingTool,
@@ -53,7 +69,9 @@ export default {
     return {
       paletteColors,
       transparentBlob,
+      transparentBlob2,
       colorBlobViewBox: "0 0 1002.2 992.31",
+      colorBlobGradientViewBox: "0 0 941.33751 1000",
     };
   },
   methods: {
