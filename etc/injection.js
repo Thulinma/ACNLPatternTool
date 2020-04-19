@@ -82,9 +82,6 @@ const hoodie = loadFolder("hoodie");
 const coat = loadFolder("coat");
 
 
-// fbx test
-const easel_fbx = loadFBX("easel.fbx");
-
 module.exports = {
   clothing_stand,
   dress_half,
@@ -112,6 +109,4 @@ module.exports = {
   sweater,
   hoodie,
   coat,
-  easel_fbx
 }
-
