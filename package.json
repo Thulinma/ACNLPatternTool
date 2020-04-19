@@ -54,7 +54,6 @@
     "signale": "^1.4.0",
     "terser-webpack-plugin": "^2.3.5",
     "three": "^0.113.2",
-    "ulog": "^1.1.0",
     "vue": "^2.6.11",
     "vue-advanced-cropper": "^0.16.0",
     "vue-i18n": "^8.15.3",

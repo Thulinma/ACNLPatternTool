@@ -1,5 +1,4 @@
 import DrawingTool from "/libs/DrawingTool";
-import logger from "/utils/logger";
 
 //For QR generation
 import { QRCodeEncoder, QRCodeDecoderErrorCorrectionLevel, EncodeHintType } from '@zxing/library';

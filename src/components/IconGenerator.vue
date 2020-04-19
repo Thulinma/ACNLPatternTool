@@ -4,7 +4,6 @@
 
 <script>
 import DrawingTool from "/libs/DrawingTool";
-import logger from "/utils/logger";
 
 //for 3D renders
 import {
