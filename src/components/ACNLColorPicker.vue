@@ -7,17 +7,9 @@
         :key="index">
         <div
           v-for="color in block"
-          v-if="currColor !== color"
           :key="color"
+          :class="{picked: currColor === color}"
           class="swatch-color"
-          :style="{ backgroundColor: color }"
-          @click="onColorClick($event, color)"
-          @mousemove="onColorMousemove($event, color)">
-        </div>
-        <div
-          v-else
-          :key="color"
-          class="swatch-color picked"
           :style="{ backgroundColor: color }"
           @click="onColorClick($event, color)"
           @mousemove="onColorMousemove($event, color)">
@@ -26,17 +18,9 @@
       <div class="swatch-mono-block">
         <div
           v-for="color in monoBlock"
-          v-if="currColor !== color"
           :key="color"
+          :class="{picked: currColor === color}"
           class="swatch-color"
-          :style="{ backgroundColor: color }"
-          @click="onColorClick($event, color)"
-          @mousemove="onColorMousemove($event, color)">
-        </div>
-        <div
-          v-else
-          :key="color"
-          class="swatch-color picked"
           :style="{ backgroundColor: color }"
           @click="onColorClick($event, color)"
           @mousemove="onColorMousemove($event, color)">

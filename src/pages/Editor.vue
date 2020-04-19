@@ -27,7 +27,7 @@
           @changed-current-color="onChangedCurrentColor"/>
         <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
         <div class="colorPicker-menu" ref="colorPickerMenu">
-          <ColorPicker
+          <ACNLColorPicker
             ref="colorPicker"
             :drawing-tool="drawingTool"
             @color-picked="onColorPicked"/>
@@ -324,7 +324,7 @@
 </template>
 
 <script>
-import ColorPicker from '/components/ColorPicker.vue';
+import ACNLColorPicker from '/components/ACNLColorPicker.vue';
 import Palette from '/components/Palette.vue';
 import ThreeDRender from '/components/ThreeDRender.vue';
 import FileLoader from '/components/FileLoader.vue';
@@ -355,7 +355,7 @@ import IconQRCode from '/components/icons/IconQRCode.vue';
 export default {
   name: "Editor",
   components: {
-    ColorPicker,
+    ACNLColorPicker,
     Palette,
     ThreeDRender,
     FileLoader,
