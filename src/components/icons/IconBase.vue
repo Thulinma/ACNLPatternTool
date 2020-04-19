@@ -9,7 +9,6 @@
     <title :id="iconName" lang="en">{{iconName}} icon</title>
     <g :fill="iconColor">
       <slot />
-      <ellipse v-if="blob" fill="#FFFFFF" cx="465.91477" cy="116.37961" rx="63.06357" ry="49.82801" transform="translate(-39.99337 57.25894) rotate(-6.9532)"/>
     </g>
   </svg>
 </template>
@@ -32,10 +31,6 @@ export default {
     iconColor: {
       type: String,
       default: 'currentColor'
-    },
-    blob: {
-      type: Boolean,
-      default: false,
     }
   }
 }
