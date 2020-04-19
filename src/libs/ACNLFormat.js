@@ -1,23 +1,28 @@
 //ACNL data layout.
 //
-//QR codes are blocks of 540 bytes each, providing this data in sequence:
+//QR codes are blocks of 540 bytes (normal) or 620 bytes (pro) each, providing this data in sequence:
 //
-//0x 00 - 0x 29 ( 42) = Pattern Title
+//0x 00 - 0x 29 ( 42) = Pattern Title (21 chars)
 //0x 2A - 0x 2B (  2) = User ID
-//0x 2C - 0x 3F ( 20) = User Name
+//0x 2C - 0x 3D ( 18) = User Name (9 chars)
+//0x 3E         (  1) = Gender
+//0x 3F         (  1) = Zero padding(?)
 //0x 40 - 0x 41 (  2) = Town ID
-//0x 42 - 0x 55 ( 20) = Town Name
-//0x 56 - 0x 57 (  2) = Unknown A (values are usually random - changing seems to have no effect)
+//0x 42 - 0x 53 ( 18) = Town Name (9 chars)
+//0x 54         (  1) = Language
+//0x 55         (  1) = Zero padding(?)
+//0x 56         (  1) = Country
+//0x 57         (  1) = Region
 //0x 58 - 0x 66 ( 15) = Color code indexes
-//0x 67         (  1) = Unknown B (value is usually random - changing seems to have no effect)
-//0x 68         (  1) = Unknown C (seems to always be 0x0A or 0x00)
+//0x 67         (  1) = "color" (probably a lookup for most prevalent color?)
+//0x 68         (  1) = "looks" (probably a lookup for "quality"? Seems to always be 0x0A or 0x00)
 //0x 69         (  1) = Pattern type (see below)
-//0x 6A - 0x 6B (  2) = Unknown D (seems to always be 0x0000)
+//0x 6A - 0x 6B (  2) = Zero padding(?)
 //0x 6C - 0x26B (512) = Pattern Data 1 (mandatory)
 //0x26C - 0x46B (512) = Pattern Data 2 (optional)
 //0x46C - 0x66B (512) = Pattern Data 3 (optional)
 //0x66C - 0x86B (512) = Pattern Data 4 (optional)
-//0x86C - 0x86F (  4) = Zero padding (optional)
+//0x86C - 0x86F (  4) = Zero padding
 //
 // Pattern types:
 // 0x00 = Fullsleeve dress (pro)
@@ -30,6 +35,8 @@
 // 0x07 = Hat
 // 0x08 = Standee (pro)
 // 0x09 = Plain pattern (easel)
+// 0x0A = unknown (non-pro)
+// 0x0B = unknown (non-pro)
 
 import fnv1a128 from "./fnv1a.js";
 
@@ -153,9 +160,20 @@ class ACNLFormat{
   toPixels(ab){
     let offset = 0x6C;
     let pixel = 0;
-    for (let i = offset; i < this.b.byteLength && pixel < ab.byteLength; i++){
-      ab[pixel++] = (this.dataBytes[i] & 0x0F);
-      ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+    if (this.width > 32){
+      for (let y = 0; y < 128; ++y){
+        for (let x = 0; x < 32; x+=2){
+          let i = x/2 + y*16 + offset;
+          pixel = ACNLFormat.typeInfo[this.patternType].transform(x, y);
+          ab[pixel] = (this.dataBytes[i] & 0x0F);
+          ab[pixel+1] = ((this.dataBytes[i] >> 4) & 0x0F);
+        }
+      }
+    }else{
+      for (let i = offset; i < this.b.byteLength && pixel < ab.byteLength; i++){
+        ab[pixel++] = (this.dataBytes[i] & 0x0F);
+        ab[pixel++] = ((this.dataBytes[i] >> 4) & 0x0F);
+      }
     }
 
     /* Used to generate the masks
@@ -179,9 +197,19 @@ class ACNLFormat{
   fromPixels(ab){
     let offset = 0x6C;
     let pixel = 0;
-    for (let i = offset; i < this.b.byteLength; i++){
-      this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
-      pixel += 2;
+    if (this.width > 32){
+      for (let y = 0; y < 128; ++y){
+        for (let x = 0; x < 32; x+=2){
+          let i = x/2 + y*16 + offset;
+          pixel = ACNLFormat.typeInfo[this.patternType].transform(x, y);
+          this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
+        }
+      }
+    }else{
+      for (let i = offset; i < this.b.byteLength; i++){
+        this.dataBytes[i] = (ab[pixel] & 0x0F) + ((ab[pixel+1] & 0x0F) << 4);
+        pixel += 2;
+      }
     }
   }
 
@@ -281,6 +309,7 @@ class ACNLFormat{
     if (!ACNLFormat.typeInfo[this.dataBytes[0x69]]){return 32;}
     return ACNLFormat.typeInfo[this.dataBytes[0x69]].size;
   }
+  get texWidth(){return this.width;}
   get byteLength(){
     return (this.width > 32) ? 2160 : 620;
   }
@@ -296,6 +325,8 @@ class ACNLFormat{
   fixIssues(){
     if (!this.creator[1]){this.creator = 60598;}
     if (!this.town[1]){this.town = 50500;}
+    if (this.creator[0].length < 1){this.creator = "Unknown";}
+    if (this.town[0].length < 1){this.town = "Unknown";}
     //End town with wide-zero
     this.dataBytes[0x42+18] = 0;
     this.dataBytes[0x42+19] = 0;
@@ -384,31 +415,56 @@ ACNLFormat.paletteColors = [
   "", //0xFF unused (white in-game, editing freezes the game)
 ];
 
+//Used for mapping clothing pixels
+function clothingBytesToPixels(x, y){
+  //top left to top right
+  if (y < 32){return x+(y+64)*32;}
+  //bottom left to top left
+  if (y < 64){return x+(y-32)*32;}
+  //top right upper to bottom left lower
+  if (y < 80){return x+(y-16)*32;}
+  //top right lower to bottom right lower
+  if (y < 96){return x+(y+32)*32;}
+  //bottom right upper does not move
+  if (y < 112){return x+(y)*32;}
+  //bottom right lower to bottom-left upper
+  return x+(y-80)*32;
+}
+
+//Used for mapping everything else
+function standardTransform(x, y){return x+y*32;}
+
+
 //General info about the various types of patterns in ACNL
 //Masks define areas that cannot be drawn to (true = masked, false = normal).
 //Masks use a compact notation of 32-bit masks, otherwise we'd have a giant list of true/false here.
 ACNLFormat.typeInfo = [];
 
-ACNLFormat.typeInfo[0] = {name:"Dress, Long Sleeves", size:64, sections:[0, 0, 64, 64]};
+ACNLFormat.typeInfo[0] = {name:"Dress, Long Sleeves", size:64, sections:[0, 0, 64, 64], transform:clothingBytesToPixels};
 ACNLFormat.typeInfo[1] = {name:"Dress, Short Sleeves", size:64, sections:[0, 0, 64, 64],
-  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]};
+    mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536],
+  transform:clothingBytesToPixels};
 ACNLFormat.typeInfo[2] = {name:"Dress, Sleeveless", size:64, sections:[0, 0, 64, 64],
-  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]};
+    mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+  transform:clothingBytesToPixels};
 ACNLFormat.typeInfo[3] = {name:"Shirt, Long Sleeves", size:64, sections:[0, 0, 64, 64],
-  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]};
+    mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  transform:clothingBytesToPixels};
 ACNLFormat.typeInfo[4] = {name:"Shirt, Short Sleeves", size:64, sections:[0, 0, 64, 64],
-  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]};
+  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536,-65536],
+  transform:clothingBytesToPixels};
 ACNLFormat.typeInfo[5] = {name:"Shirt, Sleeveless", size:64, sections:[0, 0, 64, 64],
-  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]};
-ACNLFormat.typeInfo[6] = {name:"Hat with Horns", size:32, sections:[0, 0, 32, 32]};
-ACNLFormat.typeInfo[7] = {name:"Hat without Horns", size:32, sections:[0, 0, 32, 32]};
+    mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+  transform:clothingBytesToPixels};
+ACNLFormat.typeInfo[6] = {name:"Hat with Horns", size:32, sections:[0, 0, 32, 32], transform:standardTransform};
+ACNLFormat.typeInfo[7] = {name:"Hat without Horns", size:32, sections:[0, 0, 32, 32], transform:standardTransform};
 ACNLFormat.typeInfo[8] = {
   name: "Standee",
   size: 64,
   sections: [0, 0, 52, 64],
-  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,1069547520,-524288,-131072,-65536,-32768,-16384,-16384,-8192,-8192,-8192,-8192,-8192,-16384,-16384,-32768,-65536,-262144,-1048576,528482304,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048575,-1048569,-1048561,-1048545,-1048513,-1048513,-1048449,-1048449,-1048449,-1048449,-1048449,-1048513,-1048545,-1048545,-1048561,-1048573,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576]
+  mask: [0,0,0,0,0,0,0,0,0,0,0,0,0,1069547520,-524288,-131072,-65536,-32768,-16384,-16384,-8192,-8192,-8192,-8192,-8192,-16384,-16384,-32768,-65536,-262144,-1048576,528482304,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048575,-1048569,-1048561,-1048545,-1048513,-1048513,-1048449,-1048449,-1048449,-1048449,-1048449,-1048513,-1048545,-1048545,-1048561,-1048573,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576,-1048576], transform:standardTransform
 };
-ACNLFormat.typeInfo[9] = {name:"Normal Pattern (easel)", size:32, sections:[0, 0, 32, 32]};
+ACNLFormat.typeInfo[9] = {name:"Normal Pattern (easel)", size:32, sections:[0, 0, 32, 32], transform:standardTransform};
 
 //Generate global lookup table
 ACNLFormat.RGBLookup = [];
