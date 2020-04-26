@@ -353,8 +353,6 @@ import IconPhone from '/components/icons/IconPhone.vue';
 import IconSave from '/components/icons/IconSave.vue';
 import IconScan from '/components/icons/IconScan.vue';
 import IconQRCode from '/components/icons/IconQRCode.vue';
-import barcodeSvg from '/assets/icons/bx-barcode-reader.svg';
-import imageAddSvg from '/assets/icons/bxs-image-add.svg';
 
 export default {
   name: "Editor",
@@ -425,8 +423,6 @@ export default {
       orange: '#DC8D69',
       white: '#FFFFFF',
       origin,
-      barcodeSvg,
-      imageAddSvg,
     };
   },
   methods: {
