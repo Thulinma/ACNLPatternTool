@@ -4,6 +4,7 @@ import Home from '/pages/Home.vue';
 import Browse from '/pages/Browse.vue';
 import Editor from '/pages/Editor.vue';
 import FAQ from '/pages/FAQ.vue';
+import Passports from 'pages/Passports.vue';
 import Changelog from '/pages/Changelog.vue';
 import Missing from '/pages/Missing.vue';
 import ModeratorIndex from '/pages/moderator/Index.vue';
@@ -18,6 +19,7 @@ const routes = [
   { path: "/browse", component: Browse },
   { path: "/editor", component: Editor },
   { path: "/faq", component: FAQ },
+  { path: "/passports", component: Passports },
   { path: "/changelog", component: Changelog },
   {
     path: "/moderator",
