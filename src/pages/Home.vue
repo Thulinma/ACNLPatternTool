@@ -3,10 +3,12 @@
     <div class="title">
       <div class="logo">
         <object class="svg" :data="logoSvg"></object>
-      </div><div class="heading">
+      </div>
+      <div class="heading">
         <h1>Animal Crossing Pattern Tool</h1>
         <h2>Compatible with Animal Crossing: New Leaf, Animal Crossing: Happy Home Designer and Animal Crossing: New Horizons</h2>
-        <h2>By <a href="https://thulinma.com">Thulinma</a>, <a href="https://github.com/DamSenViet">DamSenViet</a>, and <a href="https://github.com/myumi">Myumi</a></h2>
+
+        <h2 class="contributors">By <a href="https://thulinma.com">Thulinma</a>, <a href="https://github.com/DamSenViet">DamSenViet</a>, and <a href="https://github.com/myumi">Myumi</a></h2>
       </div>
     </div>
     <div class="button browse" @click="goToBrowse">
@@ -53,12 +55,20 @@ export default {
 
 <style lang="scss" scoped>
 
-.title .logo{
-  float:left;
-}
 .title{
   min-height:380px;
+
+  .logo {
+    float: left;
+  }
+
+  .heading {
+    .contributors {
+      padding-top: 10px;
+    }
+  }
 }
+
 h1{
   font-size:80px;
 }
