@@ -1,5 +1,6 @@
 <template>
   <div id=app :class="classes">
+    <Header />
     <router-view></router-view>
     <ModalManager/>
   </div>
@@ -7,6 +8,7 @@
 
 <script>
 import ModalManager from '/components/ModalManager.vue';
+import Header from '/components/layout/Header.vue';
 import { isMobile } from '~/utils/if-env';
 
 export default {
@@ -26,6 +28,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* Global app styles */
 #app {
   position: relative;
   top: 0;
