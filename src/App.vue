@@ -4,6 +4,7 @@
       desktop,
       portrait,
     }">
+    <div class="app-background"></div>
     <router-view></router-view>
     <ModalManager/>
     <Banner/>
@@ -54,11 +55,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* Global app styles */
+.app-background {
+  position: absolute;
+  background-image: url('./assets/images/leaf-brush-pattern.svg');
+  height: 100%;
+  width: 100%;
+  filter: invert(1) opacity(15%);
+  background-size: 500px;
+  z-index: -10;
+}
 #app {
   position: relative;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  width: 100%;
 }
 </style>
