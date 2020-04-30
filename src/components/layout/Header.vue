@@ -7,3 +7,15 @@
     </div>
   </header>
 </template>
+
+<script>
+export default {
+  name: "Header",
+  data: function() {
+    return {};
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+</style>

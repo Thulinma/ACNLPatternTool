@@ -1,6 +1,6 @@
 <template>
   <div id=app :class="classes">
-    <Header />
+    <Header/>
     <router-view></router-view>
     <ModalManager/>
   </div>
@@ -22,7 +22,8 @@ export default {
     };
   },
   components: {
-    ModalManager
+    ModalManager,
+    Header
   },
 }
 </script>

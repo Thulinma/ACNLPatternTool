@@ -1,30 +1,12 @@
 <template>
-  <div class="dummy-nav">
-    <div class="title">
-      <div class="logo">
-        <object class="svg" :data="logoSvg"></object>
+  <div class="home-nav-wrapper">
+    <div class="home-nav">
+      <div class="nav-item" v-for="item in navItems" :key="item.name">
+        <div class="nav-item-img">
+          <img :src="item.image" />
+        </div>
+        <p class="nav-item-text">{{ item.name }}</p>
       </div>
-      <div class="heading">
-        <h1>Animal Crossing Pattern Tool</h1>
-        <h2>Compatible with Animal Crossing: New Leaf, Animal Crossing: Happy Home Designer and Animal Crossing: New Horizons</h2>
-
-        <h2 class="contributors">By <a href="https://thulinma.com">Thulinma</a>, <a href="https://github.com/DamSenViet">DamSenViet</a>, and <a href="https://github.com/myumi">Myumi</a></h2>
-      </div>
-    </div>
-    <div class="button browse" @click="goToBrowse">
-      <div class="text">Browse</div>
-    </div>
-    <div class="button editor" @click="goToEditor">
-      <div class="text">Editor</div>
-    </div>
-    <div class="button faq" @click="goToFAQ">
-      <div class="text">FAQ</div>
-    </div>
-    <div class="button changelog" @click="goToChanges">
-      <div class="text">Changelog</div>
-    </div>
-    <div class="button discord">
-      <a href="https://discord.gg/9rGkZNk" class="text">Discord</a>
     </div>
   </div>
 </template>
@@ -34,7 +16,16 @@ import logoSvg from '/assets/images/ac_easel_opt.svg';
 export default {
   name: "Home",
   data: function(){
-    return {logoSvg};
+    return {
+      logoSvg,
+      navItems: [
+        { name: 'Updates', image: '' },
+        { name: 'Browse', image: '' },
+        { name: 'Editor', image: '' },
+        { name: 'FAQ', image: '' },
+        { name: 'Discord', image: '' },
+      ]
+    };
   },
   methods: {
     goToBrowse: function() {
@@ -54,46 +45,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.title{
-  min-height:380px;
-
-  .logo {
-    float: left;
-  }
-
-  .heading {
-    .contributors {
-      padding-top: 10px;
-    }
-  }
-}
-
-h1{
-  font-size:80px;
-}
-
-.dummy-nav {
-  font-family: Nunito;
-}
-
-.button {
-  position: relative;
-  cursor: pointer;
-  padding:10px;
-  box-sizing: border-box;
-  color: white;
-}
-
-.button.browse {background-color: rgb(52, 171, 109);}
-.button.editor {background-color: #1083cd;}
-.button.faq {background-color: #f16060;}
-.button.changelog {background-color: #cdb610;}
-.button.discord {background-color: #7289da;}
-
-.text {
-  font-size: 2rem;
-  color:#fff;
-  text-decoration:none;
-}
 </style>
