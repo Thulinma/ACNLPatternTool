@@ -39,6 +39,7 @@ export default {
   width: 100%;
   filter: invert(1) opacity(15%);
   background-size: 500px;
+  z-index: -1;
 }
 #app {
   height: 100%;

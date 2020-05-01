@@ -1,11 +1,15 @@
 <template>
   <div class="home-nav-wrapper">
     <div class="home-nav">
-      <div class="nav-item" v-for="item in navItems" :key="item.name">
-        <div class="nav-item-img">
-          <img :src="item.image" />
-        </div>
-        <p class="nav-item-text">{{ item.name }}</p>
+      <div class="nav-item" v-bind:class="[item.id]" v-for="item in navItems" :key="item.name">
+        <a href="">
+          <div class="nav-item-img">
+            <img :src="item.image" />
+          </div>
+          <div class="nav-item-text">
+            <p>{{ item.name }}</p>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -19,11 +23,11 @@ export default {
     return {
       logoSvg,
       navItems: [
-        { name: 'Updates', image: '' },
-        { name: 'Browse', image: '' },
-        { name: 'Editor', image: '' },
-        { name: 'FAQ', image: '' },
-        { name: 'Discord', image: '' },
+        { id: 'updates', name: 'Updates', image: '/assets/icons/nookphone/nav-changelog.svg' },
+        { id: 'browse', name: 'Browse', image: '/assets/icons/nookphone/nav-browse.svg' },
+        { id: 'editor', name: 'Editor', image: '/assets/icons/nookphone/nav-editor.svg' },
+        { id: 'faq', name: 'FAQ', image: '/assets/icons/nookphone/nav-faq.svg' },
+        { id: 'discord', name: 'Discord', image: '/assets/icons/nookphone/nav-discord.svg' },
       ]
     };
   },
@@ -45,4 +49,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$img-bg-color: #f7f4e7;
+
+.home-nav-wrapper {
+  margin-top: 50px;
+
+  .home-nav {
+    display: flex;
+    justify-content: space-around;
+
+    .nav-item a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #887c6a;
+
+      .nav-item-img {
+        background-color: $img-bg-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100%;
+        padding: 14px;
+        z-index: 2;
+
+        img {
+          width: 120px;
+          padding: 12px;
+          border-radius: 100%;
+          background-color: #e5e2d0;
+        }
+      }
+
+      .nav-item-text {
+        background-color: $img-bg-color;
+        margin-top: -40px;
+        font-size: 16pt;
+        padding: 15px;
+        border-radius: 49%;
+        padding: 40px 50px 20px 50px;
+        text-align: center;
+      }
+    }
+  }
+}
 </style>
