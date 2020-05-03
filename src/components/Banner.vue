@@ -12,7 +12,6 @@ export default {
   },
   data: function() {
     return {
-      bannerText: ''
     };
   },
 }
@@ -24,15 +23,18 @@ $banner-flag-color: #f1a8b2;
 
 .banner {
   position: absolute;
-  left: 50%;
   display: block;
-  margin: 100px -200px;
-  width: 400px;
+  width: 250px;
   height: 50px;
   border: 1px solid $primary-banner-color;
   text-align: center;
   color: white;
   background: $primary-banner-color;
+  font-size: 17pt;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -113px;
 
   &::before, &::after {
     content: '';

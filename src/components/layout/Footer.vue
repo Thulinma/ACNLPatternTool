@@ -46,6 +46,8 @@ footer {
   background: #f7f4e7;
   height: 25vh;
   z-index: 0;
+  display: flex;
+  justify-content: center;
 
   &::before {
     content: '';
