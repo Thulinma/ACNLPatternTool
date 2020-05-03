@@ -1,5 +1,6 @@
 <template>
   <footer class="footer">
+    <Banner :bannerText="'Patterns Uploaded'"/>
     <div>
       <h2>Hello World</h2>
     </div>
@@ -7,11 +8,16 @@
 </template>
 
 <script>
+import Banner from '/components/Banner.vue';
+
 export default {
   name: "Footer",
   data: function() {
     return {};
   },
+  components: {
+    Banner
+  }
 }
 </script>
 
@@ -25,13 +31,13 @@ export default {
   overflow: hidden;
 
   &::before {
-    border-radius: 100%;
-    background-color: #f7f4e7;
-    width: 148%;
-    height: 100vh;
-    content: "";
-    position: absolute;
-    margin-left: -24%;
+  border-radius: 100%;
+  background-color: #f7f4e7;
+  width: 148%;
+  height: 100vh;
+  content: "";
+  position: absolute;
+  margin-left: -24%;
   }
 }*/
 footer {
@@ -39,6 +45,7 @@ footer {
   position: absolute;
   background: #f7f4e7;
   height: 25vh;
+  z-index: 0;
 
   &::before {
     content: '';
@@ -53,4 +60,5 @@ footer {
     z-index: -1;
   }
 }
+
 </style>
