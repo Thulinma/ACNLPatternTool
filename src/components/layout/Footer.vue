@@ -1,0 +1,56 @@
+<template>
+  <footer class="footer">
+    <div>
+      <h2>Hello World</h2>
+    </div>
+  </footer>
+</template>
+
+<script>
+export default {
+  name: "Footer",
+  data: function() {
+    return {};
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+/*
+.footer {
+  position: absolute;
+  bottom: 0;
+  height: 300px;
+  width: 100%;
+  overflow: hidden;
+
+  &::before {
+    border-radius: 100%;
+    background-color: #f7f4e7;
+    width: 148%;
+    height: 100vh;
+    content: "";
+    position: absolute;
+    margin-left: -24%;
+  }
+}*/
+footer {
+  bottom: 0; left: 0; right: 0;
+  position: absolute;
+  background: #f7f4e7;
+  height: 25vh;
+
+  &::before {
+    content: '';
+    background: #f7f4e7;
+    width: 200%;
+    position: absolute;
+    left: 50%; 
+    top: -36%;
+    transform: translateX(-50%);
+    height: 490%;
+    border-radius: 50%;
+    z-index: -1;
+  }
+}
+</style>

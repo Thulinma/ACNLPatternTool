@@ -3,6 +3,7 @@
     <div class="app-background"></div>
     <Header/>
     <router-view></router-view>
+    <Footer/>
     <ModalManager/>
   </div>
 </template>
@@ -10,6 +11,7 @@
 <script>
 import ModalManager from '/components/ModalManager.vue';
 import Header from '/components/layout/Header.vue';
+import Footer from '/components/layout/Footer.vue';
 import { isMobile } from '~/utils/if-env';
 import bgPattern from '/assets/images/leaf-brush-pattern.svg';
 
@@ -25,7 +27,8 @@ export default {
   },
   components: {
     ModalManager,
-    Header
+    Header,
+    Footer
   },
 }
 </script>
