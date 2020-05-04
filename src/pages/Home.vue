@@ -52,8 +52,6 @@ export default {
 $img-bg-color: #f7f4e7;
 
 .home-nav-wrapper {
-  margin-top: 50px;
-
   .home-nav {
     display: flex;
     justify-content: space-around;

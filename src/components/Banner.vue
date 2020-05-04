@@ -40,7 +40,7 @@ $banner-flag-color: #f1a8b2;
     content: '';
     position: absolute;
     z-index: -1;
-    left: -65px;
+    left: -40px;
     top: 7px;
     display: block;
     width: 40px;
@@ -53,7 +53,7 @@ $banner-flag-color: #f1a8b2;
 
   &::after {
     left: auto;
-    right: -70px;
+    right: -40px;
     border-left: 20px solid $banner-flag-color;
     border-right: 30px solid transparent;
   }

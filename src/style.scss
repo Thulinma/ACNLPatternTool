@@ -5,11 +5,17 @@ $color: #7E7261;
 $link-color: #E98394;
 $link-hover: #EC637A;
 
-* {
+
+html {
   box-sizing: border-box;
+  -webkit-text-size-adjust: none;
 }
 
-html, body {
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+html {
   height: 100%;
 }
 
@@ -23,6 +29,8 @@ body {
   color: $color;
   font-family: $main-font;
   min-height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 a {

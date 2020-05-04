@@ -2,7 +2,9 @@
   <div id=app :class="classes">
     <div class="app-background"></div>
     <Header/>
-    <router-view></router-view>
+    <div class="content-wrapper">
+      <router-view></router-view>
+    </div>
     <Footer/>
     <ModalManager/>
   </div>
@@ -44,8 +46,17 @@ export default {
   background-size: 500px;
   z-index: -10;
 }
+
 #app {
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
+  display: block;
+  position: relative;
+
+  .content-wrapper {
+    margin-top: 50px;
+    height: 100%;
+    padding-bottom: 40vh;
+  }
 }
 </style>
