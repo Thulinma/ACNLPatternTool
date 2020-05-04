@@ -5,22 +5,24 @@ $color: #7E7261;
 $link-color: #E98394;
 $link-hover: #EC637A;
 
-html {
+* {
+  box-sizing: border-box;
+}
+
+html, body {
   height: 100%;
-  overflow-y: scroll;
+}
+
+html {
+  overflow-x: hidden;
+  display: block;
 }
 
 body {
-  position: relative;
-  top: 0;
-  left: 0;
-  min-height: 100%;
-  max-height: 100vh;
-  height: 100%;
   background-color: $bg-color;
   color: $color;
   font-family: $main-font;
-  overflow: hidden;
+  min-height: 100%;
 }
 
 a {
