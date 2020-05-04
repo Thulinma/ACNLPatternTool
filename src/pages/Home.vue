@@ -53,8 +53,39 @@ $img-bg-color: #f7f4e7;
 
 .home-nav-wrapper {
   .home-nav {
+    margin-top: 100px;
+
     display: flex;
     justify-content: space-around;
+
+    // Home Nav Item rotation on desktop
+    @media (min-width: 180px) {
+      .nav-item {
+        &.updates, &.discord {
+          margin-top: 60px;
+        }
+
+        &.faq, &.browse {
+          margin-top: 15px;
+        }
+
+        &.updates {
+          transform: rotate(-12deg);
+        }
+
+        &.browse {
+          transform: rotate(-6deg);
+        }
+
+        &.faq {
+          transform: rotate(6deg);
+        }
+
+        &.discord {
+          transform: rotate(12deg);
+        }
+      }
+    }
 
     .nav-item a {
       display: flex;
@@ -72,7 +103,7 @@ $img-bg-color: #f7f4e7;
         z-index: 2;
 
         img {
-          width: 120px;
+          width: 130px;
           padding: 12px;
           border-radius: 100%;
           background-color: #e5e2d0;
