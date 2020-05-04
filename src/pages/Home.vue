@@ -93,6 +93,16 @@ $img-bg-color: #f7f4e7;
       align-items: center;
       color: #887c6a;
 
+      &:hover {
+        .nav-item-img img {
+          background-color: darken(#e5e2d0, 3%);
+        }
+
+        .nav-item-text p {
+          color: lighten(#85854a, 10%);
+        }
+      }
+
       .nav-item-img {
         background-color: $img-bg-color;
         display: flex;
