@@ -38,6 +38,21 @@ export default {
             ],
          },
          {
+            name: 'DamSenViet',
+            greeting: 'Sleeping atm.',
+            title: 'Sleeping Human',
+            island: 'Norende',
+            urls: [
+               {
+                  name: 'Personal Site',
+                  url: 'https://vietdaitran.com',
+               },
+            ],
+            roles: [
+               'Tool Developer',
+            ]
+         },
+         {
             name: 'Myumi K.',
             greeting: '(๑•̀ㅂ•́)و',
             title: 'Aggressive Birthday Girl',
