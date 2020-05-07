@@ -30,13 +30,12 @@
 </template>
 
 <script>
-import ACNHFormat from "/libs/ACNHFormat";
-import DrawingTool from "/libs/DrawingTool";
+import colorMaker from "/libs/ACNHFormat";
 
 export default {
   name: "ACNHColorPicker",
   props: {
-    drawingTool: DrawingTool,
+    drawingTool: Object,
   },
   data: function() {
     return {
@@ -62,8 +61,6 @@ export default {
       // H = hue 1 - 30 
       // S = vividness 1 - 15 
       // V = brightness 1 - 15 
-      console.log('setSliderColors')
-
       const hue = this.$refs.hue.value;
       const vividness = this.$refs.vividness.value;
       const brightness = this.$refs.brightness.value;
@@ -76,7 +73,7 @@ export default {
       // hue
       let hueSlider = [];
       for (let i = 0; i <= 30; i++) {
-        hueSlider.push(ACNHFormat.slidersToColor(i, vividness, brightness));
+        hueSlider.push(colorMaker.slidersToColor(i, vividness, brightness));
       }
       this.hueSliderColors = [...hueSlider];
 
@@ -84,8 +81,8 @@ export default {
       let vividnessSlider = [];
       let brightnessSlider = [];
       for (let i = 0; i <= 15; i++) {
-        vividnessSlider.push(ACNHFormat.slidersToColor(hue, i, brightness));
-        brightnessSlider.push(ACNHFormat.slidersToColor(hue, vividness, i));
+        vividnessSlider.push(colorMaker.slidersToColor(hue, i, brightness));
+        brightnessSlider.push(colorMaker.slidersToColor(hue, vividness, i));
       }
       this.vividnessSliderColors = [...vividnessSlider];
       this.brightnessSliderColors = [...brightnessSlider];
@@ -94,9 +91,9 @@ export default {
       this.vividnessGradient.background = 'linear-gradient(to right, ' + [...this.vividnessSliderColors].join() + ')';
       this.brightnessGradient.background = 'linear-gradient(to right, ' + [...this.brightnessSliderColors].join() + ')';
 
-      if (this.currentColor !== ACNHFormat.slidersToColor(hue, vividness, brightness)) {
-        this.currentColor = ACNHFormat.slidersToColor(hue, vividness, brightness);
-        this.$emit('color-picked', ACNHFormat.slidersToColor(hue, vividness, brightness));
+      if (this.currentColor !== colorMaker.slidersToColor(hue, vividness, brightness)) {
+        this.currentColor = colorMaker.slidersToColor(hue, vividness, brightness);
+        this.$emit('color-picked', colorMaker.slidersToColor(hue, vividness, brightness));
       }
     },
     setSliderPosition: function(currentColor) {
@@ -106,8 +103,6 @@ export default {
 
       // set selected drawing color
       // todo: need to call this from editor at same time as onChangedCurrentColor
-      console.log('setSliderPosition')
-      console.log(currentColor)
       let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(currentColor);
       rgb = {
         r: parseInt(rgb[1], 16),
@@ -115,7 +110,7 @@ export default {
         b: parseInt(rgb[3], 16)
       };
 
-      const sliderPositions = ACNHFormat.colorToSliders(rgb.r, rgb.g, rgb.b);
+      const sliderPositions = colorMaker.colorToSliders(rgb.r, rgb.g, rgb.b);
       this.$refs.hue.value = sliderPositions[0];
       this.$refs.vividness.value  = sliderPositions[1];
       this.$refs.brightness.value = sliderPositions[2];

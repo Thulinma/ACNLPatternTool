@@ -31,12 +31,11 @@
 
 <script>
 import ACNLFormat from "/libs/ACNLFormat";
-import DrawingTool from "/libs/DrawingTool";
 
 export default {
   name: "ColorPicker",
   props: {
-    drawingTool: DrawingTool,
+    drawingTool: Object,
   },
   data: function() {
     const colorBlocks = [];
