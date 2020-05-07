@@ -372,7 +372,7 @@ class ACNHFormat{
     b = Math.round(b*255);
     let hex = (r*65536+g*256+b).toString(16,6);
     while(hex.length<6) hex = '0'+hex;
-    return hex.toUpperCase();
+    return `#${hex.toUpperCase()}`;
   }
   static colorToSliders(r,g,b){
     if (typeof r == "string" && r.length == 7 && r.substr(0, 1) == 1){r = r.substr(1);}

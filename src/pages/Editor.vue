@@ -25,13 +25,20 @@
           ref="palette"
           :drawing-tool="drawingTool"
           @changed-current-color="onChangedCurrentColor"/>
+        
         <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
+
         <div class="colorPicker-menu" ref="colorPickerMenu">
           <ACNLColorPicker
             ref="colorPicker"
             :drawing-tool="drawingTool"
             @color-picked="onColorPicked"/>
-            <button @click="closeColorPicker">Close Menu</button>
+
+          <ACNHColorPicker
+            :drawing-tool="drawingTool"
+            @color-picked="onColorPicked"/>
+
+          <button @click="closeColorPicker">Close Menu</button>
         </div>
       </div><!-- canvas and color palette -->
 
@@ -327,6 +334,7 @@
 
 <script>
 import ACNLColorPicker from '/components/ACNLColorPicker.vue';
+import ACNHColorPicker from '/components/ACNHColorPicker.vue';
 import Palette from '/components/Palette.vue';
 import ThreeDRender from '/components/ThreeDRender.vue';
 import FileLoader from '/components/FileLoader.vue';
@@ -338,6 +346,7 @@ import ToolSelector from '/components/ToolSelector.vue';
 import NookPhoneMenu from '/components/NookPhoneMenu.vue';
 import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
+import ACNHFormat from '/libs/ACNHFormat';
 import origin from '/libs/origin';
 import generateACNLQR from "/libs/ACNLQRGenerator";
 import lzString from 'lz-string';
@@ -358,6 +367,7 @@ export default {
   name: "Editor",
   components: {
     ACNLColorPicker,
+    ACNHColorPicker,
     Palette,
     ThreeDRender,
     FileLoader,
@@ -635,7 +645,7 @@ export default {
     openColorPicker: function() {
       if (this.drawingTool.currentColor !== 15) {
         this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:315)+'px';
+        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:500)+'px';
         return;
       }
       alert('This one has to stay transparent. :)');
