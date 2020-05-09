@@ -7,5 +7,9 @@
 
 # Ignore stats
 /stats
+
 # Ignore OS Metadata
 **/.DS_Store
+
+# Ignore Workspace Metadata
+**/.vscode
