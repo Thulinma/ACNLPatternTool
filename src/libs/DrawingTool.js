@@ -153,14 +153,14 @@ class DrawingTool{
 
   pushUndo(){
     let currPal = [];
-    for (let i = 0; i < 15; ++i){currPal.push(this.pattern.getPalette(i));}
+    for (let i = 0; i < 15; ++i){currPal.push(this.getPalette(i));}
     this.undoHistory.push({pixels: new Uint8Array(this.pixels), palette: currPal});
     if (this.undoHistory.length > 25){this.undoHistory.splice(1, this.undoHistory.length-25);}
   }
 
   pushRedo(){
     let currPal = [];
-    for (let i = 0; i < 15; ++i){currPal.push(this.pattern.getPalette(i));}
+    for (let i = 0; i < 15; ++i){currPal.push(this.getPalette(i));}
     this.redoHistory.push({pixels: new Uint8Array(this.pixels), palette: currPal});
     if (this.redoHistory.length > 25){this.redoHistory.splice(1, this.redoHistory.length-25);}
   }
@@ -170,7 +170,7 @@ class DrawingTool{
     this.pushRedo();
     let pState = this.undoHistory.pop();
     for (let i = 0; i < 4096; ++i){this.pixels[i] = pState.pixels[i];}
-    for (let i = 0; i < 15; ++i){this.pattern.setPalette(i, pState.palette[i]);}
+    for (let i = 0; i < 15; ++i){this.setPalette(i, pState.palette[i]);}
     this.onColorChange();
     this.render();
     return true;
@@ -181,7 +181,7 @@ class DrawingTool{
     this.pushUndo();
     let pState = this.redoHistory.pop();
     for (let i = 0; i < 4096; ++i){this.pixels[i] = pState.pixels[i];}
-    for (let i = 0; i < 15; ++i){this.pattern.setPalette(i, pState.palette[i]);}
+    for (let i = 0; i < 15; ++i){this.setPalette(i, pState.palette[i]);}
     this.onColorChange();
     this.render();
     return true;
@@ -234,6 +234,83 @@ class DrawingTool{
       return ACNHFormat.typeInfo[this.pattern.patternType];
     }
     return ACNLFormat.typeInfo[this.pattern.patternType];
+  }
+  get compatMode(){
+    if (this.pattern instanceof ACNLFormat){return "ACNL";}
+    if (this.pattern instanceof ACNHFormat){return "ACNH";}
+    return "????";
+  }
+  set compatMode(n){
+    if (this.compatMode == n){return;}//No change
+    const tmpMode = this.compatMode;
+    const tmpType = this.patternType;
+    const tmpTitle = this.title;
+    const tmpAuthor = this.creator;
+    const tmpTown = this.town;
+    let tmpPal = [];
+    for (let i = 0; i < 15; ++i){tmpPal.push(this.getPalette(i));}
+
+    if (n == "ACNH"){
+      this.pattern = new ACNHFormat();
+    }else if (n == "ACNL"){
+      this.pattern = new ACNLFormat();
+    }
+
+
+
+    this.title = tmpTitle;
+    this.creator = tmpAuthor;
+    this.town = tmpTown;
+    for (let i = 0; i < 15; ++i){this.setPalette(i, tmpPal[i]);}
+
+    if (tmpMode == "ACNH"){
+      //Convert from NH to NL pattern type
+      switch (tmpType){
+        case 0x00: this.patternType = 0x09; break;//normal pattern
+        case 0x01: this.patternType = 0x09; break;//sample pro pattern
+        case 0x02: this.patternType = 0x09; break;//tank top (non-pro)
+        case 0x03: this.patternType = 0x03; break;//long sleeve dress shirt
+        case 0x04: this.patternType = 0x01; break;//short sleeve tee
+        case 0x05: this.patternType = 0x05; break;//tank top (pro)
+        case 0x06: this.patternType = 0x03; break;//sweater
+        case 0x07: this.patternType = 0x03; break;//hoodie
+        case 0x08: this.patternType = 0x00; break;//coat
+        case 0x09: this.patternType = 0x01; break;//short sleeve dress
+        case 0x0a: this.patternType = 0x02; break;//sleeveless dress
+        case 0x0b: this.patternType = 0x00; break;//long sleeve dress
+        case 0x0c: this.patternType = 0x01; break;//balloon hem dress
+        case 0x0d: this.patternType = 0x02; break;//round dress
+        case 0x0e: this.patternType = 0x00; break;//robe
+        case 0x0f: this.patternType = 0x07; break;//brimmed cap
+        case 0x10: this.patternType = 0x07; break;//knit cap
+        case 0x11: this.patternType = 0x07; break;//brimmed hat
+        case 0x12: this.patternType = 0x01; break;//ACNL dress shortsleeve
+        case 0x13: this.patternType = 0x00; break;//ACNL dress longsleeve
+        case 0x14: this.patternType = 0x02; break;//ACNL dress sleeveless
+        case 0x15: this.patternType = 0x04; break;//ACNL shirt shortsleeve
+        case 0x16: this.patternType = 0x03; break;//ACNL shirt longsleeve
+        case 0x17: this.patternType = 0x05; break;//ACNL shirt nosleeve
+        case 0x18: this.patternType = 0x07; break;//ACNL hat
+        case 0x19: this.patternType = 0x06; break;//ACNL horned hat
+        default: this.patternType = 0x09; break;//others
+      }
+    }else if (tmpMode == "ACNL"){
+      //Convert from NL to NH pattern type
+      switch (tmpType){
+        case 0x00: this.patternType = 0x13; break;//longsleeve dress
+        case 0x01: this.patternType = 0x12; break;//halfleeve dress
+        case 0x02: this.patternType = 0x14; break;//sleeveless dress
+        case 0x03: this.patternType = 0x16; break;//longsleeve shirt
+        case 0x04: this.patternType = 0x15; break;//halfleeve shirt
+        case 0x05: this.patternType = 0x17; break;//sleeveless shirt
+        case 0x06: this.patternType = 0x19; break;//hornedhat
+        case 0x07: this.patternType = 0x18; break;//plainhat
+        case 0x08: this.patternType = 0x01; break;//standee, not supported but let's make it an empty pro pattern I guess
+        case 0x09: this.patternType = 0x00; break;//plain pattern
+        default: this.patternType = 0x00; break;//others
+      }
+    }
+    
   }
   get allTypes(){
     if (this.pattern instanceof ACNHFormat){
