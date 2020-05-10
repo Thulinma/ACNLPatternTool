@@ -25,21 +25,16 @@
           ref="palette"
           :drawing-tool="drawingTool"
           @changed-current-color="onChangedCurrentColor"/>
-        
+
         <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
 
-        <div class="colorPicker-menu" ref="colorPickerMenu">
-          <ACNLColorPicker
-            ref="colorPicker"
-            :drawing-tool="drawingTool"
-            @color-picked="onColorPicked"/>
-
-          <ACNHColorPicker
-            :drawing-tool="drawingTool"
-            @color-picked="onColorPicked"/>
-
-          <button @click="closeColorPicker">Close Menu</button>
-        </div>
+        <ColorPicker
+          ref="colorPickerMenu"
+          :drawingTool="drawingTool"
+          :acnlMode="acnlMode"
+          @handler="colorPickerHandler"
+          @color-picked="onColorPicked"
+        />
       </div><!-- canvas and color palette -->
 
       <div id="right">
@@ -65,14 +60,14 @@
               Open ACNL File / Scan QR
             </button><!-- load file or scan qr button -->
 
-            <button @click="openColorPicker">
+            <button @click="colorPickerHandler">
               <IconBase icon-name="palette" :icon-color="brown" class="svg nav white-circle">
                 <IconPalette />
               </IconBase><!-- palette svg full button -->
               Open Color Editor
             </button><!-- open palette button -->
 
-            <button @click="convertImage=true;closeColorPicker();">
+            <button @click="convertImage=true;colorPickerHandler(true)">
               <IconBase icon-name="convert" :icon-color="brown" class="svg nav white-circle">
                 <IconImageAdd />
               </IconBase><!-- phone svg -->
@@ -93,10 +88,10 @@
               </IconBase><!-- qr code svg -->
               Generate QR Code
             </button><!-- generate QR code button -->
-            <button @click="onLocalSave">Store Locally</button><!-- store in local storage button -->
-            <button @click="onOpenLocal">Open Storage</button><!-- open local storage button -->
-            <button @click="publishModal=true">Publish</button><!-- publish pattern to database button -->
-            <button @click="downTex">Save texture</button>
+            <button @click="onLocalSave();colorPickerHandler(true)">Store Locally</button><!-- store in local storage button -->
+            <button @click="onOpenLocal();colorPickerHandler(true)">Open Storage</button><!-- open local storage button -->
+            <button @click="publishModal=true;colorPickerHandler(true)">Publish</button><!-- publish pattern to database button -->
+            <button @click="downTex">Save Texture</button>
           </div><!-- side bar button -->
         </div><!-- tools and buttons container -->
       </div><!-- tools and buttons -->
@@ -184,7 +179,7 @@
           <div class="edit-buttons">
             <button @click="saveAuthor">Copy author information</button>
             <button @click="loadAuthor">Load copied author information</button>
-            <button @click="patInfoSave(false)">Save</button>
+            <button @click="patInfoSave">Save</button>
             <button @click="patInfoModal=false; onLoad()">Cancel</button>
           </div>
         </div>
@@ -333,8 +328,6 @@
 </template>
 
 <script>
-import ACNLColorPicker from '/components/ACNLColorPicker.vue';
-import ACNHColorPicker from '/components/ACNHColorPicker.vue';
 import Palette from '/components/Palette.vue';
 import ThreeDRender from '/components/ThreeDRender.vue';
 import FileLoader from '/components/FileLoader.vue';
@@ -344,6 +337,7 @@ import IconGenerator from '/components/IconGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
 import ToolSelector from '/components/ToolSelector.vue';
 import NookPhoneMenu from '/components/NookPhoneMenu.vue';
+import ColorPicker from '/components/modals/ColorPicker.vue';
 import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
 import ACNHFormat from '/libs/ACNHFormat';
@@ -366,8 +360,6 @@ import IconQRCode from '/components/icons/IconQRCode.vue';
 export default {
   name: "Editor",
   components: {
-    ACNLColorPicker,
-    ACNHColorPicker,
     Palette,
     ThreeDRender,
     FileLoader,
@@ -377,6 +369,7 @@ export default {
     ModalContainer,
     ToolSelector,
     NookPhoneMenu,
+    ColorPicker,
     IconBase,
     IconDownArrow,
     IconImageAdd,
@@ -433,6 +426,8 @@ export default {
       orange: '#DC8D69',
       white: '#FFFFFF',
       origin,
+      acnlMode: false,
+      colorPicker: false,
     };
   },
   methods: {
@@ -524,7 +519,7 @@ export default {
       const img = this.$refs.canvas3.toDataURL("image/png");
       saveAs(img, this.drawingTool.title+"_texture.png");
     },
-    patInfoSave(publish=false){
+    patInfoSave(e, publish=false){
       const patTitle = this.patTitle.trim();
       const patTown = this.patTown.trim();
       const patAuthor = this.patAuthor.trim();
@@ -642,18 +637,6 @@ export default {
       this.closeColorPicker();
       this.mainMenu = true;
     },
-    openColorPicker: function() {
-      if (this.drawingTool.currentColor !== 15) {
-        this.$data.colorPickerMenu = !this.$data.colorPickerMenu;
-        this.$refs.colorPickerMenu.style.height = ((!this.$data.colorPickerMenu)?0:500)+'px';
-        return;
-      }
-      alert('This one has to stay transparent. :)');
-    },
-    closeColorPicker: function() {
-      this.$refs.colorPickerMenu.style.height = '0px';
-      this.$data.colorPickerMenu = false;
-    },
     saveAuthor(){
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
       localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
@@ -662,6 +645,16 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
+    },
+    colorPickerHandler(e, close=false) {
+      if (this.drawingTool.currentColor !== 15) {
+        const height = this.acnlMode ? 430 : 240;
+        this.colorPicker = !this.colorPicker;
+        if (close && this.colorPicker) this.colorPicker = false;
+        this.$refs.colorPickerMenu.$el.style.height = `${((!this.colorPicker) ? 0 : height)}px`;
+        return;
+      }
+      alert('This one has to stay transparent. :)');
     }
   },
   mounted: function() {

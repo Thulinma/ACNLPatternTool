@@ -1,5 +1,5 @@
 <template>
-  <div class="swatch">
+  <div id="acnl-swatches">
     <!-- non-grays -->
       <div
         class="swatch-color-block"
@@ -73,17 +73,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.swatch {
+#acnl-swatches {
   user-select: none;
-  display: inline-flex;
-  flex-wrap: wrap;
-  width: 240px;
+  margin: auto;
+  width: 320px;
+  padding: 10px 0;
 }
 
 .swatch-color-block {
-  height: 45px;
-  width: 45px;
-  margin: 7.5px;
+  height: 60px;
+  width: 60px;
+  margin: 10px;
   display: inline-block;
 }
 
@@ -95,21 +95,23 @@ export default {
     white 2px,
     white 4px
   );
-  margin: 7.5px;
+  height: 20px;
+  width: 300px;
+  margin: 5px;
 }
 
 .swatch-color {
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
   border: 0;
   float: left;
   margin: 0;
   padding: 0;
-}
 
-.swatch-color.picked {
-  width: 7.5px;
-  height: 7.5px;
-  margin: 3.75px;
+  .picked {
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+  }
 }
 </style>

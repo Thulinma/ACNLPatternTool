@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="acnh-sliders">
     <section>
       <label>Hue</label>
       <div class="slider-container">
@@ -65,11 +65,6 @@ export default {
       const vividness = this.$refs.vividness.value;
       const brightness = this.$refs.brightness.value;
 
-      // set inline style for gradient? of each slider background
-      // for hue -> each hue increment, vividness, brightness
-      // for vividness -> hue, each vividness increment, brightness
-      // for brightness -> hue, vividness, each increment of brightness
-
       // hue
       let hueSlider = [];
       for (let i = 0; i <= 30; i++) {
@@ -126,9 +121,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  #acnh-sliders {
+    padding: 10px 20px 15px;
+    width: 470px;
+    user-select: none;
+    margin: auto;
+  }
  .slider-container {
    width: 100%;
-
+   padding: 10px 0;
   input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
