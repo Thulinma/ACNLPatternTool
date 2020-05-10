@@ -45,21 +45,14 @@
 //  0f = brimmed cap
 //  10 = knit cap
 //  11 = brimmed hat
-//  12 = ?
+//  12 = ACNL dress shortsleeve
 //  13 = ACNL dress longsleeve
-//  14 = ?
-//  15 = ?
-//  16 = ?
-//  17 = ACNL shirt, nosleeve
+//  14 = ACNL dress sleeveless
+//  15 = ACNL shirt shortsleeve
+//  16 = ACNL shirt longsleeve
+//  17 = ACNL shirt nosleeve
 //  18 = ACNL hat
-//
-//Unknown values:
-//  ACNL shirt, halfsleeve
-//  ACNL shirt, longsleeve
-//  ACNL dress, halfsleeve
-//  ACNL dress, nosleeve
-//  ACNL hat with horns
-//
+//  19 = ACNL horned hat
 //
 //50 regular patterns of 680 bytes each are stored in main.dat starting at offset 1930000
 //50 pro patterns of 2216 bytes each are stored in main.dat starting at offset 1964000
