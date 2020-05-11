@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$pink: #F4BFC6;
+$pink: #F1B4C2;
 
   #color-picker {
     border-radius: 0 0 35px 35px;

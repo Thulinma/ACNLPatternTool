@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  name: "Publish Modal",
+  name: "Publish",
   props: {
     drawingTool: {
       type: Object,
@@ -89,12 +89,17 @@ export default {
       
       // remove this tag from the list of available options
       availableTags = availableTags.splice(availableTags.indexOf(val), 1);
+    },
+    update() {
+      this.$emit('update', {
+        patTitle: this.patTitle,
+        patAuthor: this.patAuthor,
+        patTown: this.patTown,
+        types: this.selectedTypes,
+        styles: this.selectedStyles,
+      })
     }
   }
-  // update drawingTool with
-  // pattitle
-  // patauthor
-  // pattown
 
   // todo:
   // help icons explaining character length

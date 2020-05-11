@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Passport from '/components/Passport.vue';
+import Passport from '/components/partials/Passport.vue';
 
 export default {
   components: {

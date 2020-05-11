@@ -26,8 +26,6 @@
           :drawing-tool="drawingTool"
           @changed-current-color="onChangedCurrentColor"/>
 
-        <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
-
         <ColorPicker
           ref="colorPickerMenu"
           :drawingTool="drawingTool"
@@ -35,6 +33,8 @@
           @handler="colorPickerHandler"
           @color-picked="onColorPicked"
         />
+
+        <canvas class="fordrawing" ref="canvas1" width="512" height="512"/>
       </div><!-- canvas and color palette -->
 
       <div id="right">
@@ -836,24 +836,6 @@ main {
 
   #center canvas, #left canvas {
     box-shadow: 0px 12px 12px -3px rgba(0,0,0,0.3);
-  }
-
-  .colorPicker-menu {
-    height: 0;
-    position: fixed;
-    z-index: 1;
-    overflow: hidden;
-    transition: 0.5s;
-    top: 60px;
-    border-radius: 0 0 35px 35px;
-    background-color: $pink;
-    left: 50%;
-    transform: translate(-50%);
-
-    button {
-      display: block;
-      margin: 0 auto;
-    }
   }
 }
 .bottom-buttons {
