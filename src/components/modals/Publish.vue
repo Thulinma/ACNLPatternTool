@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="publish-modal">
     <h1>Publish Your Design!</h1><!-- header -->
 
     <section>
@@ -113,5 +113,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  $cream: #F7F4E6;
+  #publish-modal {
+    background-color: $cream;
+    padding: 20px;
+  }
 </style>

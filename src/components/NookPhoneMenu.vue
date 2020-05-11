@@ -1,6 +1,6 @@
 <template>
-  <div class="nook-phone">
-    <div class="nook-header">
+  <div id="nook-phone">
+    <div id="nook-header">
       <div>
         <object :data="barsSvg"></object>
         <object :data="nookSvg"></object>
@@ -13,7 +13,7 @@
 
     <h2>Main Menu</h2>
 
-    <div class="nook-buttons">
+    <div id="nook-buttons">
       <img 
         :src="browseSvg"
         @click="goToBrowse"
@@ -103,51 +103,56 @@ $nook-phone-background-color: #F0ECE1;
 $nook-phone-color: #7E7261;
 $nook-phone-header-color: #DCD8CA;
 
-.nook-phone {
+#nook-phone {
   border-radius: 45px;
   background-color: $nook-phone-background-color;
   color: $nook-phone-color;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 550px;
-  width: 320px;
-  padding: 20px 25px;
   font-weight: 800;
+  height: 550px;
+  margin: 50px auto;
+  padding: 20px 25px;
+  width: 320px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 
   h2 {
     margin: 10px 0;
     font-size: 24px;
   }
-}
-.nook-header {
-  color: $nook-phone-header-color;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
 
-  object {
-    height: 25px;
-    width: 25px;
-  }
-}
-.nook-buttons {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  #nook-header {
+    color: $nook-phone-header-color;
+    width: 100%;
 
-  img {
-    border: none;
-    cursor: pointer;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100px;
-    width: 100px;
-    margin: 6px 3px 0;
+    flex-direction: row;
+    justify-content: space-around;
+
+    object {
+      height: 25px;
+      width: 25px;
+    }
+  }
+  
+  #nook-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    img {
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100px;
+      width: 100px;
+      margin: 6px 3px 0;
+    }
   }
 }
 </style>

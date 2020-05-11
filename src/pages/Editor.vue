@@ -38,16 +38,8 @@
       </div><!-- canvas and color palette -->
 
       <div id="right">
-        <div class="topbar-buttons">
-          <button class="menu-button" @click="onMainMenu">
-            <IconBase icon-name="phone" :icon-color="orange" class="svg nav white-circle">
-              <IconPhone />
-            </IconBase><!-- phone svg -->
-            Menu
-            <IconBase icon-name="down arrow" :icon-color="white" class="svg arrow" height="15" width="15">
-              <IconDownArrow />
-            </IconBase><!-- down arrow svg -->
-          </button>
+        <div class="topbar-button">
+          <NavigationButton />
         </div><!-- nav button -->
         <div class="tools-and-colors">
           <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /><!-- tool selection sidebar -->
@@ -317,12 +309,6 @@
         </div>
       </div>
     </ModalContainer>
-
-    <ModalContainer v-if="mainMenu" @modal-close="mainMenu=false">
-      <div class="modal">
-        <NookPhoneMenu v-model="mainMenu"/>
-      </div>
-    </ModalContainer>
     </div>
   </div>
 </template>
@@ -335,8 +321,8 @@ import ImageLoader from '/components/ImageLoader.vue';
 import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
 import IconGenerator from '/components/IconGenerator.vue';
 import ModalContainer from '/components/ModalContainer.vue';
+import NavigationButton from '/components/partials/NavigationButton.vue';
 import ToolSelector from '/components/ToolSelector.vue';
-import NookPhoneMenu from '/components/NookPhoneMenu.vue';
 import ColorPicker from '/components/modals/ColorPicker.vue';
 import DrawingTool from '/libs/DrawingTool';
 import ACNLFormat from '/libs/ACNLFormat';
@@ -367,8 +353,8 @@ export default {
     ACNLQRGenerator,
     IconGenerator,
     ModalContainer,
+    NavigationButton,
     ToolSelector,
-    NookPhoneMenu,
     ColorPicker,
     IconBase,
     IconDownArrow,
@@ -412,7 +398,6 @@ export default {
       multiName: "Local Storage",
       allowMoveToLocal: true,
       convertImage: false,
-      mainMenu: false,
       pubStyleA: "",
       pubStyleB: "",
       pubStyleC: "",
@@ -809,16 +794,11 @@ button, input[type="button"] {
     color: $teal;
   }
 }
-.topbar-buttons {
+.topbar-button {
   display: inline-flex;
   align-items: center;
   justify-content: space-evenly;
   height: 62px;
-
-  .menu-button {
-    background-color: $orange;
-    color: $white;
-  }
 }
 main {
   display: flex;
