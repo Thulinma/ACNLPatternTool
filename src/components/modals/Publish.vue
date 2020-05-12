@@ -1,7 +1,7 @@
 <template>
   <div>
     <button 
-      id="open-modal-button"
+      id="publish-modal-button"
       @click="open=!open">
       Publish
     </button>
@@ -15,7 +15,9 @@
 
           <div>
             <section>
-              <select v-model="patternType">
+              <select 
+                v-model="details.patType"
+                @change="update">
                 <option
                   v-for="(type, index) in patternTypes"
                   :key="index"
@@ -30,9 +32,9 @@
             </section><!-- type, model render -->
 
             <section>
-              <span>Title: <input type="text" maxlength="20" v-model="details.patTitle"></span>
-              <span>Author: <input type="text" maxlength="9" v-model="details.patAuthor"></span>
-              <span>Town: <input type="text" maxlength="9" v-model="details.patTown"></span>
+              <span>Title: <input type="text" maxlength="20" v-model="details.patTitle" @change="update"></span>
+              <span>Author: <input type="text" maxlength="9" v-model="details.patAuthor" @change="update"></span>
+              <span>Town: <input type="text" maxlength="9" v-model="details.patTown" @change="update"></span>
             </section><!-- title, author, town -->
           </div>
 
@@ -82,7 +84,7 @@
 
           <button
             id="submit"
-            :disabled="validForm"
+            :disabled="!validForm"
             @click="publish">
             Publish
           </button>
@@ -109,18 +111,6 @@ export default {
     drawingTool: {
       type: Object,
     },
-    styleTags: {
-      type: Array,
-      default: () => {
-        return [];
-      },
-    },
-    typeTags: {
-      type: Array,
-      default: () => {
-        return [];
-      },
-    },
     patternDetails: {
       type: Object,
       default: () => {
@@ -128,6 +118,7 @@ export default {
           patTitle: 'Empty',
           patAuthor: 'Unknown',
           patTown: 'Unknown',
+          patType: 9,
           selectedTypes: [],
           selectedStyles: [],
         }
@@ -142,7 +133,6 @@ export default {
       styles,
       types,
       patternTypes: this.$props.drawingTool.allTypes,
-      patternType: '',
       selectedTypes: [],
       selectedStyles: [],
 
@@ -160,25 +150,44 @@ export default {
       let selected = tagType == 'style' ? this.details.selectedStyles : this.details.selectedTypes;
 
       if (selected.length <= 3 && !selected.includes(val)) selected.push(val);
+      
+      // update parent with changes
+      this.update();
     },
     update() {
+      this.details.patTitle = this.details.patTitle.trim();
+      this.details.patTown = this.details.patTown.trim();
+      this.details.patAuthor = this.details.patAuthor.trim();
+
       this.$emit('update', {
-        ...details,
+        ...this.details,
       });
     },
     async publish() {
-      // update parent data
-      this.update();
-      // todo: update this to be
-      // let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), [...this.patternDetails.styles], [...this.patternDetails.types] this.patternDetails.NSFW);
-      // let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
+      const title = this.details.patTitle;
+      const town = this.details.patTown;
+      const author = this.details.patAuthor;
 
-      if (uplStatus['upload']) {
-        this.open = false;
-        this.$router.push({hash: `H:${uplStatus['upload']}`});
-      } else if (uplStatus.includes('error')) {
-        window.alert('A pattern just like this already exists in the database!');
-      }
+      const titleCheck = title && title !== 'Empty';
+      const townCheck = town && town !== 'Unknown';
+      const nameCheck = author && author !== 'Unknown';
+
+        if (titleCheck && townCheck && nameCheck){
+          // publish pattern
+          // todo: update this to be
+          // let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), [...this.patternDetails.styles], [...this.patternDetails.types] this.patternDetails.NSFW);
+          // let uplStatus = await origin.upload(btoa(this.drawingTool.toString()), this.pubStyleA, this.pubStyleB, this.pubStyleC, this.pubTypeA, this.pubTypeB, this.pubTypeC, this.pubNSFW);
+
+          if (uplStatus['upload']) {
+            this.open = false;
+            this.$router.push({hash: `H:${uplStatus['upload']}`});
+          } else if (uplStatus.includes('error')) {
+            window.alert('A pattern just like this already exists in the database!');
+          }
+        } else {
+          alert('Please provide a valid pattern name, town name, and player name for this pattern.');
+          return;
+        }
     },
   }
 
@@ -212,7 +221,7 @@ export default {
     }
   }
 
-  #open-modal-button {
+  #publish-modal-button {
     border: none;
     border-radius: 35px;
     box-shadow: rgba(0,0,0,0.2) 0 0 8px;

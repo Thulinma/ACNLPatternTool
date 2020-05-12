@@ -128,8 +128,6 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
 /* svg icons */
-import IconBase from '/components/icons/IconBase.vue';
-import IconImageAdd from '/components/icons/IconImageAdd.vue';
 import IconPalette from '/components/icons/IconPalette.vue';
 import IconPhone from '/components/icons/IconPhone.vue';
 import IconSave from '/components/icons/IconSave.vue';
@@ -213,7 +211,19 @@ export default {
     },
     updatePatternData(e, data) {
       this.patternDetails = {
+        ...this.patternDetails,
         ...data,
+      }
+
+      // todo: can we make drawingTool accept an object and update all of these that way?
+      const patTown = this.patternDetails.patTown;
+      const patAuthor = this.patternDetails.patAuthor;
+      this.drawingTool.title = this.patternDetails.patTitle;
+      if (this.drawingTool.creator[0] !== patAuthor) this.drawingTool.creator = patAuthor;
+      if (this.drawingTool.town[0] !== patTown) this.drawingTool.town = patTown;
+      if (this.drawingTool.patternType !== this.patternDetails.patType){
+        this.drawingTool.patternType = this.patternDetails.patType;
+        this.patTypeName = this.drawingTool.typeInfo.name;
       }
     },
     onOpenLocal(){
@@ -390,11 +400,11 @@ export default {
     this.drawingTool.onLoad(this.onLoad);
     if (this.$router.currentRoute.hash.length > 1){
       const hash = this.$router.currentRoute.hash.substring(1);
-      if (hash.startsWith("H:")){
+      if (hash.startsWith("H:")) {
         origin.view(hash.substring(2)).then((r)=>{
           this.drawingTool.load(r);
         });
-      }else{
+      } else {
         this.drawingTool.load(lzString.decompressFromEncodedURIComponent(hash));
       }
     }
@@ -403,13 +413,14 @@ export default {
       this.drawingTool.render();
     }
 
+    // todo: can make this more vue-like
     document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.key === 'Z'){
+      if (e.ctrlKey && e.key === 'Z') {
         this.drawingTool.redo();
         e.preventDefault();
         return;
       }
-      if (e.ctrlKey && e.key === 'z'){
+      if (e.ctrlKey && e.key === 'z') {
         this.drawingTool.undo();
         e.preventDefault();
         return;
