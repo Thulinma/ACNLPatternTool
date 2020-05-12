@@ -1,33 +1,65 @@
 <template>
-            <button @click="onQROpen">
-              <IconBase icon-name="qr" :icon-color="brown" class="svg nav white-circle">
-                <IconQRCode />
-              </IconBase><!-- qr code svg -->
-              Generate QR Code
-            </button><!-- generate QR code button -->
-      <!-- <ModalContainer v-if="qrCode" @modal-close="qrCode=false">
-      <template #window><div class="modal">
-        <div class="modal-header">
-          <IconBase icon-name="qr" :icon-color="white" height=20 width=20>
-            <IconQRCode />
-          </IconBase>
-          Generate QR Code(s)
+  <div>
+    <button @click="open!=open">
+      <IconBase icon-name="qr" icon-color="#7E7261" class="svg nav white-circle">
+        <IconQRCode />
+      </IconBase><!-- qr code svg -->
+      Generate QR Code
+    </button><!-- generate QR code button -->
+
+    <ModalContainer v-if="open" @modal-close="open=false">
+      <template #window>
+        <div>
+          <h1>
+            <IconBase icon-name="qr" :icon-color="white" height=20 width=20>
+              <IconQRCode />
+            </IconBase>
+            Generate QR Code(s)
+          </h1>
+
+          <ACNLQRGenerator :pattern="pattern" />
+          <button @click="downloadPNG">Save Image</button>
         </div>
-        <div class="modal-window modal-centered">
-          <ACNLQRGenerator :pattern="qrCode" />
-          <button @click="downPNG">Save Image</button>
-        </div>
-      </div></template>
-    </ModalContainer> -->
+      </template>
+    </ModalContainer> 
+  </div>
 </template>
 
 <script>
-    // onQROpen: function() {
-    //   this.closeColorPicker();
-    //   const patStr = this.drawingTool.toString();
-    //   this.qrCode = patStr;
-    // },
+/* libs */
+import generateACNLQR from "/libs/ACNLQRGenerator";
+
+/* svg icons */
+import IconBase from '/components/icons/IconBase.vue';
+import IconQRCode from '/components/icons/IconQRCode.vue';
+
 export default {
-  
+  name: 'QRCode',
+  components: {
+    IconBase,
+    IconQRCode,
+  },
+  props: {
+    drawingTool: {
+      type: Object,
+    }
+  },
+  data: function() {
+    return {
+      open: false,
+      pattern: undefined,
+    }
+  },
+  methods: {
+    async downPNG(){
+      const img = await generateACNLQR(this.drawingTool);
+      saveAs(img, `${this.drawingTool.title}.png`);
+    },
+  },
+  watch: {
+    open: function() {
+      this.pattern = this.drawingTool.toString();
+    }
+  }
 }
 </script>

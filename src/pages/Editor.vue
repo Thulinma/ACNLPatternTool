@@ -132,10 +132,9 @@ import IconPalette from '/components/icons/IconPalette.vue';
 import IconPhone from '/components/icons/IconPhone.vue';
 import IconSave from '/components/icons/IconSave.vue';
 import IconScan from '/components/icons/IconScan.vue';
-import IconQRCode from '/components/icons/IconQRCode.vue';
 
 export default {
-  name: "Editor",
+  name: 'Editor',
   components: {
     Palette,
     ThreeDRender,
@@ -189,10 +188,6 @@ export default {
       pickPatterns: false,
       multiName: "Local Storage",
       allowMoveToLocal: true,
-      brown: '#7E7261',
-      teal: '#57B7A8',
-      orange: '#DC8D69',
-      white: '#FFFFFF',
       origin,
       acnlMode: false,
       colorPicker: false,
@@ -296,10 +291,6 @@ export default {
         titles.push(ancl_title);
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
-    },
-    async downPNG(){
-      const img = await generateACNLQR(this.drawingTool);
-      saveAs(img, this.drawingTool.title+".png");
     },
     async downTex(){
       const img = this.$refs.canvas3.toDataURL("image/png");

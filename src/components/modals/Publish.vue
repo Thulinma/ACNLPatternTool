@@ -102,7 +102,7 @@ import ThreeDRender from '/components/ThreeDRender.vue';
 import origin from '/libs/origin';
 
 export default {
-  name: "Publish",
+  name: 'Publish',
   components: {
     ModalContainer,
     ThreeDRender,
