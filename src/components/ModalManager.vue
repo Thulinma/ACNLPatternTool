@@ -1,8 +1,6 @@
 <template>
-  <div class="modal-manager">
-    <portal-target name="ModalManager">
-    </portal-target>
-  </div>
+  <portal-target name="ModalManager">
+  </portal-target>
 </template>
 
 <script>

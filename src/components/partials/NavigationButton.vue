@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import NookPhoneMenu from '/components/NookPhoneMenu.vue';
+import NookPhoneMenu from '/components/partials/NookPhoneMenu.vue';
 import ModalContainer from '/components/ModalContainer.vue';
 
 /* svg icons */
