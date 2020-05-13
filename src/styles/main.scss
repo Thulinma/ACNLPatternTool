@@ -1,0 +1,14 @@
+/* 
+Global variable and mixin definitions 
+
+This file is prepended to all "style" sections in Vue
+components to make the use of global variables both 
+possible and easy to use.
+
+Do not add (or import) styles to this file as it will
+lead to duplication.
+
+*/
+
+@import './mixins';
+@import './variables';

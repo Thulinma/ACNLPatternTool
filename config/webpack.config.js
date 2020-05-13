@@ -65,6 +65,9 @@ const scssRuleDev = {
       loader: 'sass-loader',
       options: {
         sourceMap: true,
+        prependData: `
+          @import "src/styles/main.scss";
+        `
       }
     }
   ]
