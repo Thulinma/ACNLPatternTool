@@ -9,9 +9,10 @@
           </div><!-- flat canvases -->
 
           <PatternInfo
-            @update="updatePatternData"
+            @update="update"
             :types="drawingTool.allTypes"
             :pattern-details="patternDetails"
+            :drawing-tool="drawingTool"
           />
 
           <div class="render-preview">
@@ -75,7 +76,7 @@
             <button @click="downTex">Save Texture</button>
 
             <Publish
-              @update="updatePatternData"
+              @update="update"
               :drawing-tool="drawingTool"
               :pattern-details="patternDetails"
             /><!-- publish pattern to database button -->
@@ -223,12 +224,18 @@ export default {
       }
       alert('This one has to stay transparent. :)');
     },
-    updatePatternData(data) {
-      console.log('hello!')
-      this.patternDetails = {
-        ...this.patternDetails,
-        ...data,
+    update(data) {
+      if (data.details) {
+        this.patternDetails = {
+          ...this.patternDetails,
+          ...data.details,
+        }
       }
+
+      if (data.storedAuthorHuman) {
+        this.storedAuthorHuman = data.storedAuthorHuman;
+      }
+
       // todo: can we make drawingTool accept an object and update all of these that way?
       const patTown = this.patternDetails.patTown;
       const patAuthor = this.patternDetails.patAuthor;
@@ -388,15 +395,6 @@ export default {
     },
     closePicks: function() {
       this.pickPatterns = false;
-    },
-    saveAuthor() {
-      this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
-      localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
-    },
-    loadAuthor() {
-      this.drawingTool.authorStrict = localStorage.getItem('author_acnl');
-      this.patAuthor = this.drawingTool.creator[0];
-      this.patTown = this.drawingTool.town[0];
     },
   },
   mounted: function() {

@@ -94,6 +94,9 @@ export default {
           selectedStyles: [],
         }
       },
+    },
+    drawingTool: {
+      type: Object,
     }
   },
   data: function() {
@@ -113,11 +116,21 @@ export default {
       this.details.patAuthor = this.details.patAuthor.trim();
 
       this.$emit('update', {
-        ...this.details,
+        details: {
+          ...this.details,
+        },
+        ...this.storedAuthorHuman,
       });
     },
-    saveAuthor() {},
-    loadAuthor() {},
+    saveAuthor() {
+      this.storedAuthorHuman = `${this.drawingTool.creator[0]} / ${this.drawingTool.town[0]}`;
+      localStorage.setItem('author_acnl', this.drawingTool.authorStrict);
+    },
+    loadAuthor() {
+      this.drawingTool.authorStrict = localStorage.getItem('author_acnl');
+      this.patAuthor = this.drawingTool.creator[0];
+      this.patTown = this.drawingTool.town[0];
+    },
   }
 }
 </script>

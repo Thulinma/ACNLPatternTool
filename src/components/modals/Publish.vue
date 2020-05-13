@@ -160,7 +160,9 @@ export default {
       this.details.patAuthor = this.details.patAuthor.trim();
 
       this.$emit('update', {
-        ...this.details,
+        details: {
+          ...this.details,
+        }
       });
     },
     async publish() {
