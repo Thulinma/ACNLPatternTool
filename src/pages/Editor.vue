@@ -7,6 +7,9 @@
             <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
           </div><!-- flat canvases -->
+          <PatternInfo
+            :types="drawingTool.allTypes"
+            :pattern-details="patternDetails"/>
           <div class="render-preview">
             <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
           </div><!-- 3D preview -->
@@ -31,7 +34,7 @@
       </div><!-- canvas and color palette -->
 
       <div id="right">
-        <NavigationButton id="topbar-button"/>
+        <NavigationButton id="topbar-button"/><!-- navigation menu button -->
 
         <div class="tools-and-colors">
           <ToolSelector @newtool="toolChange" @newtoolalt="toolChangeAlt" /><!-- tool selection sidebar -->
@@ -51,8 +54,6 @@
               Open Color Editor
             </button><!-- open palette button -->
 
-            <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad" />
-
             <button
               id="download-acnl"
               :value="$tc('editor.download')"
@@ -67,16 +68,23 @@
 
             <button @click="onOpenLocal">Open Storage</button><!-- open local storage button -->
 
+            <button @click="downTex">Save Texture</button>
+
             <Publish
               :update="updatePatternData"
               :drawingTool="drawingTool"
               :patternDetails="patternDetails"/><!-- publish pattern to database button -->
 
-            <button @click="downTex">Save Texture</button>
+            <ConvertImage
+              :type="patternDetails.patType"/>
+
+
           </div><!-- side bar button -->
         </div><!-- tools and buttons container -->
       </div><!-- tools and buttons -->
     </main><!-- main editor parts -->
+
+    <FileLoader v-show="false" ref="fileloader" @qr-load="extLoad" @qr-multiload="extMultiLoad" />
 
     <ModalContainer v-if="pickPatterns" @modal-close="closePicks">
       <div class="modal">
@@ -112,6 +120,8 @@ import ToolSelector from '/components/ToolSelector.vue';
 
 /* modals */
 import ColorPicker from '/components/modals/ColorPicker.vue';
+import ConvertImage from '/components/modals/ConvertImage.vue';
+import PatternInfo from '/components/modals/PatternInfo.vue';
 import Publish from '/components/modals/Publish.vue';
 
 /* partials */
@@ -128,6 +138,7 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
 /* svg icons */
+import IconBase from '/components/icons/IconBase.vue';
 import IconPalette from '/components/icons/IconPalette.vue';
 import IconPhone from '/components/icons/IconPhone.vue';
 import IconSave from '/components/icons/IconSave.vue';
@@ -145,15 +156,15 @@ export default {
     ModalContainer,
     NavigationButton,
     ToolSelector,
+    ConvertImage,
     ColorPicker,
+    PatternInfo,
     Publish,
     IconBase,
-    IconImageAdd,
     IconPalette,
     IconPhone,
     IconSave,
     IconScan,
-    IconQRCode,
   },
   beforeRouteUpdate: function (to, from, next) {
     if (to.hash.length > 1) {
@@ -191,6 +202,11 @@ export default {
       origin,
       acnlMode: false,
       colorPicker: false,
+
+      brown: '#7E7261',
+      teal: '#57B7A8',
+      orange: '#DC8D69',
+      white: '#FFFFFF',
     };
   },
   methods: {
@@ -221,7 +237,7 @@ export default {
         this.patTypeName = this.drawingTool.typeInfo.name;
       }
     },
-    onOpenLocal(){
+    onOpenLocal() {
       this.closeColorPicker();
       let tmp = {};
       for (const i in localStorage){
@@ -233,7 +249,7 @@ export default {
       this.pickPatterns = tmp;
       this.allowMoveToLocal = false;
     },
-    zipPicksAsACNL(){
+    zipPicksAsACNL() {
       let zip = new JSZip();
       const titles = [];
       for (const i in this.pickPatterns){
@@ -252,7 +268,7 @@ export default {
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
-    async zipPicksAsPNG(){
+    async zipPicksAsPNG() {
       let zip = new JSZip();
       const titles = [];
       for (const i in this.pickPatterns){
@@ -270,7 +286,7 @@ export default {
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
-    async zipPicksAsBoth(){
+    async zipPicksAsBoth() {
       let zip = new JSZip();
       const titles = [];
       for (const i in this.pickPatterns){
@@ -292,28 +308,28 @@ export default {
       }
       zip.generateAsync({type:"blob"}).then((d)=>{saveAs(d, "patterns.zip");});
     },
-    async downTex(){
+    async downTex() {
       const img = this.$refs.canvas3.toDataURL("image/png");
       saveAs(img, this.drawingTool.title+"_texture.png");
     },
-    async onOpenDB(){
+    async onOpenDB() {
       this.$router.push("/browse");
     },
-    onLocalSave(){
+    onLocalSave() {
       localStorage.setItem("acnl_"+this.drawingTool.fullHash, lzString.compressToUTF16(this.drawingTool.toString()));
     },
-    picksToLocal(){
+    picksToLocal() {
       for (const i in this.pickPatterns){
         localStorage.setItem("acnl_"+this.pickPatterns[i].fullHash, lzString.compressToUTF16(this.pickPatterns[i].toString()));
       }
     },
-    toolChange(newTool){
+    toolChange(newTool) {
       this.drawingTool.drawHandler = newTool;
     },
-    toolChangeAlt(newTool){
+    toolChangeAlt(newTool) {
       this.drawingTool.drawHandlerAlt = newTool;
     },
-    downACNL(){
+    downACNL() {
       const blob = new Blob([this.drawingTool.toBytes()], {"type": "application/octet-stream"});
       let ext = ".acnl";
       if (this.drawingTool.pattern instanceof ACNHFormat){ext = ".acnh";}
@@ -332,7 +348,7 @@ export default {
       this.drawingTool.onColorChange();
       console.log(`changed current color: ${idx}`);
     },
-    onLoad: async function(t){
+    onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
       this.patType = this.drawingTool.patternType;
       this.patTypeName = this.drawingTool.typeInfo.name;
@@ -363,18 +379,18 @@ export default {
       this.pickPatterns = data;
       this.allowMoveToLocal = true;
     },
-    pickPattern: function(p){
+    pickPattern: function(p) {
       this.extLoad(p);
       this.pickPatterns = false;
     },
     closePicks: function() {
       this.pickPatterns = false;
     },
-    saveAuthor(){
+    saveAuthor() {
       this.storedAuthorHuman = this.drawingTool.creator[0]+" / "+this.drawingTool.town[0];
       localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
     },
-    loadAuthor(){
+    loadAuthor() {
       this.drawingTool.authorStrict = localStorage.getItem('author_acnl');
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];

@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import ModalContainer from '/components/ModalContainer.vue';
+
 export default {
   name: "PatternInfo",
     props: {
@@ -71,9 +73,30 @@ export default {
       },
     }
   },
+  components: {
+    ModalContainer,
+  },
+  props: {
+    types: {
+      type: Array,
+    },
+    patternDetails: {
+      type: Object,
+      default: () => {
+        return {
+          patTitle: 'Empty',
+          patAuthor: 'Unknown',
+          patTown: 'Unknown',
+          patType: 9,
+          selectedTypes: [],
+          selectedStyles: [],
+        }
+      },
+    }
+  },
   data: function() {
     return {
-      patternTypes: this.$props.drawingTool.allTypes,
+      patternTypes: this.$props.types,
       details: {
         ...this.$props.patternDetails,
       },

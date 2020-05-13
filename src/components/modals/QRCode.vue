@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import ModalContainer from '/components/ModalContainer.vue';
+
 /* libs */
 import generateACNLQR from "/libs/ACNLQRGenerator";
 
@@ -36,6 +38,7 @@ import IconQRCode from '/components/icons/IconQRCode.vue';
 export default {
   name: 'QRCode',
   components: {
+    ModalContainer,
     IconBase,
     IconQRCode,
   },

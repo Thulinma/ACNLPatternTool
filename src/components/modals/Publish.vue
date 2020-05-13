@@ -13,7 +13,7 @@
         <div id="publish-modal">
           <h1>Publish Your Design!</h1><!-- header -->
 
-          <div>
+          <div id="top-section">
             <section>
               <select 
                 v-model="details.patType"
@@ -32,13 +32,13 @@
             </section><!-- type, model render -->
 
             <section>
-              <span>Title: <input type="text" maxlength="20" v-model="details.patTitle" @change="update"></span>
-              <span>Author: <input type="text" maxlength="9" v-model="details.patAuthor" @change="update"></span>
-              <span>Town: <input type="text" maxlength="9" v-model="details.patTown" @change="update"></span>
+              Title: <input type="text" maxlength="20" v-model="details.patTitle" @change="update">
+              Author: <input type="text" maxlength="9" v-model="details.patAuthor" @change="update">
+              Town: <input type="text" maxlength="9" v-model="details.patTown" @change="update">
             </section><!-- title, author, town -->
           </div>
 
-          <section>
+          <section id="bottom-section">
             <div id="style-tags">
               <label>Style Tags</label>
 
@@ -217,11 +217,41 @@ export default {
     width: 800px;
 
     h1 {
+      padding: 15px 0;
       text-align: center;
     }
+
+    input {
+      margin: 8px 0;
+      padding: 8px 12px;
+    }
+
+    #top-section {
+      width: 100%;
+
+      display: inline-flex;
+      align-items: center;
+
+      section {
+        padding: 0 20px;
+        min-width: 300px;
+
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    #bottom-section {
+      width: 100%;
+
+      div {
+        min-width: 50%;
+      }
+    }
+
   }
 
-  #publish-modal-button {
+  button {
     border: none;
     border-radius: 35px;
     box-shadow: rgba(0,0,0,0.2) 0 0 8px;

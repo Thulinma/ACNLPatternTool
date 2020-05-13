@@ -23,12 +23,16 @@
 </template>
 
 <script>
+import ModalContainer from '/components/ModalContainer.vue';
+
+/* svg icons */
 import IconBase from '/components/icons/IconBase.vue';
 import IconImageAdd from '/components/icons/IconImageAdd.vue';
 
 export default {
-  name: "Convert",
+  name: "ConvertImage",
   components: {
+    ModalContainer,
     IconBase,
     IconImageAdd,
   },
@@ -40,6 +44,7 @@ export default {
   },
   data: function() {
     return {
+      open: false,
       brown: '#7E7261',
       teal: '#57B7A8',
       orange: '#DC8D69',
@@ -56,7 +61,7 @@ export default {
         this.allowMoveToLocal = true;
       }
 
-      this,open=false;
+      this.open=false;
     }
   }
 }
