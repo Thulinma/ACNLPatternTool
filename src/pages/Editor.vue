@@ -7,9 +7,13 @@
             <canvas class="fordrawing" ref="canvas2" width="128" height="128"/>
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
           </div><!-- flat canvases -->
+
           <PatternInfo
+            @update="updatePatternData"
             :types="drawingTool.allTypes"
-            :pattern-details="patternDetails"/>
+            :pattern-details="patternDetails"
+          />
+
           <div class="render-preview">
             <ThreeDRender :width="196" :height="300" :drawing-tool="drawingTool"/>
           </div><!-- 3D preview -->
@@ -71,14 +75,15 @@
             <button @click="downTex">Save Texture</button>
 
             <Publish
-              :update="updatePatternData"
-              :drawingTool="drawingTool"
-              :patternDetails="patternDetails"/><!-- publish pattern to database button -->
+              @update="updatePatternData"
+              :drawing-tool="drawingTool"
+              :pattern-details="patternDetails"
+            /><!-- publish pattern to database button -->
 
             <ConvertImage
-              :type="patternDetails.patType"/>
-
-
+              :drawing-tool="drawingTool"
+              :type="patternDetails.patType"
+            />
           </div><!-- side bar button -->
         </div><!-- tools and buttons container -->
       </div><!-- tools and buttons -->
@@ -110,7 +115,6 @@
 <script>
 import ACNLQRGenerator from '/components/ACNLQRGenerator.vue';
 import IconGenerator from '/components/IconGenerator.vue';
-import ImageLoader from '/components/ImageLoader.vue';
 import FileLoader from '/components/FileLoader.vue';
 import ModalContainer from '/components/ModalContainer.vue';
 import Palette from '/components/Palette.vue';
@@ -150,7 +154,6 @@ export default {
     Palette,
     ThreeDRender,
     FileLoader,
-    ImageLoader,
     ACNLQRGenerator,
     IconGenerator,
     ModalContainer,
@@ -220,19 +223,19 @@ export default {
       }
       alert('This one has to stay transparent. :)');
     },
-    updatePatternData(e, data) {
+    updatePatternData(data) {
+      console.log('hello!')
       this.patternDetails = {
         ...this.patternDetails,
         ...data,
       }
-
       // todo: can we make drawingTool accept an object and update all of these that way?
       const patTown = this.patternDetails.patTown;
       const patAuthor = this.patternDetails.patAuthor;
       this.drawingTool.title = this.patternDetails.patTitle;
       if (this.drawingTool.creator[0] !== patAuthor) this.drawingTool.creator = patAuthor;
       if (this.drawingTool.town[0] !== patTown) this.drawingTool.town = patTown;
-      if (this.drawingTool.patternType !== this.patternDetails.patType){
+      if (this.drawingTool.patternType !== this.patternDetails.patType) {
         this.drawingTool.patternType = this.patternDetails.patType;
         this.patTypeName = this.drawingTool.typeInfo.name;
       }
