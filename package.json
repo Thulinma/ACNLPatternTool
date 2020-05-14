@@ -46,7 +46,7 @@
     "lodash": "^4.17.15",
     "lz-string": "^1.4.4",
     "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "portal-vue": "^2.1.7",
     "reset-css": "^5.0.1",
@@ -69,6 +69,6 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.0"
   }
 }
