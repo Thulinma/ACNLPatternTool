@@ -20,13 +20,13 @@
           <ImageLoader :pattern-type="type" @converted="convert"/>
         </div>
       </template>
-    </ModalContainer> 
+    </ModalContainer>
   </div>
 </template>
 
 <script>
 import ImageLoader from '/components/ImageLoader.vue';
-import ModalContainer from '/components/ModalContainer.vue';
+import ModalContainer from '~/components/positioned/ModalContainer';
 
 /* svg icons */
 import IconBase from '/components/icons/IconBase.vue';

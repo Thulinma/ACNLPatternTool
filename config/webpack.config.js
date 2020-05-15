@@ -11,6 +11,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
 const env = require('../etc/env'); // assume already loaded, checked
 const {
+  pathToClientSrc,
   pathToBuild,
   pathToPublicIndex,
   pathToFavicon,
@@ -56,6 +57,7 @@ const vueRule = {
   loader: 'vue-loader'
 };
 
+
 const scssRuleDev = {
   test: /\.s?css$/i,
   use: [
@@ -65,6 +67,9 @@ const scssRuleDev = {
       loader: 'sass-loader',
       options: {
         sourceMap: true,
+        sassOptions: {
+          includePaths: [pathToClientSrc]
+        }
       }
     }
   ]
@@ -81,6 +86,7 @@ const scssRuleProd = {
       options: {
         sourceMap: false,
         sassOptions: {
+          ...scssRuleDev.use[2].options.sassOptions,
           outputStyle: 'compressed',
         }
       }
@@ -166,7 +172,7 @@ const rulesProd = [
 ];
 
 const fonts = [
-  { family: "Nunito", variants: ["700", "800"] },
+  { family: "Nunito", variants: ["600", "700", "800"] },
 ];
 
 const htmlWebpackOptions = {
@@ -224,6 +230,7 @@ const pluginsProd = [
   }),
 ];
 
+
 const optimizatonProd = {
   minimizer: [
     new TerserPlugin({
@@ -238,6 +245,13 @@ const optimizatonProd = {
   ],
 };
 
+const resolve = {
+  extensions: [
+    ".js",
+    ".vue"
+  ],
+};
+
 const webpackDevConfig = {
   mode: "development",
   devtool: "source-map",
@@ -246,7 +260,8 @@ const webpackDevConfig = {
   module: {
     rules: rulesDev
   },
-  plugins: pluginsDev
+  plugins: pluginsDev,
+  resolve
 };
 
 const webpackProdConfig = {
@@ -262,6 +277,7 @@ const webpackProdConfig = {
   // ignore webpack performance warnings
   // not a good gauge
   performance: false,
+  resolve
 };
 
 // default setting, set by .env

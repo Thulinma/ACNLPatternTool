@@ -1,12 +1,15 @@
 @import "reset-css";
+
 $main-font: 'Nunito';
-$bg-color: #FFFAE5;
+$bg-color: #f7f4e6;
 $color: #7E7261;
 $link-color: #E98394;
 $link-hover: #EC637A;
 
 html {
   height: 100%;
+  overflow-y: scroll;
+  font-size: 16px;
 }
 body {
   position: relative;
@@ -16,7 +19,9 @@ body {
   height: 100%;
   background-color: $bg-color;
   color: $color;
+
   font-family: $main-font;
+  font-weight: 700;
 }
 a {
   color: $link-color;

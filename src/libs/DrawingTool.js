@@ -175,7 +175,7 @@ class DrawingTool{
     this.render();
     return true;
   }
-  
+
   redo(){
     if (!this.redoHistory.length){return false};
     this.pushUndo();
@@ -186,7 +186,7 @@ class DrawingTool{
     this.render();
     return true;
   }
-  
+
   /// Gets this.currentColor translated into a HTML color
   get color(){
     return this.getPalette(this.currentColor);
@@ -318,7 +318,7 @@ class DrawingTool{
     }
     return ACNLFormat.typeInfo;
   }
-  
+
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
   findRGB(c){
@@ -549,7 +549,7 @@ class DrawingTool{
       }
     }
     this.renderTargets[0].drawCallback();
-    
+
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width, this.pattern.texWidth);
@@ -620,6 +620,14 @@ class DrawingTool{
       }
     }else if ((typeof f) == "function"){
       this.handleColorChange.push(f);
+    }
+  }
+
+  // removes a handler
+  onColorChangeRemove(f = null) {
+    if ((typeof f) === "function") {
+      const idx = this.handleColorChange.indexOf(f);
+      this.handleColorChange.splice(idx, 1);
     }
   }
 

@@ -6,8 +6,8 @@
       Change Details
   </button>
 
-  <ModalContainer 
-    v-if="open" 
+  <ModalContainer
+    v-if="open"
     @modal-close="open=false">
     <template #window>
       <div id="info-modal">
@@ -18,7 +18,7 @@
           <span>Author: <input type="text" maxlength="9" v-model="details.patAuthor" @change="update"></span>
           <span>Town: <input type="text" maxlength="9" v-model="details.patTown" @change="update"></span>
 
-          <select 
+          <select
             v-model="details.patType"
             @change="update">
             <option
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import ModalContainer from '/components/ModalContainer.vue';
+import ModalContainer from '~/components/positioned/ModalContainer';
 
 export default {
   name: "PatternInfo",

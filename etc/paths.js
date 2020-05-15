@@ -1,7 +1,8 @@
 const path = require('path');
 
+const parent = path.resolve(__dirname);
 // path to directories
-const pathToRoot = process.cwd();
+const pathToRoot = path.resolve(parent, "..");
 const pathToConfig = path.resolve(pathToRoot, "config");
 const pathToEtc = path.resolve(pathToRoot, "etc");
 const pathToPublic = path.resolve(pathToRoot, "public");

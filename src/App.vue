@@ -1,26 +1,31 @@
 <template>
-  <div id=app>
+  <div id="app" :class="classes">
     <router-view></router-view>
+    <NavigationButton/>
     <ModalManager/>
   </div>
 </template>
 
 <script>
-import ModalManager from '/components/ModalManager.vue';
+import NavigationButton from '~/components/positioned/NavigationButton.vue';
+import ModalManager from '~/components/positioned/ModalManager.vue';
+import { isMobile } from '~/utils/if-env';
 
 export default {
   name: "App",
   components: {
-    ModalManager
+    ModalManager,
+    NavigationButton
   },
 }
 </script>
 
 <style lang="scss" scoped>
-#app {
+.app {
   position: relative;
   top: 0;
   left: 0;
+  width: 100%;
   height: 100%;
 }
 </style>

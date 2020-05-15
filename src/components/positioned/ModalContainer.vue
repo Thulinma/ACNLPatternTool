@@ -1,7 +1,24 @@
 <template>
   <portal to="ModalManager">
-    <div class="modal-container" @click.self="onOverlayClick($event)">
-      <slot></slot>
+    <div class="modal">
+      <!-- window content -->
+      <slot
+        name="window">
+      </slot>
+
+      <!-- provided overlayed -->
+      <slot
+        v-if="!!$slots.overlay"
+        name="overlay"
+        @click.self="onOverlayClick($event)">
+      </slot>
+
+      <!-- default overlay -->
+      <div
+        v-if="!$slots.overlay"
+        class="overlay--default"
+        @click.self="onOverlayClick($event)">
+      </div>
     </div>
   </portal>
 </template>
@@ -45,16 +62,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-container{
-  position: fixed;
+@import "styles/colors";
+
+.modal {
+  position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,.8);
-  display: table-cell;
-  vertical-align: middle;
+  z-index: 999;
+}
+
+.window {
+  display: inline-block;
+  z-index: 999;
+}
+
+.overlay--default {
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  background-color: $silver-sand;
+  opacity: 0.5;
   overflow: auto;
-  z-index: 10;
+  z-index: 0;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>

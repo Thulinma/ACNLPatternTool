@@ -21,12 +21,12 @@
           <button @click="downloadPNG">Save Image</button>
         </div>
       </template>
-    </ModalContainer> 
+    </ModalContainer>
   </div>
 </template>
 
 <script>
-import ModalContainer from '/components/ModalContainer.vue';
+import ModalContainer from '~/components/positioned/ModalContainer';
 
 /* libs */
 import generateACNLQR from "/libs/ACNLQRGenerator";

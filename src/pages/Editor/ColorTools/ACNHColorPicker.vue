@@ -5,7 +5,7 @@
       <div class="slider-container">
         <input type="range" id="hue" min="0" max="30" ref="hue"
           :style="hueGradient"
-          @change="setSliderColors"> 
+          @change="setSliderColors">
       </div>
     </section><!-- hue -->
 
@@ -58,9 +58,9 @@ export default {
     setSliderColors: function() {
       // color of draw tool will be in HSV format
       // increments based on slots in sliders in ACNH
-      // H = hue 1 - 30 
-      // S = vividness 1 - 15 
-      // V = brightness 1 - 15 
+      // H = hue 1 - 30
+      // S = vividness 1 - 15
+      // V = brightness 1 - 15
       const hue = this.$refs.hue.value;
       const vividness = this.$refs.vividness.value;
       const brightness = this.$refs.brightness.value;
@@ -92,7 +92,7 @@ export default {
       }
     },
     setSliderPosition: function(currentColor) {
-      // when user switches between colors on the palettes, 
+      // when user switches between colors on the palettes,
       // we need to display the correct colors on the sliders
       // as well as have the sliders in the right positions
 
@@ -112,7 +112,7 @@ export default {
     },
   },
   mounted: function() {
-    this.drawingTool.onColorChange(() => { 
+    this.drawingTool.onColorChange(() => {
       this.setSliderPosition(this.drawingTool.color);
       this.setSliderColors();
     });
@@ -133,10 +133,10 @@ export default {
   input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    width: 100%; 
+    width: 100%;
     height: 15px;
     border-radius: 15px;
-    
+
     &:focus {
       outline: none;
     }

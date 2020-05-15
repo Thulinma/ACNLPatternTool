@@ -45,7 +45,7 @@ export default {
       this.$router.push({ path: `/faq` });
     },
     goToChanges: function() {
-      this.$router.push({ path: `/changelog` });
+      this.$router.push({ path: `/updates` });
     },
   }
 }

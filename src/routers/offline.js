@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Editor from '/pages/Editor.vue';
+import Editor from '/pages/Editor';
 Vue.use(VueRouter);
 
 const mode = "history";

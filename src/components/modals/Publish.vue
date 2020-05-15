@@ -1,13 +1,13 @@
 <template>
   <div>
-    <button 
+    <button
       id="publish-modal-button"
       @click="open=!open">
       Publish
     </button>
 
     <ModalContainer
-      v-if="open" 
+      v-if="open"
       @modal-close="open=false">
       <template #window>
         <div id="publish-modal">
@@ -15,7 +15,7 @@
 
           <div id="top-section">
             <section>
-              <select 
+              <select
                 v-model="details.patType"
                 @change="update">
                 <option
@@ -95,8 +95,8 @@
 </template>
 
 <script>
-import ModalContainer from '/components/ModalContainer.vue';
-import ThreeDRender from '/components/ThreeDRender.vue';
+import ModalContainer from '~/components/positioned/ModalContainer';
+import ThreeDRender from '/components/ThreeDRender';
 
 /* libs */
 import origin from '/libs/origin';
@@ -150,7 +150,7 @@ export default {
       let selected = tagType == 'style' ? this.details.selectedStyles : this.details.selectedTypes;
 
       if (selected.length <= 3 && !selected.includes(val)) selected.push(val);
-      
+
       // update parent with changes
       this.update();
     },
