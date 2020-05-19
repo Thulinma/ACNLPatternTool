@@ -22,7 +22,15 @@
 
     <div class="editor--middle-components">
       <!-- need this to control canvas ratio -->
-      <div class="editor--previews"></div>
+      <div class="editor--previews">
+        <div>
+          <canvas class="editor--preview" width=256 height=256 ref="preview" />
+        </div>
+        
+        <div>
+          <ThreeDRender :width="294" :height="450" :drawingTool="drawingTool" />
+        </div>
+      </div>
       <div class="editor--canvas-container">
         <canvas class="editor--canvas" width=800 height=800 ref="main" />
       </div>
@@ -58,6 +66,7 @@ import JSZip from "jszip";
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 
 export default {
@@ -65,6 +74,7 @@ export default {
   components: {
     ColorTools,
     ModalContainer,
+    ThreeDRender,
     Toolbar
   },
   beforeRouteUpdate: function(to, from, next) {
@@ -111,11 +121,6 @@ export default {
       multiName: "Local Storage",
       allowMoveToLocal: true,
       origin,
-
-      brown: "#7E7261",
-      teal: "#57B7A8",
-      orange: "#DC8D69",
-      white: "#FFFFFF"
     };
   },
   methods: {
@@ -144,7 +149,6 @@ export default {
       }
     },
     onOpenLocal: function() {
-      this.closeColorPicker();
       let tmp = {};
       for (const i in localStorage) {
         if (i.startsWith("acnl_")) {
@@ -335,6 +339,7 @@ export default {
       this.storedAuthorHuman = `${this.drawingTool.creator[0]} / ${this.drawingTool.town[0]}`;
     }
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
+    this.drawingTool.addCanvas(this.$refs.preview);
     if (this.$router.currentRoute.hash.length > 1) {
       const hash = this.$router.currentRoute.hash.substring(1);
       if (hash.startsWith("H:")) {
@@ -418,6 +423,10 @@ export default {
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: repeat(1, auto);
+
+  div {
+    margin: auto;
+  }
 }
 
 .editor--canvas {

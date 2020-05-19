@@ -4,7 +4,8 @@
     v-show="model"
     ref="canvas3d"
     :width="width"
-    :height="height"/>
+    :height="height"
+  />
 </template>
 
 <script>
@@ -37,7 +38,7 @@ import {
 } from '@three/controls/OrbitControls';
 import injected from "/utils/injected";
 
-const scale = 35;
+const scale = 50;
 
 const loader = new GLTFLoader();
 const texLdr = new TextureLoader();
