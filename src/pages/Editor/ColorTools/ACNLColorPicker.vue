@@ -95,6 +95,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/transitions";
 
 .color-picker--container {
   user-select: none;
@@ -191,7 +192,7 @@ $mono-color-border-radius: $mono-block-border-radius - 5px;
   left: 0;
 
   cursor: pointer;
-  transition: transform 0.10s ease-in-out;
+  transition: transform 0.10s $energetic;
   &.picked {
     border-width: 4px;
     border-style: solid;

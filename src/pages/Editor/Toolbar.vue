@@ -192,8 +192,8 @@ const brush = (() => {
 })();
 
 const eyeDropper = (x, y, tool) => {
-  let color = tool.getPixel(x, y);
-  if (color !== false) {
+  let newColor = tool.getPixel(x, y);
+  if (newColor !== false) {
     tool.currentColor = newColor;
     tool.onColorChange();
   }
@@ -340,6 +340,7 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/animations";
+@import "styles/transitions";
 
 .toolbar--container {
   user-select: none;
@@ -400,7 +401,7 @@ export default {
   background-color: transparent;
 
   &:after {
-    transition: transform 0.15s cubic-bezier(0.5, 0.1, 0.3, 2);
+    transition: transform 0.15s $energetic;
     position: relative;
     top: 0;
     left: 0;
@@ -412,7 +413,13 @@ export default {
     background-color: transparent;
   }
 
-  &:hover,
+  &:hover {
+    &:after {
+      transform: scale(1);
+      background-color: $dust-storm;
+    }
+  }
+
   &.active {
     &:after {
       transform: scale(1);
@@ -422,6 +429,8 @@ export default {
       fill: white;
     }
   }
+
+
 
   .toolbar--option-icon {
     position: absolute;

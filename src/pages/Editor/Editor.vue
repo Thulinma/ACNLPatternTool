@@ -26,13 +26,14 @@
         <div>
           <canvas class="editor--preview" width=256 height=256 ref="preview" />
         </div>
-        
+
         <div>
           <ThreeDRender :width="294" :height="450" :drawingTool="drawingTool" />
         </div>
       </div>
       <div class="editor--canvas-container">
-        <canvas class="editor--canvas" width=800 height=800 ref="main" />
+        <!-- width/height must be multiples of 32 and ratio of 1:1 -->
+        <canvas class="editor--canvas" width="704" height="704" ref="main" />
       </div>
 
       <Toolbar
@@ -47,8 +48,44 @@
       />
     </div>
 
-    <div class="editor--main"></div>
-    <div class="editor--buttons"></div>
+    <div class="editor--dropups">
+      <div class="editor--dropup import">
+        <div class="editor--dropup-button">
+          <div class="editor--dropup-icon-container">
+            <IconImport class="editor--dropup-icon" />
+          </div>
+          <div class="editor--dropup-text">Import</div>
+          <div class="editor--dropup-icon-container indicator">
+            <IconCaretUp class="editor--dropup-icon" />
+          </div>
+        </div>
+        <div class="editor--dropup-bridge"></div>
+        <div class="editor--dropup-menu">
+          <button class="editor--dropup-menu-item">Convert from IMG</button>
+          <button class="editor--dropup-menu-item">Scan from QR Code</button>
+          <button class="editor--dropup-menu-item">Open .ACNL File</button>
+        </div>
+      </div>
+
+      <div class="editor--dropup save">
+        <div class="editor--dropup-button">
+          <div class="editor--dropup-icon-container">
+            <IconSave class="editor--dropup-icon" />
+          </div>
+          <div class="editor--dropup-text">Save</div>
+          <div class="editor--dropup-icon-container indicator">
+            <IconCaretUp class="editor--dropup-icon" />
+          </div>
+        </div>
+        <div class="editor--dropup-bridge"></div>
+        <div class="editor--dropup-menu">
+          <button class="editor--dropup-menu-item">as .ACNL</button>
+          <button class="editor--dropup-menu-item">as QR Code</button>
+          <button class="editor--dropup-menu-item">to Designs</button>
+          <button class="editor--dropup-menu-item">Publish</button>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -63,6 +100,11 @@ import lzString from "lz-string";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
+// icons
+import IconImport from "~/components/icons/IconImport.vue";
+import IconSave from "~/components/icons/IconSave.vue";
+import IconCaretUp from "~/components/icons/IconCaretUp.vue";
+
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
@@ -75,8 +117,11 @@ export default {
     ColorTools,
     ModalContainer,
     ThreeDRender,
-    Toolbar
-  },
+    Toolbar,
+    IconImport,
+    IconSave,
+    IconCaretUp,
+},
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
       if (to.hash.startsWith("#H:")) {
@@ -108,8 +153,12 @@ export default {
         selectedStyles: [],
         patType: 9
       },
+
+      paletteColors: Array(15).fill(null),
+      currentColor: null,
+      // color = paletteColors[currColor]
       prevColorPicker: "acnl",
-      colorPicker: null,
+      colorPicker: null, // color picker mode
       previewActive: false,
       settingsActive: false,
 
@@ -284,6 +333,8 @@ export default {
       this.drawingTool.onColorChange();
       console.log(`changed current color: ${idx}`);
     },
+    mirrorCurrentColor: function() {},
+    mirrorPalette: function() {},
     onChangeColorPicker: function(mode) {
       if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
       this.colorPicker = mode;
@@ -367,15 +418,18 @@ export default {
         return;
       }
     });
-  }
+  },
+  beforeDestroy: function() {}
 };
 </script>
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/mixins";
+@import "styles/functions";
 
-.editor--container {
-}
+// .editor--container {
+// }
 
 .editor--color-picker-window {
   display: inline-block;
@@ -408,8 +462,9 @@ export default {
   position: relative;
   top: 0;
   left: 0;
+
   // must be a multiple of 32
-  width: 800px;
+  width: calc-canvas-size(22);
 
   &:after {
     content: "";
@@ -438,5 +493,151 @@ export default {
 
   background-color: $sand-dune;
   border-radius: 8px;
+}
+
+.editor--dropups {
+  position: absolute;
+  right: 30px;
+  bottom: 15px;
+  z-index: 999;
+
+  display: flex;
+  justify-items: flex-end;
+  justify-content: flex-end;
+}
+
+.editor--dropup {
+  user-select: none;
+  margin-right: 10px;
+  @include relative-in-place;
+
+  .editor--dropup-button {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    background-color: $sand-dune;
+    border-radius: 15px;
+    @include relative-in-place;
+    padding: 7px 10px;
+
+    &:hover {
+      cursor: pointer;
+    }
+    &:hover ~ .editor--dropup-menu {
+      display: block;
+    }
+  }
+  &.save .editor--dropup-button {
+    background-color: $tiffany-blue;
+  }
+
+  .editor--dropup-icon-container {
+    display: inline-block;
+    width: 30px;
+    @include relative-in-place;
+    background-color: $ecru-white;
+    border-radius: 999px;
+
+    &.indicator {
+      background-color: transparent;
+      .editor--dropup-icon {
+        fill: $ecru-white;
+      }
+    }
+
+    &:after {
+      display: block;
+      content: "";
+      padding-bottom: 100%;
+    }
+  }
+
+  .editor--dropup-icon {
+    @include absolute-center;
+    width: 100%;
+    fill: $sand-dune;
+  }
+  &.save .editor--dropup-icon {
+    fill: $tiffany-blue;
+  }
+
+  .editor--dropup-text {
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 2px;
+
+    color: $ecru-white;
+    font-size: 1.35rem;
+    font-weight: 600;
+  }
+
+  $bridge-distance: 20px;
+  .editor--dropup-bridge {
+    display: none;
+    position: absolute;
+    top: 1px; // ensure connection
+    right: 0;
+    transform: translate(0%, -100%);
+    width: 100%;
+    height: $bridge-distance;
+  }
+  &:hover .editor--dropup-bridge {
+    display: block;
+  }
+
+  .editor--dropup-menu {
+    display: none;
+    position: absolute;
+    top: -$bridge-distance;
+    right: 0;
+    transform: translate(0, -100%);
+    background-color: $sand-dune;
+    padding: 30px 40px;
+    border-radius: 20px;
+  }
+  &.save .editor--dropup-menu {
+    background-color: $tiffany-blue;
+  }
+  &:hover .editor--dropup-menu {
+    display: block;
+  }
+
+  .editor--dropup-menu-item {
+    @include reset-button-properties;
+    @include relative-in-place;
+    display: block;
+    color: $ecru-white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:after {
+      display: none;
+      width: calc(100% + 20px);
+      height: 70%;
+      content: "";
+
+      position: absolute;
+      left: 50%;
+      bottom: -3px;
+      z-index: -1;
+      transform: translate(-50%);
+
+      background-color: $domino;
+      border-radius: 3px;
+    }
+    &:hover:after {
+      display: block;
+    }
+
+    &:nth-child(1) ~ .editor--dropup-menu-item {
+      margin-top: 16px;
+    }
+  }
+  &.save .editor--dropup-menu-item:after {
+    background-color: $pine-green;
+  }
 }
 </style>

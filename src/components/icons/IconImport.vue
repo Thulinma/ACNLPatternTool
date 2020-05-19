@@ -7,13 +7,13 @@
     role="presentation"
   >
     <path
-      d="M5,21h14c1.104,0,2-0.896,2-2V8l-5-5H5C3.896,3,3,3.896,3,5v14C3,20.104,3.896,21,5,21z M7,5h4v2h2V5h2v4h-1h-1h-2H9H7V5z M7,13h10v6h-2H9H7V13z"
+      d="M20,14V8l-6-6H6C4.896,2,4,2.896,4,4v16c0,1.104,0.896,2,2,2h12c1.104,0,2-0.896,2-2v-4h-7v3l-5-4l5-4v3H20z M13,4l5,5h-4 c-0.553,0-1,0-1,0V4z"
     />
   </svg>
 </template>
 
 <script>
 export default {
-  name: "IconSave"
+  name: "IconImport"
 };
 </script>

@@ -85,21 +85,26 @@ export default {
         if (this.invalidIdx(idx)) return;
         this.$emit("change-current-color", idx);
       }
-    }
-  },
-  mounted: function() {
-    this.drawingTool.onColorChange(() => {
+    },
+    updatePaletteColors: function() {
       for (let i = 0; i < 15; ++i) {
         const paletteColor = this.drawingTool.getPalette(i);
         this.paletteColors.splice(i, 1, paletteColor);
       }
-    });
+    }
+  },
+  mounted: function() {
+    this.drawingTool.onColorChange(this.updatePaletteColors);
+  },
+  beforeDestroy: function() {
+    this.drawingTool.onColorChange(this.updatePaletteColors);
   }
 };
 </script>
 
 <style lang="scss" scoped>
-@import "../../../styles/colors";
+@import "styles/colors";
+@import "styles/transitions";
 
 // ONLY THING THAT SHOULD BE CHANGED
 // NEEDS A CLASS APPLIED TO CONTROL SIZE
@@ -130,7 +135,7 @@ $palette--container-size: 800px;
 }
 
 .palette--color-container {
-  transition: transform 0.10s ease-in-out;
+  transition: transform 0.15s $energetic;
   display: inline-block;
   cursor: pointer;
   transform: scale(1);
@@ -147,7 +152,7 @@ $palette--container-size: 800px;
     bottom: -8px;
     transform: translate(-50%, 0px) scale(0);
 
-    transition: transform 0.10s ease-in-out;
+    transition: transform 0.10s $energetic;
     background-color: $tiffany-blue;
     border-radius: 4px;
     opacity: 0;

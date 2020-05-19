@@ -1,0 +1,3 @@
+@function calc-canvas-size($scale) {
+  @return $scale * 32px;
+}
