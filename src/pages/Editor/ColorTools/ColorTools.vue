@@ -58,7 +58,6 @@
   </div>
 </template>
 
-
 <script>
 import Palette from "./Palette";
 import DrawingTool from "~/libs/DrawingTool";

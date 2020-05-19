@@ -3,27 +3,33 @@
     <section>
       <label>Hue</label>
       <div class="slider-container">
-        <input type="range" id="hue" min="0" max="30" ref="hue"
+        <input type="range" id="hue" min="0" max="30"
+          v-model="hue"
           :style="hueGradient"
-          @change="setSliderColors">
+          @change="setSliderColors"
+          />
       </div>
     </section><!-- hue -->
 
     <section>
       <label>Vividness</label>
       <div class="slider-container">
-        <input type="range" id="vividness" min="0" max="15" ref="vividness"
+        <input type="range" id="vividness" min="0" max="15"
+          v-model="vividness"
           :style="vividnessGradient"
-          @change="setSliderColors">
+          @change="setSliderColors"
+          />
       </div>
     </section><!-- vividness -->
 
     <section>
       <label>Brightness</label>
       <div class="slider-container">
-        <input type="range" id="brightness" min="0" max="15" ref="brightness"
+        <input type="range" id="brightness" min="0" max="15"
+          v-model="brightness"
           :style="brightnessGradient"
-          @change="setSliderColors">
+          @change="setSliderColors"
+          />
       </div>
     </section><!-- brightness -->
   </div>
@@ -39,6 +45,9 @@ export default {
   },
   data: function() {
     return {
+      hue: 0,
+      vividness: 0,
+      brightness: 0,
       hueSliderColors: [],
       vividnessSliderColors: [],
       brightnessSliderColors: [],
@@ -61,14 +70,11 @@ export default {
       // H = hue 1 - 30
       // S = vividness 1 - 15
       // V = brightness 1 - 15
-      const hue = this.$refs.hue.value;
-      const vividness = this.$refs.vividness.value;
-      const brightness = this.$refs.brightness.value;
 
       // hue
       let hueSlider = [];
       for (let i = 0; i <= 30; i++) {
-        hueSlider.push(colorMaker.slidersToColor(i, vividness, brightness));
+        hueSlider.push(colorMaker.slidersToColor(i, this.vividness, this.brightness));
       }
       this.hueSliderColors = [...hueSlider];
 
@@ -76,8 +82,8 @@ export default {
       let vividnessSlider = [];
       let brightnessSlider = [];
       for (let i = 0; i <= 15; i++) {
-        vividnessSlider.push(colorMaker.slidersToColor(hue, i, brightness));
-        brightnessSlider.push(colorMaker.slidersToColor(hue, vividness, i));
+        vividnessSlider.push(colorMaker.slidersToColor(this.hue, i, this.brightness));
+        brightnessSlider.push(colorMaker.slidersToColor(this.hue, this.vividness, i));
       }
       this.vividnessSliderColors = [...vividnessSlider];
       this.brightnessSliderColors = [...brightnessSlider];
@@ -86,9 +92,9 @@ export default {
       this.vividnessGradient.background = 'linear-gradient(to right, ' + [...this.vividnessSliderColors].join() + ')';
       this.brightnessGradient.background = 'linear-gradient(to right, ' + [...this.brightnessSliderColors].join() + ')';
 
-      if (this.currentColor !== colorMaker.slidersToColor(hue, vividness, brightness)) {
-        this.currentColor = colorMaker.slidersToColor(hue, vividness, brightness);
-        this.$emit('color-picked', colorMaker.slidersToColor(hue, vividness, brightness));
+      if (this.currentColor !== colorMaker.slidersToColor(this.hue, this.vividness, this.brightness)) {
+        this.currentColor = colorMaker.slidersToColor(this.hue, this.vividness, this.brightness);
+        this.$emit('color-picked', colorMaker.slidersToColor(this.hue, this.vividness, this.brightness));
       }
     },
     setSliderPosition: function(currentColor) {
@@ -106,12 +112,14 @@ export default {
       };
 
       const sliderPositions = colorMaker.colorToSliders(rgb.r, rgb.g, rgb.b);
-      this.$refs.hue.value = sliderPositions[0];
-      this.$refs.vividness.value  = sliderPositions[1];
-      this.$refs.brightness.value = sliderPositions[2];
+      this.hue = sliderPositions[0];
+      this.vividness = sliderPositions[1];
+      this.brightness = sliderPositions[2];
     },
   },
   mounted: function() {
+    this.setSliderPosition(this.drawingTool.color);
+    this.setSliderColors();
     this.drawingTool.onColorChange(() => {
       this.setSliderPosition(this.drawingTool.color);
       this.setSliderColors();
