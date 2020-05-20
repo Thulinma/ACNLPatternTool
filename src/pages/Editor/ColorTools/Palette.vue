@@ -142,6 +142,10 @@ $palette--container-size: 800px;
   &:hover {
     transform: scale(1.2);
   }
+  &:active {
+    transition: transform 0.05s $energetic;
+    transform: scale(1);
+  }
 
   .palette--selected-indicator {
     width: 30px;

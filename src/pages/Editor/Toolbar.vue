@@ -132,7 +132,7 @@
               'toolbar--shortcut preview': true,
               'active': previewActive,
               }"
-          @click="onOpenSettings"
+          @click="onOpenPreview"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconQRCode class="toolbar--shortcut-icon" />

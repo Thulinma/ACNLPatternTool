@@ -1,6 +1,6 @@
 <template>
   <canvas
-    class="threeD"
+    class="three-d"
     v-show="model"
     ref="canvas3d"
     :width="width"
@@ -347,4 +347,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.three-d {
+  outline: none;
+  cursor: all-scroll;
+}
 </style>

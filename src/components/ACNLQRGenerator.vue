@@ -7,7 +7,12 @@ import generateACNLQR from "/libs/ACNLQRGenerator";
 
 export default {
   name: "ACNLQRGenerator",
-  props: ["pattern"],
+  props: {
+    pattern: {
+      type: String,
+      required: true
+    }
+  },
   data: function(){return {image:""};},
   watch: {
     //Whenever pattern changes, draw it!

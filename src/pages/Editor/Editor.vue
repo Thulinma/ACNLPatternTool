@@ -26,13 +26,12 @@
         <div>
           <canvas class="editor--preview" width=256 height=256 ref="preview" />
         </div>
-
         <div>
           <ThreeDRender :width="294" :height="450" :drawingTool="drawingTool" />
         </div>
       </div>
+      <!-- width/height must be multiples of 32 and ratio of 1:1 -->
       <div class="editor--canvas-container">
-        <!-- width/height must be multiples of 32 and ratio of 1:1 -->
         <canvas class="editor--canvas" width="704" height="704" ref="main" />
       </div>
 
@@ -41,9 +40,9 @@
         :prevColorPicker="prevColorPicker"
         :colorPicker="colorPicker"
         @change-color-picker="onChangeColorPicker"
-        :settingsActive="false"
+        :settingsActive="settingsActive"
         @open-settings="onChangeSettingsActive(true)"
-        :previewActive="false"
+        :previewActive="previewActive"
         @open-preview="onChangePreviewActive(true)"
       />
     </div>
@@ -86,6 +85,16 @@
         </div>
       </div>
     </div>
+
+
+  <ModalContainer v-if="previewActive" @modal-close="previewActive=false">
+    <template #window>
+      <div class="editor--preview-window">
+        <ACNLQRGenerator :pattern="drawingTool.toString()" />
+      </div>
+    </template>
+  </ModalContainer>
+
   </main>
 </template>
 
@@ -110,6 +119,7 @@ import ColorTools from "./ColorTools/ColorTools.vue";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
+import ACNLQRGenerator from "~/components/ACNLQRgenerator.vue";
 
 export default {
   name: "Editor",
@@ -121,6 +131,7 @@ export default {
     IconImport,
     IconSave,
     IconCaretUp,
+    ACNLQRGenerator
 },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -425,6 +436,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/transitions";
 @import "styles/mixins";
 @import "styles/functions";
 
@@ -587,11 +599,15 @@ export default {
   }
 
   .editor--dropup-menu {
-    display: none;
+    display: block;
+    // pretend display: none
+    pointer-events: none;
+    opacity: 0;
     position: absolute;
     top: -$bridge-distance;
     right: 0;
-    transform: translate(0, -100%);
+    transition: transform 0.15s $energetic;
+    transform: translate(0, -100%) scale(0.8);
     background-color: $sand-dune;
     padding: 30px 40px;
     border-radius: 20px;
@@ -600,7 +616,9 @@ export default {
     background-color: $tiffany-blue;
   }
   &:hover .editor--dropup-menu {
-    display: block;
+    pointer-events: initial;
+    transform: translate(0, -100%) scale(1);
+    opacity: 1;
   }
 
   .editor--dropup-menu-item {
