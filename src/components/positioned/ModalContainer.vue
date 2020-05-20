@@ -46,12 +46,12 @@ export default {
     }
   },
   created: function() {
-    if (!this.$slots.default) {
-      throw new MissingContentError("");
-    }
     window.addEventListener("keyup", this.onKeyEscape);
   },
   mounted: function() {
+    if (this.$slots.window == null) {
+      throw new MissingContentError("");
+    }
     this.$emit("modal-open");
   },
   destroyed: function() {

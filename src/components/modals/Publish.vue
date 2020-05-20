@@ -95,8 +95,8 @@
 </template>
 
 <script>
-import ModalContainer from '~/components/positioned/ModalContainer';
-import ThreeDRender from '/components/ThreeDRender';
+import ModalContainer from '~/components/positioned/ModalContainer.vue';
+import ThreeDRender from '/components/ThreeDRender.vue';
 
 /* libs */
 import origin from '/libs/origin';

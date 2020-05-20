@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import ModalContainer from '~/components/positioned/ModalContainer';
+import ModalContainer from '~/components/positioned/ModalContainer.vue';
 
 export default {
   name: "PatternInfo",

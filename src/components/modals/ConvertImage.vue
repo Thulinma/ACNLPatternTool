@@ -26,7 +26,7 @@
 
 <script>
 import ImageLoader from '/components/ImageLoader.vue';
-import ModalContainer from '~/components/positioned/ModalContainer';
+import ModalContainer from '~/components/positioned/ModalContainer.vue';
 
 /* svg icons */
 import IconBase from '/components/icons/IconBase.vue';

@@ -13,6 +13,14 @@ import { isMobile } from '~/utils/if-env';
 
 export default {
   name: "App",
+  data: function() {
+    return {
+      classes: {
+        mobile: isMobile,
+        desktop: !isMobile
+      }
+    };
+  },
   components: {
     ModalManager,
     NavigationButton
