@@ -38,11 +38,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/transitions";
 
 // desktop
 $menu-button-size: 74px;
 .menu-button--container {
-  transition: transform 0.1s ease-in-out;
+  transition: transform 0.15s $energetic;
   width: $menu-button-size;
   height: $menu-button-size;
 
@@ -55,12 +56,12 @@ $menu-button-size: 74px;
   border-radius: 15px;
   outline: none;
 
-  transform: scale(1);
+  // transform: scale(1);
 
   border: 0px;
   &:hover {
     cursor: pointer;
-    transform: scale(1.1);
+    // transform: scale(1.1);
   }
 
   .menu-button--icon-wrapper {
@@ -84,12 +85,12 @@ $menu-button-size: 74px;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(30deg);
+    transform: translate(-50%, -50%) scale(1) rotate(30deg);
   }
 
   &:hover, &.menu-button--container--open {
     .menu-button--icon {
-      transform: translate(-50%, -50%) rotate(0deg);
+      transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
     }
   }
 }

@@ -19,6 +19,12 @@
   </svg>
 </template>
 
+<script>
+export default {
+  name: "IconCompass"
+}
+</script>
+
 <style lang="scss" scoped>
 .cls-1 {
   fill: #503c35;

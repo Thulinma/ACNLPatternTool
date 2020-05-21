@@ -33,9 +33,7 @@
         </div>
       </div>
       <!-- width/height must be multiples of 32 and ratio of 1:1 -->
-      <div class="editor--canvas-container">
-        <canvas class="editor--canvas" width="704" height="704" ref="main" />
-      </div>
+      <canvas class="editor--canvas" width="704" height="704" ref="main" />
 
       <Toolbar
         :drawingTool="drawingTool"
@@ -447,8 +445,9 @@ export default {
 @import "styles/functions";
 @import "styles/animations";
 
-// .editor--container {
-// }
+.editor--container {
+  min-width: 800px;
+}
 
 .editor--color-picker-window {
   display: inline-block;
@@ -477,22 +476,6 @@ export default {
   justify-content: center;
 }
 
-.editor--canvas-container {
-  position: relative;
-  top: 0;
-  left: 0;
-
-  // must be a multiple of 32
-  width: calc-canvas-size(22);
-
-  &:after {
-    content: "";
-    display: block;
-    // force 1x1 ratio
-    padding-bottom: 100%;
-  }
-}
-
 .editor--previews {
   display: grid;
   grid-template-columns: auto;
@@ -509,11 +492,8 @@ export default {
 }
 
 .editor--canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
 
   background-color: $sand-dune;
   border-radius: 8px;
