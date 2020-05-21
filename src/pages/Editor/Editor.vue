@@ -3,7 +3,9 @@
     <div style="text-align: center">
       <ColorTools :drawingTool="drawingTool" @change-current-color="onChangeCurrentColor" />
     </div>
-    <ModalContainer v-if="colorPicker != null">
+    <ModalContainer
+      v-if="colorPicker != null"
+      @modal-close="onChangeColorPicker(null)">
       <template #window>
         <div class="editor--color-picker-window" style="text-align: center">
           <ColorTools
@@ -27,7 +29,7 @@
           <canvas class="editor--preview" width=256 height=256 ref="preview" />
         </div>
         <div>
-          <ThreeDRender :width="294" :height="450" :drawingTool="drawingTool" />
+          <ThreeDRender :width="250" :height="450" :drawingTool="drawingTool" />
         </div>
       </div>
       <!-- width/height must be multiples of 32 and ratio of 1:1 -->
@@ -42,8 +44,8 @@
         @change-color-picker="onChangeColorPicker"
         :settingsActive="settingsActive"
         @open-settings="onChangeSettingsActive(true)"
-        :previewActive="previewActive"
-        @open-preview="onChangePreviewActive(true)"
+        :qrPreviewActive="qrPreviewActive"
+        @open-qr-preview="onChangeQrPreviewActive(true)"
       />
     </div>
 
@@ -87,10 +89,15 @@
     </div>
 
 
-  <ModalContainer v-if="previewActive" @modal-close="previewActive=false">
+  <ModalContainer v-if="qrPreviewActive" @modal-close="qrPreviewActive=false">
     <template #window>
-      <div class="editor--preview-window">
-        <ACNLQRGenerator :pattern="drawingTool.toString()" />
+      <div class="editor--qr-preview-window">
+        <ACNLQRGenerator class="editor--qr-preview" :pattern="drawingTool.toString()" />
+        <div class="editor--qr-save-button-container">
+          <button @click="downloadPNG" class="editor--qr-save-button">
+            Save QR
+          </button>
+        </div>
       </div>
     </template>
   </ModalContainer>
@@ -120,7 +127,6 @@ import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import ACNLQRGenerator from "~/components/ACNLQRgenerator.vue";
-
 export default {
   name: "Editor",
   components: {
@@ -131,7 +137,7 @@ export default {
     IconImport,
     IconSave,
     IconCaretUp,
-    ACNLQRGenerator
+    ACNLQRGenerator,
 },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -170,7 +176,7 @@ export default {
       // color = paletteColors[currColor]
       prevColorPicker: "acnl",
       colorPicker: null, // color picker mode
-      previewActive: false,
+      qrPreviewActive: false,
       settingsActive: false,
 
       acnlMode: false,
@@ -296,12 +302,13 @@ export default {
         saveAs(d, "patterns.zip");
       });
     },
-    async downTex() {
+    async downloadTex() {
       const img = this.$refs.canvas3.toDataURL("image/png");
       saveAs(img, this.drawingTool.title + "_texture.png");
     },
-    async onOpenDB() {
-      this.$router.push("/browse");
+    async downloadPNG() {
+      const img = await generateACNLQR(this.drawingTool);
+      saveAs(img, this.drawingTool.title+".png");
     },
     onLocalSave() {
       localStorage.setItem(
@@ -353,8 +360,8 @@ export default {
     onChangeSettingsActive: function(isActive) {
       this.settingsActive = isActive;
     },
-    onChangePreviewActive: function(isActive) {
-      this.previewActive = isActive;
+    onChangeQrPreviewActive: function(isActive) {
+      this.qrPreviewActive = isActive;
     },
     onLoad: async function(t) {
       let patStr = this.drawingTool.toString();
@@ -369,7 +376,6 @@ export default {
       // https://portal-vue.linusb.org/guide/caveats.html#provide-inject
       await this.$nextTick();
       await this.$nextTick();
-
       /*
       const newHash = lzString.compressToEncodedURIComponent(patStr);
       const newPixHash = "#H:"+this.drawingTool.pixelHash;
@@ -439,6 +445,7 @@ export default {
 @import "styles/transitions";
 @import "styles/mixins";
 @import "styles/functions";
+@import "styles/animations";
 
 // .editor--container {
 // }
@@ -489,11 +496,16 @@ export default {
 .editor--previews {
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: repeat(1, auto);
+  grid-template-rows: repeat(2, max-content);
 
   div {
     margin: auto;
   }
+}
+
+.editor--preview {
+  margin-top: 30px;
+  border-radius: 5px;
 }
 
 .editor--canvas {
@@ -656,6 +668,53 @@ export default {
   }
   &.save .editor--dropup-menu-item:after {
     background-color: $pine-green;
+  }
+}
+
+.editor--qr-preview-window {
+  @include absolute-center;
+  z-index: 999;
+}
+
+.editor--qr-preview {
+  display: block;
+  height: 300px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: $cannon-pink;
+  border-radius: 30px;
+}
+
+.editor--qr-save-button-container {
+  pointer-events: none;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.editor--qr-save-button {
+  @include reset-button-properties;
+  cursor: pointer;
+
+  border-width:  4px;
+  border-style: solid;
+  border-color: $tiffany-blue;
+  background: $tiffany-blue;
+  pointer-events: auto;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 5px 30px;
+  color: white;
+
+  &:hover {
+    border-color: $turquoise;
+    background: $tiffany-stripes;
+    background-size: 200% 200%;
+    animation: barberpole 3s linear infinite;
   }
 }
 </style>

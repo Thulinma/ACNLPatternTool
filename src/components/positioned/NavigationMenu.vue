@@ -121,6 +121,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/transitions";
 
 .menu--container {
   display: inline-block;
@@ -192,6 +193,7 @@ export default {
 
   .menu--nav-item {
     width: 100%;
+    transition: transform 0.15s $energetic;
 
     transform: scale(1);
     &:hover {

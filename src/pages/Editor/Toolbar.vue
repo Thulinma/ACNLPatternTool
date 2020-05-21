@@ -130,9 +130,9 @@
         <button
           :class="{
               'toolbar--shortcut preview': true,
-              'active': previewActive,
+              'active': qrPreviewActive,
               }"
-          @click="onOpenPreview"
+          @click="onOpenQrPreview"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconQRCode class="toolbar--shortcut-icon" />
@@ -254,7 +254,7 @@ export default {
       type: String,
       required: false
     },
-    previewActive: {
+    qrPreviewActive: {
       type: Boolean,
       required: true
     },
@@ -276,8 +276,8 @@ export default {
     onOpenSettings: function() {
       this.$emit("open-settings");
     },
-    onOpenPreview: function() {
-      this.$emit("open-preview");
+    onOpenQrPreview: function() {
+      this.$emit("open-qr-preview");
     },
     /**
      * Sets the tool to the mouse button
