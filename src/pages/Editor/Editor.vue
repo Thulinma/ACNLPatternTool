@@ -17,9 +17,9 @@
           />
         </div>
       </template>
-      <template #overlay>
+      <!-- <template #overlay>
         <div @click="onChangeColorPicker(null)" class="editor--color-picker-overlay"></div>
-      </template>
+      </template> -->
     </ModalContainer>
 
     <div class="editor--middle-components">
@@ -39,8 +39,10 @@
         :drawingTool="drawingTool"
         :prevColorPicker="prevColorPicker"
         :colorPicker="colorPicker"
+        :patternDetails="patternDetails"
         @change-color-picker="onChangeColorPicker"
-        :settingsActive="settingsActive"
+        @update="update"
+        :settingsActive="false"
         @open-settings="onChangeSettingsActive(true)"
         :qrPreviewActive="qrPreviewActive"
         @open-qr-preview="onChangeQrPreviewActive(true)"

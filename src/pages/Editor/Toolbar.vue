@@ -115,18 +115,14 @@
       <div class="toolbar--shortcuts-divider"></div>
 
       <div class="toolbar--shortcuts-row etc">
-        <button
-          :class="{
-              'toolbar--shortcut settings': true,
-              'active': settingsActive,
-              }"
-          @click="onOpenSettings"
-        >
-          <div class="toolbar--shortcut-icon-container">
-            <IconDetail class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Settings</div>
-        </button>
+
+        <Settings 
+          @update="onUpdate"
+          :types="drawingTool.allTypes"
+          :pattern-details="patternDetails"
+          :drawing-tool="drawingTool"
+        />
+
         <button
           :class="{
               'toolbar--shortcut preview': true,
@@ -146,6 +142,7 @@
 
 <script>
 import DrawingTool from "~/libs/DrawingTool";
+import Settings from "~/components/modals/Settings.vue";
 
 // icons
 import IconScan from "~/components/icons/IconScan.vue";
@@ -230,6 +227,7 @@ const toolMappings = {
 export default {
   name: "ToolBar",
   components: {
+    Settings,
     IconScan,
     IconPaintTube,
     IconPalette,
@@ -261,6 +259,10 @@ export default {
     settingsActive: {
       type: Boolean,
       required: true
+    },
+    patternDetails: {
+      type: Object,
+      required: true,
     }
   },
   data: function() {
@@ -278,6 +280,9 @@ export default {
     },
     onOpenQrPreview: function() {
       this.$emit("open-qr-preview");
+    },
+    onUpdate: function(data) {
+      this.$emit("update", data);
     },
     /**
      * Sets the tool to the mouse button

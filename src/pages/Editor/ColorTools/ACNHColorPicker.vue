@@ -105,6 +105,7 @@ export default {
       // set selected drawing color
       // todo: need to call this from editor at same time as onChangedCurrentColor
       let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(currentColor);
+
       rgb = {
         r: parseInt(rgb[1], 16),
         g: parseInt(rgb[2], 16),
@@ -112,6 +113,7 @@ export default {
       };
 
       const sliderPositions = colorMaker.colorToSliders(rgb.r, rgb.g, rgb.b);
+
       this.hue = sliderPositions[0];
       this.vividness = sliderPositions[1];
       this.brightness = sliderPositions[2];
