@@ -53,16 +53,25 @@ $img-bg-color: #f7f4e7;
 
 .home-nav-wrapper {
   .home-nav {
-    margin-top: 100px;
-
+    margin-top: 60px;
     display: flex;
     justify-content: space-around;
+    align-items: center;
 
-    // Home Nav Item rotation on desktop
-    @media (min-width: 180px) {
-      .nav-item {
+    @include media("<large") {
+      flex-direction: column;  
+    }
+
+    .nav-item {
+      // Home Nav Item spacing on tablet / mobile
+      @include media("<large") {
+        margin-bottom: 20px;
+      }
+
+      // Home Nav Item rotation on desktop
+      @include media(">large") {
         &.updates, &.discord {
-          margin-top: 60px;
+          margin-top: 115px;
         }
 
         &.faq, &.browse {
@@ -88,7 +97,7 @@ $img-bg-color: #f7f4e7;
     }
 
     .nav-item a {
-      display: flex;
+      display: inline-flex;
       flex-direction: column;
       align-items: center;
       color: #887c6a;
@@ -113,7 +122,7 @@ $img-bg-color: #f7f4e7;
         z-index: 2;
 
         img {
-          width: 130px;
+          width: 150px;
           padding: 12px;
           border-radius: 100%;
           background-color: #e5e2d0;
@@ -126,7 +135,7 @@ $img-bg-color: #f7f4e7;
         font-size: 16pt;
         padding: 15px;
         border-radius: 49%;
-        padding: 40px 50px 20px 50px;
+        padding: 40px 60px 20px 60px;
         text-align: center;
       }
     }
