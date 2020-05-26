@@ -121,6 +121,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/mixins";
 @import "styles/transitions";
 
 .menu--container {
@@ -144,8 +145,9 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-around;
-  align-content: flex-end;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
 
   position: relative;
   top: 0;
@@ -193,7 +195,7 @@ export default {
 
   .menu--nav-item {
     width: 100%;
-    transition: transform 0.15s $energetic;
+    transition: transform 0.10s $energetic;
 
     transform: scale(1);
     &:hover {

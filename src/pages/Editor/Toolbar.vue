@@ -5,7 +5,7 @@
         <button
           @click="selectTool('brush', 'small')"
           :class="{
-              'toolbar--option': true,
+              'toolbar--option brush-small': true,
               'active': tool === 'brush' && option === 'small',
             }"
         >
@@ -14,7 +14,7 @@
         <button
           @click="selectTool('brush', 'medium')"
           :class="{
-              'toolbar--option': true,
+              'toolbar--option brush-medium': true,
               'active': tool === 'brush' && option === 'medium',
             }"
         >
@@ -23,7 +23,7 @@
         <button
           @click="selectTool('brush', 'large')"
           :class="{
-              'toolbar--option': true,
+              'toolbar--option brush-large': true,
               'active': tool === 'brush' && option === 'large',
             }"
         >
@@ -345,6 +345,9 @@ export default {
 @import "styles/animations";
 @import "styles/transitions";
 
+// define most important variables when changing media queries
+$toolbar--options-width: 75px;
+
 .toolbar--container {
   user-select: none;
   align-self: center;
@@ -368,7 +371,7 @@ export default {
   box-sizing: border-box;
   align-self: center;
 
-  width: 80px;
+  width: $toolbar--options-width;
   min-height: 225px;
   padding: 7px 10px 7px 3px;
 
@@ -433,8 +436,6 @@ export default {
     }
   }
 
-
-
   .toolbar--option-icon {
     position: absolute;
     top: 50%;
@@ -444,6 +445,16 @@ export default {
 
     fill: $bronco;
     width: 30px;
+  }
+
+  &.brush-small .toolbar--option-icon {
+    width: 32%;
+  }
+  &.brush-medium .toolbar--option-icon {
+    width: 37%;
+  }
+  &.brush-large .toolbar--option-icon {
+    width: 44%;
   }
 }
 
@@ -504,8 +515,14 @@ export default {
   font-family: inherit;
   padding: 0px;
 
+
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+
+
   color: $sand-dune;
-  display: inline-block;
   margin-top: 20px;
   background-color: $ecru-white;
   padding: 8px 8px;
@@ -514,12 +531,12 @@ export default {
 }
 
 .toolbar--designs-icon-container {
-  position: relative;
-  top: 0;
-  left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 
-  display: inline-block;
-  vertical-align: middle;
   width: 35px;
   height: 35px;
 
@@ -528,19 +545,12 @@ export default {
 }
 
 .toolbar--designs-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
   width: 80%;
   height: 80%;
-
-  transform: translate(-50%, -50%);
   fill: $ecru-white;
 }
 
 .toolbar--designs-button-text {
-  display: inline-block;
   margin-left: 5px;
   margin-right: 15px;
   font-size: 1.7rem;

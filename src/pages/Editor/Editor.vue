@@ -506,9 +506,7 @@ export default {
 }
 
 .editor--canvas {
-  // width: 100%;
-  // height: 100%;
-
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
   background-color: $sand-dune;
   border-radius: 8px;
 }
@@ -520,7 +518,6 @@ export default {
   z-index: 999;
 
   display: flex;
-  justify-items: flex-end;
   justify-content: flex-end;
 }
 
@@ -551,7 +548,12 @@ export default {
   }
 
   .editor--dropup-icon-container {
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
     width: 30px;
     @include relative-in-place;
     background-color: $ecru-white;
@@ -572,8 +574,7 @@ export default {
   }
 
   .editor--dropup-icon {
-    @include absolute-center;
-    width: 100%;
+    width: 70%;
     fill: $sand-dune;
   }
   &.save .editor--dropup-icon {
