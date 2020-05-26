@@ -81,7 +81,7 @@ $menu-button-size: 74px;
     width: 86%;
     height: auto;
 
-    transition: transform 0.45s cubic-bezier(.5,-1.5,.5,1.5);
+    transition: transform 0.35s cubic-bezier(.5,-1.5,.5,1.5);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -90,7 +90,7 @@ $menu-button-size: 74px;
 
   &:hover, &.menu-button--container--open {
     .menu-button--icon {
-      transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+      transform: translate(-50%, -50%) scale(0.9) rotate(0deg);
     }
   }
 }

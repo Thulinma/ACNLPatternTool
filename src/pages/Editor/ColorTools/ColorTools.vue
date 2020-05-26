@@ -115,17 +115,14 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/animations";
 
-@keyframes color-tools-barberpole {
-  0% {background-position: 100% 100%;}
-  100% {background-position: 0% 0%;}
-}
+// size dictated by palette
 .color-tools--container {
   user-select: none;
   display: inline-block;
   background: $pink;
 
-  padding: 0px 25px 5px 25px;
   padding-top: 0px;
   padding-right: 25px;
   padding-bottom: 5px;
@@ -142,8 +139,11 @@ export default {
       $piggy-pink 40px
     );
     background-size: 200% 200%;
-    animation: color-tools-barberpole 20s linear infinite;
-    padding-bottom: 25px;
+    animation: barberpole 20s linear infinite;
+    $full-thickness: 30px;
+    padding-right: $full-thickness;
+    padding-bottom: $full-thickness;
+    padding-left: $full-thickness;
   }
 }
 

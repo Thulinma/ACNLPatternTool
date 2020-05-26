@@ -1,5 +1,9 @@
 <template>
-  <div id="app" :class="classes">
+  <div id="app" :class="{
+      mobile,
+      desktop,
+      portrait,
+    }">
     <router-view></router-view>
     <Banner />
     <NavigationButton/>
@@ -22,17 +26,35 @@ export default {
   },
   data: function() {
     return {
-      classes: {
-        mobile: isMobile,
-        desktop: !isMobile
-      }
+      mobile: isMobile,
+      desktop: !isMobile,
+      windowHeight: null,
+      windowWidth: null,
     };
   },
+  computed: {
+    portrait: function() {
+      return this.windowHeight > this.windowWidth;
+    }
+  },
+  methods: {
+    onWindowResize: function() {
+      this.windowHeight = window.innerHeight;
+      this.windowWidth = window.innerWidth;
+    }
+  },
+  mounted: function() {
+    this.onWindowResize();
+    window.addEventListener("resize", this.onWindowResize);
+  },
+  beforeDestroy: function() {
+    window.removeEventListener("resize", this.onWindowResize);
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.app {
+#app {
   position: relative;
   top: 0;
   left: 0;

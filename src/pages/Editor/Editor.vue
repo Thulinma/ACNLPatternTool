@@ -458,6 +458,13 @@ export default {
 
 .editor--container {
   min-width: 800px;
+  min-height: 100%;
+  transition: background-color;
+  background-color: $ecru-white;
+
+  // &.pink-out {
+  //   background-color: $cinderella;
+  // }
 }
 
 .editor--color-picker-window {
