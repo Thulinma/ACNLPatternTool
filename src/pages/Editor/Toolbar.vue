@@ -170,27 +170,29 @@ const brush = (() => {
   };
 
   const medium = (x, y, tool) => {
-    tool.drawPixel(x, y);
-    tool.drawPixel(x - 1, y); // left
-    tool.drawPixel(x + 1, y); // right
-    tool.drawPixel(x, y + 1); // above
-    tool.drawPixel(x, y - 1); // below
+    const color = tool.setPixel(x, y);
+    tool.setPixel(x - 1, y, color); // left
+    tool.setPixel(x + 1, y, color); // right
+    tool.setPixel(x, y + 1, color); // above
+    tool.setPixel(x, y - 1, color); // below
+    tool.render();
   };
 
   const large = (x, y, tool) => {
-    tool.drawPixel(x, y);
-    tool.drawPixel(x - 1, y); // left
-    tool.drawPixel(x - 2, y); // left left
-    tool.drawPixel(x + 1, y); // right
-    tool.drawPixel(x + 2, y); // right right
-    tool.drawPixel(x, y + 1); // top
-    tool.drawPixel(x, y + 2); // top top
-    tool.drawPixel(x, y - 1); // below
-    tool.drawPixel(x, y - 2); // bottom bottom
-    tool.drawPixel(x - 1, y + 1); // top left
-    tool.drawPixel(x + 1, y + 1); // top right
-    tool.drawPixel(x - 1, y - 1); // bottom left
-    tool.drawPixel(x + 1, y - 1); // bottom right
+    const color = tool.setPixel(x, y, color);
+    tool.setPixel(x - 1, y, color); // left
+    tool.setPixel(x - 2, y, color); // left left
+    tool.setPixel(x + 1, y, color); // right
+    tool.setPixel(x + 2, y, color); // right right
+    tool.setPixel(x, y + 1, color); // top
+    tool.setPixel(x, y + 2, color); // top top
+    tool.setPixel(x, y - 1, color); // below
+    tool.setPixel(x, y - 2, color); // bottom bottom
+    tool.setPixel(x - 1, y + 1, color); // top left
+    tool.setPixel(x + 1, y + 1, color); // top right
+    tool.setPixel(x - 1, y - 1, color); // bottom left
+    tool.setPixel(x + 1, y - 1, color); // bottom right
+    tool.render();
   };
   return { small, medium, large };
 })();
@@ -530,6 +532,13 @@ $toolbar--options-width: 75px;
   padding: 8px 8px;
   border-radius: 999px;
   cursor: pointer;
+
+  &:hover {
+    background-color: $sand-dune;
+    .toolbar--storage-button-text { color: $ecru-white; }
+    .toolbar--storage-icon-container { background-color: $ecru-white;}
+    .toolbar--storage-icon { fill: $sand-dune; }
+  }
 }
 
 .toolbar--storage-icon-container {
@@ -553,7 +562,7 @@ $toolbar--options-width: 75px;
 }
 
 .toolbar--storage-button-text {
-  margin-left: 5px;
+  margin-left: 10px;
   margin-right: 15px;
   font-size: 1.7rem;
   font-weight: 600;
