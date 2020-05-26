@@ -17,9 +17,10 @@
           />
         </div>
       </template>
-      <!-- <template #overlay>
+      <!-- transparent overlay -->
+      <template #overlay>
         <div @click="onChangeColorPicker(null)" class="editor--color-picker-overlay"></div>
-      </template> -->
+      </template>
     </ModalContainer>
 
     <div class="editor--middle-components">
@@ -39,15 +40,23 @@
         :drawingTool="drawingTool"
         :prevColorPicker="prevColorPicker"
         :colorPicker="colorPicker"
-        :patternDetails="patternDetails"
         @change-color-picker="onChangeColorPicker"
-        @update="update"
-        :settingsActive="false"
+        :settingsActive="settingsActive"
         @open-settings="onChangeSettingsActive(true)"
         :qrPreviewActive="qrPreviewActive"
         @open-qr-preview="onChangeQrPreviewActive(true)"
       />
     </div>
+
+    <Settings
+      v-if="settingsActive"
+      @update="updateSettings"
+      @close="onChangeSettingsActive(false)"
+      :open="settingsActive"
+      :types="drawingTool.allTypes"
+      :pattern-details="patternDetails"
+      :drawing-tool="drawingTool"
+    />
 
     <div class="editor--dropups">
       <div class="editor--dropup import">
@@ -127,6 +136,8 @@ import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import ACNLQRGenerator from "~/components/ACNLQRgenerator.vue";
+import Settings from "~/components/modals/Settings.vue";
+
 export default {
   name: "Editor",
   components: {
@@ -138,6 +149,7 @@ export default {
     IconSave,
     IconCaretUp,
     ACNLQRGenerator,
+    Settings
 },
   beforeRouteUpdate: function(to, from, next) {
     if (to.hash.length > 1) {
@@ -190,7 +202,7 @@ export default {
     };
   },
   methods: {
-    update: function(data) {
+    updateSettings: function(data) {
       if (data.details) {
         this.patternDetails = {
           ...this.patternDetails,

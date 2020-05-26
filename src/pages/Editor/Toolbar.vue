@@ -116,13 +116,18 @@
 
       <div class="toolbar--shortcuts-row etc">
 
-        <Settings 
-          @update="onUpdate"
-          :types="drawingTool.allTypes"
-          :pattern-details="patternDetails"
-          :drawing-tool="drawingTool"
-        />
-
+        <button
+          :class="{
+              'toolbar--shortcut settings': true,
+              'active': settingsActive,
+              }"
+          @click="onOpenSettings"
+        >
+          <div class="toolbar--shortcut-icon-container">
+            <IconDetail class="toolbar--shortcut-icon" />
+          </div>
+          <div class="toolbar--shortcut-tooltip">Pattern Settings</div>
+        </button>
         <button
           :class="{
               'toolbar--shortcut preview': true,
@@ -259,10 +264,6 @@ export default {
     settingsActive: {
       type: Boolean,
       required: true
-    },
-    patternDetails: {
-      type: Object,
-      required: true,
     }
   },
   data: function() {
@@ -280,9 +281,6 @@ export default {
     },
     onOpenQrPreview: function() {
       this.$emit("open-qr-preview");
-    },
-    onUpdate: function(data) {
-      this.$emit("update", data);
     },
     /**
      * Sets the tool to the mouse button
