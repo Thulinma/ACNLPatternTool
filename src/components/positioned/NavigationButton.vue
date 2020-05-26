@@ -48,8 +48,8 @@ $menu-button-size: 74px;
   height: $menu-button-size;
 
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 20px;
+  right: 20px;
 
   -webkit-appearance: none;
   background-color: $van-cleef;

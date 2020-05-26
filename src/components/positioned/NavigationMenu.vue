@@ -2,121 +2,135 @@
   <div class="menu--container">
     <div class="menu--header">
       <div class="menu--header-icons-left">
-        <img
-          class="menu--header-img menu--header-bars"
-          :src="barsSvg"/>
-        <img
-          class="menu--header-img menu--header-nook"
-          :src="nookSvg"/>
+        <img class="menu--header-img menu--header-bars" :src="barsSvg" />
+        <img class="menu--header-img menu--header-nook" :src="nookSvg" />
       </div>
-      <div><span class="menu--time">{{ time  }}</span></div>
+      <div>
+        <span class="menu--time">{{ time }}</span>
+      </div>
       <div class="menu--header-icons-right">
-        <img
-          class="menu--header-img menu--header-gps"
-          :src="gpsSvg"/>
+        <img class="menu--header-img menu--header-gps" :src="gpsSvg" />
       </div>
     </div>
     <div class="menu--title">{{ menuTitle }}</div>
     <div class="menu--nav">
-      <img
-        class="menu--nav-item"
-        :src="browseSvg"
-        @click="goTo('/browse')"
-        @mouseover="enterNavItem('Browse')"
-        @mouseleave="leaveNavItem()"/>
-      <img
-        class="menu--nav-item"
-        :src="editorSvg"
-        @click="goTo('/editor')"
-        @mouseover="enterNavItem('Editor')"
-        @mouseleave="leaveNavItem()"/>
-      <img
-        class="menu--nav-item"
-        :src="faqSvg"
-        @click="goTo('/faq')"
-        @mouseover="enterNavItem('FAQ')"
-        @mouseleave="leaveNavItem()"/>
-      <img
-        class="menu--nav-item"
-        :src="changelogSvg"
-        @click="goTo('/updates')"
-        @mouseover="enterNavItem('Updates')"
-        @mouseleave="leaveNavItem()"/>
-      <img
-        class="menu--nav-item"
-        :src="discordSvg"
-        @click="goTo('https://discord.com/invite/9rGkZNk', true)"
-        @mouseover="enterNavItem('Discord')"
-        @mouseleave="leaveNavItem()"/>
-      <img
-        class="menu--nav-item"
-        :src="nooknetSvg"
-        @click="goTo('https://nooknet.net/', true)"
-        @mouseover="enterNavItem('NookNet')"
-        @mouseleave="leaveNavItem()"/>
+      <router-link to="/browse">
+        <img
+          class="menu--nav-item"
+          :src="browseSvg"
+          @mouseover="enterNavItem('Browse')"
+          @mouseleave="leaveNavItem()"
+        />
+      </router-link>
+
+      <router-link to="/editor">
+        <img
+          class="menu--nav-item"
+          :src="editorSvg"
+          @mouseover="enterNavItem('Editor')"
+          @mouseleave="leaveNavItem()"
+        />
+      </router-link>
+
+      <router-link to="/faq ">
+        <img
+          class="menu--nav-item"
+          :src="faqSvg"
+          @mouseover="enterNavItem('FAQ')"
+          @mouseleave="leaveNavItem()"
+        />
+      </router-link>
+
+      <router-link to="/updates">
+        <img
+          class="menu--nav-item"
+          :src="changelogSvg"
+          @mouseleave="leaveNavItem()"
+        />
+      </router-link>
+
+      <a href="https://discord.com/invite/9rGkZNk" target="_blank">
+        <img
+          class="menu--nav-item"
+          :src="discordSvg"
+          @mouseover="enterNavItem('Discord')"
+          @mouseleave="leaveNavItem()"
+        />
+      </a>
+
+      <a href="https://nooknet.net/" target="_blank">
+        <img
+          class="menu--nav-item"
+          :src="nooknetSvg"
+          @mouseover="enterNavItem('NookNet')"
+          @mouseleave="leaveNavItem()"
+        />
+      </a>
     </div>
   </div>
 </template>
 
 <script>
 // header svgs
-import nookSvg from '/assets/icons/nookphone/nook-head.svg';
-import gpsSvg from '/assets/icons/nookphone/nook-gps.svg';
-import barsSvg from '/assets/icons/nookphone/nook-service.svg';
+import nookSvg from "/assets/icons/nookphone/nook-head.svg";
+import gpsSvg from "/assets/icons/nookphone/nook-gps.svg";
+import barsSvg from "/assets/icons/nookphone/nook-service.svg";
 
 // menu svgs
-import browseSvg from '/assets/icons/nookphone/nav-browse.svg';
-import editorSvg from '/assets/icons/nookphone/nav-editor.svg';
-import faqSvg from '/assets/icons/nookphone/nav-faq.svg';
-import changelogSvg from '/assets/icons/nookphone/nav-changelog.svg';
-import discordSvg from '/assets/icons/nookphone/nav-discord.svg';
-import nooknetSvg from '/assets/icons/nookphone/nav-nooknet.svg';
+import browseSvg from "/assets/icons/nookphone/nav-browse.svg";
+import editorSvg from "/assets/icons/nookphone/nav-editor.svg";
+import faqSvg from "/assets/icons/nookphone/nav-faq.svg";
+import changelogSvg from "/assets/icons/nookphone/nav-changelog.svg";
+import discordSvg from "/assets/icons/nookphone/nav-discord.svg";
+import nooknetSvg from "/assets/icons/nookphone/nav-nooknet.svg";
 
 const menuTitleDefault = "Main Menu";
 export default {
   name: "NookPhoneMenu",
   data: function() {
     return {
-        nookSvg,
-        gpsSvg,
-        barsSvg,
-        dateObj: new Date(),
-        time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', timeStyle: 'short'}),
-        menuTitle: "Main Menu",
-        browseSvg,
-        changelogSvg,
-        discordSvg,
-        editorSvg,
-        faqSvg,
-        nooknetSvg,
+      nookSvg,
+      gpsSvg,
+      barsSvg,
+      dateObj: new Date(),
+      time: new Date().toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        timeStyle: "short"
+      }),
+      menuTitle: "Main Menu",
+      browseSvg,
+      changelogSvg,
+      discordSvg,
+      editorSvg,
+      faqSvg,
+      nooknetSvg
     };
   },
   mounted() {
-    const interval = setInterval(() => this.time = this.dateObj.toLocaleTimeString('en-US', {hour: '2-digit', timeStyle: 'short'}), 1000);
+    const interval = setInterval(
+      () =>
+        (this.time = this.dateObj.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          timeStyle: "short"
+        })),
+      1000
+    );
   },
   methods: {
     enterNavItem: async function(menuTitle = menuTitleDefault) {
-      this.menuTitle = menuTitle
+      this.menuTitle = menuTitle;
     },
     leaveNavItem: async function() {
       const curr = this.menuTitle;
       await new Promise((resolve, reject) => {
-        setTimeout(() => {resolve()}, 300);
+        setTimeout(() => {
+          resolve();
+        }, 300);
       });
-      if (this.menuTitle === curr)
-        this.menuTitle = menuTitleDefault;
-    },
-    goTo: function(path, external = false) {
-      if (external) {
-        window.open(path);
-      }
-      this.$emit('modal-close');
-      if (path !== this.$route.path) {
-        this.$router.push({ path });
-      }
+      if (this.menuTitle === curr) this.menuTitle = menuTitleDefault;
     },
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -140,7 +154,6 @@ export default {
   z-index: 999;
 }
 
-
 .menu--header {
   display: flex;
   flex-direction: row;
@@ -153,16 +166,16 @@ export default {
   top: 0;
   left: 0;
   font-size: 1rem;
-  color: #E0DBC8;
+  color: #e0dbc8;
 
   .menu--time {
     text-align: center;
     vertical-align: text-bottom;
   }
   & > * {
-        flex: 1 1 0px;
-        text-align: center;
-        display: inline-block;
+    flex: 1 1 0px;
+    text-align: center;
+    display: inline-block;
   }
   .menu--header-img {
     display: inline-block;
@@ -195,7 +208,7 @@ export default {
 
   .menu--nav-item {
     width: 100%;
-    transition: transform 0.10s $energetic;
+    transition: transform 0.1s $energetic;
 
     transform: scale(1);
     &:hover {

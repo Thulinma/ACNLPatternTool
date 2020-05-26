@@ -36,11 +36,11 @@
       </div>
     </div>
     <div class="toolbar--shortcuts">
-      <button class="toolbar--designs-button">
-        <div class="toolbar--designs-icon-container">
-          <IconScan class="toolbar--designs-icon" />
+      <button class="toolbar--storage-button">
+        <div class="toolbar--storage-icon-container">
+          <IconScan class="toolbar--storage-icon" />
         </div>
-        <span class="toolbar--designs-button-text">Designs</span>
+        <span class="toolbar--storage-button-text">Storage</span>
       </button>
 
       <div class="toolbar--shortcuts-row colors">
@@ -509,7 +509,7 @@ $toolbar--options-width: 75px;
   height: 100%;
 }
 
-.toolbar--designs-button {
+.toolbar--storage-button {
   // reset
   appearance: none;
   border: 0px;
@@ -532,7 +532,7 @@ $toolbar--options-width: 75px;
   cursor: pointer;
 }
 
-.toolbar--designs-icon-container {
+.toolbar--storage-icon-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -546,13 +546,13 @@ $toolbar--options-width: 75px;
   border-radius: 999px;
 }
 
-.toolbar--designs-icon {
+.toolbar--storage-icon {
   width: 80%;
   height: 80%;
   fill: $ecru-white;
 }
 
-.toolbar--designs-button-text {
+.toolbar--storage-button-text {
   margin-left: 5px;
   margin-right: 15px;
   font-size: 1.7rem;

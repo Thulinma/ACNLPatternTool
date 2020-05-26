@@ -42,7 +42,7 @@
         :colorPicker="colorPicker"
         @change-color-picker="onChangeColorPicker"
         :settingsActive="settingsActive"
-        @open-settings="onChangeSettingsActive(true)"
+        @open-settings="settingsActive = true"
         :qrPreviewActive="qrPreviewActive"
         @open-qr-preview="onChangeQrPreviewActive(true)"
       />
@@ -51,7 +51,7 @@
     <Settings
       v-if="settingsActive"
       @update="updateSettings"
-      @close="onChangeSettingsActive(false)"
+      @close="settingsActive = false"
       :open="settingsActive"
       :types="drawingTool.allTypes"
       :pattern-details="patternDetails"
@@ -368,9 +368,6 @@ export default {
     onChangeColorPicker: function(mode) {
       if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
       this.colorPicker = mode;
-    },
-    onChangeSettingsActive: function(isActive) {
-      this.settingsActive = isActive;
     },
     onChangeQrPreviewActive: function(isActive) {
       this.qrPreviewActive = isActive;
