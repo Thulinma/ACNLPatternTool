@@ -80,7 +80,9 @@
           @click="selectTool('brush', 'small')"
         >
           <div class="toolbar--shortcut-icon-container">
-            <IconBrushLarge class="toolbar--shortcut-icon" />
+            <IconBrushLarge v-if="tool === 'brush' && option === 'large'" class="toolbar--shortcut-icon" />
+            <IconBrushMedium v-else-if="tool === 'brush' && option === 'medium'"  class="toolbar--shortcut-icon" />
+            <IconBrushSmall v-else class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Brush</div>
         </button>
