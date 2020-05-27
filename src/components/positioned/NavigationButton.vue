@@ -2,7 +2,7 @@
   <button
     :class="{
       'menu-button--container': true,
-      'menu-button--container--open': open
+      'open': open
     }"
     @click="open=true">
     <div class="menu-button--icon-wrapper">
@@ -81,16 +81,16 @@ $menu-button-size: 74px;
     width: 86%;
     height: auto;
 
-    transition: transform 0.35s cubic-bezier(.5,-1.5,.5,1.5);
+    transition: transform 1s cubic-bezier(.5,-1.5,.5,1.5);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1) rotate(30deg);
   }
 
-  &:hover, &.menu-button--container--open {
+  &:hover, &.menu-button--container.open {
     .menu-button--icon {
-      transform: translate(-50%, -50%) scale(0.9) rotate(0deg);
+      transform: translate(-50%, -50%) scale(0.9) rotate(-360deg);
     }
   }
 }

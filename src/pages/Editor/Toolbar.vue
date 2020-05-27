@@ -118,6 +118,27 @@
           </div>
           <div class="toolbar--shortcut-tooltip">Eye Dropper</div>
         </button>
+
+        <button class="toolbar--shortcut eye-dropper placeholder">
+          <div class="toolbar--shortcut-icon-container">
+            <div class="toolbar--shortcut-icon" />
+          </div>
+          <div class="toolbar--shortcut-tooltip">Placeholder</div>
+        </button>
+
+        <button class="toolbar--shortcut" @click="drawingTool.undo()">
+          <div class="toolbar--shortcut-icon-container">
+            <IconUndo class="toolbar--shortcut-icon" />
+          </div>
+          <div class="toolbar--shortcut-tooltip">Undo</div>
+        </button>
+
+        <button class="toolbar--shortcut" @click="drawingTool.redo()">
+          <div class="toolbar--shortcut-icon-container">
+            <IconRedo class="toolbar--shortcut-icon" />
+          </div>
+          <div class="toolbar--shortcut-tooltip">Redo</div>
+        </button>
       </div>
 
       <div class="toolbar--shortcuts-divider"></div>
@@ -177,6 +198,8 @@ import IconBrushMedium from "~/components/icons/IconBrushMedium.vue";
 import IconBrushLarge from "~/components/icons/IconBrushLarge.vue";
 import IconColorFill from "~/components/icons/IconColorFill.vue";
 import IconEyeDropper from "~/components/icons/IconEyeDropper.vue";
+import IconUndo from "~/components/icons/IconUndo.vue";
+import IconRedo from "~/components/icons/IconRedo.vue";
 import IconDetail from "~/components/icons/IconDetail.vue";
 import IconQRCode from "~/components/icons/IconQRCode.vue";
 
@@ -267,6 +290,8 @@ export default {
     IconBrushLarge,
     IconColorFill,
     IconEyeDropper,
+    IconUndo,
+    IconRedo,
     IconDetail,
     IconQRCode
   },
@@ -663,6 +688,11 @@ $toolbar--options-width: 75px;
     width: 100%;
     height: 100%;
     fill: $blossom;
+  }
+
+  &.placeholder {
+    opacity: 0;
+    cursor: default;
   }
 
   &.color-picker .toolbar--shortcut-icon,

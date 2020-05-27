@@ -218,7 +218,7 @@ export default {
     initializePattern: async function() {
       // intial color palette
       const initialColors = [
-        "#EEEEEE", "#888888", "#000000", "#FF0000", "#FF6600", "#FFFF00",
+        "#FFFFFF", "#888888", "#000000", "#FF0000", "#FF6600", "#FFFF00",
         "#22DD22", "#008833", "#00CDFF", "#1077FF", "#0000FF", "#CC00FF",
         "#FF00CC", "#FFAA88", "#993200"
       ];
