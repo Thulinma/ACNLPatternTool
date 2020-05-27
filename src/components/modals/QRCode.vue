@@ -1,39 +1,27 @@
 <template>
-  <div>
-    <button @click="open!=open">
-      <IconBase icon-name="qr" icon-color="#7E7261" class="svg nav white-circle">
-        <IconQRCode />
-      </IconBase><!-- qr code svg -->
-      Generate QR Code
-    </button><!-- generate QR code button -->
-
-    <ModalContainer v-if="open" @modal-close="open=false">
+    <ModalContainer @modal-close="$emit('close')">
       <template #window>
-        <div>
-          <h1>
-            <IconBase icon-name="qr" :icon-color="white" height=20 width=20>
-              <IconQRCode />
-            </IconBase>
-            Generate QR Code(s)
-          </h1>
-
-          <ACNLQRGenerator :pattern="pattern" />
-          <button @click="downloadPNG">Save Image</button>
+        <div class="editor--qr-preview-window">
+          <ACNLQRGenerator class="editor--qr-preview" :pattern="drawingTool.toString()" />
+          <div class="editor--qr-save-button-container">
+            <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
+          </div>
         </div>
       </template>
     </ModalContainer>
-  </div>
 </template>
 
 <script>
+import DrawingTool from '~/libs/DrawingTool';
 import ModalContainer from '~/components/positioned/ModalContainer';
+import ACNLQRGenerator from '~/components/ACNLQRGenerator.vue';
 
 /* libs */
-import generateACNLQR from "/libs/ACNLQRGenerator";
+import generateACNLQR from "~/libs/ACNLQRGenerator";
 
 /* svg icons */
-import IconBase from '/components/icons/IconBase.vue';
-import IconQRCode from '/components/icons/IconQRCode.vue';
+import IconBase from '~/components/icons/IconBase.vue';
+import IconQRCode from '~/components/icons/IconQRCode.vue';
 
 export default {
   name: 'QRCode',
@@ -41,28 +29,76 @@ export default {
     ModalContainer,
     IconBase,
     IconQRCode,
+    ACNLQRGenerator,
   },
   props: {
     drawingTool: {
-      type: Object,
+      type: DrawingTool,
+      required: true,
     }
   },
   data: function() {
     return {
-      open: false,
-      pattern: undefined,
+      qrImageSrc: "",
     }
   },
   methods: {
-    async downPNG(){
+    async downloadPNG(){
       const img = await generateACNLQR(this.drawingTool);
-      saveAs(img, `${this.drawingTool.title}.png`);
+      saveAs(img, this.drawingTool.title + ".png");
     },
-  },
-  watch: {
-    open: function() {
-      this.pattern = this.drawingTool.toString();
-    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "styles/colors";
+@import "styles/animations";
+@import "styles/mixins";
+
+.editor--qr-preview-window {
+  @include absolute-center;
+  z-index: 999;
+}
+
+.editor--qr-preview {
+  display: block;
+  height: 300px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: $cannon-pink;
+  border-radius: 30px;
+}
+
+.editor--qr-save-button-container {
+  pointer-events: none;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.editor--qr-save-button {
+  @include reset-button-properties;
+  cursor: pointer;
+
+  border-width: 4px;
+  border-style: solid;
+  border-color: $tiffany-blue;
+  background: $tiffany-blue;
+  pointer-events: auto;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 5px 30px;
+  color: white;
+
+  &:hover {
+    border-color: $turquoise;
+    background: $tiffany-stripes;
+    background-size: 200% 200%;
+    animation: barberpole 3s linear infinite;
+  }
+}
+</style>

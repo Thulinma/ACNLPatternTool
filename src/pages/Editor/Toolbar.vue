@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="toolbar--shortcuts">
-      <button class="toolbar--storage-button">
+      <button class="toolbar--storage-button" @click="storageOpen = true">
         <div class="toolbar--storage-icon-container">
           <IconScan class="toolbar--storage-icon" />
         </div>
@@ -80,8 +80,14 @@
           @click="selectTool('brush', 'small')"
         >
           <div class="toolbar--shortcut-icon-container">
-            <IconBrushLarge v-if="tool === 'brush' && option === 'large'" class="toolbar--shortcut-icon" />
-            <IconBrushMedium v-else-if="tool === 'brush' && option === 'medium'"  class="toolbar--shortcut-icon" />
+            <IconBrushLarge
+              v-if="tool === 'brush' && option === 'large'"
+              class="toolbar--shortcut-icon"
+            />
+            <IconBrushMedium
+              v-else-if="tool === 'brush' && option === 'medium'"
+              class="toolbar--shortcut-icon"
+            />
             <IconBrushSmall v-else class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Brush</div>
@@ -117,13 +123,12 @@
       <div class="toolbar--shortcuts-divider"></div>
 
       <div class="toolbar--shortcuts-row etc">
-
         <button
           :class="{
               'toolbar--shortcut settings': true,
-              'active': settingsActive,
+              'active': settingsOpen,
               }"
-          @click="onOpenSettings"
+          @click="settingsOpen = true"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconDetail class="toolbar--shortcut-icon" />
@@ -133,9 +138,9 @@
         <button
           :class="{
               'toolbar--shortcut preview': true,
-              'active': qrPreviewActive,
+              'active': qrPreviewOpen,
               }"
-          @click="onOpenQrPreview"
+          @click="qrPreviewOpen = true"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconQRCode class="toolbar--shortcut-icon" />
@@ -144,12 +149,24 @@
         </button>
       </div>
     </div>
+
+    <Settings
+      v-if="settingsOpen"
+      @close="settingsOpen = false"
+      @update-details="$emit('update-details', $event)"
+      :drawingTool="drawingTool"
+      :types="drawingTool.allTypes"
+      :patternDetails="patternDetails"
+    />
+
+    <QRCode v-if="qrPreviewOpen" @close="qrPreviewOpen = false" :drawingTool="drawingTool" />
   </div>
 </template>
 
 <script>
 import DrawingTool from "~/libs/DrawingTool";
 import Settings from "~/components/modals/Settings.vue";
+import QRCode from "~/components/modals/QRCode.vue";
 
 // icons
 import IconScan from "~/components/icons/IconScan.vue";
@@ -167,6 +184,7 @@ import IconQRCode from "~/components/icons/IconQRCode.vue";
 const brush = (() => {
   const small = (x, y, tool) => {
     tool.drawPixel(x, y);
+    tool.render(); // need this or transparent won't show up
   };
 
   const medium = (x, y, tool) => {
@@ -214,7 +232,10 @@ const fill = (x, y, tool) => {
   const reColor = (inX, inY) => {
     const thisColor = tool.getPixel(inX, inY);
     // not we're setting color on pixel data, has not been rendered, speed optimization
-    if (thisColor === prevColor && tool.setPixel(inX, inY, newColor) === newColor) {
+    if (
+      thisColor === prevColor &&
+      tool.setPixel(inX, inY, newColor) === newColor
+    ) {
       reColor(inX - 1, inY);
       reColor(inX + 1, inY);
       reColor(inX, inY - 1);
@@ -230,13 +251,14 @@ const fill = (x, y, tool) => {
 const toolMappings = {
   brush,
   fill,
-  eyeDropper,
+  eyeDropper
 };
 
 export default {
   name: "ToolBar",
   components: {
     Settings,
+    QRCode,
     IconScan,
     IconPaintTube,
     IconPalette,
@@ -261,30 +283,23 @@ export default {
       type: String,
       required: false
     },
-    qrPreviewActive: {
-      type: Boolean,
-      required: true
-    },
-    settingsActive: {
-      type: Boolean,
+    patternDetails: {
+      type: Object,
       required: true
     }
   },
   data: function() {
     return {
       tool: null,
-      option: null
+      option: null,
+      settingsOpen: false,
+      qrPreviewOpen: false,
+      storageOpen: false
     };
   },
   methods: {
     onChangeColorPicker: function(mode) {
       this.$emit("change-color-picker", mode);
-    },
-    onOpenSettings: function() {
-      this.$emit("open-settings");
-    },
-    onOpenQrPreview: function() {
-      this.$emit("open-qr-preview");
     },
     /**
      * Sets the tool to the mouse button
@@ -339,7 +354,7 @@ export default {
     window.addEventListener("keydown", this.onCycleOptions);
   },
   beforeDestroy: function() {
-    window.removeEventListener("keydown", this.onCycleOptions)
+    window.removeEventListener("keydown", this.onCycleOptions);
   }
 };
 </script>
@@ -519,12 +534,10 @@ $toolbar--options-width: 75px;
   font-family: inherit;
   padding: 0px;
 
-
   display: inline-flex;
   flex-direction: row;
   justify-content: center;
   align-content: center;
-
 
   color: $sand-dune;
   margin-top: 20px;
@@ -534,10 +547,18 @@ $toolbar--options-width: 75px;
   cursor: pointer;
 
   &:hover {
+    @include polkadots;
+    animation: moving-polkadots 2s linear infinite;
     background-color: $sand-dune;
-    .toolbar--storage-button-text { color: $ecru-white; }
-    .toolbar--storage-icon-container { background-color: $ecru-white;}
-    .toolbar--storage-icon { fill: $sand-dune; }
+    .toolbar--storage-button-text {
+      color: $ecru-white;
+    }
+    .toolbar--storage-icon-container {
+      background-color: $ecru-white;
+    }
+    .toolbar--storage-icon {
+      fill: $sand-dune;
+    }
   }
 }
 

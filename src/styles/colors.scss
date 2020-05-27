@@ -5,15 +5,16 @@ $silver-sand: #bababa;
 $bronco: #aca094;
 
 // browns
-$van-cleef: #503c35;
-$sand-dune: #8a7b67;
-$domino: #695b4d; // sand-dune shadow color
+$van-cleef: #503c35; // primary darkened
+$sand-dune: #8a7b67; // primary brown
+$domino: #695b4d; // primary shadow color
 $umber: #655040; // super dark for toolbar
 $ash: #C8BEB3;
 $schooner: #8a827b; // text on top of ash
+$donkey-brown: #a39277; // canvas polkadot color
 
 // bluish greens
-$tiffany-blue: #00B6A9;
+$tiffany-blue: #00B6A9; // primary blush-ish green
 $pine-green: #037269;
 $tiffany-blue-light: #13c3b2;
 $turquoise: #4fe1d6;
@@ -42,3 +43,12 @@ $tiffany-stripes: repeating-linear-gradient(
   $tiffany-blue 15px,
   $tiffany-blue 30px
 );
+
+@mixin polkadots {
+  background-image: radial-gradient($donkey-brown 2px, transparent 2px),
+      radial-gradient($donkey-brown 2px, transparent 2px);
+  background-color: $sand-dune;
+  background-position: 0 0, 50px 50px;
+  background-size: 20px 20px;
+  background-repeat: repeat;
+}

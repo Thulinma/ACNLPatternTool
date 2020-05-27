@@ -6,7 +6,7 @@
 
     <Palette
       :drawingTool="drawingTool"
-      @change-current-color="onChangeCurrentColor"/>
+      @change-current-color="$emit('change-current-color', $event)"/>
 
     <div v-show="isPicking" class="color-tools--color-pickers">
       <div class="color-tools--tabs acnl">
@@ -44,17 +44,14 @@
         <ACNLColorPicker
           v-show="isACNL"
           :drawingTool="drawingTool"
-          @color-picked="onColorPicked"/>
+          @color-picked="$emit('color-picked', $event)"/>
         <ACNHColorPicker
           v-if="isACNH"
           :drawingTool="drawingTool"
-          @color-picked="onColorPicked"/>
+          @color-picked="$emit('color-picked', $event)"/>
       </div>
     </div>
 
-    <div
-      class="color-picker-close">
-    </div>
   </div>
 </template>
 
@@ -82,6 +79,11 @@ export default {
     colorPicker: {
       type: String,
       required: false
+    },
+    isNewPattern: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   computed: {
@@ -105,9 +107,6 @@ export default {
     },
     onChangeCurrentColor: function(idx) {
       this.$emit("change-current-color", idx);
-    },
-    onColorPicked: function(color) {
-      this.$emit("color-picked", color);
     },
   }
 }

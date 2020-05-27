@@ -210,7 +210,7 @@ export default {
         this.model = gltf.scene.children[0];
         this.model.traverse((child) => {
           if (child instanceof Mesh){
-            console.log(child);
+            // console.log(child);
             //child.material = new MeshPhongMaterial();
             const meshName = child.name.split("__")[1];
             const redraw = ()=>{

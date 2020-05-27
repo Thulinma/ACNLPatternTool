@@ -19,7 +19,7 @@ class RenderTarget{
   /// Should be called every time the pattern (or canvas) changes width
   calcZoom(pWidth, tWidth){
     if (this.opt.texture){
-      console.log(this, pWidth, tWidth);
+      // console.log(this, pWidth, tWidth);
       pWidth = tWidth;
     }
     this.context.imageSmoothingEnabled = false;
@@ -310,7 +310,7 @@ class DrawingTool{
         default: this.patternType = 0x00; break;//others
       }
     }
-    
+
   }
   get allTypes(){
     if (this.pattern instanceof ACNHFormat){

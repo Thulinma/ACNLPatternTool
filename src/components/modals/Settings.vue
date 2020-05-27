@@ -1,5 +1,5 @@
 <template>
-  <ModalContainer @modal-close="close">
+  <ModalContainer @modal-close="$emit('close')">
     <template #window>
       <div class="settings-modal">
         <h1>Edit Pattern Details</h1>
@@ -7,18 +7,28 @@
         <section>
           <span>
             Title:
-            <input type="text" maxlength="20" v-model="details.patTitle" @change="update" />
+            <input type="text" maxlength="20" v-model="details.title" @change="update" />
           </span>
           <span>
             Author:
-            <input type="text" maxlength="9" v-model="details.patAuthor" @change="update" />
+            <input
+              type="text"
+              maxlength="9"
+              v-model="details.creator.name"
+              @change="update"
+            />
           </span>
           <span>
             Town:
-            <input type="text" maxlength="9" v-model="details.patTown" @change="update" />
+            <input
+              type="text"
+              maxlength="9"
+              v-model="details.town.name"
+              @change="update"
+            />
           </span>
 
-          <select v-model="details.patType" @change="update">
+          <select v-model="details.type" @change="update">
             <option v-for="(type, index) in patternTypes" :key="index" :value="index">{{type.name}}</option>
           </select>
         </section>
@@ -40,8 +50,8 @@
 
         <button @click="saveAuthor">Copy Author Information</button>
         <button @click="loadAuthor">Load Copied Author Information</button>
-        <button @click="update(); close()">Save</button>
-        <button @click="close">Close</button>
+        <button @click="update(); $emit('close')">Save</button>
+        <button @click="$emit('close')">Close</button>
       </div>
     </template>
   </ModalContainer>
@@ -67,14 +77,7 @@ export default {
     },
     patternDetails: {
       type: Object,
-      default: () => {
-        return {
-          patTitle: "Empty",
-          patAuthor: "Unknown",
-          patTown: "Unknown",
-          patType: 9
-        };
-      }
+      required: true
     }
   },
   data: function() {
@@ -83,20 +86,17 @@ export default {
       details: {
         ...this.$props.patternDetails
       },
-      storedAuthorHuman: undefined
+      storedAuthorHuman: undefined,
     };
   },
   methods: {
     update() {
-      this.details.patTitle = this.details.patTitle.trim();
-      this.details.patTown = this.details.patTown.trim();
-      this.details.patAuthor = this.details.patAuthor.trim();
+      this.details.title = this.details.title.trim();
+      this.details.town.name = this.details.town.name.trim();
+      this.details.creator.name = this.details.creator.name.trim();
 
-      this.$emit("update", {
-        details: {
-          ...this.details
-        },
-        ...this.storedAuthorHuman
+      this.$emit("update-details", {
+        ...this.details
       });
     },
     saveAuthor() {
@@ -107,9 +107,6 @@ export default {
       this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
-    },
-    close() {
-      this.$emit("close");
     }
   }
 };

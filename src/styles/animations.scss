@@ -1,8 +1,17 @@
+@keyframes moving-polkadots {
+  from {
+    background-position: 0px 0px, 50px 50px;
+  }
+  to {
+    background-position: 50px 50px, 100px 100px;
+  }
+}
+
 @keyframes barberpole {
-  0% {
+  from {
     background-position: 100% 100%;
   }
-  100% {
+  to {
     background-position: 0% 0%;
   }
 }

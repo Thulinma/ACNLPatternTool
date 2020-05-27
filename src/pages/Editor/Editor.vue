@@ -1,11 +1,13 @@
 <template>
   <main class="editor--container">
     <div style="text-align: center">
-      <ColorTools :drawingTool="drawingTool" @change-current-color="onChangeCurrentColor" />
+      <ColorTools
+        :drawingTool="drawingTool"
+        @change-current-color="onChangeCurrentColor"
+        @color-picked="onColorPicked"
+      />
     </div>
-    <ModalContainer
-      v-if="colorPicker != null"
-      @modal-close="onChangeColorPicker(null)">
+    <ModalContainer v-if="colorPicker != null" @modal-close="onChangeColorPicker(null)">
       <template #window>
         <div class="editor--color-picker-window" style="text-align: center">
           <ColorTools
@@ -26,37 +28,27 @@
     <div class="editor--middle-components">
       <!-- need this to control canvas ratio -->
       <div class="editor--previews">
-        <div>
-          <canvas class="editor--preview" width=256 height=256 ref="preview" />
+        <div class="editor--preview-container">
+          <canvas class="editor--preview" width="192" height="192" ref="preview" />
         </div>
         <div>
           <ThreeDRender :width="250" :height="450" :drawingTool="drawingTool" />
         </div>
       </div>
       <!-- width/height must be multiples of 32 and ratio of 1:1 -->
-      <canvas class="editor--canvas" width="704" height="704" ref="main" />
+      <div class="editor--canvas-container">
+        <canvas class="editor--canvas" width="576" height="576" ref="main" />
+      </div>
 
       <Toolbar
         :drawingTool="drawingTool"
         :prevColorPicker="prevColorPicker"
         :colorPicker="colorPicker"
         @change-color-picker="onChangeColorPicker"
-        :settingsActive="settingsActive"
-        @open-settings="settingsActive = true"
-        :qrPreviewActive="qrPreviewActive"
-        @open-qr-preview="onChangeQrPreviewActive(true)"
+        @update-details="updatePatternDetails"
+        :patternDetails="patternDetails"
       />
     </div>
-
-    <Settings
-      v-if="settingsActive"
-      @update="updateSettings"
-      @close="settingsActive = false"
-      :open="settingsActive"
-      :types="drawingTool.allTypes"
-      :pattern-details="patternDetails"
-      :drawing-tool="drawingTool"
-    />
 
     <div class="editor--dropups">
       <div class="editor--dropup import">
@@ -89,28 +81,13 @@
         </div>
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
-          <button class="editor--dropup-menu-item">as .ACNL</button>
+          <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
           <button class="editor--dropup-menu-item">as QR Code</button>
           <button class="editor--dropup-menu-item">to Designs</button>
           <button class="editor--dropup-menu-item">Publish</button>
         </div>
       </div>
     </div>
-
-
-  <ModalContainer v-if="qrPreviewActive" @modal-close="qrPreviewActive=false">
-    <template #window>
-      <div class="editor--qr-preview-window">
-        <ACNLQRGenerator class="editor--qr-preview" :pattern="drawingTool.toString()" />
-        <div class="editor--qr-save-button-container">
-          <button @click="downloadPNG" class="editor--qr-save-button">
-            Save QR
-          </button>
-        </div>
-      </div>
-    </template>
-  </ModalContainer>
-
   </main>
 </template>
 
@@ -135,7 +112,6 @@ import ColorTools from "./ColorTools/ColorTools.vue";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
-import ACNLQRGenerator from "~/components/ACNLQRgenerator.vue";
 import Settings from "~/components/modals/Settings.vue";
 
 export default {
@@ -148,205 +124,47 @@ export default {
     IconImport,
     IconSave,
     IconCaretUp,
-    ACNLQRGenerator,
     Settings
-},
-  beforeRouteUpdate: function(to, from, next) {
-    if (to.hash.length > 1) {
-      if (to.hash.startsWith("#H:")) {
-        origin.view(to.hash.substring(3)).then(r => {
-          this.drawingTool.load(r);
-        });
-        next();
-        return;
-      }
-      let newHash = lzString.compressToEncodedURIComponent(
-        this.drawingTool.toString()
-      );
-      if (to.hash !== "#" + newHash) {
-        this.drawingTool.load(
-          lzString.decompressFromEncodedURIComponent(to.hash.substring(1))
-        );
-      }
-    }
-    next();
   },
   data: function() {
+    // randomize the gender
+    const randomBinary = Math.floor(Math.random());
     return {
       drawingTool: new DrawingTool(),
+
       patternDetails: {
-        patTitle: "Empty",
-        patAuthor: "Unknown",
-        patTown: "Unknown",
-        selectedTypes: [],
-        selectedStyles: [],
-        patType: 9
+        // redundant mirrored properties, need these to sync
+        title: "Empty",
+        creator: {
+          id: 0,
+          name: "Unknown",
+          gender: ["Female", "Male"][randomBinary],
+        },
+        town: {
+          id: 0,
+          name: "Unknown"
+        },
+        type: 9,
+        // publishing data
+        selectedTypes: new Array(3).fill(undefined),
+        selectedStyles: new Array(3).fill(undefined),
       },
 
-      paletteColors: Array(15).fill(null),
-      currentColor: null,
-      // color = paletteColors[currColor]
+      // colorTool & toolbar fields
       prevColorPicker: "acnl",
       colorPicker: null, // color picker mode
-      qrPreviewActive: false,
-      settingsActive: false,
 
-      acnlMode: false,
-      storedAuthorHuman: false,
-      fragment: "",
-      patTypeName: "",
       pickPatterns: false,
       multiName: "Local Storage",
       allowMoveToLocal: true,
-      origin,
+      origin
     };
   },
   methods: {
-    updateSettings: function(data) {
-      if (data.details) {
-        this.patternDetails = {
-          ...this.patternDetails,
-          ...data.details
-        };
-      }
-
-      if (data.storedAuthorHuman) {
-        this.storedAuthorHuman = data.storedAuthorHuman;
-      }
-
-      // todo: can we make drawingTool accept an object and update all of these that way?
-      const patTown = this.patternDetails.patTown;
-      const patAuthor = this.patternDetails.patAuthor;
-      this.drawingTool.title = this.patternDetails.patTitle;
-      if (this.drawingTool.creator[0] !== patAuthor)
-        this.drawingTool.creator = patAuthor;
-      if (this.drawingTool.town[0] !== patTown) this.drawingTool.town = patTown;
-      if (this.drawingTool.patternType !== this.patternDetails.patType) {
-        this.drawingTool.patternType = this.patternDetails.patType;
-        this.patTypeName = this.drawingTool.typeInfo.name;
-      }
-    },
-    onOpenLocal: function() {
-      let tmp = {};
-      for (const i in localStorage) {
-        if (i.startsWith("acnl_")) {
-          tmp[i] = new DrawingTool(
-            lzString.decompressFromUTF16(localStorage.getItem(i))
-          );
-        }
-      }
-      this.multiName = "Local Storage";
-      this.pickPatterns = tmp;
-      this.allowMoveToLocal = false;
-    },
-    zipPicksAsACNL: function() {
-      let zip = new JSZip();
-      const titles = [];
-      for (const i in this.pickPatterns) {
-        let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)) {
-          dt = new DrawingTool(dt);
-        }
-        let ext = ".acnl";
-        if (dt.pattern instanceof ACNHFormat) {
-          ext = ".acnh";
-        }
-        let title = dt.title + ext;
-        let k = 1;
-        while (titles.includes(title)) {
-          title = dt.title + "(" + k + ")" + ext;
-          k++;
-        }
-        zip.file(title, dt.toBytes());
-        titles.push(title);
-      }
-      zip.generateAsync({ type: "blob" }).then(d => {
-        saveAs(d, "patterns.zip");
-      });
-    },
-    async zipPicksAsPNG() {
-      let zip = new JSZip();
-      const titles = [];
-      for (const i in this.pickPatterns) {
-        let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)) {
-          dt = new DrawingTool(dt);
-        }
-        const img = await generateACNLQR(dt);
-        let title = dt.title + ".png";
-        let k = 1;
-        while (titles.includes(title)) {
-          title = dt.title + "(" + k + ")" + ".png";
-          k++;
-        }
-        zip.file(title, img.substr(22), { base64: true });
-        titles.push(title);
-      }
-      zip.generateAsync({ type: "blob" }).then(d => {
-        saveAs(d, "patterns.zip");
-      });
-    },
-    async zipPicksAsBoth() {
-      let zip = new JSZip();
-      const titles = [];
-      for (const i in this.pickPatterns) {
-        let dt = this.pickPatterns[i];
-        if (!(dt instanceof DrawingTool)) {
-          dt = new DrawingTool(dt);
-        }
-        let ext = ".acnl";
-        if (dt.pattern instanceof ACNHFormat) {
-          ext = ".acnh";
-        }
-        let ancl_title = dt.title + ext;
-        let k = 1;
-        while (titles.includes(ancl_title)) {
-          ancl_title = dt.title + "(" + k + ")" + ext;
-          k++;
-        }
-        const img_title = ancl_title.replace(ext, ".png");
-        zip.file(ancl_title, dt.toBytes());
-        const img = await generateACNLQR(dt);
-        zip.file(img_title, img.substr(22), { base64: true });
-        titles.push(ancl_title);
-      }
-      zip.generateAsync({ type: "blob" }).then(d => {
-        saveAs(d, "patterns.zip");
-      });
-    },
-    async downloadTex() {
-      const img = this.$refs.canvas3.toDataURL("image/png");
-      saveAs(img, this.drawingTool.title + "_texture.png");
-    },
-    async downloadPNG() {
-      const img = await generateACNLQR(this.drawingTool);
-      saveAs(img, this.drawingTool.title+".png");
-    },
-    onLocalSave() {
-      localStorage.setItem(
-        "acnl_" + this.drawingTool.fullHash,
-        lzString.compressToUTF16(this.drawingTool.toString())
-      );
-    },
-    picksToLocal() {
-      for (const i in this.pickPatterns) {
-        localStorage.setItem(
-          "acnl_" + this.pickPatterns[i].fullHash,
-          lzString.compressToUTF16(this.pickPatterns[i].toString())
-        );
-      }
-    },
-    downACNL() {
-      const blob = new Blob([this.drawingTool.toBytes()], {
-        type: "application/octet-stream"
-      });
-      let ext = ".acnl";
-      if (this.drawingTool.pattern instanceof ACNHFormat) {
-        ext = ".acnh";
-      }
-      saveAs(blob, this.drawingTool.title + ext);
-    },
-    onColorPicked: function(color) {
+    // ------------------
+    // REACTION FUNCTIONS
+    // ------------------
+    onColorPicked: function(color, log = true) {
       if (this.drawingTool.currentColor === 15) {
         alert("this one has to stay transparent");
         return;
@@ -355,97 +173,127 @@ export default {
       if (this.drawingTool.getPalette(currentColor) === color) return;
       this.drawingTool.pushUndo();
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-      console.log(`color picked: ${color}`);
+      if (log) console.log(`color picked: ${color}`);
     },
-    onChangeCurrentColor: function(idx) {
+    onChangeCurrentColor: function(idx, log = true) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
-      console.log(`changed current color: ${idx}`);
+      if (log) console.log(`changed current color: ${idx}`);
     },
-    mirrorCurrentColor: function() {},
-    mirrorPalette: function() {},
     onChangeColorPicker: function(mode) {
       if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
       this.colorPicker = mode;
     },
-    onChangeQrPreviewActive: function(isActive) {
-      this.qrPreviewActive = isActive;
-    },
-    onLoad: async function(t) {
-      let patStr = this.drawingTool.toString();
-      this.patType = this.drawingTool.patternType;
-      this.patTypeName = this.drawingTool.typeInfo.name;
-      this.patTitle = this.drawingTool.title;
-      this.patAuthor = this.drawingTool.creator[0];
-      this.patTown = this.drawingTool.town[0];
+    updatePatternDetails: function(patternDetails) {
+      // update current with incoming
+      this.patternDetails = {
+        ...this.patternDetails,
+        ...patternDetails
+      };
 
-      // need to wait 2 ticks before access ref in portal
-      // AFTER setting isOpenModal to true
-      // https://portal-vue.linusb.org/guide/caveats.html#provide-inject
-      await this.$nextTick();
-      await this.$nextTick();
-      /*
-      const newHash = lzString.compressToEncodedURIComponent(patStr);
-      const newPixHash = "#H:"+this.drawingTool.pixelHash;
-      if (this.$router.currentRoute.hash !== "#" + newHash && this.$router.currentRoute.hash !== newPixHash) {
-        this.$router.push({ hash: newHash });
+      // alias everything and update drawingTool
+      const { title, creator, town, type } = this.patternDetails;
+      this.drawingTool.title = title;
+      this.drawingTool.patternType = type;
+      this.drawingTool.creator = [creator.name, creator.id];
+      this.drawingTool.town = [town.name, town.id];
+    },
+    // ------------------
+    // SAVING FUNCTIONS
+    // ------------------
+    downloadBinary() {
+      const blob = new Blob([this.drawingTool.toBytes()], {
+        type: "application/octet-stream"
+      });
+      let ext = "acnl";
+      const isACNL = this.drawingTool.pattern instanceof ACNLFormat;
+      if (!isACNL) ext = "acnh";
+      saveAs(blob, `${this.drawingTool.title}.${ext}`);
+    },
+    // ---------------------------------------------
+    // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
+    // ---------------------------------------------
+    // sets up an new (already existing) instance of drawingTool
+    initializePattern: async function() {
+      // intial color palette
+      const initialColors = [
+        "#EEEEEE", "#888888", "#000000", "#FF0000", "#FF6600", "#FFFF00",
+        "#22DD22", "#008833", "#00CDFF", "#1077FF", "#0000FF", "#CC00FF",
+        "#FF00CC", "#FFAA88", "#993200"
+      ];
+      let currentColor = 0;
+      for (const color of initialColors) {
+        this.onChangeCurrentColor(currentColor, false);
+        this.onColorPicked(color, false);
+        ++currentColor;
       }
-      */
-      return;
+      // generate stitching patterns
+      const stichingColor = initialColors.indexOf("#FFAA88");
+      this.onChangeCurrentColor(stichingColor, false);
+      for (let i = 1; i < 32; ++i) {
+        this.drawingTool.setPixel(15, i); // vertical stiches
+        this.drawingTool.setPixel(i, 15); // horizontal stiches
+        if ((i + 1) % 3 === 0) ++i;
+      }
+      this.drawingTool.setPixel(15, 15);
+      // reset current color back to normal
+      this.onChangeCurrentColor(0, false);
+      console.log("new pattern initialized");
     },
-    extLoad: function(data) {
-      this.drawingTool.load(data);
+    // load a pattern from the route, set up new pattern if none in route
+    loadFromRoute: async function() {
+      const isPatternInUrlHash = this.$router.currentRoute.hash.length > 1;
+      if (!isPatternInUrlHash) {
+        this.initializePattern();
+        return;
+      };
+      // pattern stored in URL
+      const fragment = this.$router.currentRoute.hash.substring(1);
+      // determine protocols
+      const isHashProtocol = fragment.startsWith("H:");
+      if (isHashProtocol) {
+        const hash = fragment.substring(2);
+        const bytes = await origin.view(hash);
+        this.drawingTool.load(bytes);
+      } else {
+        this.drawingTool.load(lzString.compressToUTF16("TEST"));
+      }
+      return true;
     },
-    extMultiLoad: function(data) {
-      this.multiName = "Load which?";
-      this.pickPatterns = data;
-      this.allowMoveToLocal = true;
+    // syncs relevant details for updateDetails
+    syncPatternDetails: async function() {
+      // copy details from drawingTool
+      const { creator, town } = this.patternDetails;
+      this.patternDetails.title = this.drawingTool.title;
+      this.patternDetails.type = this.drawingTool.patternType;
+      [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
+      [town.name, town.id] = this.drawingTool.town;
     },
-    pickPattern: function(p) {
-      this.extLoad(p);
-      this.pickPatterns = false;
-    },
-    closePicks: function() {
-      this.pickPatterns = false;
+    // event handler for native keydown activates redo/undo
+    onDo(event) {
+      if (!event.ctrlKey) return;
+      if (event.key === "Z") this.drawingTool.redo();
+      else if (event.key === "z") this.drawingTool.undo();
+      event.preventDefault();
     }
   },
-  mounted: function() {
-    if (localStorage.getItem("author_acnl")) {
-      this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
-      this.storedAuthorHuman = `${this.drawingTool.creator[0]} / ${this.drawingTool.town[0]}`;
-    }
+  mounted: async function() {
+    // setup drawingTool
+    await this.loadFromRoute();
+    this.syncPatternDetails();
+
+    // mount canvases and render
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
     this.drawingTool.addCanvas(this.$refs.preview);
-    if (this.$router.currentRoute.hash.length > 1) {
-      const hash = this.$router.currentRoute.hash.substring(1);
-      if (hash.startsWith("H:")) {
-        origin.view(hash.substring(2)).then(r => {
-          this.drawingTool.load(r);
-        });
-      } else {
-        this.drawingTool.load(lzString.decompressFromEncodedURIComponent(hash));
-      }
-    } else {
-      this.onLoad();
-      this.drawingTool.render();
-    }
-    // todo: can make this more vue-like
-    // undo/redo functionality
-    document.addEventListener("keydown", e => {
-      if (e.ctrlKey && e.key === "Z") {
-        this.drawingTool.redo();
-        e.preventDefault();
-        return;
-      }
-      if (e.ctrlKey && e.key === "z") {
-        this.drawingTool.undo();
-        e.preventDefault();
-        return;
-      }
-    });
+    this.drawingTool.render();
+
+    // setup global events
+    window.addEventListener("keydown", this.onDo);
   },
-  beforeDestroy: function() {}
+  beforeDestroy: function() {
+    window.removeEventListener("keydown", this.onDo);
+  }
 };
 </script>
 
@@ -489,9 +337,10 @@ export default {
 
 .editor--middle-components {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr max-content 1fr;
   grid-template-rows: auto;
   justify-content: center;
+  align-items: flex-start;
 }
 
 .editor--previews {
@@ -500,23 +349,41 @@ export default {
   grid-template-rows: repeat(2, max-content);
 
   div {
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
-.editor--preview {
+.editor--preview-container {
   margin-top: 30px;
-  border-radius: 5px;
+  @include flex-container--center;
+  padding: 48px;
+
+  @include polkadots;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
 
-.editor--canvas {
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-  background-color: $sand-dune;
+// .editor--preview {
+// }
+
+.editor--canvas-container {
+  padding: 96px;
+  box-sizing: content-box;
+  @include flex-container--center;
+  overflow: hidden;
+
   border-radius: 8px;
+  @include polkadots;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
+
+// .editor--canvas {
+// }
 
 .editor--dropups {
-  position: absolute;
+  position: fixed;
   right: 30px;
   bottom: 15px;
   z-index: 999;
@@ -667,53 +534,6 @@ export default {
   }
   &.save .editor--dropup-menu-item:after {
     background-color: $pine-green;
-  }
-}
-
-.editor--qr-preview-window {
-  @include absolute-center;
-  z-index: 999;
-}
-
-.editor--qr-preview {
-  display: block;
-  height: 300px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: $cannon-pink;
-  border-radius: 30px;
-}
-
-.editor--qr-save-button-container {
-  pointer-events: none;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-
-.editor--qr-save-button {
-  @include reset-button-properties;
-  cursor: pointer;
-
-  border-width:  4px;
-  border-style: solid;
-  border-color: $tiffany-blue;
-  background: $tiffany-blue;
-  pointer-events: auto;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  padding: 5px 30px;
-  color: white;
-
-  &:hover {
-    border-color: $turquoise;
-    background: $tiffany-stripes;
-    background-size: 200% 200%;
-    animation: barberpole 3s linear infinite;
   }
 }
 </style>

@@ -1,3 +1,5 @@
+@import "styles/colors.scss";
+
 @mixin reset-button-properties {
   // reset
   appearance: none;
@@ -27,4 +29,12 @@
 @mixin absolute-center {
   @include relative-center();
   position: absolute;
+}
+
+@mixin flex-container--center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
