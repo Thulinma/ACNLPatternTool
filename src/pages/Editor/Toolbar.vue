@@ -119,7 +119,7 @@
           <div class="toolbar--shortcut-tooltip">Eye Dropper</div>
         </button>
 
-        <button class="toolbar--shortcut eye-dropper placeholder">
+        <button class="toolbar--shortcut placeholder">
           <div class="toolbar--shortcut-icon-container">
             <div class="toolbar--shortcut-icon" />
           </div>
@@ -131,6 +131,7 @@
             <IconUndo class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Undo</div>
+          <div class="toolbar--shortcut-hint">CTRL + Z</div>
         </button>
 
         <button class="toolbar--shortcut" @click="drawingTool.redo()">
@@ -138,6 +139,7 @@
             <IconRedo class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Redo</div>
+          <div class="toolbar--shortcut-hint">CTRL + SHIFT+ Z</div>
         </button>
       </div>
 
@@ -155,7 +157,9 @@
             <IconDetail class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Pattern Settings</div>
+          <div class="toolbar--shortcut-hint short">S</div>
         </button>
+
         <button
           :class="{
               'toolbar--shortcut preview': true,
@@ -167,6 +171,7 @@
             <IconQRCode class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Preview QR Code</div>
+          <div class="toolbar--shortcut-hint short persistent">P</div>
         </button>
       </div>
     </div>
@@ -369,23 +374,64 @@ export default {
       this.option = nextOption;
       this.selectTool(tool, nextOption);
     },
-    onCycleOptions: function($event) {
-      if (event.code !== "KeyT") return;
-      this.cycleOptions();
+    onKey: async function(event) {
+      const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } = event;
+      const noMod = !ctrlKey && !altKey && !metaKey && !shiftKey;
+      if (noMod) {
+        // cycle tool options
+        if (code === "KeyT") {
+          this.cycleOptions();
+          return;
+        }
+        // settings
+        else if (code === "KeyS") {
+          this.qrPreviewOpen = false;
+          await this.$nextTick();
+          await this.$nextTick();
+          this.settingsOpen = true;
+          return;
+        }
+        // qrPreview
+        else if (code === "KeyP") {
+          this.settingsOpen = false;
+          // need to wait 2 ticks for portal to process
+          await this.$nextTick();
+          await this.$nextTick();
+          this.qrPreviewOpen = true;
+          return;
+        }
+      }
+      // undo redos
+      if (ctrlKey && !altKey && !metaKey) {
+        if (code === "KeyZ") {
+          if (shiftKey) this.drawingTool.redo();
+          else this.drawingTool.undo();
+        }
+      }
+    },
+    onOpenQrPreview(event) {
+      const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } = event;
+      if (event.ctrlKey) return;
+      if (event.altKey) return;
+      if (event.shiftKey) return;
+      if (event.metaKey) return;
+      this.settingsOpen = false;
+      if (event.code === "KeyP") this.qrPreviewOpen = true;
     }
   },
   mounted: function() {
     this.selectTool("brush", "small");
-    window.addEventListener("keydown", this.onCycleOptions);
+    window.addEventListener("keydown", this.onKey);
   },
   beforeDestroy: function() {
-    window.removeEventListener("keydown", this.onCycleOptions);
+    window.removeEventListener("keydown", this.onKey);
   }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/mixins";
 @import "styles/animations";
 @import "styles/transitions";
 
@@ -692,6 +738,7 @@ $toolbar--options-width: 75px;
 
   &.placeholder {
     opacity: 0;
+    pointer-events: none;
     cursor: default;
   }
 
@@ -715,7 +762,7 @@ $toolbar--options-width: 75px;
   }
 
   .toolbar--shortcut-tooltip {
-    transition: transform 0.15s cubic-bezier(0.5, 0.1, 0.3, 1.5);
+    transition: transform 0.15s $energetic;
     display: inline-block;
     white-space: nowrap;
     padding: 10px 20px;
@@ -758,6 +805,44 @@ $toolbar--options-width: 75px;
   &:hover .toolbar--shortcut-tooltip {
     opacity: 1;
     transform: translate(-50%, -10px) scale(1);
+  }
+
+  /* keymap hint */
+  .toolbar--shortcut-hint {
+    @include invisible;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(50%, 75%);
+
+    display: inline-block;
+    padding: 5px 10px;
+    white-space: nowrap;
+
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    background-color: $sand-dune;
+    color: white;
+
+    &.short {
+      padding: 0px;
+      text-align: center;
+      font-size: 1.25rem;
+
+      $size: 30px;
+      line-height: $size;
+      width: $size;
+      height: $size;
+      border-radius: 999px;
+      transform: translate(0, 0);
+    }
+    &.persistent {
+      @include visible;
+    }
+  }
+  &:hover .toolbar--shortcut-hint {
+    @include visible;
   }
 }
 </style>

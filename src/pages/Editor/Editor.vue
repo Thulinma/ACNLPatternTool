@@ -270,13 +270,7 @@ export default {
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
     },
-    // event handler for native keydown activates redo/undo
-    onDo(event) {
-      if (!event.ctrlKey) return;
-      if (event.key === "Z") this.drawingTool.redo();
-      else if (event.key === "z") this.drawingTool.undo();
-      event.preventDefault();
-    }
+
   },
   mounted: async function() {
     // setup drawingTool
@@ -287,13 +281,7 @@ export default {
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
-
-    // setup global events
-    window.addEventListener("keydown", this.onDo);
   },
-  beforeDestroy: function() {
-    window.removeEventListener("keydown", this.onDo);
-  }
 };
 </script>
 
