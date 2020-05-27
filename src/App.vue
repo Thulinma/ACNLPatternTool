@@ -5,7 +5,7 @@
       portrait,
     }">
     <router-view></router-view>
-    <Banner />
+    <!-- <Banner /> -->
     <NavigationButton/>
     <ModalManager/>
   </div>

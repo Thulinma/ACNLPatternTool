@@ -18,6 +18,7 @@
         <img
           class="menu--nav-item"
           :src="browseSvg"
+          @click="$emit('modal-close')"
           @mouseover="enterNavItem('Browse')"
           @mouseleave="leaveNavItem()"
         />
@@ -27,6 +28,7 @@
         <img
           class="menu--nav-item"
           :src="editorSvg"
+          @click="$emit('modal-close')"
           @mouseover="enterNavItem('Editor')"
           @mouseleave="leaveNavItem()"
         />
@@ -36,6 +38,7 @@
         <img
           class="menu--nav-item"
           :src="faqSvg"
+          @click="$emit('modal-close')"
           @mouseover="enterNavItem('FAQ')"
           @mouseleave="leaveNavItem()"
         />
@@ -45,6 +48,19 @@
         <img
           class="menu--nav-item"
           :src="changelogSvg"
+          @click="$emit('modal-close')"
+          @mouseover="enterNavItem('Updates')"
+          @mouseleave="leaveNavItem()"
+        />
+      </router-link>
+
+
+      <router-link to="/about">
+        <img
+          class="menu--nav-item"
+          :src="changelogSvg"
+          @click="$emit('modal-close')"
+          @mouseover="enterNavItem('About Us')"
           @mouseleave="leaveNavItem()"
         />
       </router-link>
