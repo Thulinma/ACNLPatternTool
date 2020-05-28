@@ -288,9 +288,8 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/transitions";
-@import "styles/mixins";
+@import "styles/positioning";
 @import "styles/functions";
-@import "styles/animations";
 
 .editor--container {
   min-width: 800px;
@@ -347,7 +346,7 @@ export default {
   @include flex-container--center;
   padding: 48px;
 
-  @include polkadots;
+  @include polkadots($sand-dune, $donkey-brown);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -363,7 +362,7 @@ export default {
   overflow: hidden;
 
   border-radius: 8px;
-  @include polkadots;
+  @include polkadots($sand-dune, $donkey-brown);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
 

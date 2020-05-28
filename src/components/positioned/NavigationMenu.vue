@@ -151,7 +151,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
-@import "styles/mixins";
+@import "styles/positioning";
 @import "styles/transitions";
 
 .menu--container {

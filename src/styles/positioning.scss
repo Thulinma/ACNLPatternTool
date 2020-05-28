@@ -1,6 +1,4 @@
-@import "styles/colors.scss";
-@import "styles/animations";
-
+// positioning and styles mixins
 @mixin reset-button-properties {
   // reset
   appearance: none;
@@ -50,28 +48,3 @@
   pointer-events: all;
 }
 
-@mixin pink-stripes($stripe-width: 20px) {
-  background: repeating-linear-gradient(
-    -45deg,
-    $pastel-pink,
-    $pastel-pink $stripe-width,
-    $piggy-pink $stripe-width,
-    $piggy-pink $stripe-width * 2,
-  );
-  background-size: 200% 200%;
-}
-
-@mixin tiffany-stripes($stripe-width: 20px) {
-  background: repeating-linear-gradient(
-    -45deg,
-      $tiffany-blue-light,
-      $tiffany-blue-light $stripe-width,
-      $tiffany-blue $stripe-width,
-      $tiffany-blue $stripe-width * 2,
-    );
-  background-size: 200% 200%;
-}
-
-@mixin moving-stripes($duration: 20s) {
-  animation: barberpole $duration linear infinite;
-}

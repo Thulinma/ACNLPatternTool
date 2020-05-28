@@ -1,3 +1,6 @@
+// colors and backgrounds
+
+// whites
 $ecru-white: #f7f4e6;
 
 // grays
@@ -33,11 +36,57 @@ $salmon: #FCA4B1;
 $dust-storm: #e3ccc8;
 $cannon-pink: #893e5d;
 
-@mixin polkadots {
-  background-image: radial-gradient($donkey-brown 2px, transparent 2px),
-      radial-gradient($donkey-brown 2px, transparent 2px);
-  background-color: $sand-dune;
+@mixin polkadots($primary: $sand-dune, $secondary: $donkey-brown) {
+  background-image: radial-gradient($secondary 2px, transparent 2px),
+      radial-gradient($secondary 2px, transparent 2px);
+  background-color: $primary;
   background-position: 0 0, 50px 50px;
   background-size: 20px 20px;
   background-repeat: repeat;
+}
+
+@mixin moving-polkadots ($duration) {
+  @keyframes moving-polkadots {
+    from {
+      background-position: 0px 0px, 50px 50px;
+    }
+    to {
+      background-position: 50px 50px, 100px 100px;
+    }
+  }
+  animation: moving-polkadots $duration linear infinite;
+}
+
+@mixin pink-stripes($stripe-width: 20px) {
+  background: repeating-linear-gradient(
+    -45deg,
+    $pastel-pink,
+    $pastel-pink $stripe-width,
+    $piggy-pink $stripe-width,
+    $piggy-pink $stripe-width * 2,
+  );
+  background-size: 200% 200%;
+}
+
+@mixin tiffany-stripes($stripe-width: 20px) {
+  background: repeating-linear-gradient(
+    -45deg,
+    $tiffany-blue-light,
+    $tiffany-blue-light $stripe-width,
+    $tiffany-blue $stripe-width,
+    $tiffany-blue $stripe-width * 2,
+  );
+  background-size: 200% 200%;
+}
+
+@mixin moving-stripes($duration: 20s) {
+  @keyframes barberpole {
+    from {
+      background-position: 100% 100%;
+    }
+    to {
+      background-position: 0% 0%;
+    }
+  }
+  animation: barberpole $duration linear infinite;
 }

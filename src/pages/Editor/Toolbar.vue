@@ -434,8 +434,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
-@import "styles/mixins";
-@import "styles/animations";
+@import "styles/positioning";
 @import "styles/transitions";
 
 // define most important variables when changing media queries
@@ -621,8 +620,8 @@ $toolbar--options-width: 75px;
   cursor: pointer;
 
   &:hover {
-    @include polkadots;
-    animation: moving-polkadots 2s linear infinite;
+    @include polkadots($sand-dune, $donkey-brown);
+    @include moving-polkadots(2s);
     background-color: $sand-dune;
     .toolbar--storage-button-text {
       color: $ecru-white;

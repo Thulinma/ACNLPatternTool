@@ -121,10 +121,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$peach: #f6d7c9;
-
 @import "styles/colors";
-@import "styles/animations";
 
 .settings-modal {
   background-color: $ecru-white;

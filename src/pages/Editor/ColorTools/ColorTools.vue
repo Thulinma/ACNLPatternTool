@@ -114,8 +114,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
-@import "styles/animations";
-@import "styles/mixins";
+@import "styles/positioning";
 
 // size dictated by palette
 .color-tools--container {
