@@ -106,11 +106,8 @@ export default {
 @import "styles/colors";
 @import "styles/transitions";
 
-// ONLY THING THAT SHOULD BE CHANGED
-// NEEDS A CLASS APPLIED TO CONTROL SIZE
-$palette--container-size: 800px;
+
 .palette--container {
-  width: $palette--container-size;
   display: inline-block;
   user-select: none;
 
@@ -121,13 +118,12 @@ $palette--container-size: 800px;
 
 .palette--colors {
   box-sizing: border-box;
-  width: 100%;
-  padding: 15px 30px;
+  padding: 15px 30px 15px 30px;
 
   display: grid;
-  grid-template-columns: repeat(16, 1fr);
+  grid-template-columns: repeat(16, 36px);
   grid-template-rows: 1fr;
-  column-gap: 10px;
+  column-gap: 15px;
   justify-items: center;
 
   background-color: $pink;

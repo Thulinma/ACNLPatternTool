@@ -115,6 +115,7 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/animations";
+@import "styles/mixins";
 
 // size dictated by palette
 .color-tools--container {
@@ -129,16 +130,14 @@ export default {
   border-radius: 0px 0px 50px 50px;
   text-align: left;
 
+
+  &:hover {
+    @include pink-stripes;
+    @include moving-stripes;
+  }
   &.picking {
-    background: repeating-linear-gradient(
-      -45deg,
-      $pastel-pink,
-      $pastel-pink 20px,
-      $piggy-pink 20px,
-      $piggy-pink 40px
-    );
-    background-size: 200% 200%;
-    animation: barberpole 20s linear infinite;
+    @include pink-stripes;
+    @include moving-stripes(20s);
     $full-thickness: 30px;
     padding-right: $full-thickness;
     padding-bottom: $full-thickness;

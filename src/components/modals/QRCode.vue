@@ -96,9 +96,8 @@ export default {
 
   &:hover {
     border-color: $turquoise;
-    background: $tiffany-stripes;
-    background-size: 200% 200%;
-    animation: barberpole 3s linear infinite;
+    @include tiffany-stripes(15px);
+    @include moving-stripes(3s);
   }
 }
 </style>

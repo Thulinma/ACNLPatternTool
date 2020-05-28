@@ -33,17 +33,6 @@ $salmon: #FCA4B1;
 $dust-storm: #e3ccc8;
 $cannon-pink: #893e5d;
 
-
-
-// stripes
-$tiffany-stripes: repeating-linear-gradient(
-  -45deg,
-  $tiffany-blue-light,
-  $tiffany-blue-light 15px,
-  $tiffany-blue 15px,
-  $tiffany-blue 30px
-);
-
 @mixin polkadots {
   background-image: radial-gradient($donkey-brown 2px, transparent 2px),
       radial-gradient($donkey-brown 2px, transparent 2px);

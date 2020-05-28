@@ -617,7 +617,7 @@ $toolbar--options-width: 75px;
   margin-top: 20px;
   background-color: $ecru-white;
   padding: 8px 8px;
-  border-radius: 25px;
+  border-radius: 23px;
   cursor: pointer;
 
   &:hover {
@@ -791,15 +791,8 @@ $toolbar--options-width: 75px;
   &:hover,
   &.active {
     .toolbar--shortcut-icon-container {
-      background: repeating-linear-gradient(
-        -45deg,
-        $tiffany-blue-light,
-        $tiffany-blue-light 15px,
-        $tiffany-blue 15px,
-        $tiffany-blue 30px
-      );
-      background-size: 200% 200%;
-      animation: barberpole 3s linear infinite;
+      @include tiffany-stripes(15px);
+      @include moving-stripes(3s);
     }
 
     .toolbar--shortcut-icon {
