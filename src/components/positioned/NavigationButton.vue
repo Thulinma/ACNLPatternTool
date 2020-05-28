@@ -81,7 +81,7 @@ $menu-button-size: 74px;
     width: 86%;
     height: auto;
 
-    transition: transform 1s cubic-bezier(.5,-1.5,.5,1.5);
+    transition: transform 0.35s ease-in-out;
     position: absolute;
     top: 50%;
     left: 50%;

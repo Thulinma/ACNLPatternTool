@@ -7,7 +7,13 @@
         <section>
           <span>
             Title:
-            <input type="text" maxlength="20" v-model="details.title" @change="update" />
+            <input
+              type="text"
+              maxlength="20"
+              v-model="details.title"
+              @keydown.stop
+              @change="update"
+            />
           </span>
           <span>
             Author:
@@ -15,6 +21,7 @@
               type="text"
               maxlength="9"
               v-model="details.creator.name"
+              @keydown.stop
               @change="update"
             />
           </span>
@@ -24,6 +31,7 @@
               type="text"
               maxlength="9"
               v-model="details.town.name"
+              @keydown.stop
               @change="update"
             />
           </span>
@@ -86,7 +94,7 @@ export default {
       details: {
         ...this.$props.patternDetails
       },
-      storedAuthorHuman: undefined,
+      storedAuthorHuman: undefined
     };
   },
   methods: {

@@ -175,6 +175,7 @@
         </button>
       </div>
     </div>
+    <div></div>
 
     <Settings
       v-if="settingsOpen"
@@ -386,6 +387,7 @@ export default {
         // settings
         else if (code === "KeyS") {
           this.qrPreviewOpen = false;
+          this.$emit("change-color-picker", null);
           await this.$nextTick();
           await this.$nextTick();
           this.settingsOpen = true;
@@ -394,6 +396,7 @@ export default {
         // qrPreview
         else if (code === "KeyP") {
           this.settingsOpen = false;
+          this.$emit("change-color-picker", null);
           // need to wait 2 ticks for portal to process
           await this.$nextTick();
           await this.$nextTick();
@@ -442,11 +445,12 @@ $toolbar--options-width: 75px;
   user-select: none;
   align-self: center;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr 1fr;
   grid-template-rows: auto;
+  column-gap: 5px;
 
-  width: 350px;
-  height: 650px;
+  width: 320px;
+  height: 700px;
 
   background-color: $pink;
   border-radius: 0px 50px 50px 0px;
@@ -587,7 +591,6 @@ $toolbar--options-width: 75px;
   left: 0;
   z-index: 999;
 
-  margin-left: 20px;
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: min-content;
@@ -614,7 +617,7 @@ $toolbar--options-width: 75px;
   margin-top: 20px;
   background-color: $ecru-white;
   padding: 8px 8px;
-  border-radius: 999px;
+  border-radius: 25px;
   cursor: pointer;
 
   &:hover {
@@ -672,6 +675,7 @@ $toolbar--options-width: 75px;
   grid-template-rows: max-content;
   column-gap: 10px;
   justify-content: center;
+  justify-self: center;
 
   &.colors {
     margin-top: 14px;
@@ -693,8 +697,9 @@ $toolbar--options-width: 75px;
 }
 
 .toolbar--shortcuts-divider {
+  justify-self: center;
   background-color: $salmon;
-  width: 55%;
+  width: 90%;
   height: 4px;
   border-radius: 999px;
 }
