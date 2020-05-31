@@ -1,0 +1,43 @@
+// assume that styles START from phone size scss
+// assume mobile portrait is defualt, don't need media query for it
+$break-phone-landscape: 480px;
+$break-tablet-portrait: 768px;
+$break-tablet-landscape: 992px;
+$break-desktop: 1200px;
+
+// mobile is both phone and tablet
+@mixin screen-size($breakpoint) {
+  @media only screen and (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin mobile-only {
+}
+
+@mixin desktop-only {
+}
+
+@mixin phone-landscape {
+  @include screen-size($break-phone-landscape) {
+    @content;
+  }
+}
+
+@mixin tablet-portrait {
+  @include screen-size($break-tablet-portrait) {
+    @content;
+  }
+}
+
+@mixin tablet-landscape {
+  @include screen-size($break-tablet-landscape) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @include screen-size($break-desktop) {
+    @content;
+  }
+}
