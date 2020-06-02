@@ -138,7 +138,6 @@ export default {
         creator: {
           id: 0,
           name: "Unknown",
-          gender: ["Female", "Male"][randomBinary],
         },
         town: {
           id: 0,

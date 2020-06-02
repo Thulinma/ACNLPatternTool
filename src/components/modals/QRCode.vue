@@ -13,7 +13,7 @@
 
 <script>
 import DrawingTool from '~/libs/DrawingTool';
-import ModalContainer from '~/components/positioned/ModalContainer';
+import ModalContainer from '~/components/positioned/ModalContainer.vue';
 import ACNLQRGenerator from '~/components/ACNLQRGenerator.vue';
 
 /* libs */

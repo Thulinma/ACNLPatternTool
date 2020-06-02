@@ -1,65 +1,87 @@
 <template>
   <ModalContainer @modal-close="$emit('close')">
     <template #window>
-      <div class="settings-modal">
-        <h1>Edit Pattern Details</h1>
-
-        <section>
-          <span>
-            Title:
+      <div class="settings--window">
+        <label class="settings--input-field">
+          <div class="settings--input-field-name required">Title</div>
+          <div class="settings--input-container">
             <input
+              id="pattern-title"
+              class="settings--input"
               type="text"
               maxlength="20"
+              spellcheck="false"
               v-model="details.title"
               @keydown.stop
-              @change="update"
             />
-          </span>
-          <span>
-            Author:
+          </div>
+        </label>
+
+        <label class="settings--input-field">
+          <div class="settings--input-field-name required">Author</div>
+          <div class="settings--input-container">
             <input
+              class="settings--input"
               type="text"
               maxlength="9"
+              spellcheck="false"
               v-model="details.creator.name"
               @keydown.stop
-              @change="update"
             />
-          </span>
-          <span>
-            Town:
+          </div>
+        </label>
+
+        <label class="settings--input-field">
+          <div class="settings--input-field-name required">Town</div>
+          <div class="settings--input-container">
             <input
+              class="settings--input"
               type="text"
               maxlength="9"
+              spellcheck="false"
               v-model="details.town.name"
               @keydown.stop
-              @change="update"
             />
-          </span>
+          </div>
+        </label>
 
-          <select v-model="details.type" @change="update">
+        <div class="settings--row-4">
+          <select class="settings--type" v-model="details.type">
             <option v-for="(type, index) in patternTypes" :key="index" :value="index">{{type.name}}</option>
           </select>
-        </section>
-        <!-- title, author, town, type -->
 
-        <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
-
-        <div id="edit-notice">
-          <p>
-            IMPORTANT: AC:NH reads these patterns as AC:NL patterns; therefore,
-            they will not be editable in-game since the game can't
-            determine that they were originally made by you.
-          </p>
-          <p>
-            Similarly, patterns with transparency will look corrupted
-            when scanned in the NSO application but will look fine in-game.
-          </p>
+          <button class="settings--confirm" @click="update(); $emit('close');">Confirm</button>
         </div>
 
-        <button @click="saveAuthor">Copy Author Information</button>
-        <button @click="loadAuthor">Load Copied Author Information</button>
-        <button @click="update(); $emit('close')">Save</button>
-        <button @click="$emit('close')">Close</button>
+        <button
+          class="settings--advanced-button"
+          v-if="!showAdvanced"
+          @click="showAdvanced = !showAdvanced"
+        >
+          Advanced
+          <IconChevronDown class="settings--advanced-expand-icon" />
+        </button>
+        <button class="settings--advanced-button" v-if="showAdvanced" @click="storeMeta">
+          Store Meta Info
+          <Tooltip class="settings--tooltip">
+            <div class="settings--tooltip-content">
+              Stores current hidden fields to make another pattern editable in ACNL only.
+              The current pattern loaded should be a pattern coming from your
+              ACNL save.
+            </div>
+          </Tooltip>
+        </button>
+        <button class="settings--advanced-button" v-if="showAdvanced" @click="loadMeta">
+          Load Meta Info
+          <Tooltip class="settings--tooltip">
+            <div class="settings--tooltip-content">
+              Loads hidden fields to make another pattern editable in ACNL only. The current
+              pattern loaded should not be a pattern coming from your ACNL save.
+              <div>{{ metaCreatorStr }}</div>
+              <div>{{ metaTownStr }}</div>
+            </div>
+          </Tooltip>
+        </button>
       </div>
     </template>
   </ModalContainer>
@@ -68,11 +90,16 @@
 <script>
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import DrawingTool from "~/libs/DrawingTool";
+import IconChevronUp from "~/components/icons/IconChevronUp.vue";
+import IconChevronDown from "~/components/icons/IconChevronDown.vue";
+import Tooltip from "~/components/Tooltip.vue";
 
 export default {
   name: "Settings",
   components: {
-    ModalContainer
+    ModalContainer,
+    Tooltip,
+    IconChevronDown
   },
   props: {
     types: {
@@ -94,75 +121,219 @@ export default {
       details: {
         ...this.$props.patternDetails
       },
-      storedAuthorHuman: undefined
+      storedAuthorHuman: undefined,
+      showAdvanced: false,
+      originalType: this.$props.patternDetails.type,
+      storedMeta: {
+        creator: {
+          id: 0,
+          name: ""
+        },
+        town: {
+          id: 0,
+          name: ""
+        }
+      }
     };
+  },
+  computed: {
+    metaCreatorStr() {
+      const creatorStr = `creator: ${this.storedMeta.creator.id} ${this.storedMeta.creator.name}`;
+      return creatorStr;
+    },
+    metaTownStr() {
+      const townStr = `town: ${this.storedMeta.town.id} ${this.storedMeta.town.name}`;
+      return townStr;
+    }
   },
   methods: {
     update() {
       this.details.title = this.details.title.trim();
       this.details.town.name = this.details.town.name.trim();
       this.details.creator.name = this.details.creator.name.trim();
+      if (this.originalType !== this.details.type) {
+        const msg =
+          "A change in pattern type may cause the pattern to change in specific areas. Do you wish to proceed?";
+        const confirm = window.confirm(msg);
+        if (!confirm) return;
+      }
 
       this.$emit("update-details", {
         ...this.details
       });
     },
-    saveAuthor() {
-      this.storedAuthorHuman = `${this.drawingTool.creator[0]} / ${this.drawingTool.town[0]}`;
-      localStorage.setItem("author_acnl", this.drawingTool.authorStrict);
+    storeMeta() {
+      const { town, creator } = this.details;
+      const meta = JSON.stringify({
+        creator: { ...creator },
+        town: { ...town }
+      });
+
+      this.storedMeta.creator = { ...creator };
+      this.storedMeta.town = { ...town };
+      localStorage.setItem("acnl_meta", meta);
     },
-    loadAuthor() {
-      this.drawingTool.authorStrict = localStorage.getItem("author_acnl");
-      this.patAuthor = this.drawingTool.creator[0];
-      this.patTown = this.drawingTool.town[0];
+    loadMeta() {
+      const meta = JSON.parse(localStorage.getItem("acnl_meta"));
+      if (meta == null) return;
+      this.details.creator.id = meta.creator.id;
+      this.details.creator.name = meta.creator.name;
+      this.details.town.id = meta.town.id;
+      this.details.town.name = meta.town.name;
     }
+  },
+  mounted() {
+    const meta = JSON.parse(localStorage.getItem("acnl_meta"));
+    if (meta == null) return;
+    this.storedMeta.creator.id = meta.creator.id;
+    this.storedMeta.creator.name = meta.creator.name;
+    this.storedMeta.town.id = meta.town.id;
+    this.storedMeta.town.name = meta.town.name;
   }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/screens";
+@import "styles/positioning";
+@import "styles/resets";
 
-.settings-modal {
-  background-color: $ecru-white;
-  border-radius: 45px;
-  color: $sand-dune;
-  height: 500px;
-  margin: 50px auto;
-  padding: 20px 25px;
-  width: 800px;
-
-  // todo: stolen from color picker... need to sift through and see if this is
-  // better off in modalcontainer
-  display: inline-block;
-  position: relative;
-  top: 0;
-  left: 50%;
-
-  transform: translate(-50%, 0%);
+.settings--window {
+  @include absolute-center;
   z-index: 999;
 
-  h1 {
-    padding: 15px 0;
-    text-align: center;
-  }
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto;
+  grid-auto-columns: auto;
+  grid-auto-columns: auto;
+  row-gap: 19px;
 
-  input {
-    margin: 8px 0;
-    padding: 8px 12px;
-  }
+  min-width: 500px;
+  padding: 28px 46px;
 
-  button {
-    border: none;
-    border-radius: 35px;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 0 8px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 10px 14px;
+  background-color: $ecru-white;
+  border-radius: 45px;
+  color: $domino;
+}
+
+.settings--input-field {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.settings--input-field-name {
+  display: block;
+  margin-bottom: 8px;
+
+  &.required:after {
+    content: "*";
+    color: $tiffany-blue;
   }
+}
+
+.settings--input-container {
+  @include relative-in-place;
+  background-color: $cinderella;
+  padding: 15px 25px;
+  border-radius: 8px;
+}
+
+.settings--input {
+  @include reset-input;
+
+  display: block;
+  width: 100%;
+  padding-bottom: 10px;
+
+  background-size: 20px 3px;
+  background-position: bottom;
+  background-repeat: repeat-x;
+  background-image: linear-gradient(
+    90deg,
+    $ecru-white,
+    $ecru-white 50%,
+    transparent 50%,
+    transparent 100%
+  );
+}
+
+.settings--row-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  column-gap: 20px;
+}
+
+.settings--confirm {
+  @include reset-button;
+  width: 100%;
+  height: 100%;
+  background-color: $tiffany-blue;
+  box-sizing: border-box;
+
+  padding: 5px 0px;
+  color: white;
+  border-radius: 8px;
+  border: 5px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    @include tiffany-stripes;
+    @include moving-stripes(3s);
+    border: 5px solid $turquoise;
+  }
+}
+
+.settings--type {
+  @include reset-input;
+  background-color: $cinderella;
+  border-radius: 8px;
+  font-weight: 600;
+  color: $domino;
+  padding: 0px 10px;
+  cursor: pointer;
+}
+
+.settings--advanced-button {
+  @include reset-button;
+  @include relative-in-place;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+
+  padding: 10px 0px;
+  background-color: $sand-dune;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: $domino;
+    z-index: 1;
+  }
+}
+
+.settings--advanced-expand-icon {
+  display: inline-block;
+  margin-left: 5px;
+  fill: white;
+  width: 16px;
+}
+
+.settings--tooltip {
+  margin-left: 5px;
+}
+
+.settings--tooltip-content {
+  width: 300px;
 }
 </style>

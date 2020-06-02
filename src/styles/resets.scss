@@ -1,0 +1,22 @@
+@mixin reset-input {
+  outline: none;
+  background-color: transparent;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0px solid transparent;
+}
+
+// positioning and styles mixins
+@mixin reset-button {
+  // reset
+  border: 0px solid transparent;
+  padding: 0px;
+  outline: none;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: transparent;
+}

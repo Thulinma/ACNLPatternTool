@@ -6,7 +6,7 @@ $break-tablet-landscape: 992px;
 $break-desktop: 1200px;
 
 // mobile is both phone and tablet
-@mixin screen-size($breakpoint) {
+@mixin respond-to($breakpoint) {
   @media only screen and (min-width: $breakpoint) {
     @content;
   }
@@ -19,25 +19,25 @@ $break-desktop: 1200px;
 }
 
 @mixin phone-landscape {
-  @include screen-size($break-phone-landscape) {
+  @include respond-to($break-phone-landscape) {
     @content;
   }
 }
 
 @mixin tablet-portrait {
-  @include screen-size($break-tablet-portrait) {
+  @include respond-to($break-tablet-portrait) {
     @content;
   }
 }
 
 @mixin tablet-landscape {
-  @include screen-size($break-tablet-landscape) {
+  @include respond-to($break-tablet-landscape) {
     @content;
   }
 }
 
 @mixin desktop {
-  @include screen-size($break-desktop) {
+  @include respond-to($break-desktop) {
     @content;
   }
 }

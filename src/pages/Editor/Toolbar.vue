@@ -38,7 +38,7 @@
     <div class="toolbar--shortcuts">
       <button class="toolbar--storage-button" @click="storageOpen = true">
         <div class="toolbar--storage-icon-container">
-          <IconScan class="toolbar--storage-icon" />
+          <IconInbox class="toolbar--storage-icon" />
         </div>
         <span class="toolbar--storage-button-text">Storage</span>
       </button>
@@ -196,7 +196,7 @@ import Settings from "~/components/modals/Settings.vue";
 import QRCode from "~/components/modals/QRCode.vue";
 
 // icons
-import IconScan from "~/components/icons/IconScan.vue";
+import IconInbox from "~/components/icons/IconInbox.vue";
 import IconPaintTube from "~/components/icons/IconPaintTube.vue";
 import IconPalette from "~/components/icons/IconPalette.vue";
 import IconBrushSmall from "~/components/icons/IconBrushSmall.vue";
@@ -288,7 +288,7 @@ export default {
   components: {
     Settings,
     QRCode,
-    IconScan,
+    IconInbox,
     IconPaintTube,
     IconPalette,
     IconBrushSmall,
