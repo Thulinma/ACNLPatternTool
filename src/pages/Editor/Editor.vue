@@ -291,7 +291,6 @@ export default {
 @import "styles/functions";
 
 .editor--container {
-  min-width: 800px;
   min-height: 100%;
   transition: background-color;
   background-color: $ecru-white;

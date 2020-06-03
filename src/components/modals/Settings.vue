@@ -11,6 +11,7 @@
               type="text"
               maxlength="20"
               spellcheck="false"
+              autocomplete="off"
               v-model="details.title"
               @keydown.stop
             />
@@ -25,6 +26,7 @@
               type="text"
               maxlength="9"
               spellcheck="false"
+              autocomplete="off"
               v-model="details.creator.name"
               @keydown.stop
             />
@@ -39,6 +41,7 @@
               type="text"
               maxlength="9"
               spellcheck="false"
+              autocomplete="off"
               v-model="details.town.name"
               @keydown.stop
             />
@@ -239,6 +242,11 @@ export default {
   background-color: $cinderella;
   padding: 15px 25px;
   border-radius: 8px;
+
+
+  &:hover {
+    background-color: $salmon;
+  }
 }
 
 .settings--input {
@@ -317,7 +325,8 @@ export default {
   cursor: pointer;
 
   &:hover {
-    background-color: $domino;
+    @include polkadots;
+    @include moving-polkadots;
     z-index: 1;
   }
 }

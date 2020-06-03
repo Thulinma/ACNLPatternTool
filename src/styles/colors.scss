@@ -46,7 +46,7 @@ $geraldine: #fd8093;
   background-repeat: repeat;
 }
 
-@mixin moving-polkadots ($duration) {
+@mixin moving-polkadots ($duration: 5s) {
   @keyframes moving-polkadots {
     from {
       background-position: 0px 0px, 50px 50px;

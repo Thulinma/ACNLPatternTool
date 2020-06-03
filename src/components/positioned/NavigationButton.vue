@@ -39,39 +39,50 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/transitions";
+@import "styles/positioning";
+@import "styles/screens";
+@import "styles/resets";
 
 // desktop
-$menu-button-size: 74px;
 .menu-button--container {
+  @include reset-button;
   transition: transform 0.15s $energetic;
-  width: $menu-button-size;
-  height: $menu-button-size;
 
   position: absolute;
   top: 20px;
   right: 20px;
 
-  -webkit-appearance: none;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+
   background-color: $van-cleef;
-  border-radius: 15px;
-  outline: none;
+  border-radius: 12px;
 
-  // transform: scale(1);
+  @include tablet-portrait {
+    border-radius: 15px;
+    width: 75px;
+    height: 75px;
+  }
 
-  border: 0px;
   &:hover {
     cursor: pointer;
-    // transform: scale(1.1);
   }
 
   .menu-button--icon-wrapper {
+    @include relative-in-place;
     width: 78%;
     height: 78%;
 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 
     background-color: $ecru-white;
     border-radius: 999px;
@@ -79,18 +90,14 @@ $menu-button-size: 74px;
 
   .menu-button--icon {
     width: 86%;
-    height: auto;
-
+    height: 86%;
     transition: transform 0.35s ease-in-out;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1) rotate(30deg);
+    transform: scale(1) rotate(30deg);
   }
 
   &:hover, &.menu-button--container.open {
     .menu-button--icon {
-      transform: translate(-50%, -50%) scale(0.9) rotate(-360deg);
+      transform: scale(0.9) rotate(-360deg);
     }
   }
 }
