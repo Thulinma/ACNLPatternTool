@@ -105,6 +105,8 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/transitions";
+@import "styles/positioning";
+@import "styles/screens";
 
 
 .palette--container {
@@ -118,19 +120,40 @@ export default {
 
 .palette--colors {
   box-sizing: border-box;
-  padding: 15px 30px 15px 30px;
+  padding: 5px 10px;
 
   display: grid;
-  grid-template-columns: repeat(16, 36px);
-  grid-template-rows: 1fr;
-  column-gap: 15px;
+  grid-template-columns: repeat(8, 20px);
+  column-gap: 5px;
+  row-gap: 15px;
+  grid-template-rows: min-content;
+  justify-content: center;
   justify-items: center;
 
   background-color: $pink;
   border-radius: 30px;
+
+  @include phone-landscape {
+    grid-template-columns: repeat(8, 38px);
+  }
+  @include tablet-portrait {
+    padding: 15px 30px 15px 30px;
+    grid-template-columns: repeat(16, 30px);
+    column-gap: 5px;
+  }
+  @include tablet-landscape {
+    column-gap: 10px;
+    grid-template-columns: repeat(16, 34px);
+  }
+  @include desktop {
+    column-gap: 15px;
+    grid-template-columns: repeat(16, 36px);
+  }
 }
 
 .palette--color-container {
+  @include relative-in-place;
+
   transition: transform 0.15s $energetic;
   display: inline-block;
   cursor: pointer;
@@ -175,7 +198,6 @@ export default {
   bottom: 8px;
   $horizontal-correction: 10px;
 
-
   &.left {
     left: $horizontal-correction;
     transform: translate(-50%, 50%);
@@ -186,6 +208,7 @@ export default {
   }
 
   display: block;
+  display: none;
   color: white;
   border-radius: 999px;
 

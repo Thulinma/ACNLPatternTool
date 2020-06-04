@@ -5,9 +5,9 @@
       portrait,
     }">
     <router-view></router-view>
-    <!-- <Banner /> -->
-    <NavigationButton/>
     <ModalManager/>
+    <Banner v-if="$route.path !== '/editor'" />
+    <NavigationButton/>
   </div>
 </template>
 

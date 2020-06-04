@@ -5,6 +5,7 @@
     }">
 
     <Palette
+      class="color-tools--palette"
       :drawingTool="drawingTool"
       @change-current-color="$emit('change-current-color', $event)"/>
 
@@ -115,32 +116,61 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/positioning";
+@import "styles/screens";
 
 // size dictated by palette
 .color-tools--container {
+  grid-area: color-tools;
+  justify-items: center;
+  width: 100%;
+  display: grid;
+
   user-select: none;
-  display: inline-block;
+
   background: $pink;
 
-  padding-top: 0px;
-  padding-right: 25px;
-  padding-bottom: 5px;
-  padding-left: 25px;
-  border-radius: 0px 0px 50px 50px;
   text-align: left;
+  padding-top: 5px;
+  padding-bottom: 5px;
 
+  @include phone-landscape {
+  }
+  @include tablet-portrait {
+    width: auto;
+    display: inline-block;
+    padding-top: 0px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 0px 0px 40px 40px;
+  }
+  @include tablet-landscape {
+    padding-top: 0px;
+    padding-right: 25px;
+    padding-left: 25px;
+    border-radius: 0px 0px 50px 50px;
+  }
 
   &:hover {
     @include pink-stripes;
     @include moving-stripes;
   }
+
   &.picking {
     @include pink-stripes;
     @include moving-stripes(20s);
-    $full-thickness: 30px;
-    padding-right: $full-thickness;
-    padding-bottom: $full-thickness;
-    padding-left: $full-thickness;
+
+    @include tablet-portrait {
+      $full-thickness: 25px;
+      padding-right: $full-thickness;
+      padding-bottom: $full-thickness;
+      padding-left: $full-thickness;
+    }
+    @include tablet-landscape {
+      $full-thickness: 30px;
+      padding-right: $full-thickness;
+      padding-bottom: $full-thickness;
+      padding-left: $full-thickness;
+    }
   }
 }
 

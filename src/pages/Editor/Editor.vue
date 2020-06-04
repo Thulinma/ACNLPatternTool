@@ -1,12 +1,10 @@
 <template>
   <main class="editor--container">
-    <div style="text-align: center">
-      <ColorTools
-        :drawingTool="drawingTool"
-        @change-current-color="onChangeCurrentColor"
-        @color-picked="onColorPicked"
-      />
-    </div>
+    <ColorTools
+      :drawingTool="drawingTool"
+      @change-current-color="onChangeCurrentColor"
+      @color-picked="onColorPicked"
+    />
     <ModalContainer v-if="colorPicker != null" @modal-close="onChangeColorPicker(null)">
       <template #window>
         <div class="editor--color-picker-window" style="text-align: center">
@@ -25,30 +23,24 @@
       </template>
     </ModalContainer>
 
-    <div class="editor--middle-components">
-      <!-- need this to control canvas ratio -->
-      <div class="editor--previews">
-        <div class="editor--preview-container">
-          <canvas class="editor--preview" width="192" height="192" ref="preview" />
-        </div>
-        <div>
-          <ThreeDRender :width="250" :height="450" :drawingTool="drawingTool" />
-        </div>
-      </div>
-      <!-- width/height must be multiples of 32 and ratio of 1:1 -->
-      <div class="editor--canvas-container">
-        <canvas class="editor--canvas" width="576" height="576" ref="main" />
-      </div>
-
-      <Toolbar
-        :drawingTool="drawingTool"
-        :prevColorPicker="prevColorPicker"
-        :colorPicker="colorPicker"
-        @change-color-picker="onChangeColorPicker"
-        @update-details="updatePatternDetails"
-        :patternDetails="patternDetails"
-      />
+    <!-- need this to control canvas ratio -->
+    <div class="editor--preview-container">
+      <canvas class="editor--preview" ref="preview" />
     </div>
+    <ThreeDRender class="editor--preview-3d" :width="250" :height="450" :drawingTool="drawingTool" />
+    <!-- width/height must be multiples of 32 and ratio of 1:1 -->
+    <div class="editor--canvas-container">
+      <canvas class="editor--canvas" ref="main" />
+    </div>
+
+    <Toolbar
+      :drawingTool="drawingTool"
+      :prevColorPicker="prevColorPicker"
+      :colorPicker="colorPicker"
+      @change-color-picker="onChangeColorPicker"
+      @update-details="updatePatternDetails"
+      :patternDetails="patternDetails"
+    />
 
     <div class="editor--dropups">
       <div class="editor--dropup import">
@@ -137,7 +129,7 @@ export default {
         title: "Empty",
         creator: {
           id: 0,
-          name: "Unknown",
+          name: "Unknown"
         },
         town: {
           id: 0,
@@ -146,7 +138,7 @@ export default {
         type: 9,
         // publishing data
         selectedTypes: new Array(3).fill(undefined),
-        selectedStyles: new Array(3).fill(undefined),
+        selectedStyles: new Array(3).fill(undefined)
       },
 
       // colorTool & toolbar fields
@@ -217,9 +209,21 @@ export default {
     initializePattern: async function() {
       // intial color palette
       const initialColors = [
-        "#FFFFFF", "#888888", "#000000", "#FF0000", "#FF6600", "#FFFF00",
-        "#22DD22", "#008833", "#00CDFF", "#1077FF", "#0000FF", "#CC00FF",
-        "#FF00CC", "#FFAA88", "#993200"
+        "#FFFFFF",
+        "#888888",
+        "#000000",
+        "#FF0000",
+        "#FF6600",
+        "#FFFF00",
+        "#22DD22",
+        "#008833",
+        "#00CDFF",
+        "#1077FF",
+        "#0000FF",
+        "#CC00FF",
+        "#FF00CC",
+        "#FFAA88",
+        "#993200"
       ];
       let currentColor = 0;
       for (const color of initialColors) {
@@ -246,7 +250,7 @@ export default {
       if (!isPatternInUrlHash) {
         this.initializePattern();
         return;
-      };
+      }
       // pattern stored in URL
       const fragment = this.$router.currentRoute.hash.substring(1);
       // determine protocols
@@ -268,8 +272,7 @@ export default {
       this.patternDetails.type = this.drawingTool.patternType;
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
-    },
-
+    }
   },
   mounted: async function() {
     // setup drawingTool
@@ -280,7 +283,7 @@ export default {
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
-  },
+  }
 };
 </script>
 
@@ -289,16 +292,54 @@ export default {
 @import "styles/transitions";
 @import "styles/positioning";
 @import "styles/functions";
+@import "styles/screens";
 
 .editor--container {
-  min-height: 100%;
   transition: background-color;
   background-color: $ecru-white;
 
-  // &.pink-out {
-  //   background-color: $cinderella;
-  // }
+  display: grid;
+  grid-template-areas:
+    "color-tools"
+    "canvas"
+    "toolbar"
+    "three-d"
+    "preview";
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content;
+  justify-content: center;
+  justify-items: center;
+  align-items: flex-start;
+  padding-bottom: 100px;
+  background-color: $pink;
+
+  @include phone-landscape {
+  }
+  @include tablet-portrait {
+    grid-template-areas:
+      "color-tools color-tools"
+      "canvas toolbar"
+      "canvas toolbar"
+      "three-d preview";
+    grid-template-columns: max-content max-content;
+    grid-template-rows: min-content;
+    justify-content: center;
+    padding-bottom: 0px;
+    background-color: transparent;
+    row-gap: 20px;
+  }
+  @include tablet-landscape {
+  }
+  @include desktop {
+    grid-template-areas:
+      "color-tools color-tools color-tools"
+      "preview canvas toolbar"
+      "three-d canvas toolbar";
+    grid-template-columns: 1fr max-content 1fr;
+    row-gap: 0px;
+  }
 }
+
 
 .editor--color-picker-window {
   display: inline-block;
@@ -320,61 +361,140 @@ export default {
   z-index: 0;
 }
 
-.editor--middle-components {
-  display: grid;
-  grid-template-columns: 1fr max-content 1fr;
-  grid-template-rows: auto;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.editor--previews {
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: repeat(2, max-content);
-
-  div {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
 .editor--preview-container {
+  grid-area: preview;
+  display: none;
+  justify-self: center;
   margin-top: 30px;
-  @include flex-container--center;
-  padding: 48px;
+  padding: 24px;
 
   @include polkadots($sand-dune, $donkey-brown);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+
+  @include tablet-portrait {
+    display: block;
+  }
+  @include desktop {
+    display: block;
+  }
+  @include desktop-hd {
+    padding: 48px;
+  }
 }
 
-// .editor--preview {
-// }
+.editor--preview {
+  width: 192px;
+  height: 192px;
+  background-color: white;
+
+  @include tablet-portrait {
+    width: 160px;
+    height: 160px;
+  }
+  @include desktop-hd {
+    width: 192px;
+    height: 192px;
+  }
+}
+
+.editor--preview-3d {
+  grid-area: three-d;
+  justify-self: center;
+  display: none;
+
+  @include tablet-portrait {
+    display: block;
+  }
+  @include desktop {
+    display: block;
+  }
+}
 
 .editor--canvas-container {
-  padding: 96px;
+  grid-area: canvas;
+  justify-self: flex-end;
+
   box-sizing: content-box;
   @include flex-container--center;
-  overflow: hidden;
+  width: 100%;
+  padding: 16px 0px;
 
-  border-radius: 8px;
   @include polkadots($sand-dune, $donkey-brown);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+
+  @include phone-landscape {
+
+  }
+  @include tablet-portrait {
+    width: auto;
+    padding: 24px 24px;
+    border-radius: 5px;
+  }
+  @include tablet-landscape {
+    padding: 32px 32px;
+  }
+  @include desktop {
+    width: auto;
+    padding: 72px;
+    border-radius: 8px;
+  }
+  @include desktop-hd {
+    padding: 96px;
+  }
 }
 
-// .editor--canvas {
-// }
+.editor--canvas {
+  width: calc-canvas-size(9);
+  height: calc-canvas-size(9);
+
+  @include phone-landscape {
+
+  }
+  @include tablet-portrait {
+    width: calc-canvas-size(13);
+    height: calc-canvas-size(13);
+  }
+  @include tablet-landscape {
+    width: calc-canvas-size(16);
+    height: calc-canvas-size(16);
+  }
+  @include desktop {
+    // width: 512px;
+    // height: 512px;
+  }
+  @include desktop-hd {
+    width: calc-canvas-size(18);
+    height: calc-canvas-size(18);
+  }
+}
 
 .editor--dropups {
   position: fixed;
-  right: 30px;
+  left: 50%;
   bottom: 15px;
+  transform: translate(-50%, 0px);
   z-index: 999;
 
   display: flex;
   justify-content: flex-end;
+
+
+  @include phone-landscape {
+    left: unset;
+    right: 5px;
+    transform: translate(0px, 0px);
+  }
+  @include tablet-portrait {
+    right: 10px;
+  }
+  @include tablet-landscape {
+    right: 10px;
+  }
+  @include desktop {
+    right: 30px;
+  }
 }
 
 .editor--dropup {

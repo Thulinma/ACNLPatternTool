@@ -35,6 +35,8 @@
         <button @click="cycleOptions" class="hint">T</button>
       </div>
     </div>
+
+
     <div class="toolbar--shortcuts">
       <button class="toolbar--storage-button" @click="storageOpen = true">
         <div class="toolbar--storage-icon-container">
@@ -175,7 +177,6 @@
         </button>
       </div>
     </div>
-    <div></div>
 
     <Settings
       v-if="settingsOpen"
@@ -436,27 +437,61 @@ export default {
 @import "styles/colors";
 @import "styles/positioning";
 @import "styles/transitions";
+@import "styles/screens";
 
 // define most important variables when changing media queries
 $toolbar--options-width: 75px;
 
 .toolbar--container {
   user-select: none;
+  grid-area: toolbar;
+  justify-self: stretch;
   align-self: center;
+
   display: grid;
-  grid-template-columns: auto 1fr 1fr;
+
+  // grid-template-areas:
+  //   "options"
+  //   "tools";
+  grid-template-columns: auto 1fr 75px;
   grid-template-rows: auto;
+  justify-content: space-between;
+  justify-items: center;
+  align-content: stretch;
+  align-items: flex-start;
+
   column-gap: 5px;
 
-  width: 320px;
-  height: 700px;
-
   background-color: $pink;
-  border-radius: 0px 50px 50px 0px;
   overflow: hidden;
+
+  @include phone-landscape {
+
+  }
+  @include tablet-portrait {
+    grid-template-columns: auto 1fr 1fr;
+    justify-self: start;
+    align-self: stretch;
+    width: 280px;
+    height: auto;
+    border-radius: 0px 50px 50px 0px;
+  }
+  @include tablet-landscape {
+
+  }
+  @include desktop {
+    width: 320px;
+    align-self: center;
+    height: 650px;
+  }
+  @include desktop-hd {
+    height: 700px;
+  }
 }
 
 .toolbar--options {
+  // grid-area: options;
+
   position: relative;
   top: 0;
   left: 0;
@@ -549,6 +584,21 @@ $toolbar--options-width: 75px;
   &.brush-large .toolbar--option-icon {
     width: 44%;
   }
+
+
+  // for copy/pasting
+  @include phone-landscape {
+
+  }
+  @include tablet-portrait {
+
+  }
+  @include tablet-landscape {
+
+  }
+  @include desktop {
+
+  }
 }
 
 .toolbar--options-toggle-hint {
@@ -610,6 +660,7 @@ $toolbar--options-width: 75px;
   display: inline-flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
   align-content: center;
 
   color: $sand-dune;
@@ -642,11 +693,27 @@ $toolbar--options-width: 75px;
   align-items: center;
   align-content: center;
 
-  width: 35px;
-  height: 35px;
+  width: 20px;
+  height: 20px;
 
   background-color: $sand-dune;
   border-radius: 999px;
+
+
+  @include phone-landscape {
+
+  }
+  @include tablet-portrait {
+    width: 30px;
+    height: 30px;
+  }
+  @include tablet-landscape {
+
+  }
+  @include desktop {
+    width: 35px;
+    height: 35px;
+  }
 }
 
 .toolbar--storage-icon {
@@ -658,10 +725,23 @@ $toolbar--options-width: 75px;
 .toolbar--storage-button-text {
   margin-left: 10px;
   margin-right: 15px;
-  font-size: 1.7rem;
+  font-size: 1rem;
   font-weight: 600;
   vertical-align: middle;
   letter-spacing: 0.5px;
+
+  @include phone-landscape {
+
+  }
+  @include tablet-portrait {
+    font-size: 1.2rem;
+  }
+  @include tablet-landscape {
+
+  }
+  @include desktop {
+    font-size: 1.7rem;
+  }
 }
 
 .toolbar--shortcuts-row {
@@ -718,16 +798,32 @@ $toolbar--options-width: 75px;
   top: 0;
   left: 0;
 
+
   .toolbar--shortcut-icon-container {
     box-sizing: border-box;
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
 
     position: relative;
     top: 0;
     left: 0;
     padding: 4px;
     border-radius: 999px;
+
+    @include phone-landscape {
+
+    }
+    @include tablet-portrait {
+
+    }
+    @include tablet-landscape {
+      width: 60px;
+      height: 60px;
+    }
+    @include desktop {
+      width: 65px;
+      height: 65px;
+    }
   }
 
   .toolbar--shortcut-icon {

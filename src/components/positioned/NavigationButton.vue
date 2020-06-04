@@ -49,8 +49,9 @@ export default {
   transition: transform 0.15s $energetic;
 
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
+  // z-index: 1000;
 
   width: 40px;
   height: 40px;
@@ -63,12 +64,6 @@ export default {
 
   background-color: $van-cleef;
   border-radius: 12px;
-
-  @include tablet-portrait {
-    border-radius: 15px;
-    width: 75px;
-    height: 75px;
-  }
 
   &:hover {
     cursor: pointer;
@@ -99,6 +94,26 @@ export default {
     .menu-button--icon {
       transform: scale(0.9) rotate(-360deg);
     }
+  }
+
+  @include phone-landscape {
+    border-radius: 15px;
+    width: 50px;
+    height: 50px;
+  }
+  @include tablet-portrait {
+    border-radius: 15px;
+    width: 60px;
+    height: 60px;
+  }
+  @include tablet-landscape {
+    border-radius: 15px;
+    width: 75px;
+    height: 75px;
+  }
+  @include desktop {
+    top: 20px;
+    right: 20px;
   }
 }
 </style>

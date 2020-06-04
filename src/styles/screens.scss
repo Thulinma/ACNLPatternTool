@@ -4,18 +4,13 @@ $break-phone-landscape: 480px;
 $break-tablet-portrait: 768px;
 $break-tablet-landscape: 992px;
 $break-desktop: 1200px;
+$break-desktop-hd: 1400px;
 
 // mobile is both phone and tablet
 @mixin respond-to($breakpoint) {
   @media only screen and (min-width: $breakpoint) {
     @content;
   }
-}
-
-@mixin mobile-only {
-}
-
-@mixin desktop-only {
 }
 
 @mixin phone-landscape {
@@ -40,4 +35,28 @@ $break-desktop: 1200px;
   @include respond-to($break-desktop) {
     @content;
   }
+}
+
+@mixin desktop-hd {
+  @include respond-to($break-desktop-hd) {
+    @content;
+  }
+}
+
+
+// for copy/pasting
+@include phone-landscape {
+
+}
+@include tablet-portrait {
+
+}
+@include tablet-landscape {
+
+}
+@include desktop {
+
+}
+@include desktop-hd {
+
 }
