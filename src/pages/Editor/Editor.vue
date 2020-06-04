@@ -104,7 +104,6 @@ import ColorTools from "./ColorTools/ColorTools.vue";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
-import Settings from "~/components/modals/Settings.vue";
 
 export default {
   name: "Editor",
@@ -116,7 +115,6 @@ export default {
     IconImport,
     IconSave,
     IconCaretUp,
-    Settings
   },
   data: function() {
     // randomize the gender

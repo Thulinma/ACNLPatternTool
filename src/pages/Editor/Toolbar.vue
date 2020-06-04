@@ -178,7 +178,7 @@
       </div>
     </div>
 
-    <Settings
+    <PatternSettings
       v-if="settingsOpen"
       @close="settingsOpen = false"
       @update-details="$emit('update-details', $event)"
@@ -193,7 +193,7 @@
 
 <script>
 import DrawingTool from "~/libs/DrawingTool";
-import Settings from "~/components/modals/Settings.vue";
+import PatternSettings from "~/components/modals/PatternSettings.vue";
 import QRCode from "~/components/modals/QRCode.vue";
 
 // icons
@@ -287,7 +287,7 @@ const toolMappings = {
 export default {
   name: "ToolBar",
   components: {
-    Settings,
+    PatternSettings,
     QRCode,
     IconInbox,
     IconPaintTube,
