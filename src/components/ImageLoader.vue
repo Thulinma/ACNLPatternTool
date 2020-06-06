@@ -2,7 +2,7 @@
   <div>
     <div class="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
+      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPosition="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
       <div class="muralInputArea" :v-if="patternType == 9">
         <div class="muralInputColumn"> 
           <label>Patterns Wide</label></br>
