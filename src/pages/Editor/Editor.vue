@@ -80,6 +80,8 @@
         </div>
       </div>
     </div>
+
+    <ConvertImage :drawing-tool="drawingTool" />
   </main>
 </template>
 
@@ -101,6 +103,7 @@ import IconCaretUp from "~/components/icons/IconCaretUp.vue";
 
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
+import ConvertImage from "~/components/modals/ConvertImage.vue"
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
@@ -109,6 +112,7 @@ export default {
   name: "Editor",
   components: {
     ColorTools,
+    ConvertImage,
     ModalContainer,
     ThreeDRender,
     Toolbar,
@@ -142,6 +146,9 @@ export default {
       // colorTool & toolbar fields
       prevColorPicker: "acnl",
       colorPicker: null, // color picker mode
+
+      // modals
+      convertImage: null,
 
       pickPatterns: false,
       multiName: "Local Storage",

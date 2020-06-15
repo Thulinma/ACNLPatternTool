@@ -25,12 +25,12 @@
 </template>
 
 <script>
-import ImageLoader from '/components/ImageLoader.vue';
+import ImageLoader from '~/components/ImageLoader.vue';
 import ModalContainer from '~/components/positioned/ModalContainer.vue';
 
 /* svg icons */
-import IconBase from '/components/icons/IconBase.vue';
-import IconImageAdd from '/components/icons/IconImageAdd.vue';
+import IconBase from '~/components/icons/IconBase.vue';
+import IconImageAdd from '~/components/icons/IconImageAdd.vue';
 
 export default {
   name: "ConvertImage",
@@ -43,6 +43,7 @@ export default {
   props: {
     drawingTool: {
       type: Object,
+      required: true,
     },
     type: {
       type: Number,
@@ -90,6 +91,14 @@ export default {
     margin: 50px auto;
     padding: 20px 25px;
     width: 850px;
+
+      display: inline-block;
+  position: relative;
+  top: 0;
+  left: 50%;
+
+  transform: translate(-50%, 0%);
+  z-index: 999;
 
     h1 {
       padding: 15px 0;

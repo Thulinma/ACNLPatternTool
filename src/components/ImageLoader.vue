@@ -2,7 +2,9 @@
   <div id="image-loader">
     <div id="cropper-container" v-show="isCropping">
       <button v-show="!fileLoaded" @click="tryAgain">Upload an Image File</button>
-      <div class="outercropper"><Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" /></div>
+      <div class="outercropper">
+        <Cropper :src="dataurl" :stencilProps="{aspectRatio: getAspectRatio()}" :defaultPositon="defPos" :defaultSize="defSize" ref="cropper" @change="onCrop" />
+      </div>
       <div class="muralInputArea" :v-if="patternType == 9">
         <div class="muralInputColumn">
           <label>Patterns Wide</label><br/>
@@ -15,6 +17,11 @@
           <input type="number" min="1" max="50" v-model="muralTall"/>
         </div>
       </div>
+
+      <!-- <div class="saturation-slider">
+        <label for="saturation">Saturation Level</label>
+        <input type="range" min="-100" max="100" name="saturation" v-model="saturation_level" @change="changeConversion('saturate')" />
+      </div> -->
 
       <div id="cropper-buttons">
         <button @click="toggleView()">Next</button>
@@ -48,6 +55,9 @@
           <label>Transparency %</label><br/>
           <input type="range" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
           <input type="number" min="1" max="100" v-model="convert_trans" @change="changeTrans" />
+          <label for="saturation">Saturation Level</label><br/>
+          <input type="range" min="-100" max="100" name="saturation" v-model="saturation_level" @change="changeSaturation" />
+          <input type="number" min="-100" max="100" name="saturation" v-model="saturation_level" @change="changeSaturation" />
         </ul>
         <ul class="options" :v-if="muralTall > 1 || muralWide > 1">
           <li :class="{active: convert_samepal === true}" @click="changeSamepal(true)">Shared palette</li>
@@ -65,7 +75,7 @@
 
 <script>
 import { Cropper } from 'vue-advanced-cropper'
-import DrawingTool from '/libs/DrawingTool';
+import DrawingTool from '~/libs/DrawingTool';
 
 export default {
   name: "ImageLoader",
@@ -78,6 +88,7 @@ export default {
   data: function() {
     return {
       dataurl: "",
+      saturation_level: 0,
       convert_method: "quantize",
       convert_quality: "high",
       convert_trans: 50,
@@ -114,7 +125,7 @@ export default {
       const pattAspect = this.muralWide/this.muralTall;
       if (pattAspect < 1){
         while (oSize*this.muralTall < 256){oSize += 32;}
-      }else{
+      } else {
         while (oSize*this.muralWide < 256){oSize += 32;}
       }
 
@@ -125,15 +136,23 @@ export default {
       const pmCtx = this.$refs.postmix.getContext('2d');
       pmCtx.imageSmoothingEnabled = false;
 
-      //Scale to intended size
       const ctx = this.$refs.preview.getContext('2d');
+
+      //Scale to intended size
       if (this.convert_quality != "sharp"){
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = this.convert_quality;
       }else{
         ctx.imageSmoothingEnabled = false;
       }
-      ctx.drawImage(canvas, 0, 0,iSize*this.muralWide, iSize*this.muralTall);
+      ctx.drawImage(canvas, 0, 0, iSize*this.muralWide, iSize*this.muralTall);
+
+      //Set contrast for the image
+      if (this.saturation_level) {
+        let satCtx = ctx.getImageData(0, 0, iSize*this.muralWide, iSize*this.muralTall);
+        satCtx = this.image_saturation(satCtx);
+        ctx.putImageData(satCtx, 0, 0);
+      }
 
       //Create palette for all at once
       if (this.convert_samepal){
@@ -235,6 +254,18 @@ export default {
       for (let i = 9; i < 15; i++){
         this.draw.setPalette(i, 0x60+i-6);
       }
+    },
+    //Saturate image
+    image_saturation(imgdata) {
+      let data = imgdata.data;
+      let contrast = (this.saturation_level/100) + 1;
+      let intercept = 128 * (1 - contrast);
+      for(let i = 0; i < data.length; i += 4){ // r, g, b, a
+        data[i] = data[i] * contrast + intercept;
+        data[i+1] = data[i+1] * contrast + intercept;
+        data[i+2] = data[i+2] * contrast + intercept;
+      }
+      return imgdata;
     },
     image_quantize(imgdata){
       const pixelCount = imgdata.data.length;
@@ -456,6 +487,9 @@ export default {
       this.convert_samepal = val;
       this.onCrop(this.$refs.cropper.getResult());
     },
+    changeSaturation(val){
+      this.onCrop(this.$refs.cropper.getResult());
+    },
     toggleView(){
       this.isCropping = !this.isCropping;
     },
@@ -464,7 +498,7 @@ export default {
     },
     getAspectRatio() {
       return this.muralWide/this.muralTall;
-    }
+    },
   }
 }
 </script>
