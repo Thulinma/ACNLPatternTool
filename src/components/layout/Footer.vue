@@ -2,7 +2,7 @@
   <footer class="footer">
     <Banner :bannerText="'Patterns Uploaded'"/>
     <div>
-      <h2>Hello World</h2>
+      <h2>Patterns Uploaded</h2>
     </div>
   </footer>
 </template>
@@ -13,7 +13,9 @@ import Banner from '/components/Banner.vue';
 export default {
   name: "Footer",
   data: function() {
-    return {};
+    return {
+      numberOfPatternsUploaded: 1000000
+    };
   },
   components: {
     Banner
@@ -22,24 +24,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*
-.footer {
-  position: absolute;
-  bottom: 0;
-  height: 300px;
-  width: 100%;
-  overflow: hidden;
-
-  &::before {
-  border-radius: 100%;
-  background-color: #f7f4e7;
-  width: 148%;
-  height: 100vh;
-  content: "";
-  position: absolute;
-  margin-left: -24%;
-  }
-}*/
 footer {
   position: absolute;
   right: 0;
@@ -50,6 +34,10 @@ footer {
   z-index: 0;
   display: flex;
   justify-content: center;
+
+  @include media("<large") {
+    height: 15vh;
+  }
 
   &::before {
     content: '';
@@ -62,7 +50,18 @@ footer {
     height: 490%;
     border-radius: 50%;
     z-index: -1;
+
+    @include media("<large") {
+      border-radius: 0;
+    }
   }
+
+  .banner {
+    @include media("<large") {
+      margin-top: -85px;
+    }
+  }
+
 }
 
 </style>
