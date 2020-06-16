@@ -52,11 +52,10 @@ export default {
   }
   @include tablet-portrait {
     top: 20px;
-    padding: 8px 27px 8px 35px;
-    border-radius: 0px 5px 5px 0px;
   }
   @include tablet-landscape {
-
+    padding: 8px 27px 8px 35px;
+    border-radius: 0px 5px 5px 0px;
   }
   @include desktop {
 
@@ -89,19 +88,20 @@ export default {
 .banner--text {
   color: white;
   font-size: 1rem;
+  display: none;
 
 
   @include phone-landscape {
 
   }
   @include tablet-portrait {
-    font-size: 1.3rem;
   }
   @include tablet-landscape {
 
   }
   @include desktop {
-
+    display: block;
+    font-size: 1.3rem;
   }
 }
 </style>

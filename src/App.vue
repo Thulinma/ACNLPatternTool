@@ -6,7 +6,7 @@
     }">
     <router-view></router-view>
     <ModalManager/>
-    <Banner v-if="$route.path !== '/editor'" />
+    <Banner/>
     <NavigationButton/>
   </div>
 </template>
