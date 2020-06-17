@@ -462,7 +462,7 @@ $toolbar--options-width: 75px;
 
   column-gap: 5px;
 
-  background-color: $pink;
+  background-color: $pink-lace;
   overflow: hidden;
 
   @include phone-landscape {
@@ -503,7 +503,7 @@ $toolbar--options-width: 75px;
   min-height: 225px;
   padding: 7px 10px 7px 3px;
 
-  background-color: $misty-rose;
+  background-color: $provincial-pink;
   border-radius: 0px 40px 40px 0px;
 }
 
@@ -550,14 +550,14 @@ $toolbar--options-width: 75px;
   &:hover {
     &:after {
       transform: scale(1);
-      background-color: $dust-storm;
+      background-color: $bon-jour;
     }
   }
 
   &.active {
     &:after {
       transform: scale(1);
-      background-color: $tiffany-blue;
+      background-color: $robin-egg-blue;
     }
     .toolbar--option-icon {
       fill: white;
@@ -571,7 +571,7 @@ $toolbar--options-width: 75px;
     z-index: 1;
     transform: translate(-50%, -50%) scale(1.2);
 
-    fill: $bronco;
+    fill: $bison-hide;
     width: 30px;
   }
 
@@ -612,7 +612,7 @@ $toolbar--options-width: 75px;
   height: 30px;
 
   border-radius: 999px;
-  background-color: $misty-rose;
+  background-color: $provincial-pink;
 
   .hint {
     // reset
@@ -631,7 +631,7 @@ $toolbar--options-width: 75px;
     cursor: pointer;
     border-radius: 999px;
     color: white;
-    background-color: $sand-dune;
+    background-color: $olive-haze;
   }
 }
 .toolbar--shortcuts {
@@ -663,7 +663,7 @@ $toolbar--options-width: 75px;
   align-items: center;
   align-content: center;
 
-  color: $sand-dune;
+  color: $olive-haze;
   margin-top: 20px;
   background-color: $ecru-white;
   padding: 8px 8px;
@@ -671,9 +671,8 @@ $toolbar--options-width: 75px;
   cursor: pointer;
 
   &:hover {
-    @include polkadots($sand-dune, $donkey-brown);
+    @include polkadots($olive-haze, $donkey-brown);
     @include moving-polkadots(2s);
-    background-color: $sand-dune;
     .toolbar--storage-button-text {
       color: $ecru-white;
     }
@@ -681,7 +680,7 @@ $toolbar--options-width: 75px;
       background-color: $ecru-white;
     }
     .toolbar--storage-icon {
-      fill: $sand-dune;
+      fill: $olive-haze;
     }
   }
 }
@@ -696,7 +695,7 @@ $toolbar--options-width: 75px;
   width: 20px;
   height: 20px;
 
-  background-color: $sand-dune;
+  background-color: $olive-haze;
   border-radius: 999px;
 
 
@@ -769,7 +768,7 @@ $toolbar--options-width: 75px;
         background: transparent;
       }
       .toolbar--shortcut-icon {
-        fill: $umber;
+        fill: $jambalaya;
       }
     }
   }
@@ -777,7 +776,7 @@ $toolbar--options-width: 75px;
 
 .toolbar--shortcuts-divider {
   justify-self: center;
-  background-color: $salmon;
+  background-color: $light-pink;
   width: 90%;
   height: 4px;
   border-radius: 999px;
@@ -833,7 +832,7 @@ $toolbar--options-width: 75px;
 
     width: 100%;
     height: 100%;
-    fill: $blossom;
+    fill: $azalea;
   }
 
   &.placeholder {
@@ -877,7 +876,7 @@ $toolbar--options-width: 75px;
     font-weight: 600;
 
     color: white;
-    background-color: rgba($tiffany-blue, 0.9);
+    background-color: rgba($robin-egg-blue, 0.9);
     border-radius: 10px;
     pointer-events: none;
     opacity: 0;
@@ -886,7 +885,7 @@ $toolbar--options-width: 75px;
   &:hover,
   &.active {
     .toolbar--shortcut-icon-container {
-      @include tiffany-stripes(15px);
+      @include stripes($robin-egg-blue, $tiffany-blue, 15px);
       @include moving-stripes(3s);
     }
 
@@ -915,7 +914,7 @@ $toolbar--options-width: 75px;
     font-size: 1rem;
     font-weight: 700;
     border-radius: 10px;
-    background-color: $sand-dune;
+    background-color: $olive-haze;
     color: white;
 
     &.short {
