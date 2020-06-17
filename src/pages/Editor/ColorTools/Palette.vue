@@ -192,7 +192,7 @@ export default {
 
 .palette--button-hint {
   position: absolute;
-  background-color: $pink;
+  background-color: $pink-lace;
   padding: 5px;
   box-sizing: content-box;
   bottom: 8px;
@@ -207,7 +207,7 @@ export default {
     transform: translate(50%, 50%);
   }
 
-  display: block;
+  // display: block;
   display: none;
   color: white;
   border-radius: 999px;
@@ -227,7 +227,7 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
 
-    background-color: $sand-dune;
+    background-color: $olive-haze;
     border-radius: 999px;
 
     cursor: pointer;

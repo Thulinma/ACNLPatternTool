@@ -1,22 +1,16 @@
 // colors and backgrounds
 
 // whites
+$white: #FFFFFF;
 $ecru-white: #F6F4E3;
 
 // grays
 $silver-sand: #bababa;
-$bronco: #aca094;
-
 $bon-jour: #E2E2E2;
 
 // browns
+$domino: #695b4d;
 $van-cleef: #503c35; // primary darkened
-$sand-dune: #8a7b67; // primary brown
-$domino: #695b4d; // primary shadow color
-$umber: #655040; // super dark for toolbar
-$ash: #C8BEB3;
-$schooner: #8a827b; // text on top of ash
-
 $jambalaya: #624C37;
 $olive-haze: #8C7C64;
 $donkey-brown: #a39277; // canvas polkadot color
@@ -25,7 +19,6 @@ $bison-hide: #B6A79A;
 
 // bluish greens
 $tiffany-blue: #00B6A9; // primary blush-ish green
-$pine-green: #037269;
 $tiffany-blue-light: #13c3b2;
 $turquoise: #4fe1d6;
 
@@ -37,13 +30,8 @@ $dull-cyan: #47C6BD;
 
 
 // pinks
-$pink: #fdbfc7;
 $piggy-pink: #ffd8e2;
-$pastel-pink: #ffced5;
-$misty-rose: #ffe5e0;
 $cinderella: #f7d7c9;
-$blossom: #E7AFB4;
-$dust-storm: #e3ccc8;
 $cannon-pink: #893e5d;
 $geraldine: #fd8093;
 
@@ -55,7 +43,7 @@ $pink-lace: #FFCAD2;
 $provincial-pink: #FFF7F2;
 
 
-@mixin polkadots($primary: $sand-dune, $secondary: $donkey-brown) {
+@mixin polkadots($primary, $secondary) {
   background-image: radial-gradient($secondary 2px, transparent 2px),
       radial-gradient($secondary 2px, transparent 2px);
   background-color: $primary;
@@ -83,17 +71,6 @@ $provincial-pink: #FFF7F2;
     $first $width,
     $second $width,
     $second $width * 2,
-  );
-  background-size: 200% 200%;
-}
-
-@mixin tiffany-stripes($stripe-width: 20px) {
-  background: repeating-linear-gradient(
-    -45deg,
-    $tiffany-blue-light,
-    $tiffany-blue-light $stripe-width,
-    $tiffany-blue $stripe-width,
-    $tiffany-blue $stripe-width * 2,
   );
   background-size: 200% 200%;
 }

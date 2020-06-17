@@ -316,7 +316,7 @@ export default {
   justify-items: center;
   align-items: flex-start;
   padding-bottom: 100px;
-  background-color: $pink;
+  background-color: $pink-lace;
 
   @include phone-landscape {
   }
@@ -373,7 +373,7 @@ export default {
   margin-top: 30px;
   padding: 24px;
 
-  @include polkadots($sand-dune, $donkey-brown);
+  @include polkadots($olive-haze, $donkey-brown);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -426,7 +426,7 @@ export default {
   width: 100%;
   padding: 16px 0px;
 
-  @include polkadots($sand-dune, $donkey-brown);
+  @include polkadots($olive-haze, $donkey-brown);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 
   @include phone-landscape {
@@ -512,7 +512,7 @@ export default {
     flex-direction: row;
     align-content: center;
     align-items: center;
-    background-color: $sand-dune;
+    background-color: $olive-haze;
     border-radius: 15px;
     @include relative-in-place;
     padding: 7px 10px;
@@ -525,7 +525,7 @@ export default {
     }
   }
   &.save .editor--dropup-button {
-    background-color: $tiffany-blue;
+    background-color: $robin-egg-blue;
   }
 
   .editor--dropup-icon-container {
@@ -556,10 +556,10 @@ export default {
 
   .editor--dropup-icon {
     width: 70%;
-    fill: $sand-dune;
+    fill: $olive-haze;
   }
   &.save .editor--dropup-icon {
-    fill: $tiffany-blue;
+    fill: $robin-egg-blue;
   }
 
   .editor--dropup-text {
@@ -596,12 +596,12 @@ export default {
     right: 0;
     transition: transform 0.15s $energetic;
     transform: translate(0, -100%) scale(0.8);
-    background-color: $sand-dune;
+    background-color: $olive-haze;
     padding: 30px 40px;
     border-radius: 20px;
   }
   &.save .editor--dropup-menu {
-    background-color: $tiffany-blue;
+    background-color: $robin-egg-blue;
   }
   &:hover .editor--dropup-menu {
     pointer-events: initial;
@@ -631,7 +631,7 @@ export default {
       z-index: -1;
       transform: translate(-50%);
 
-      background-color: $domino;
+      background-color: $jambalaya;
       border-radius: 3px;
     }
     &:hover:after {
@@ -643,7 +643,7 @@ export default {
     }
   }
   &.save .editor--dropup-menu-item:after {
-    background-color: $pine-green;
+    background-color: $persian-green;
   }
 }
 </style>

@@ -209,7 +209,7 @@ export default {
 
   font-size: 2rem;
   text-align: center;
-  color: $domino;
+  color: $jambalaya;
 }
 
 .menu--nav {

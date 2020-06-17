@@ -95,7 +95,7 @@ export default {
 
   &:hover {
     border-color: $turquoise;
-    @include tiffany-stripes(15px);
+    @include stripes($tiffany-blue, $tiffany-blue-light, 15px);
     @include moving-stripes(3s);
   }
 }

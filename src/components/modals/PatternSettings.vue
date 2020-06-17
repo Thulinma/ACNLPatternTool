@@ -218,7 +218,7 @@ export default {
 
   background-color: $ecru-white;
   border-radius: 45px;
-  color: $domino;
+  color: $jambalaya;
 }
 
 .settings--input-field {
@@ -290,7 +290,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    @include tiffany-stripes;
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
     @include moving-stripes(3s);
     border: 5px solid $turquoise;
   }
@@ -301,7 +301,7 @@ export default {
   background-color: $cinderella;
   border-radius: 8px;
   font-weight: 600;
-  color: $domino;
+  color: $jambalaya;
   padding: 0px 10px;
   cursor: pointer;
 }
@@ -317,7 +317,7 @@ export default {
   align-content: center;
 
   padding: 10px 0px;
-  background-color: $sand-dune;
+  background-color: $olive-haze;
   border-radius: 8px;
   color: white;
   font-weight: 600;
@@ -325,7 +325,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    @include polkadots;
+    @include polkadots($olive-haze, $donkey-brown);
     @include moving-polkadots;
     z-index: 1;
   }

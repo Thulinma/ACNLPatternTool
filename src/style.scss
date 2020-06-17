@@ -3,13 +3,14 @@
 
 $main-font: 'Nunito';
 $bg-color: $ecru-white;
-$color: $sand-dune;
+$color: $olive-haze;
 $font-size: 16px;
 
 html {
   height: 100%;
   overflow-y: scroll;
   font-size: 16px;
+  text-size-adjust: none;
 }
 
 body {
