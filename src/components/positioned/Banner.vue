@@ -28,6 +28,7 @@ export default {
   position: absolute;
   top: 10px;
   left: 0px;
+  z-index: 999;
 
   display: flex;
   flex-direction: row;
@@ -39,16 +40,7 @@ export default {
 
   background-color: $salmon;
   transition: background 0.15s $energetic;
-  // background-image: url("../../assets/images/LeafBrushPatternTile.svg");
-  // background-repeat: repeat;
-  // background-size: 300px 300px;
-  // background-position: 50% 50%;
-
-  // &:hover {
-  //   background-size: 1000px 1000px;
-  // }
   @include phone-landscape {
-
   }
   @include tablet-portrait {
     top: 20px;
