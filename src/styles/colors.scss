@@ -87,18 +87,6 @@ $provincial-pink: #FFF7F2;
   background-size: 200% 200%;
 }
 
-
-@mixin pink-stripes($stripe-width: 20px) {
-  background: repeating-linear-gradient(
-    -45deg,
-    $pastel-pink,
-    $pastel-pink $stripe-width,
-    $piggy-pink $stripe-width,
-    $piggy-pink $stripe-width * 2,
-  );
-  background-size: 200% 200%;
-}
-
 @mixin tiffany-stripes($stripe-width: 20px) {
   background: repeating-linear-gradient(
     -45deg,

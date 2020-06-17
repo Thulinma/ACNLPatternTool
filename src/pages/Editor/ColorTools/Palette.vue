@@ -130,7 +130,7 @@ export default {
   justify-content: center;
   justify-items: center;
 
-  background-color: $pink;
+  background-color: $pink-lace;
   border-radius: 30px;
 
   @include phone-landscape {
@@ -176,7 +176,7 @@ export default {
     transform: translate(-50%, 0px) scale(0);
 
     transition: transform 0.10s $energetic;
-    background-color: $tiffany-blue;
+    background-color: $persian-green;
     border-radius: 4px;
     opacity: 0;
   }

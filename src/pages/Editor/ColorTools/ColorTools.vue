@@ -127,7 +127,7 @@ export default {
 
   user-select: none;
 
-  background: $pink;
+  background: $pink-lace;
 
   text-align: left;
   padding-top: 5px;
@@ -151,12 +151,12 @@ export default {
   }
 
   &:hover {
-    @include pink-stripes;
+    @include stripes($pink-lace, $piggy-pink , 20px);
     @include moving-stripes;
   }
 
   &.picking {
-    @include pink-stripes;
+    @include stripes($pink-lace, $piggy-pink , 20px);
     @include moving-stripes(20s);
 
     @include tablet-portrait {
@@ -194,11 +194,11 @@ export default {
   padding-top: 15px;
   padding-bottom: 10px;
 
-  background-color: $pastel-pink;
-  color: $umber;
+  background-color: $piggy-pink;
+  color: $jambalaya;
   text-align: center;
   &.open {
-    background-color: $pink;
+    background-color: $pink-lace;
     cursor: default;
   }
   cursor: pointer;
@@ -213,7 +213,7 @@ export default {
   transform: translate(0%, 100%);
   width: 100%;
   height: 100%;
-  background-color: $pastel-pink;
+  background-color: $pink-lace;
 }
 
 .color-tools--color-picker-content {
@@ -221,7 +221,7 @@ export default {
   top: 0;
   left: 0;
 
-  background-color: pink;
+  background-color: $pink-lace;
   padding: 20px 25px;
   border-radius: 0px 0px 20px 20px;
 
