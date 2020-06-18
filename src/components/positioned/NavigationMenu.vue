@@ -48,7 +48,7 @@
         </div>
       </router-link>
 
-      <router-link class="faq" to="/faq ">
+      <router-link class="faq" to="/faq">
         <div
           class="menu--nav-icon-container"
           @click="$emit('modal-close')"

@@ -107,9 +107,7 @@ export default {
     height: 60px;
   }
   @include tablet-landscape {
-    border-radius: 15px;
-    width: 75px;
-    height: 75px;
+    border-radius: 12px;
   }
   @include desktop {
     top: 20px;

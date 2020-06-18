@@ -40,6 +40,8 @@ export default {
 
   background-color: $salmon;
   transition: background 0.15s $energetic;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+
   @include phone-landscape {
   }
   @include tablet-portrait {
@@ -50,7 +52,7 @@ export default {
     border-radius: 0px 5px 5px 0px;
   }
   @include desktop {
-
+    padding: 8px 27px 8px 20px;
   }
 }
 
@@ -72,7 +74,7 @@ export default {
 
   }
   @include tablet-portrait {
-    height: 40px;
+    height: 35px;
     margin-right: 7px;
   }
 }
@@ -93,7 +95,8 @@ export default {
   }
   @include desktop {
     display: block;
-    font-size: 1.3rem;
+    font-size: 1.65rem;
+    transform: translate(0px, 2px);
   }
 }
 </style>
