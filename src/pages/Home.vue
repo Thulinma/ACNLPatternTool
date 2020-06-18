@@ -6,7 +6,8 @@
         <div class="home--nav-item">
           <div class="home--nav-icon-bubble">
             <div class="home--nav-icon-container">
-              <img class="home--nav-icon" :src="changelogSvg" />
+              <IconNavUpdates class="home--nav-icon" />
+              <div class="home--nav--icon-half-circle"></div>
             </div>
           </div>
           <div class="home--nav-text-bubble">Updates</div>
@@ -17,7 +18,8 @@
         <div class="home--nav-item">
           <div class="home--nav-icon-bubble">
             <div class="home--nav-icon-container">
-              <img class="home--nav-icon" :src="browseSvg" />
+              <IconNavBrowse class="home--nav-icon" :flip="true"/>
+              <div class="home--nav--icon-half-circle"></div>
             </div>
           </div>
           <div class="home--nav-text-bubble">Browse</div>
@@ -28,7 +30,8 @@
         <div class="home--nav-item">
           <div class="home--nav-icon-bubble">
             <div class="home--nav-icon-container">
-              <img class="home--nav-icon" :src="editorSvg" />
+              <IconNavEditor class="home--nav-icon" />
+              <div class="home--nav--icon-half-circle"></div>
             </div>
           </div>
           <div class="home--nav-text-bubble">Editor</div>
@@ -39,7 +42,8 @@
         <div class="home--nav-item">
           <div class="home--nav-icon-bubble">
             <div class="home--nav-icon-container">
-              <img class="home--nav-icon" :src="faqSvg" />
+              <IconNavFaq class="home--nav-icon" />
+              <div class="home--nav--icon-half-circle"></div>
             </div>
           </div>
           <div class="home--nav-text-bubble">FAQ</div>
@@ -50,33 +54,35 @@
         <div class="home--nav-item">
           <div class="home--nav-icon-bubble">
             <div class="home--nav-icon-container">
-              <img class="home--nav-icon" :src="discordSvg" />
+              <IconNavDiscord class="home--nav-icon" />
+              <div class="home--nav--icon-half-circle"></div>
             </div>
           </div>
           <div class="home--nav-text-bubble">Discord</div>
         </div>
       </a>
     </nav>
-
   </div>
 </template>
 
 <script>
-import browseSvg from "~/assets/icons/nookphone/nav-browse.svg";
-import editorSvg from "~/assets/icons/nookphone/nav-editor.svg";
-import faqSvg from "~/assets/icons/nookphone/nav-faq.svg";
-import changelogSvg from "~/assets/icons/nookphone/nav-changelog.svg";
-import discordSvg from "~/assets/icons/nookphone/nav-discord.svg";
+import IconNavBrowse from "~/components/icons/IconNavBrowse.vue";
+import IconNavEditor from "~/components/icons/IconNavEditor.vue";
+import IconNavFaq from "~/components/icons/IconNavFaq.vue";
+import IconNavUpdates from "~/components/icons/IconNavUpdates.vue";
+import IconNavDiscord from "~/components/icons/IconNavDiscord.vue";
 
 export default {
   name: "Home",
+  components: {
+    IconNavBrowse,
+    IconNavEditor,
+    IconNavFaq,
+    IconNavUpdates,
+    IconNavDiscord,
+  },
   data: function() {
     return {
-      browseSvg,
-      editorSvg,
-      faqSvg,
-      changelogSvg,
-      discordSvg
     };
   },
   methods: {
@@ -98,6 +104,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/icon-colors";
 @import "styles/positioning";
 @import "styles/screens";
 @import "styles/transitions";
@@ -179,7 +186,6 @@ export default {
   }
 }
 
-
 .editor,
 .discord,
 .updates,
@@ -188,11 +194,53 @@ export default {
   outline: none;
   transition: transform 0.1s $energetic;
 }
+
+.editor {
+  & .home--nav-icon-container {
+    background-color: $salmon;
+  }
+  & .home--nav--icon-half-circle {
+    background-color: $pink;
+  }
+}
+.browse {
+  & .home--nav-icon-container {
+    background-color: $keppel;
+  }
+  & .home--nav--icon-half-circle {
+    background-color: $pearl-aqua;
+  }
+}
+.updates {
+  & .home--nav-icon-container {
+    background-color: $copper;
+  }
+  & .home--nav--icon-half-circle {
+    background-color: $wax-flower;
+  }
+}
+.faq {
+  & .home--nav-icon-container {
+    background-color: $cream-can;
+  }
+  & .home--nav--icon-half-circle {
+    background-color: $cape-honey;
+  }
+}
+.discord {
+  & .home--nav-icon-container {
+    background-color: $portage;
+  }
+  & .home--nav--icon-half-circle {
+    background-color: $perano;
+  }
+}
+
 @include tablet-landscape {
   .updates {
     transform: scale(1) rotate(-14deg) translateY(80px);
     &:hover {
-    transform: scale(1.1) rotate(-14deg) translateY(80px);
+      transform: scale(1.1) rotate(-14deg) translateY(80px);
     }
   }
 
@@ -206,7 +254,7 @@ export default {
   .editor {
     transform: scale(1) rotate(0deg) translateY(0px);
     &:hover {
-    transform: scale(1.1) rotate(0deg) translateY(0px);
+      transform: scale(1.1) rotate(0deg) translateY(0px);
     }
   }
 
@@ -224,8 +272,6 @@ export default {
     }
   }
 }
-
-
 
 .home--nav-icon-bubble {
   position: relative;
@@ -252,9 +298,12 @@ export default {
 }
 
 .home--nav-icon-container {
+  @include relative-in-place;
   border-radius: 9999px;
-  padding: 14px;
-  background-color: $orange-white;
+  border-width: 14px;
+  border-style: solid;
+  border-color: $orange-white;
+  overflow: hidden;
 
   @include phone-landscape {
   }
@@ -265,11 +314,13 @@ export default {
   @include desktop {
   }
   @include desktop-hd {
-    padding: 15px;
+    border-width: 15px;
   }
 }
 
 .home--nav-icon {
+  @include relative-in-place;
+  z-index: 10;
   width: 140px;
   height: 140px;
   border-radius: 9999px;
@@ -288,6 +339,15 @@ export default {
     width: 150px;
     height: 150px;
   }
+}
+
+.home--nav--icon-half-circle {
+  @include absolute-center;
+  top: 45%;
+  transform: translate(-50%, 0px);
+  width: 200%;
+  height: 200%;
+  border-radius: 9999px;
 }
 
 .home--nav-text-bubble {

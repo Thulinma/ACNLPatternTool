@@ -13,75 +13,94 @@
       </div>
     </div>
     <div class="menu--title">{{ menuTitle }}</div>
+
     <div class="menu--nav">
-      <router-link to="/browse">
-        <img
-          class="menu--nav-item"
-          :src="browseSvg"
+      <router-link class="home" to="/">
+        <div
+          class="menu--nav-icon-container"
+          @click="$emit('modal-close')"
+          @mouseover="enterNavItem('Home')"
+          @mouseleave="leaveNavItem()"
+        >
+          <IconNavHome class="menu--nav-item" />
+        </div>
+      </router-link>
+
+      <router-link class="browse" to="/browse">
+        <div
+          class="menu--nav-icon-container"
           @click="$emit('modal-close')"
           @mouseover="enterNavItem('Browse')"
           @mouseleave="leaveNavItem()"
-        />
+        >
+          <IconNavBrowse class="menu--nav-item" />
+        </div>
       </router-link>
 
-      <router-link to="/editor">
-        <img
-          class="menu--nav-item"
-          :src="editorSvg"
+      <router-link class="editor" to="/editor">
+        <div
+          class="menu--nav-icon-container"
           @click="$emit('modal-close')"
           @mouseover="enterNavItem('Editor')"
           @mouseleave="leaveNavItem()"
-        />
+        >
+          <IconNavEditor class="menu--nav-item" />
+        </div>
       </router-link>
 
-      <router-link to="/faq ">
-        <img
-          class="menu--nav-item"
-          :src="faqSvg"
+      <router-link class="faq" to="/faq ">
+        <div
+          class="menu--nav-icon-container"
           @click="$emit('modal-close')"
           @mouseover="enterNavItem('FAQ')"
           @mouseleave="leaveNavItem()"
-        />
+        >
+          <IconNavFaq class="menu--nav-item" />
+        </div>
       </router-link>
 
-      <router-link to="/updates">
-        <img
-          class="menu--nav-item"
-          :src="changelogSvg"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('Updates')"
-          @mouseleave="leaveNavItem()"
-        />
-      </router-link>
-
-
-      <router-link to="/about">
-        <img
-          class="menu--nav-item"
-          :src="changelogSvg"
+      <router-link class="about" to="/about">
+        <div
+          class="menu--nav-icon-container"
           @click="$emit('modal-close')"
           @mouseover="enterNavItem('About Us')"
           @mouseleave="leaveNavItem()"
-        />
+        >
+          <IconNavAbout class="menu--nav-item" />
+        </div>
       </router-link>
 
-      <a href="https://discord.com/invite/9rGkZNk" target="_blank">
-        <img
-          class="menu--nav-item"
-          :src="discordSvg"
+      <router-link class="updates" to="/updates">
+        <div
+          class="menu--nav-icon-container"
+          @click="$emit('modal-close')"
+          @mouseover="enterNavItem('Updates')"
+          @mouseleave="leaveNavItem()"
+        >
+          <IconNavUpdates class="menu--nav-item" />
+        </div>
+      </router-link>
+
+      <a class="discord" href="https://discord.com/invite/9rGkZNk" target="_blank">
+        <div
+          class="menu--nav-icon-container"
           @mouseover="enterNavItem('Discord')"
           @mouseleave="leaveNavItem()"
-        />
+        >
+          <IconNavDiscord class="menu--nav-item" />
+        </div>
       </a>
 
-      <a href="https://nooknet.net/" target="_blank">
-        <img
-          class="menu--nav-item"
-          :src="nooknetSvg"
-          @mouseover="enterNavItem('NookNet')"
+      <a class="twitter" href="https://twitter.com/acpatterns" target="_blank">
+        <div
+          class="menu--nav-icon-container"
+          @mouseover="enterNavItem('Twitter')"
           @mouseleave="leaveNavItem()"
-        />
+        >
+          <IconNavTwitter class="menu--nav-item" />
+        </div>
       </a>
+
     </div>
   </div>
 </template>
@@ -92,34 +111,39 @@ import nookSvg from "/assets/icons/nookphone/nook-head.svg";
 import gpsSvg from "/assets/icons/nookphone/nook-gps.svg";
 import barsSvg from "/assets/icons/nookphone/nook-service.svg";
 
-// menu svgs
-import browseSvg from "/assets/icons/nookphone/nav-browse.svg";
-import editorSvg from "/assets/icons/nookphone/nav-editor.svg";
-import faqSvg from "/assets/icons/nookphone/nav-faq.svg";
-import changelogSvg from "/assets/icons/nookphone/nav-changelog.svg";
-import discordSvg from "/assets/icons/nookphone/nav-discord.svg";
-import nooknetSvg from "/assets/icons/nookphone/nav-nooknet.svg";
+import IconNavBrowse from "~/components/icons/IconNavBrowse.vue";
+import IconNavEditor from "~/components/icons/IconNavEditor.vue";
+import IconNavFaq from "~/components/icons/IconNavFaq.vue";
+import IconNavUpdates from "~/components/icons/IconNavUpdates.vue";
+import IconNavDiscord from "~/components/icons/IconNavDiscord.vue";
+import IconNavHome from "~/components/icons/IconNavHome.vue";
+import IconNavAbout from "~/components/icons/IconNavAbout.vue";
+import IconNavTwitter from "~/components/icons/IconNavTwitter.vue";
 
 const menuTitleDefault = "Main Menu";
 export default {
   name: "NookPhoneMenu",
+  components: {
+    IconNavHome,
+    IconNavEditor,
+    IconNavBrowse,
+    IconNavFaq,
+    IconNavAbout,
+    IconNavUpdates,
+    IconNavDiscord,
+    IconNavTwitter
+  },
   data: function() {
     return {
-      nookSvg,
-      gpsSvg,
       barsSvg,
+      gpsSvg,
+      nookSvg,
       dateObj: new Date(),
       time: new Date().toLocaleTimeString("en-US", {
         hour: "2-digit",
         timeStyle: "short"
       }),
-      menuTitle: "Main Menu",
-      browseSvg,
-      changelogSvg,
-      discordSvg,
-      editorSvg,
-      faqSvg,
-      nooknetSvg
+      menuTitle: "Main Menu"
     };
   },
   mounted() {
@@ -144,13 +168,14 @@ export default {
         }, 300);
       });
       if (this.menuTitle === curr) this.menuTitle = menuTitleDefault;
-    },
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "styles/colors";
+@import "styles/icon-colors";
 @import "styles/positioning";
 @import "styles/transitions";
 
@@ -219,18 +244,55 @@ export default {
   display: grid;
   grid-template-rows: repeat(3, 90px);
   grid-template-columns: repeat(3, 90px);
+  justify-content: center;
+  justify-items: stretch;
+  align-content: center;
+  align-items: stretch;
   row-gap: 13px;
   column-gap: 13px;
 
-  .menu--nav-item {
+  .menu--nav-icon-container {
+    @include relative-in-place;
     width: 100%;
+    height: 100%;
     transition: transform 0.1s $energetic;
-
     transform: scale(1);
     &:hover {
       transform: scale(1.15);
       cursor: pointer;
     }
   }
+}
+
+.editor .menu--nav-icon-container {
+  background-color: $salmon;
+}
+.browse .menu--nav-icon-container {
+  background-color: $pearl-aqua;
+}
+.faq .menu--nav-icon-container {
+  background-color: $cream-can;
+}
+.updates .menu--nav-icon-container {
+  background-color: $copper;
+}
+.discord .menu--nav-icon-container {
+  background-color: $perano;
+}
+.home .menu--nav-icon-container {
+  background-color: $pastel-red;
+}
+.about .menu--nav-icon-container {
+  background-color: $de-york;
+}
+.twitter .menu--nav-icon-container {
+  background-color: $portage;
+}
+
+.menu--nav-icon-container {
+  @include relative-in-place;
+  width: 100%;
+  height: 100%;
+  border-radius: 35px;
 }
 </style>
