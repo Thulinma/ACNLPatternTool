@@ -188,6 +188,9 @@
     />
 
     <QRCode v-if="qrPreviewOpen" @close="qrPreviewOpen = false" :drawingTool="drawingTool" />
+
+    <Storage v-if="storageOpen" @close="storageOpen = false"
+     @load="load"/>
   </div>
 </template>
 
@@ -195,6 +198,7 @@
 import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
 import QRCode from "~/components/modals/QRCode.vue";
+import Storage from "~/components/modals/Storage.vue";
 
 // icons
 import IconInbox from "~/components/icons/IconInbox.vue";
@@ -289,6 +293,7 @@ export default {
   components: {
     PatternSettings,
     QRCode,
+    Storage,
     IconInbox,
     IconPaintTube,
     IconPalette,
@@ -330,6 +335,9 @@ export default {
     };
   },
   methods: {
+    load: function(binaryString) {
+      this.$emit('load', binaryString)
+    },
     onChangeColorPicker: function(mode) {
       this.$emit("change-color-picker", mode);
     },

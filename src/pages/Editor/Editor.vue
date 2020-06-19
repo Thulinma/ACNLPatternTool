@@ -40,6 +40,7 @@
       @change-color-picker="onChangeColorPicker"
       @update-details="updatePatternDetails"
       :patternDetails="patternDetails"
+      @load="load"
     />
 
     <div class="editor--dropups">
@@ -75,7 +76,7 @@
         <div class="editor--dropup-menu">
           <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
           <button class="editor--dropup-menu-item">as QR Code</button>
-          <button class="editor--dropup-menu-item">to Designs</button>
+          <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
           <button class="editor--dropup-menu-item">Publish</button>
         </div>
       </div>
@@ -160,6 +161,11 @@ export default {
     // ------------------
     // REACTION FUNCTIONS
     // ------------------
+    load: function(binaryString) {
+      this.drawingTool.load(binaryString);
+      this.drawingTool.render();
+      this.syncPatternDetails();
+    },
     onColorPicked: function(color, log = true) {
       if (this.drawingTool.currentColor === 15) {
         alert("this one has to stay transparent");
@@ -206,6 +212,12 @@ export default {
       const isACNL = this.drawingTool.pattern instanceof ACNLFormat;
       if (!isACNL) ext = "acnh";
       saveAs(blob, `${this.drawingTool.title}.${ext}`);
+    },
+    saveToStorage() {
+      const hash = this.drawingTool.fullHash;
+      localStorage.setItem("acnl_" + hash, lzString.compressToUTF16(this.drawingTool.toString()));
+      console.log("saving", "acnl_" + hash);
+      window.alert("saved");
     },
     // ---------------------------------------------
     // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
