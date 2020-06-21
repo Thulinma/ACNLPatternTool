@@ -82,7 +82,7 @@ import DrawingTool from '~/libs/DrawingTool'
 import IconImageAdd from '~/components/icons/IconImageAdd'
 
 export default {
-  name: "ImageLoader",
+  name: 'ImageLoader',
   components:{
     Cropper,
     IconImageAdd
@@ -110,7 +110,7 @@ export default {
       fileName: '',
       muralWide: 1,
       muralTall: 1,
-      outputs: []
+      outputs: [],
     };
   },
   mounted(){
@@ -124,16 +124,14 @@ export default {
   methods: {
     convert(patterns) {
       if (patterns.length == 1){
-        this.extLoad(patterns[0]);
+        this.drawingTool.load(patterns[0]);
       } else {
-        this.multiName = 'Conversion Result';
-        this.pickPatterns = patterns;
-        this.allowMoveToLocal = true;
+        this.$emit('mural', {
+          title: 'Conversion Result',
+          patterns
+        });
       }
       this.$emit('close');
-    },
-    extLoad(data) {
-      this.drawingTool.load(data);
     },
     defPos(opt) {
       return {
@@ -545,7 +543,7 @@ export default {
 #image-loader {
   background-color: $ecru-white;
   border-radius: 45px;
-  color: $umber;
+  color: $domino;
   min-height: 620px;
   margin: 50px auto;
   padding: 20px 25px;
@@ -572,7 +570,7 @@ export default {
   }
   
   canvas {
-    border: 1px solid $bronco;
+    border: 1px solid $silver-sand;
   }
   
   h1 {
@@ -590,7 +588,7 @@ export default {
       padding: 5px;
       margin: 0 12px 0 0;
 
-      fill: $umber;
+      fill: $domino;
       width: 30px;
       height: 30px;
     }
@@ -614,7 +612,7 @@ export default {
 
 .cropper--container {
   .cropper--cropper {
-    @include polkadots($sand-dune, $donkey-brown);
+    @include polkadots($olive-haze, $donkey-brown);
     @include moving-polkadots(2s);
     border-radius: 10px;
     height: 430px;
@@ -650,7 +648,7 @@ export default {
 
 .preview--container {
   .preview--preview {
-    @include polkadots($sand-dune, $donkey-brown);
+    @include polkadots($olive-haze, $donkey-brown);
     @include moving-polkadots(2s);
     border-radius: 10px;
     padding: 22px;

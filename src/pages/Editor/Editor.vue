@@ -84,7 +84,13 @@
 
     <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
       <template #window>
-        <ConvertImage :drawing-tool="drawingTool" @close="convertImage = false" />
+        <ConvertImage :drawing-tool="drawingTool" @close="convertImage = false" @mural="pickMuralPatterns"/>
+      </template>
+    </ModalContainer>
+
+    <ModalContainer v-if="muralModal" @modal-close="muralModal = false">
+      <template #window>
+        <MuralPatterns :mural="mural" />
       </template>
     </ModalContainer>
   </main>
@@ -110,6 +116,7 @@ import IconCaretUp from "~/components/icons/IconCaretUp.vue";
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ConvertImage from "~/components/modals/ConvertImage.vue"
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import MuralPatterns from "~/components/modals/MuralPatterns.vue"
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 
@@ -119,6 +126,7 @@ export default {
     ColorTools,
     ConvertImage,
     ModalContainer,
+    MuralPatterns,
     ThreeDRender,
     Toolbar,
     IconImport,
@@ -154,10 +162,8 @@ export default {
 
       // modals
       convertImage: null,
-
-      pickPatterns: false,
-      multiName: "Local Storage",
-      allowMoveToLocal: true,
+      muralModal: null,
+      mural: {},
       origin
     };
   },
@@ -293,7 +299,15 @@ export default {
       this.patternDetails.type = this.drawingTool.patternType;
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
-    }
+    },
+    pickMuralPatterns(data) {
+      this.mural = { ...data };
+      this.muralModal = true;
+    },
+    pickPattern(pattern) {
+      this.drawingTool.load(pattern);
+      this.muralModal = false;
+    },
   },
   mounted: async function() {
     // setup drawingTool
