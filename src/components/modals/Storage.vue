@@ -65,9 +65,7 @@ import PreviewGenerator from "~/components/PreviewGenerator.vue";
 import IconCheck from "~/components/icons/IconCheck.vue";
 import IconKebab from "~/components/icons/IconKebab.vue";
 import lzString from "lz-string";
-import JSZip from "jszip";
-import generateACNLQR from "/libs/ACNLQRGenerator";
-import { saveAs } from "file-saver";
+import saver from "~/libs/saver";
 
 export default {
   name: "Storage",
@@ -133,25 +131,12 @@ export default {
       } = this;
 
       if (selectedCount === 1) {
-        const blob = new Blob([selected[0].toBytes()], { type: "application/octet-stream" });
-        saveAs(blob, `${selected[0].title}.acnl`);
+        await saver.saveDrawingToolAsAcnl(selected[0]);
         return;
       }
 
       const selection = selectedCount === 0? drawingTools: selected;
-      const zip = new JSZip();
-      let usedFilenames = new Set();
-      for (const drawingTool of selection) {
-        let fileName = drawingTool.title;
-        let id = 0;
-        while(usedFilenames.has(fileName)) {
-          fileName = `${drawingTool.title}(${id})`;
-        }
-        usedFilenames.add(fileName);
-        zip.file(`${fileName}.acnl`, drawingTool.toBytes());
-      }
-      const file = await zip.generateAsync({type: "blob"});
-      saveAs(file, "patterns.zip");
+      await saver.saveDrawingToolsAsAcnl(selection);
     },
     async saveSelectionAsPNG() {
       const {
@@ -162,26 +147,12 @@ export default {
       } = this;
 
       if (selectedCount === 1) {
-        const img = await generateACNLQR(selected[0]);
-        saveAs(img, `${selected[0].title}.png`);
+        await saver.saveDrawingToolAsPng(selected[0]);
         return;
       }
 
       const selection = selectedCount === 0? drawingTools: selected;
-      const zip = new JSZip();
-      let usedFilenames = new Set();
-      for (const drawingTool of selection) {
-        const img = await generateACNLQR(drawingTool);
-        let fileName = drawingTool.title;
-        let id = 0;
-        while(usedFilenames.has(fileName)) {
-          fileName = `${drawingTool.title}(${id})`;
-        }
-        usedFilenames.add(fileName);
-        zip.file(`${fileName}.png`, img.substr(22), { base64:true });
-      }
-      const file = await zip.generateAsync({type: "blob"});
-      saveAs(file, "patterns.zip");
+      await saver.saveDrawingToolsAsPng(selection);
     },
     async saveSelectionAsBoth() {
       const {
@@ -192,30 +163,12 @@ export default {
       } = this;
 
       if (selectedCount === 1) {
-        const blob = new Blob([selected[0].toBytes()], { type: "application/octet-stream" });
-        saveAs(blob, `${selected[0].title}.acnl`);
-        const img = await generateACNLQR(selected[0]);
-        saveAs(img, `${selected[0].title}.png`);
+        await saver.saveDrawingToolAsBoth(selected[0]);
         return;
       }
 
       const selection = selectedCount === 0? drawingTools: selected;
-      const zip = new JSZip();
-      let usedFilenames = new Set();
-      for (const drawingTool of selection) {
-        const img = await generateACNLQR(drawingTool);
-        const bytes = drawingTool.toBytes();
-        let fileName = drawingTool.title;
-        let id = 0;
-        while(usedFilenames.has(fileName)) {
-          fileName = `${drawingTool.title}(${id})`;
-        }
-        usedFilenames.add(fileName);
-        zip.file(`${fileName}.png`, img.substr(22), { base64: true });
-        zip.file(`${fileName}.acnl`, drawingTool.toBytes());
-      }
-      const file = await zip.generateAsync({type: "blob"});
-      saveAs(file, "patterns.zip");
+      await saver.saveDrawingToolsAsBoth(selection);
     },
   }
 };
