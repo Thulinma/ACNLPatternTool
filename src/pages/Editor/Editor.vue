@@ -21,7 +21,7 @@
       <template #overlay>
         <div @click="onChangeColorPicker(null)" class="editor--color-picker-overlay"></div>
       </template>
-    </ModalContainer>
+    </ModalContainer><!-- color picker dropdown -->
 
     <!-- need this to control canvas ratio -->
     <div class="editor--preview-container">
@@ -31,7 +31,7 @@
     <!-- width/height must be multiples of 32 and ratio of 1:1 -->
     <div class="editor--canvas-container">
       <canvas class="editor--canvas" ref="main" />
-    </div>
+    </div><!-- main canvas -->
 
     <Toolbar
       :drawingTool="drawingTool"
@@ -56,7 +56,7 @@
         </div>
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
-          <button class="editor--dropup-menu-item">Convert from IMG</button>
+          <button class="editor--dropup-menu-item" @click="convertImage = true">Convert from IMG</button>
           <button class="editor--dropup-menu-item">Scan from QR Code</button>
           <button class="editor--dropup-menu-item">Open .ACNL File</button>
         </div>
@@ -82,7 +82,11 @@
       </div>
     </div>
 
-    <ConvertImage :drawing-tool="drawingTool" />
+    <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
+      <template #window>
+        <ConvertImage :drawing-tool="drawingTool" @close="convertImage = false" />
+      </template>
+    </ModalContainer>
   </main>
 </template>
 
