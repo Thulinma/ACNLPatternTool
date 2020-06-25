@@ -114,10 +114,18 @@ export default {
       const message = "Are you sure you want to delete these patterns?"
       if (!window.confirm(message)) return;
       for (const drawingTool of this.selected) {
-        console.log(this.selected);
-        console.log("BREAKING, DOES NOT DELETE");
+        console.log("BREAKING, DOES ACTUALLY NOT DELETE");
         console.log("deleting", "acnl_" + drawingTool.fullHash);
-        localStorage.removeItem("acnl_"+drawingTool.fullHash);
+        // hashing producing different values on save/delete, something with with .fullHash
+
+        // INTENTIONAL IMPLEMENTATION UNTIL HASHING IS FIXED ^
+        for (const i in localStorage) {
+        // localStorage.removeItem("acnl_"+drawingTool.fullHash);
+        // removes all localStorage items that contain the value
+          if (localStorage.getItem(i) === lzString.compressToUTF16(drawingTool.toString()))
+            localStorage.removeItem(i);
+            break;
+        }
         // reflect changes in component data
         const idx = this.drawingTools.indexOf(drawingTool);
         this.drawingTools.splice(idx, 1);
