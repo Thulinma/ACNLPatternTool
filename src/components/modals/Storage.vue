@@ -77,11 +77,12 @@ export default {
   },
   data: function() {
     const drawingTools = [];
-    for (const i in localStorage) {
-      if (i.startsWith("acnl_")) {
-        drawingTools.push(
-          new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(i)))
-        );
+    for (let i = 0; i < localStorage.length; ++i) {
+      const key = localStorage.key(i);
+      if (key.startsWith("acnl_")) {
+        const fromStorage = new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(key)));
+        console.log(`loading into storage acnl_${fromStorage.fullHash}`);
+        drawingTools.push(fromStorage);
       }
     }
 
@@ -113,6 +114,7 @@ export default {
       const message = "Are you sure you want to delete these patterns?"
       if (!window.confirm(message)) return;
       for (const drawingTool of this.selected) {
+        console.log(this.selected);
         console.log("BREAKING, DOES NOT DELETE");
         console.log("deleting", "acnl_" + drawingTool.fullHash);
         localStorage.removeItem("acnl_"+drawingTool.fullHash);
