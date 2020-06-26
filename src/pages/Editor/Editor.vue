@@ -224,6 +224,7 @@ export default {
       saveAs(blob, `${this.drawingTool.title}.${ext}`);
     },
     saveToStorage() {
+      const _ = this.drawingTool.toString(); // FORCES FIXUP, NEED THIS BEFORE HASH COMPUTATION
       const hash = this.drawingTool.fullHash;
       localStorage.setItem("acnl_" + hash, lzString.compressToUTF16(this.drawingTool.toString()));
       console.log("saving", "acnl_" + hash);
