@@ -1,6 +1,6 @@
 <template>
   <div class="home--container">
-    <div class="home--background"></div>
+    <div class="home--container-background"></div>
     <nav class="home--nav">
       <router-link class="updates" to="/updates">
         <div class="home--nav-item">
@@ -18,7 +18,7 @@
         <div class="home--nav-item">
           <div class="home--nav-icon-bubble">
             <div class="home--nav-icon-container">
-              <IconNavBrowse class="home--nav-icon" :flip="true"/>
+              <IconNavBrowse class="home--nav-icon" :flip="true" />
               <div class="home--nav--icon-half-circle"></div>
             </div>
           </div>
@@ -62,6 +62,39 @@
         </div>
       </a>
     </nav>
+    <div class="home--achievements">
+      <div class="home--achievements-background"></div>
+      <div class="home--ribbon-row">
+        <div class="home--ribbon">
+          <IconRibbonTailLeft class="home--ribbon-left" />
+          <IconRibbonTailLeft class="home--ribbon-right" />
+          <div class="home--ribbon-main">Patterns Uploaded</div>
+        </div>
+      </div>
+      <div class="home--counter-row">
+        <div class="home--counter">1,000,000</div>
+      </div>
+      <div class="home--stamps-row">
+        <div class="home--stamps">
+          <div class="home--stamps-connecting-strip"></div>
+          <div class="home--stamp-location">
+            <IconStamp class="home--stamp" dateText="03/24/2020" />
+          </div>
+          <div class="home--stamp-location">
+            <IconStamp class="home--stamp" dateText="03/28/2020" />
+          </div>
+          <div class="home--stamp-location">
+            <!-- <IconStamp class="home--stamp" dateText="03/28/2020" /> -->
+          </div>
+          <div class="home--stamp-location">
+            <!-- <IconStamp class="home--stamp" dateText="03/28/2020" /> -->
+          </div>
+          <div class="home--stamp-location">
+            <!-- <IconStamp class="home--stamp" dateText="03/28/2020" /> -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -71,6 +104,8 @@ import IconNavEditor from "~/components/icons/IconNavEditor.vue";
 import IconNavFaq from "~/components/icons/IconNavFaq.vue";
 import IconNavUpdates from "~/components/icons/IconNavUpdates.vue";
 import IconNavDiscord from "~/components/icons/IconNavDiscord.vue";
+import IconRibbonTailLeft from "~/components/icons/IconRibbonTailLeft.vue";
+import IconStamp from "~/components/icons/IconStamp.vue";
 
 export default {
   name: "Home",
@@ -80,10 +115,11 @@ export default {
     IconNavFaq,
     IconNavUpdates,
     IconNavDiscord,
+    IconRibbonTailLeft,
+    IconStamp
   },
   data: function() {
-    return {
-    };
+    return {};
   },
   methods: {
     goToBrowse: function() {
@@ -118,7 +154,7 @@ export default {
   min-height: 100%;
 }
 
-.home--background {
+.home--container-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -135,7 +171,7 @@ export default {
   top: 0;
   left: 0;
   padding-top: 80px;
-  padding-bottom: 80px;
+  padding-bottom: 250px;
   display: grid;
   grid-template-areas:
     "editor"
@@ -373,6 +409,201 @@ export default {
   @include desktop {
   }
   @include desktop-hd {
+  }
+}
+
+.home--achievements {
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+
+  width: 100%;
+  height: 130px;
+  overflow: hidden;
+
+  @include tablet-landscape {
+    height: 250px;
+  }
+  @include desktop {
+    height: 275px;
+  }
+  @include desktop-hd {
+    height: 350px;
+  }
+}
+
+.home--achievements-background {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 0;
+
+  height: 3000px;
+  width: 3000px;
+  @include phone-landscape {
+    height: 6000px;
+    width: 6000px;
+  }
+  @include tablet-landscape {
+    height: 3500px;
+    width: 3500px;
+  }
+  @include desktop {
+    height: 4500px;
+    width: 4500px;
+  }
+  @include desktop-hd {
+    height: 6000px;
+    width: 6000px;
+  }
+
+  border-radius: 99999px;
+  background-color: $ecru-white;
+}
+
+.home--ribbon-row {
+  @include relative-in-place;
+}
+
+.home--ribbon {
+  position: relative;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: inline-block;
+}
+
+.home--ribbon-main {
+  display: inline-block;
+  background-color: $pink;
+  color: white;
+  padding: 8px 25px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.home--ribbon-left,
+.home--ribbon-right {
+  position: absolute;
+  top: 8px;
+  z-index: -1;
+  height: calc(100% - 5px);
+  display: inline-block;
+}
+.home--ribbon-left {
+  left: -10px;
+  transform: translate(-50%, 0);
+}
+.home--ribbon-right {
+  right: -10px;
+  transform: translate(50%, 0) scaleX(-1);
+}
+
+.home--counter-row {
+  margin-top: 20px;
+  text-align: center;
+  @include phone-landscape {
+  }
+  @include tablet-portrait {
+  }
+  @include tablet-landscape {
+  }
+  @include desktop {
+    margin-top: 30px;
+  }
+  @include desktop-hd {
+  }
+}
+
+.home--counter {
+  @include relative-in-place;
+  display: inline-block;
+  color: $ecru-white;
+  background-color: $olive-haze;
+  padding: 15px 50px 12px 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  @include tablet-landscape {
+    border-radius: 100px;
+    padding: 10px 20px 8px 20px;
+  }
+  @include desktop {
+  }
+  @include desktop-hd {
+    font-size: 1.3rem;
+  }
+}
+
+.home--stamps-row {
+  @include relative-in-place;
+  display: none;
+
+  margin-top: 20px;
+  @include tablet-landscape {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @include desktop {
+  }
+  @include desktop-hd {
+    margin-top: 40px;
+  }
+}
+
+.home--stamps {
+  @include relative-in-place;
+  display: inline-block;
+}
+
+.home--stamps-connecting-strip {
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: 100%;
+  height: 15px;
+  border-radius: 9999px;
+  background-color: white;
+}
+
+.home--stamp-location {
+  @include relative-in-place;
+  height: 100px;
+  width: 100px;
+  display: inline-block;
+  background-color: white;
+  border-radius: 100%;
+  & ~ & {
+    margin-left: 15px;
+  }
+
+  @include desktop-hd {
+    height: 130px;
+    width: 130px;
+  }
+
+
+  $base-transform: translate(-50%, -50%);
+  &:nth-child(2) .home--stamp {
+    transform: $base-transform rotate(10deg);
+  }
+  &:nth-child(3) .home--stamp {
+    transform: $base-transform rotate(-10deg);
+  }
+}
+
+.home--stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: calc(100% + 10px);
+  transform: translate(-50%, -50%);
+
+  @include desktop-hd {
+
   }
 }
 </style>

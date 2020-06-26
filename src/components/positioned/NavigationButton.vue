@@ -4,7 +4,7 @@
       'menu-button--container': true,
       'open': open
     }"
-    @click="open=true">
+    @click="open=!open">
     <div class="menu-button--icon-wrapper">
       <IconCompass class="menu-button--icon" />
     </div>
