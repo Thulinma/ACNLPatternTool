@@ -217,7 +217,8 @@ import IconQRCode from "~/components/icons/IconQRCode.vue";
 // tool functions IIFE
 const brush = (() => {
   const small = (x, y, tool) => {
-    tool.drawPixel(x, y);
+    // tool.drawPixel(x, y);
+    // EXPENSIVE, v slow
     tool.render(); // need this or transparent won't show up
   };
 
@@ -244,7 +245,7 @@ const brush = (() => {
     tool.setPixel(x + 1, y + 1, color); // top right
     tool.setPixel(x - 1, y - 1, color); // bottom left
     tool.setPixel(x + 1, y - 1, color); // bottom right
-    tool.render();
+    tool.render(); // rerenders everything
   };
   return { small, medium, large };
 })();
@@ -454,6 +455,7 @@ $toolbar--options-width: 75px;
   user-select: none;
   grid-area: toolbar;
   justify-self: stretch;
+  overflow: visible;
   align-self: center;
 
   display: grid;
@@ -471,7 +473,7 @@ $toolbar--options-width: 75px;
   column-gap: 5px;
 
   background-color: $pink-lace;
-  overflow: hidden;
+  overflow: visible;
 
   @include phone-landscape {
 

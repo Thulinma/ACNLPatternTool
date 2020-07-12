@@ -66,7 +66,7 @@ export default {
     return {
       vibrantBlocks,
       monoBlock,
-      currColor: "#FFFFFF"
+      currColor: this.drawingTool.color,
     };
   },
   methods: {

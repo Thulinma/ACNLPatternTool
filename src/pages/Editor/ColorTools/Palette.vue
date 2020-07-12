@@ -97,7 +97,7 @@ export default {
     this.drawingTool.onColorChange(this.updatePaletteColors);
   },
   beforeDestroy: function() {
-    this.drawingTool.onColorChange(this.updatePaletteColors);
+    this.drawingTool.onColorChangeRemove(this.updatePaletteColors);
   }
 };
 </script>
