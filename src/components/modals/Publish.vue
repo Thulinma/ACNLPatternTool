@@ -205,7 +205,7 @@ export default {
         this.open = false;
         this.$router.push({ hash: `H:${uplStatus["upload"]}` });
         window.alert("successfully uploaded to database");
-        this.emit('close');
+        this.$emit('close');
       } else if (uplStatus.includes("error")) {
         window.alert(
           "A pattern just like this already exists in the database!"
@@ -213,6 +213,12 @@ export default {
       }
       this.isUploading = false;
     }
+  },
+  mounted() {
+    this.$emit('pinkify');
+  },
+  destroyed() {
+    this.$emit('unpinkify');
   }
 };
 </script>

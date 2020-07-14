@@ -1,5 +1,8 @@
 <template>
-  <main class="editor--container">
+  <main :class="{
+    'editor--container': true,
+    'pinkified': backgroundIsPink
+  }">
     <ColorTools
       :drawingTool="drawingTool"
       @change-current-color="onChangeCurrentColor"
@@ -90,6 +93,8 @@
       :patternDetails="patternDetails"
       @update-details="updatePatternDetails"
       @close="publishModal = false"
+      @pinkify="backgroundIsPink = true"
+      @unpinkify="backgroundIsPink = false"
     />
 
     <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
@@ -153,6 +158,7 @@ export default {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
+      backgroundIsPink: false, 
       drawingTool: new DrawingTool(),
       patternDetails: {
         // redundant mirrored properties, need these to sync
@@ -350,7 +356,7 @@ export default {
 @import "styles/screens";
 
 .editor--container {
-  transition: background-color;
+  transition: background-color 0.5s linear;
   background-color: $ecru-white;
   min-height: 100%;
 
@@ -385,7 +391,6 @@ export default {
     row-gap: 20px;
   }
   @include tablet-landscape {
-    background-color: #f7d7c9;
   }
   @include desktop {
     grid-template-areas:
@@ -397,7 +402,7 @@ export default {
     row-gap: 0px;
   }
 
-  .pink {
+  &.pinkified {
     background-color: #f7d7c9;
   }
 }
