@@ -271,7 +271,8 @@ export default {
 .settings--row-4 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-auto-rows: 1fr;
+  grid-auto-rows: auto;
+  align-items: stretch;
   column-gap: 20px;
 }
 

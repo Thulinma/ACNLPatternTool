@@ -21,7 +21,8 @@
       <template #overlay>
         <div @click="onChangeColorPicker(null)" class="editor--color-picker-overlay"></div>
       </template>
-    </ModalContainer><!-- color picker dropdown -->
+    </ModalContainer>
+    <!-- color picker dropdown -->
 
     <!-- need this to control canvas ratio -->
     <div class="editor--preview-container">
@@ -31,7 +32,8 @@
     <!-- width/height must be multiples of 32 and ratio of 1:1 -->
     <div class="editor--canvas-container">
       <canvas class="editor--canvas" ref="main" />
-    </div><!-- main canvas -->
+    </div>
+    <!-- main canvas -->
 
     <Toolbar
       :drawingTool="drawingTool"
@@ -75,16 +77,28 @@
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
           <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
-          <button class="editor--dropup-menu-item">as QR Code</button>
+          <button @click="downloadQR" class="editor--dropup-menu-item">as QR Code</button>
           <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
-          <button class="editor--dropup-menu-item">Publish</button>
+          <button class="editor--dropup-menu-item" @click="publishModal = true;">Publish</button>
         </div>
       </div>
     </div>
 
+    <Publish
+      v-if="publishModal"
+      :drawingTool="drawingTool"
+      :patternDetails="patternDetails"
+      @update-details="updatePatternDetails"
+      @close="publishModal = false"
+    />
+
     <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
       <template #window>
-        <ConvertImage :drawing-tool="drawingTool" @close="convertImage = false" @mural="pickMuralPatterns"/>
+        <ConvertImage
+          :drawing-tool="drawingTool"
+          @close="convertImage = false"
+          @mural="pickMuralPatterns"
+        />
       </template>
     </ModalContainer>
 
@@ -114,9 +128,10 @@ import IconCaretUp from "~/components/icons/IconCaretUp.vue";
 
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
-import ConvertImage from "~/components/modals/ConvertImage.vue"
+import ConvertImage from "~/components/modals/ConvertImage.vue";
+import Publish from "~/components/modals/Publish";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
-import MuralPatterns from "~/components/modals/MuralPatterns.vue"
+import MuralPatterns from "~/components/modals/MuralPatterns.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 
@@ -132,13 +147,13 @@ export default {
     IconImport,
     IconSave,
     IconCaretUp,
+    Publish
   },
   data: function() {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
       drawingTool: new DrawingTool(),
-
       patternDetails: {
         // redundant mirrored properties, need these to sync
         title: "Empty",
@@ -151,9 +166,6 @@ export default {
           name: "Unknown"
         },
         type: 9,
-        // publishing data
-        selectedTypes: new Array(3).fill(undefined),
-        selectedStyles: new Array(3).fill(undefined)
       },
 
       // colorTool & toolbar fields
@@ -162,9 +174,9 @@ export default {
 
       // modals
       convertImage: null,
+      publishModal: false,
       muralModal: null,
-      mural: {},
-      origin
+      mural: {}
     };
   },
   methods: {
@@ -223,10 +235,17 @@ export default {
       if (!isACNL) ext = "acnh";
       saveAs(blob, `${this.drawingTool.title}.${ext}`);
     },
+    async downloadQR() {
+      const img = await generateACNLQR(this.drawingTool);
+      saveAs(img, this.drawingTool.title + ".png");
+    },
     saveToStorage() {
       const _ = this.drawingTool.toString(); // FORCES FIXUP, NEED THIS BEFORE HASH COMPUTATION
       const hash = this.drawingTool.fullHash;
-      localStorage.setItem("acnl_" + hash, lzString.compressToUTF16(this.drawingTool.toString()));
+      localStorage.setItem(
+        "acnl_" + hash,
+        lzString.compressToUTF16(this.drawingTool.toString())
+      );
       console.log("saving", "acnl_" + hash);
       window.alert("saved");
     },
@@ -308,7 +327,7 @@ export default {
     pickPattern(pattern) {
       this.drawingTool.load(pattern);
       this.muralModal = false;
-    },
+    }
   },
   mounted: async function() {
     // setup drawingTool
@@ -333,6 +352,7 @@ export default {
 .editor--container {
   transition: background-color;
   background-color: $ecru-white;
+  min-height: 100%;
 
   display: grid;
   grid-template-areas:
@@ -365,17 +385,22 @@ export default {
     row-gap: 20px;
   }
   @include tablet-landscape {
+    background-color: #f7d7c9;
   }
   @include desktop {
     grid-template-areas:
       "color-tools color-tools color-tools"
       "preview canvas toolbar"
       "three-d canvas toolbar";
-    grid-template-columns: 1fr max-content 1fr;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: repeat(3, max-content);
     row-gap: 0px;
   }
-}
 
+  .pink {
+    background-color: #f7d7c9;
+  }
+}
 
 .editor--color-picker-window {
   display: inline-block;
@@ -461,7 +486,6 @@ export default {
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 
   @include phone-landscape {
-
   }
   @include tablet-portrait {
     width: auto;
@@ -486,7 +510,6 @@ export default {
   height: calc-canvas-size(9);
 
   @include phone-landscape {
-
   }
   @include tablet-portrait {
     width: calc-canvas-size(13);
@@ -515,7 +538,6 @@ export default {
 
   display: flex;
   justify-content: flex-end;
-
 
   @include phone-landscape {
     left: unset;
