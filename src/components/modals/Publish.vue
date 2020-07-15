@@ -94,12 +94,20 @@
           </div>
         </div>
 
-        <div class="publish--nsfw">
-          <input type="checkbox" id="nsfw" v-model="isNSFW" />
-          <label for="nsfw">NSFW</label>
-        </div>
+        <div class="publish--bottom-row">
+          <div class="publish--nsfw">
+            <input type="checkbox" id="nsfw" v-model="isNSFW" />
+            <label for="nsfw">NSFW</label>
+          </div>
 
-        <button class="publish--publish" @click="publish">Publish</button>
+          <button
+            :class="{
+            'publish--publish-button': true,
+            'active': isUploading,
+            }"
+            @click="publish"
+          >Publish</button>
+        </div>
       </div>
     </template>
   </ModalContainer>
@@ -199,26 +207,27 @@ export default {
         btoa(this.drawingTool.toString()),
         ...this.selectedStyles,
         ...this.selectedTypes,
-        isNSFW,
+        isNSFW
       );
       if (uplStatus["upload"]) {
         this.open = false;
         this.$router.push({ hash: `H:${uplStatus["upload"]}` });
-        window.alert("successfully uploaded to database");
-        this.$emit('close');
+        window.alert("Successfully uploaded to database");
+        this.$emit("close");
       } else if (uplStatus.includes("error")) {
         window.alert(
           "A pattern just like this already exists in the database!"
         );
+        this.$emit("close");
       }
       this.isUploading = false;
     }
   },
   mounted() {
-    this.$emit('pinkify');
+    this.$emit("pinkify");
   },
   destroyed() {
-    this.$emit('unpinkify');
+    this.$emit("unpinkify");
   }
 };
 </script>
@@ -237,11 +246,12 @@ export default {
     "header header header header header header"
     "render render inputs inputs inputs inputs"
     "style-tags style-tags style-tags type-tags type-tags type-tags"
-    "nsfw nsfw nsfw publish publish publish";
+    "bottom-row bottom-row bottom-row bottom-row bottom-row bottom-row";
   grid-template-rows: auto;
   padding: 30px 40px;
   row-gap: 25px;
   column-gap: 20px;
+  box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
 
   background-color: $ecru-white;
   border-radius: 45px;
@@ -381,22 +391,49 @@ select {
   cursor: pointer;
 }
 
-.publish--nsfw {
-  grid-area: nsfw;
-  justify-self: right;
-  align-self: center;
+.publish--bottom-row {
+  grid-area: bottom-row;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
 }
 
-.publish--publish {
+.publish--nsfw {
+  justify-self: right;
+  align-self: center;
+
+  input,
+  label {
+    cursor: pointer;
+  }
+}
+
+.publish--publish-button {
   @include reset-button;
-  grid-area: publish;
   justify-self: left;
   align-self: center;
 
-  padding: 10px 45px;
+  border-width: 4px;
+  margin-left: 30px;
+  padding: 6px 45px;
+  font-weight: 600;
+
   color: white;
-  background-color: $robin-egg-blue;
+  border-style: solid;
+  border-color: $tiffany-blue;
+  background: $tiffany-blue;
+
   border-radius: 10px;
   cursor: pointer;
+
+  &.active,
+  &:hover {
+    border-color: $turquoise;
+    @include stripes($tiffany-blue, $tiffany-blue-light, 15px);
+    @include moving-stripes(3s);
+  }
 }
 </style>

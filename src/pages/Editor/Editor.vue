@@ -82,17 +82,17 @@
           <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
           <button @click="downloadQR" class="editor--dropup-menu-item">as QR Code</button>
           <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
-          <button class="editor--dropup-menu-item" @click="publishModal = true;">Publish</button>
+          <button class="editor--dropup-menu-item" @click="publishing = true;">Publish</button>
         </div>
       </div>
     </div>
 
     <Publish
-      v-if="publishModal"
+      v-if="publishing"
       :drawingTool="drawingTool"
       :patternDetails="patternDetails"
       @update-details="updatePatternDetails"
-      @close="publishModal = false"
+      @close="publishing = false"
       @pinkify="backgroundIsPink = true"
       @unpinkify="backgroundIsPink = false"
     />
@@ -112,6 +112,8 @@
         <MuralPatterns :mural="mural" />
       </template>
     </ModalContainer>
+    
+    
   </main>
 </template>
 
@@ -180,7 +182,7 @@ export default {
 
       // modals
       convertImage: null,
-      publishModal: false,
+      publishing: false,
       muralModal: null,
       mural: {}
     };
@@ -246,14 +248,13 @@ export default {
       saveAs(img, this.drawingTool.title + ".png");
     },
     saveToStorage() {
-      const _ = this.drawingTool.toString(); // FORCES FIXUP, NEED THIS BEFORE HASH COMPUTATION
+      this.drawingTool.fixIssues(); // FORCES FIXUP, NEED THIS BEFORE HASH COMPUTATION
       const hash = this.drawingTool.fullHash;
       localStorage.setItem(
         "acnl_" + hash,
         lzString.compressToUTF16(this.drawingTool.toString())
       );
-      console.log("saving", "acnl_" + hash);
-      window.alert("saved");
+      window.alert("Successfully saved to Storage!");
     },
     // ---------------------------------------------
     // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS

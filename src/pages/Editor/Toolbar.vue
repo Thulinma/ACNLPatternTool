@@ -159,7 +159,6 @@
             <IconDetail class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Pattern Settings</div>
-          <div class="toolbar--shortcut-hint short">S</div>
         </button>
 
         <button
@@ -392,15 +391,6 @@ export default {
         // cycle tool options
         if (code === "KeyT") {
           this.cycleOptions();
-          return;
-        }
-        // settings
-        else if (code === "KeyS") {
-          this.qrPreviewOpen = false;
-          this.$emit("change-color-picker", null);
-          await this.$nextTick();
-          await this.$nextTick();
-          this.settingsOpen = true;
           return;
         }
         // qrPreview

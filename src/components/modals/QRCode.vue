@@ -54,6 +54,7 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/positioning";
+@import "styles/resets";
 
 .editor--qr-preview-window {
   @include absolute-center;
@@ -79,7 +80,7 @@ export default {
 }
 
 .editor--qr-save-button {
-  @include reset-button-properties;
+  @include reset-button;
   cursor: pointer;
 
   border-width: 4px;
