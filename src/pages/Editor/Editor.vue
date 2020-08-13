@@ -97,21 +97,12 @@
       @unpinkify="backgroundIsPink = false"
     />
 
-    <ModalContainer v-if="convertImage" @modal-close="convertImage = false">
-      <template #window>
-        <ConvertImage
-          :drawing-tool="drawingTool"
-          @close="convertImage = false"
-          @mural="pickMuralPatterns"
-        />
-      </template>
-    </ModalContainer>
-
-    <ModalContainer v-if="muralModal" @modal-close="muralModal = false">
-      <template #window>
-        <MuralPatterns :mural="mural" />
-      </template>
-    </ModalContainer>
+    <ConvertImage
+      v-if="convertImage"
+      :drawing-tool="drawingTool"
+      @close="convertImage = false"
+      @load="drawingTool.load($event)"
+    />
     
     
   </main>
@@ -119,11 +110,12 @@
 
 <script>
 /* libs */
-import DrawingTool from "/libs/DrawingTool";
-import ACNLFormat from "/libs/ACNLFormat";
-import ACNHFormat from "/libs/ACNHFormat";
-import origin from "/libs/origin";
-import generateACNLQR from "/libs/ACNLQRGenerator";
+import DrawingTool from "~/libs/DrawingTool";
+import ACNLFormat from "~/libs/ACNLFormat";
+import ACNHFormat from "~/libs/ACNHFormat";
+import origin from "~/libs/origin";
+import generateACNLQR from "~/libs/ACNLQRGenerator";
+import saver from "~/libs/saver";
 import lzString from "lz-string";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
@@ -135,10 +127,9 @@ import IconCaretUp from "~/components/icons/IconCaretUp.vue";
 
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
-import ConvertImage from "~/components/modals/ConvertImage.vue";
+import ConvertImage from "~/components/modals/ConvertImage";
 import Publish from "~/components/modals/Publish";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
-import MuralPatterns from "~/components/modals/MuralPatterns.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 
@@ -148,7 +139,6 @@ export default {
     ColorTools,
     ConvertImage,
     ModalContainer,
-    MuralPatterns,
     ThreeDRender,
     Toolbar,
     IconImport,
@@ -160,7 +150,7 @@ export default {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
-      backgroundIsPink: false, 
+      backgroundIsPink: false,
       drawingTool: new DrawingTool(),
       patternDetails: {
         // redundant mirrored properties, need these to sync
@@ -173,7 +163,7 @@ export default {
           id: 0,
           name: "Unknown"
         },
-        type: 9,
+        type: 9
       },
 
       // colorTool & toolbar fields
@@ -182,9 +172,7 @@ export default {
 
       // modals
       convertImage: null,
-      publishing: false,
-      muralModal: null,
-      mural: {}
+      publishing: false
     };
   },
   methods: {
@@ -247,13 +235,8 @@ export default {
       const img = await generateACNLQR(this.drawingTool);
       saveAs(img, this.drawingTool.title + ".png");
     },
-    saveToStorage() {
-      this.drawingTool.fixIssues(); // FORCES FIXUP, NEED THIS BEFORE HASH COMPUTATION
-      const hash = this.drawingTool.fullHash;
-      localStorage.setItem(
-        "acnl_" + hash,
-        lzString.compressToUTF16(this.drawingTool.toString())
-      );
+    async saveToStorage() {
+      await saver.saveToStorage(this.drawingTool);
       window.alert("Successfully saved to Storage!");
     },
     // ---------------------------------------------
@@ -326,10 +309,6 @@ export default {
       this.patternDetails.type = this.drawingTool.patternType;
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
-    },
-    pickMuralPatterns(data) {
-      this.mural = { ...data };
-      this.muralModal = true;
     },
     pickPattern(pattern) {
       this.drawingTool.load(pattern);

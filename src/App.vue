@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <ModalManager/>
     <Banner/>
     <NavigationButton/>
+    <ModalManager/>
   </div>
 </template>
 

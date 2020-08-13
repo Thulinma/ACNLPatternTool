@@ -198,10 +198,18 @@ export default {
   grid-template-columns: repeat(5, 200px);
   justify-content: space-between;
   justify-items: center;
+  row-gap: 20px;
+  row-gap: 20px;
 }
 
 .storage--pattern-container {
   @include relative-in-place;
+  display: grid;
+  grid-template-rows: auto;
+  justify-content: center;
+  justify-items: center;
+  
+  
   .storage--pattern {
     @include relative-in-place;
     z-index: 10;

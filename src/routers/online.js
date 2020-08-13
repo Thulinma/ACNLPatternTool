@@ -16,7 +16,7 @@ const mode = "history";
 
 const routes = [
   { path: "/", component: Home },
-  { path: "/browse", component: Browse },
+  { path: "/browse:id", component: Browse },
   { path: "/editor", component: Editor },
   { path: "/faq", component: FAQ },
   { path: "/about", component: About },
