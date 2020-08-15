@@ -10,25 +10,44 @@ class RenderTarget{
     this.canvas = c;
     this.context = c.getContext("2d");
     this.opt = opt;
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+    const ro = new ResizeObserver(entries => this.resizeHandler(entries));
+    ro.observe(c);
   }
 
-  get width(){return this.canvas.width;}
-  get height(){return this.canvas.height;}
+  
+  resizeHandler(entries){
+    for (let entry of entries) {
+      this.width = entry.contentRect.width;
+      this.height = entry.contentRect.height;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      //recalculate zoom level
+      this.calcZoom();
+      console.log("New size", this.width, this.height, this.zoom, this.opt);
+      //re-render
+      this.opt.tool.render();
+    }
+  }
 
   /// Calculates the correct zoom level, given the current pattern width
   /// Should be called every time the pattern (or canvas) changes width
   calcZoom(pWidth, tWidth){
-    if (this.opt.texture){
-      // console.log(this, pWidth, tWidth);
-      pWidth = tWidth;
+    if (pWidth && tWidth){
+      if (this.opt.texture){
+        pWidth = tWidth;
+      }
+      this.pWidth = pWidth;
+      this.tWidth = tWidth;
     }
     this.context.imageSmoothingEnabled = false;
     if (this.opt.tall){
       this.zoom = this.width/32;
     }else if (this.width < this.height){
-      this.zoom = Math.floor(this.width / pWidth);
+      this.zoom = Math.floor(this.width / this.pWidth);
     }else{
-      this.zoom = Math.floor(this.height / pWidth);
+      this.zoom = Math.floor(this.height / this.pWidth);
     }
   }
 
@@ -45,15 +64,15 @@ class RenderTarget{
     }else{
       this.context.clearRect(x*this.zoom,y*this.zoom,this.zoom,this.zoom);
     }
-    //if zoom > 5, draw a line
+    //if a grid is wanted, draw one
     if (this.opt.grid){
-      if (x % 16 == 15){
+      if (x % 16 == 15 && x != this.tWidth-1){
         this.context.fillStyle = "#AA0000";
       }else{
         this.context.fillStyle = "#AAAAAA";
       }
       this.context.fillRect(x*this.zoom+this.zoom-((x%8==7)?2:1),y*this.zoom,(x%8==7)?2:1,this.zoom);
-      if (y % 16 == 15){
+      if (y % 16 == 15 && y != this.tWidth-1){
         this.context.fillStyle = "#BB0000";
       }else{
         this.context.fillStyle = "#AAAAAA";
@@ -78,7 +97,7 @@ class RenderTarget{
     }
     if (this.opt.grid){
       for (let x = 0; x < this.canvas.width/this.zoom; ++x){
-        if (x % 16 == 15){
+        if (x % 16 == 15 && x != this.tWidth-1){
           this.context.fillStyle = "#AA0000";
         }else{
           this.context.fillStyle = "#AAAAAA";
@@ -86,7 +105,7 @@ class RenderTarget{
         this.context.fillRect((x+1)*this.zoom-((x%8==7)?2:1),0,(x%8==7)?2:1,this.canvas.height);
       }
       for (let y = 0; y < this.canvas.height/this.zoom; ++y){
-        if (y % 16 == 15){
+        if (y % 16 == 15 && y != this.tWidth-1){
           this.context.fillStyle = "#BB0000";
         }else{
           this.context.fillStyle = "#AAAAAA";
@@ -480,6 +499,7 @@ class DrawingTool{
 
   /// Adds a canvas to the internal list of render targets.
   addCanvas(c, opt = {}){
+    opt.tool = this;
     let rTarget = new RenderTarget(c, opt);
     rTarget.calcZoom(this.pattern.width, this.pattern.texWidth);
     if (c.width >= 64 && c.height >= 64 && !opt.texture && !opt.grid && this.renderTargets.length && (this.renderTargets[0].opt.texture || this.renderTargets[0].opt.grid || this.renderTargets[0].canvas.width < 64 || this.renderTargets[0].canvas.height < 64)){
