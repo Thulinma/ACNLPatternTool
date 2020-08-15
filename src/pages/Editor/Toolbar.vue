@@ -216,9 +216,7 @@ import IconQRCode from "~/components/icons/IconQRCode.vue";
 // tool functions IIFE
 const brush = (() => {
   const small = (x, y, tool) => {
-    // tool.drawPixel(x, y);
-    // EXPENSIVE, v slow
-    tool.render(); // need this or transparent won't show up
+    tool.drawPixel(x, y);
   };
 
   const medium = (x, y, tool) => {

@@ -472,7 +472,7 @@ class DrawingTool{
 
   /// Returns the HTML color of the given palette index
   getPalette(idx){
-    if (idx < 0 || idx > 14){return "#FFFFFF00";}//abort for invalid indexes
+    if (idx < 0 || idx > 14){return "";}//abort for invalid indexes
     if (this.pattern instanceof ACNHFormat){
       function toHex(n){return (n<16?"0":"")+n.toString(16);}
       const c = this.pattern.getPalette(idx);
