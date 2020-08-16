@@ -105,6 +105,7 @@ export default {
       // set selected drawing color
       // todo: need to call this from editor at same time as onChangedCurrentColor
       let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(currentColor);
+      if (!rgb){return;}
 
       rgb = {
         r: parseInt(rgb[1], 16),

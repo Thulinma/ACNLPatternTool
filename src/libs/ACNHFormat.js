@@ -400,7 +400,7 @@ class ACNHFormat{
     if (h<0){h+=6;}
     const s=((!M)?0:(C/M))*100;
     const v = M*100;
-    return [min(29,Math.round(h*5)), min(14,Math.round(s/Sinc)), min(14,Math.round((v-Vstart)/Vinc))];
+    return [Math.min(29,Math.round(h*5)), Math.min(14,Math.round(s/Sinc)), Math.min(14,Math.round((v-Vstart)/Vinc))];
   }
 };
 
