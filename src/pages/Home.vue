@@ -319,7 +319,6 @@ export default {
 
   background-color: $ecru-white;
   border-radius: 9999px;
-  background-color: $ecru-white;
   @include phone-landscape {
   }
   @include tablet-portrait {

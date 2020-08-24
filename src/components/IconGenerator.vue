@@ -207,7 +207,7 @@ export default {
 
 <style lang="scss" scoped>
 canvas {
-  margin: 20px;
+  margin: 10px;
   display: inline-block;
 }
 </style>
