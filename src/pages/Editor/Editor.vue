@@ -103,8 +103,6 @@
       @close="convertImage = false"
       @load="drawingTool.load($event)"
     />
-    
-    
   </main>
 </template>
 
@@ -144,9 +142,9 @@ export default {
     IconImport,
     IconSave,
     IconCaretUp,
-    Publish
+    Publish,
   },
-  data: function() {
+  data: function () {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
@@ -157,13 +155,13 @@ export default {
         title: "Empty",
         creator: {
           id: 0,
-          name: "Unknown"
+          name: "Unknown",
         },
         town: {
           id: 0,
-          name: "Unknown"
+          name: "Unknown",
         },
-        type: 9
+        type: 9,
       },
 
       // colorTool & toolbar fields
@@ -172,19 +170,19 @@ export default {
 
       // modals
       convertImage: null,
-      publishing: false
+      publishing: false,
     };
   },
   methods: {
     // ------------------
     // REACTION FUNCTIONS
     // ------------------
-    load: function(binaryString) {
+    load: function (binaryString) {
       this.drawingTool.load(binaryString);
       this.drawingTool.render();
       this.syncPatternDetails();
     },
-    onColorPicked: function(color, log = true) {
+    onColorPicked: function (color, log = true) {
       if (this.drawingTool.currentColor === 15) {
         alert("this one has to stay transparent");
         return;
@@ -195,21 +193,21 @@ export default {
       this.drawingTool.setPalette(this.drawingTool.currentColor, color);
       if (log) console.log(`color picked: ${color}`);
     },
-    onChangeCurrentColor: function(idx, log = true) {
+    onChangeCurrentColor: function (idx, log = true) {
       if (this.drawingTool.currentColor === idx) return;
       this.drawingTool.currentColor = idx;
       this.drawingTool.onColorChange();
       if (log) console.log(`changed current color: ${idx}`);
     },
-    onChangeColorPicker: function(mode) {
+    onChangeColorPicker: function (mode) {
       if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
       this.colorPicker = mode;
     },
-    updatePatternDetails: function(patternDetails) {
+    updatePatternDetails: function (patternDetails) {
       // update current with incoming
       this.patternDetails = {
         ...this.patternDetails,
-        ...patternDetails
+        ...patternDetails,
       };
 
       // alias everything and update drawingTool
@@ -224,7 +222,7 @@ export default {
     // ------------------
     downloadBinary() {
       const blob = new Blob([this.drawingTool.toBytes()], {
-        type: "application/octet-stream"
+        type: "application/octet-stream",
       });
       let ext = "acnl";
       const isACNL = this.drawingTool.pattern instanceof ACNLFormat;
@@ -243,7 +241,7 @@ export default {
     // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
     // ---------------------------------------------
     // sets up an new (already existing) instance of drawingTool
-    initializePattern: async function() {
+    initializePattern: async function () {
       // intial color palette
       const initialColors = [
         "#FFFFFF",
@@ -260,7 +258,7 @@ export default {
         "#CC00FF",
         "#FF00CC",
         "#FFAA88",
-        "#993200"
+        "#993200",
       ];
       let currentColor = 0;
       for (const color of initialColors) {
@@ -282,7 +280,7 @@ export default {
       console.log("new pattern initialized");
     },
     // load a pattern from the route, set up new pattern if none in route
-    loadFromRoute: async function() {
+    loadFromRoute: async function () {
       const isPatternInUrlHash = this.$router.currentRoute.hash.length > 1;
       if (!isPatternInUrlHash) {
         this.initializePattern();
@@ -302,7 +300,7 @@ export default {
       return true;
     },
     // syncs relevant details for updateDetails
-    syncPatternDetails: async function() {
+    syncPatternDetails: async function () {
       // copy details from drawingTool
       const { creator, town } = this.patternDetails;
       this.patternDetails.title = this.drawingTool.title;
@@ -313,9 +311,9 @@ export default {
     pickPattern(pattern) {
       this.drawingTool.load(pattern);
       this.muralModal = false;
-    }
+    },
   },
-  mounted: async function() {
+  mounted: async function () {
     // setup drawingTool
     await this.loadFromRoute();
     this.syncPatternDetails();
@@ -324,7 +322,7 @@ export default {
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
-  }
+  },
 };
 </script>
 
@@ -516,16 +514,14 @@ export default {
 
 .editor--dropups {
   position: fixed;
-  left: 50%;
+  right: 0px;
   bottom: 15px;
-  transform: translate(-50%, 0px);
   z-index: 999;
 
   display: flex;
   justify-content: flex-end;
 
   @include phone-landscape {
-    left: unset;
     right: 5px;
     transform: translate(0px, 0px);
   }
@@ -573,10 +569,22 @@ export default {
     align-items: center;
     align-content: center;
 
-    width: 30px;
+    width: 20px;
     @include relative-in-place;
     background-color: $ecru-white;
     border-radius: 999px;
+
+    @include phone-landscape {
+      width: 30px;
+    }
+    @include tablet-portrait {
+    }
+    @include tablet-landscape {
+    }
+    @include desktop {
+    }
+    @include desktop-hd {
+    }
 
     &.indicator {
       background-color: transparent;
@@ -606,8 +614,12 @@ export default {
     margin-right: 2px;
 
     color: $ecru-white;
-    font-size: 1.35rem;
     font-weight: 600;
+    font-size: 1rem;
+
+    @include tablet-portrait {
+      font-size: 1.35rem;
+    }
   }
 
   $bridge-distance: 20px;
@@ -635,8 +647,18 @@ export default {
     transition: transform 0.15s $energetic;
     transform: translate(0, -100%) scale(0.8);
     background-color: $olive-haze;
-    padding: 30px 40px;
     border-radius: 20px;
+    
+    
+    font-size: 0.9rem;
+    padding: 15px 20px;
+    @include phone-landscape {
+      font-size: 1rem;
+    }
+    @include tablet-portrait {
+      padding: 30px 40px;
+      font-size: 1.25rem;
+    }
   }
   &.save .editor--dropup-menu {
     background-color: $robin-egg-blue;
@@ -652,7 +674,6 @@ export default {
     @include relative-in-place;
     display: block;
     color: $ecru-white;
-    font-size: 1.25rem;
     font-weight: 600;
     white-space: nowrap;
     cursor: pointer;

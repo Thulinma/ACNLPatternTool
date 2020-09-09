@@ -2,6 +2,7 @@
   <ModalContainer @modal-close="$emit('close')">
     <template #window>
       <div class="settings--window">
+        <CancelButton @click="$emit('close')" />
         <label class="settings--input-field">
           <div class="settings--input-field-name required">Title</div>
           <div class="settings--input-container">
@@ -92,6 +93,7 @@
 
 <script>
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import IconChevronUp from "~/components/icons/IconChevronUp.vue";
 import IconChevronDown from "~/components/icons/IconChevronDown.vue";
@@ -102,27 +104,28 @@ export default {
   components: {
     ModalContainer,
     Tooltip,
-    IconChevronDown
+    IconChevronDown,
+    CancelButton,
   },
   props: {
     types: {
       type: Array,
-      required: true
+      required: true,
     },
     drawingTool: {
       type: DrawingTool,
-      required: true
+      required: true,
     },
     patternDetails: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  data: function() {
+  data: function () {
     return {
       patternTypes: this.$props.types,
       details: {
-        ...this.$props.patternDetails
+        ...this.$props.patternDetails,
       },
       storedAuthorHuman: undefined,
       showAdvanced: false,
@@ -130,13 +133,13 @@ export default {
       storedMeta: {
         creator: {
           id: 0,
-          name: ""
+          name: "",
         },
         town: {
           id: 0,
-          name: ""
-        }
-      }
+          name: "",
+        },
+      },
     };
   },
   computed: {
@@ -147,7 +150,7 @@ export default {
     metaTownStr() {
       const townStr = `town: ${this.storedMeta.town.id} ${this.storedMeta.town.name}`;
       return townStr;
-    }
+    },
   },
   methods: {
     update() {
@@ -162,14 +165,14 @@ export default {
       }
 
       this.$emit("update-details", {
-        ...this.details
+        ...this.details,
       });
     },
     storeMeta() {
       const { town, creator } = this.details;
       const meta = JSON.stringify({
         creator: { ...creator },
-        town: { ...town }
+        town: { ...town },
       });
 
       this.storedMeta.creator = { ...creator };
@@ -183,7 +186,7 @@ export default {
       this.details.creator.name = meta.creator.name;
       this.details.town.id = meta.town.id;
       this.details.town.name = meta.town.name;
-    }
+    },
   },
   mounted() {
     const meta = JSON.parse(localStorage.getItem("acnl_meta"));
@@ -192,7 +195,7 @@ export default {
     this.storedMeta.creator.name = meta.creator.name;
     this.storedMeta.town.id = meta.town.id;
     this.storedMeta.town.name = meta.town.name;
-  }
+  },
 };
 </script>
 
@@ -203,7 +206,9 @@ export default {
 @import "styles/resets";
 
 .settings--window {
-  @include absolute-center;
+  box-sizing: border-box;
+  @include relative-in-place;
+  position: fixed;
   z-index: 999;
 
   display: grid;
@@ -213,12 +218,22 @@ export default {
   grid-auto-columns: auto;
   row-gap: 19px;
 
-  min-width: 500px;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
   padding: 28px 46px;
 
   background-color: $ecru-white;
-  border-radius: 45px;
   color: $jambalaya;
+
+  @include tablet-landscape {
+    @include absolute-center;
+    min-width: 500px;
+    width: auto;
+    height: auto;
+    border-radius: 45px;
+    overflow: visible; // reset
+  }
 }
 
 .settings--input-field {
@@ -240,12 +255,16 @@ export default {
 .settings--input-container {
   @include relative-in-place;
   background-color: $cinderella;
-  padding: 15px 25px;
-  border-radius: 8px;
-
+  padding: 10px 18px;
+  border-radius: 4px;
 
   &:hover {
     background-color: $salmon;
+  }
+
+  @include tablet-landscape {
+    padding: 15px 25px;
+    border-radius: 8px;
   }
 }
 
@@ -279,7 +298,6 @@ export default {
 .settings--confirm {
   @include reset-button;
   width: 100%;
-  height: 100%;
   background-color: $tiffany-blue;
   box-sizing: border-box;
 
@@ -295,6 +313,12 @@ export default {
     @include moving-stripes(3s);
     border: 5px solid $turquoise;
   }
+
+  align-self: flex-start;
+
+  @include tablet-landscape {
+    align-self: stretch;
+  }
 }
 
 .settings--type {
@@ -303,8 +327,14 @@ export default {
   border-radius: 8px;
   font-weight: 600;
   color: $jambalaya;
-  padding: 0px 10px;
   cursor: pointer;
+  align-self: flex-start;
+  padding: 10px 10px;
+
+  @include tablet-landscape {
+    padding: 0px 10px;
+    align-self: stretch;
+  }
 }
 
 .settings--advanced-button {
@@ -316,6 +346,7 @@ export default {
   justify-content: center;
   align-items: center;
   align-content: center;
+  align-self: flex-start;
 
   padding: 10px 0px;
   background-color: $olive-haze;
@@ -329,6 +360,11 @@ export default {
     @include polkadots($olive-haze, $donkey-brown);
     @include moving-polkadots;
     z-index: 1;
+  }
+
+  @include tablet-landscape {
+    padding: 10px 0px;
+    align-self: stretch;
   }
 }
 

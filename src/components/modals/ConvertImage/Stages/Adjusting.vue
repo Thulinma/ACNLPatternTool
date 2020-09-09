@@ -216,8 +216,8 @@ export default {
 
 .left-side {
   grid-template-areas:
-  "preview preview"
-  "crop convert";
+    "preview preview"
+    "crop convert";
 }
 
 .crop-button {
@@ -232,7 +232,7 @@ export default {
   cursor: pointer;
   @include reset-button;
 
-  padding: 10px 45px;
+  padding: 8px 30px;
 
   border-radius: 8px;
   color: $white;
@@ -240,7 +240,9 @@ export default {
   text-align: center;
   font-size: 1rem;
   font-weight: 600;
+
+  @include phone-landscape {
+    padding: 10px 45px;
+  }
 }
-
-
 </style>

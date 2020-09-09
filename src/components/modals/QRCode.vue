@@ -2,7 +2,8 @@
     <ModalContainer @modal-close="$emit('close')">
       <template #window>
         <div class="editor--qr-preview-window">
-          <ACNLQRGenerator class="editor--qr-preview" :pattern="drawingTool.toString()" />
+          <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
+          <img class="editor--qr-preview" :src="dataURL" />
           <div class="editor--qr-save-button-container">
             <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
           </div>
@@ -12,9 +13,12 @@
 </template>
 
 <script>
-import DrawingTool from '~/libs/DrawingTool';
 import ModalContainer from '~/components/positioned/ModalContainer.vue';
+import CancelButton from "~/components/modals/CancelButton.vue";
+import DrawingTool from '~/libs/DrawingTool';
+
 import ACNLQRGenerator from '~/components/ACNLQRGenerator.vue';
+
 
 /* libs */
 import generateACNLQR from "~/libs/ACNLQRGenerator";
@@ -30,6 +34,7 @@ export default {
     IconBase,
     IconQRCode,
     ACNLQRGenerator,
+    CancelButton,
   },
   props: {
     drawingTool: {
@@ -38,15 +43,19 @@ export default {
     }
   },
   data: function() {
+    const dataURL = "";
     return {
-      qrImageSrc: "",
-    }
+      dataURL,
+    };
   },
   methods: {
     async downloadPNG(){
-      const img = await generateACNLQR(this.drawingTool);
-      saveAs(img, this.drawingTool.title + ".png");
+      if (this.dataURL === "") return;
+      saveAs(this.dataURL, this.drawingTool.title + ".png");
     },
+  },
+  async mounted() {
+    this.dataURL = await generateACNLQR(this.drawingTool);
   }
 }
 </script>
@@ -54,20 +63,38 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/positioning";
+@import "styles/screens";
 @import "styles/resets";
 
 .editor--qr-preview-window {
-  @include absolute-center;
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translate(-50%, 0px);
   z-index: 999;
+  
+  
+  
+  @include tablet-landscape {
+    @include absolute-center;
+  }
 }
 
 .editor--qr-preview {
   display: block;
+  object-fit: contain;
+  width: 300px;
   height: 300px;
   border-width: 5px;
   border-style: solid;
   border-color: $cannon-pink;
+  background-color: $cannon-pink;
   border-radius: 30px;
+  
+  
+  @include tablet-landscape {
+    width: auto;
+  }
 }
 
 .editor--qr-save-button-container {
@@ -99,5 +126,10 @@ export default {
     @include stripes($tiffany-blue, $tiffany-blue-light, 15px);
     @include moving-stripes(3s);
   }
+}
+
+.cancel-button-adjust {
+  top: -5px;
+  right: -5px;
 }
 </style>

@@ -2,6 +2,7 @@
   <ModalContainer @modal-close="$emit('close')">
     <template #window>
       <div class="storage--window">
+        <CancelButton @click="$emit('close')" />
         <div class="storage--patterns-grid">
           <div
             v-for="(drawingTool, idx) in drawingTools"
@@ -31,14 +32,8 @@
         </div>
 
         <div v-if="isOptionsOpen" class="storage--options-menu">
-          <div class="storage--option" v-if="selectedCount === 1"
-           @click="load">
-            Open
-          </div>
-          <div class="storage--option" v-if="selectedCount != 0"
-            @click="deleteSelection">
-            Delete
-          </div>
+          <div class="storage--option" v-if="selectedCount === 1" @click="load">Open</div>
+          <div class="storage--option" v-if="selectedCount != 0" @click="deleteSelection">Delete</div>
           <div class="storage--option" @click="saveSelectionAsACNL">
             Download
             <span v-if="selectedCount === 0">all as</span> ACNLs
@@ -59,9 +54,10 @@
 
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import PreviewGenerator from "~/components/PreviewGenerator.vue";
+import CancelButton from "~/components/modals/CancelButton.vue";
+import DrawingTool from "~/libs/DrawingTool";
 import IconCheck from "~/components/icons/IconCheck.vue";
 import IconKebab from "~/components/icons/IconKebab.vue";
 import lzString from "lz-string";
@@ -73,15 +69,18 @@ export default {
     ModalContainer,
     PreviewGenerator,
     IconCheck,
-    IconKebab
+    IconKebab,
+    CancelButton,
   },
-  data: function() {
+  data: function () {
     const drawingTools = [];
     for (let i = 0; i < localStorage.length; ++i) {
       const key = localStorage.key(i);
       if (key.startsWith("acnl_")) {
-        const fromStorage = new DrawingTool(lzString.decompressFromUTF16(localStorage.getItem(key)));
-        console.log(`loading into storage acnl_${fromStorage.fullHash}`);
+        const fromStorage = new DrawingTool(
+          lzString.decompressFromUTF16(localStorage.getItem(key))
+        );
+        // console.log(`loading into storage acnl_${fromStorage.fullHash}`);
         drawingTools.push(fromStorage);
       }
     }
@@ -90,20 +89,20 @@ export default {
       // map of drawingTools selected true/false
       selectedMap: drawingTools.map(() => false),
       drawingTools,
-      isOptionsOpen: false
+      isOptionsOpen: false,
     };
   },
   computed: {
-    selected: function() {
+    selected: function () {
       return this.drawingTools.filter((dt, i) => this.selectedMap[i]);
     },
-    selectedCount: function() {
-      return this.selectedMap.filter(b => b).length;
-    }
+    selectedCount: function () {
+      return this.selectedMap.filter((b) => b).length;
+    },
   },
   methods: {
     load() {
-      this.$emit('load', this.selected[0].toString());
+      this.$emit("load", this.selected[0].toString());
     },
     toggleSelection(drawingTool) {
       const idx = this.drawingTools.indexOf(drawingTool);
@@ -111,11 +110,11 @@ export default {
       this.selectedMap.splice(idx, 1, !isSelected);
     },
     deleteSelection() {
-      const message = "Are you sure you want to delete these patterns?"
+      const message = "Are you sure you want to delete these patterns?";
       if (!window.confirm(message)) return;
       for (const drawingTool of this.selected) {
         console.log("deleting", "acnl_" + drawingTool.fullHash);
-        localStorage.removeItem("acnl_"+drawingTool.fullHash);
+        localStorage.removeItem("acnl_" + drawingTool.fullHash);
         // reflect changes in component data
         const idx = this.drawingTools.indexOf(drawingTool);
         this.drawingTools.splice(idx, 1);
@@ -123,54 +122,39 @@ export default {
       }
     },
     async saveSelectionAsACNL() {
-      const {
-        selectedMap,
-        selectedCount,
-        selected,
-        drawingTools
-      } = this;
+      const { selectedMap, selectedCount, selected, drawingTools } = this;
 
       if (selectedCount === 1) {
         await saver.saveDrawingToolAsAcnl(selected[0]);
         return;
       }
 
-      const selection = selectedCount === 0? drawingTools: selected;
+      const selection = selectedCount === 0 ? drawingTools : selected;
       await saver.saveDrawingToolsAsAcnl(selection);
     },
     async saveSelectionAsPNG() {
-      const {
-        selectedMap,
-        selectedCount,
-        selected,
-        drawingTools
-      } = this;
+      const { selectedMap, selectedCount, selected, drawingTools } = this;
 
       if (selectedCount === 1) {
         await saver.saveDrawingToolAsPng(selected[0]);
         return;
       }
 
-      const selection = selectedCount === 0? drawingTools: selected;
+      const selection = selectedCount === 0 ? drawingTools : selected;
       await saver.saveDrawingToolsAsPng(selection);
     },
     async saveSelectionAsBoth() {
-      const {
-        selectedMap,
-        selectedCount,
-        selected,
-        drawingTools
-      } = this;
+      const { selectedMap, selectedCount, selected, drawingTools } = this;
 
       if (selectedCount === 1) {
         await saver.saveDrawingToolAsBoth(selected[0]);
         return;
       }
 
-      const selection = selectedCount === 0? drawingTools: selected;
+      const selection = selectedCount === 0 ? drawingTools : selected;
       await saver.saveDrawingToolsAsBoth(selection);
     },
-  }
+  },
 };
 </script>
 
@@ -180,26 +164,61 @@ export default {
 @import "styles/screens";
 
 .storage--window {
-  @include absolute-center;
-  padding: 50px;
-  border-radius: 60px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
   background-color: $ecru-white;
 
   z-index: 100;
-  width: auto;
-  height: 650px;
+  width: 100%;
+  height: 100%;
   overflow-y: scroll;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
+  
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-content: center;
+  justify-items: center;
+  align-items: flex-start;
+  align-content: flex-start;
+  
+  
+  
+  @include tablet-landscape {
+    @include absolute-center;
+    box-sizing: content-box;
+    padding: 50px;
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    overflow-y: scroll;
+    border-radius: 60px;
+  }
 }
 
 .storage--patterns-grid {
   @include relative-in-place;
   display: grid;
-  grid-template-columns: repeat(5, 200px);
+  grid-template-columns: repeat(1, 200px);
   justify-content: space-between;
   justify-items: center;
   row-gap: 20px;
   row-gap: 20px;
+  
+  padding: 50px 0px;
+  
+  @include phone-landscape {
+    grid-template-columns: repeat(2, 200px);
+  }
+  @include tablet-portrait {
+    grid-template-columns: repeat(4, 200px);
+  }
+  @include tablet-landscape {
+    grid-template-columns: repeat(5, 200px);
+    padding: 0px;
+  }
 }
 
 .storage--pattern-container {
@@ -208,8 +227,7 @@ export default {
   grid-template-rows: auto;
   justify-content: center;
   justify-items: center;
-  
-  
+
   .storage--pattern {
     @include relative-in-place;
     z-index: 10;
@@ -293,7 +311,7 @@ export default {
   right: 20px;
   padding: 20px;
   border-radius: 20px;
-  z-index: 1;
+  z-index: 10;
   background-color: $robin-egg-blue;
 
   display: grid;
@@ -329,8 +347,9 @@ export default {
     background-color: $persian-green;
   }
   &:hover {
-    &:after { display: block };
+    &:after {
+      display: block;
+    }
   }
-
 }
 </style>

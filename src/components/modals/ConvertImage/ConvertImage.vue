@@ -9,6 +9,7 @@
         'saving': state === states.saving,
         }"
       >
+        <CancelButton @click="$emit('close')" />
         <CroppingStage
           v-if="state === states.cropping"
           :dataURL="dataURL"
@@ -38,14 +39,13 @@
           @prev="toCropping(false)"
           @next="toSaving"
         />
-        
+
         <SavingStage
           :isMural="isMural"
           :previewDataURL="previewDataURL"
           :outputs="outputs"
           v-if="state === states.saving"
         />
-        
       </div>
     </template>
   </ModalContainer>
@@ -53,6 +53,7 @@
 
 <script>
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 
 import CroppingStage from "./Stages/Cropping.vue";
@@ -74,6 +75,7 @@ const states = Object.freeze({
 export default {
   name: "ImageLoader",
   components: {
+    CancelButton,
     ModalContainer,
     IconImageAdd,
     CroppingStage,
@@ -148,8 +150,8 @@ export default {
     },
     toSaving(forward = true) {
       if (!this.isMural) {
-        this.$emit('load', this.outputs[0]);
-        this.$emit('close');
+        this.$emit("load", this.outputs[0]);
+        this.$emit("close");
       }
       this.state = states.saving;
     },
@@ -522,8 +524,7 @@ export default {
             drawingTool.width,
             drawingTool.width
           );
-          
-          
+
           // select palette based on this current section only
           if (isSplitPalette) this.selectPalette(sectionImgData);
 
@@ -533,7 +534,7 @@ export default {
             for (let sectionY = 0; sectionY < drawingTool.width; ++sectionY) {
               // compute imgDataOffset
               const sectionImgDataOffset =
-                (sectionX + (sectionY * sectionImgData.width)) * 4;
+                (sectionX + sectionY * sectionImgData.width) * 4;
               const r = sectionImgData.data[sectionImgDataOffset + 0];
               const g = sectionImgData.data[sectionImgDataOffset + 1];
               const b = sectionImgData.data[sectionImgDataOffset + 2];
@@ -545,17 +546,17 @@ export default {
           }
 
           if (this.isMural) {
-            const x = column.toString().padStart(2, '0');
-            const y = row.toString().padStart(2, '0');
+            const x = column.toString().padStart(2, "0");
+            const y = row.toString().padStart(2, "0");
             const newTitle = `${filename.substring(0, 15)} ${x}x${y}y`;
             drawingTool.title = newTitle;
-          }
-          else drawingTool.title = filename.substring(0, 21);
+          } else drawingTool.title = filename.substring(0, 21);
           drawingTool.fixIssues();
           outputs.push(drawingTool.toString());
 
           // apply changes to drawingCanvas which draws the section preview
           // drawingContext.clearRect(0, 0, drawingTool.width, drawingTool.width);
+          drawingTool.render();
           drawingTool.render();
           previewContext.imageSmoothingEnabled = false;
           // copy section from drawingCanvas to preview
@@ -672,11 +673,27 @@ export default {
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/positioning";
+@import "styles/screens";
 
 .converter--window {
-  @include absolute-center;
+  box-sizing: border-box;
+  @include relative-in-place;
+  position: fixed;
   z-index: 999;
   background-color: $ecru-white;
-  border-radius: 40px;
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: contain;
+  padding: 40px 30px 30px 30px;
+  overflow: scroll;
+  
+  @include tablet-landscape {
+    overflow: visible;
+    padding: 0 0 0 0;
+    @include absolute-center;
+    width: auto;
+    height: auto;
+    border-radius: 40px;
+  }
 }
 </style>

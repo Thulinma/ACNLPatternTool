@@ -2,13 +2,17 @@
 .container {
   padding: 0px 40px 35px 35px;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto;
   grid-template-rows: auto;
   justify-content: center;
   column-gap: 50px;
 
   max-height: 450px;
-  overflow-y: scroll;
+
+  @include tablet-landscape {
+    grid-template-columns: auto auto;
+    overflow-y: scroll;
+  }
 }
 
 // sticky
@@ -17,7 +21,7 @@
   justify-self: center;
   align-self: flex-start;
 
-  position: sticky;
+  position: relative;
   top: 0;
   left: 0;
 
@@ -32,6 +36,10 @@
   justify-items: center;
   align-content: space-between;
   align-items: auto;
+  
+  @include tablet-landscape {
+    position: sticky;
+  }
 }
 
 .preview-container {
@@ -45,11 +53,16 @@
 
   @include polkadots($olive-haze, $donkey-brown);
   @include moving-polkadots(2s);
-  width: 350px;
+  width: 250px;
   height: 300px;
   padding: 20px;
   border-radius: 8px;
 
+    
+  @include phone-landscape {
+    width: 350px;
+  }
+  
   & .preview {
     display: block;
     // max-width: 350px;

@@ -122,6 +122,9 @@ export default {
 }
 
 .right-side {
-  padding-bottom: 0px;
+  padding-bottom: 30px;
+  @include tablet-landscape {
+    padding-bottom: 0px;
+  }
 }
 </style>

@@ -141,7 +141,7 @@ export default {
       dateObj: new Date(),
       time: new Date().toLocaleTimeString("en-US", {
         hour: "2-digit",
-        timeStyle: "short"
+        timeZoneName: "short"
       }),
       menuTitle: "Main Menu"
     };
@@ -151,7 +151,7 @@ export default {
       () =>
         (this.time = this.dateObj.toLocaleTimeString("en-US", {
           hour: "2-digit",
-          timeStyle: "short"
+          timeZoneName: "short"
         })),
       1000
     );

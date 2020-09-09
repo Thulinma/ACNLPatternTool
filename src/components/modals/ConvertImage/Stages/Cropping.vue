@@ -21,7 +21,11 @@
         @click="showAdvanced = !showAdvanced"
       >
         <span>Advanced</span>
-        <IconChevronDown class="cropping--advanced-expand-icon" />
+        <IconChevronDown
+          :class="{
+            'cropping--advanced-expand-icon': true,
+            'active': showAdvanced
+          }" />
       </button>
       <button
         class="cropping--button cropping--button--upload"
@@ -67,13 +71,6 @@
 import { Cropper } from "vue-advanced-cropper";
 import DrawingTool from "~/libs/DrawingTool";
 import IconChevronDown from "~/components/icons/IconChevronDown.vue";
-
-const areaSize = ({ cropper, image}) => {
-  return {
-    
-  }
-};
-
 
 export default {
   name: "Cropping",
@@ -157,23 +154,34 @@ export default {
 @import "styles/screens";
 
 .cropping--container {
-  padding: 35px 35px 30px 35px;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
   justify-content: center;
   justify-items: stretch;
+
+  @include phone-landscape {
+  }
+  @include tablet-portrait {
+  }
+  @include tablet-landscape {
+    padding: 35px 35px 30px 35px;
+  }
+  @include desktop {
+  }
+  @include desktop-hd {
+  }
 }
 
 .cropping--cropper {
   @include polkadots($olive-haze, $donkey-brown);
   @include moving-polkadots(2s);
-  border-radius: 8px;
-  min-width: 300px;
+  border-radius: 5px;
+  min-width: 250px;
   min-height: 250px;
   justify-self: stretch;
+  overflow: hidden;
 
-  // max-width: 300px;
   max-height: 300px;
 
   display: flex;
@@ -187,23 +195,23 @@ export default {
 
   // for copy/pasting
   @include phone-landscape {
-    // max-width: 380px;
-    max-height: 380px;
+    max-width: 100%;
+    max-height: 300px;
   }
   @include tablet-portrait {
-    // max-width: 450px;
-    max-height: 450px;
+    max-width: 100%;
+    max-height: 300px;
   }
   @include tablet-landscape {
-    // max-width: 500px;
-    max-height: 380px;
+    max-width: 100%;
+    max-height: 300px;
   }
   @include desktop {
-    // max-width: 600px;
+    max-width: 100%;
     max-height: 380px;
   }
   @include desktop-hd {
-    // max-width: 800px;
+    max-width: 100%;
     max-height: 400px;
   }
 }
@@ -218,18 +226,39 @@ export default {
 
 .cropping--buttons {
   display: grid;
-  grid-template-areas: "advanced upload next";
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "upload"
+    "next"
+    "advanced";
+  grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-auto-columns: auto;
   grid-auto-rows: auto;
   grid-auto-flow: row;
-  column-gap: 20px;
+  column-gap: 10px;
+  row-gap: 10px;
 
   margin-top: 25px;
 
   justify-content: space-between;
+  justify-items: stretch;
   align-content: center;
+
+  @include phone-landscape {
+    
+  }
+  @include tablet-portrait {
+    grid-template-areas: "advanced upload next";
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: auto;
+    column-gap: 20px;
+  }
+  @include tablet-landscape {
+  }
+  @include desktop {
+  }
+  @include desktop-hd {
+  }
 }
 
 .cropping--buttons {
@@ -245,11 +274,10 @@ export default {
 
     color: white;
     background-color: $olive-haze;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
 
     text-align: center;
-    min-width: 150px;
 
     padding: 10px 0px;
 
@@ -265,6 +293,18 @@ export default {
     &.cropping--button--next {
       background-color: $robin-egg-blue;
     }
+
+    @include phone-landscape {
+    }
+    @include tablet-portrait {
+      min-width: 150px;
+    }
+    @include tablet-landscape {
+    }
+    @include desktop {
+    }
+    @include desktop-hd {
+    }
   }
 }
 
@@ -274,6 +314,10 @@ export default {
   margin-left: 10px;
   fill: white;
   width: 16px;
+  
+  &.active {
+    transform: rotate(180deg);
+  }
 }
 
 .cropping--size-inputs {
