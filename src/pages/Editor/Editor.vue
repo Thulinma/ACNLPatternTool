@@ -62,8 +62,21 @@
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
           <button class="editor--dropup-menu-item" @click="convertImage = true">Convert from IMG</button>
-          <button class="editor--dropup-menu-item">Scan from QR Code</button>
-          <button class="editor--dropup-menu-item">Open .ACNL File</button>
+          <button class="editor--dropup-menu-item"
+            @click="readQRCode">Read from QR Code
+          </button>
+          <FileLoader
+            ref="imageFileLoader"
+            fileType="image"
+            @load="load" />
+          <button
+            class="editor--dropup-menu-item"
+            @click="openACNL">Open .ACNL File
+          </button>
+          <FileLoader
+            ref="acnlFileLoader"
+            fileType="acnl"
+            @load="load" />
         </div>
       </div>
 
@@ -130,6 +143,8 @@ import Publish from "~/components/modals/Publish";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
+import FileLoader from "~/components/FileLoader.vue";
+
 
 export default {
   name: "Editor",
@@ -143,6 +158,7 @@ export default {
     IconSave,
     IconCaretUp,
     Publish,
+    FileLoader,
   },
   data: function () {
     // randomize the gender
@@ -177,8 +193,9 @@ export default {
     // ------------------
     // REACTION FUNCTIONS
     // ------------------
-    load: function (binaryString) {
-      this.drawingTool.load(binaryString);
+    // data can be binary string or any drawingTool accepted data type
+    load(data) {
+      this.drawingTool.load(data);
       this.drawingTool.render();
       this.syncPatternDetails();
     },
@@ -308,10 +325,12 @@ export default {
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
     },
-    pickPattern(pattern) {
-      this.drawingTool.load(pattern);
-      this.muralModal = false;
+    readQRCode() {
+      this.$refs.imageFileLoader.open();
     },
+    openACNL() {
+      this.$refs.acnlFileLoader.open();
+    }
   },
   mounted: async function () {
     // setup drawingTool
@@ -468,8 +487,6 @@ export default {
   @include polkadots($olive-haze, $donkey-brown);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 
-  @include phone-landscape {
-  }
   @include tablet-portrait {
     width: auto;
     padding: 24px 24px;
@@ -577,15 +594,6 @@ export default {
     @include phone-landscape {
       width: 30px;
     }
-    @include tablet-portrait {
-    }
-    @include tablet-landscape {
-    }
-    @include desktop {
-    }
-    @include desktop-hd {
-    }
-
     &.indicator {
       background-color: transparent;
       .editor--dropup-icon {
