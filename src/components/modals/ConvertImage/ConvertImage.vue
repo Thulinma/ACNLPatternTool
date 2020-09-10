@@ -61,9 +61,6 @@ import AdjustingStage from "./Stages/Adjusting.vue";
 import SavingStage from "./Stages/Saving.vue";
 import { paletteSelectionMethods, conversionQualities } from "./Stages/enums";
 
-// icons
-import IconImageAdd from "~/components/icons/IconImageAdd";
-
 // FINITE STATE MACHINE PATTERN
 // ENUM STATES
 const states = Object.freeze({
@@ -77,7 +74,6 @@ export default {
   components: {
     CancelButton,
     ModalContainer,
-    IconImageAdd,
     CroppingStage,
     AdjustingStage,
     SavingStage,
@@ -484,9 +480,9 @@ export default {
       previewContext.clearRect(0, 0, width, height);
 
       // make size match for drawing
-      drawingCanvas.height = drawingTool.width;
-      drawingCanvas.width = drawingTool.width;
-      drawingContext.clearRect(0, 0, drawingTool.width, drawingTool.width);
+      drawingCanvas.height = drawingTool.width * 4;
+      drawingCanvas.width = drawingTool.width * 4;
+      drawingContext.clearRect(0, 0, drawingTool.width * 4, drawingTool.width * 4);
       drawingTool.render();
 
       // start by pixelating the image based on conversion quality
@@ -564,8 +560,8 @@ export default {
             drawingCanvas,
             0,
             0,
-            drawingTool.width,
-            drawingTool.width,
+            drawingTool.width * 4,
+            drawingTool.width * 4,
             xOffset,
             yOffset,
             drawingTool.width,

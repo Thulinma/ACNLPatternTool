@@ -193,7 +193,7 @@ export default {
     width: auto;
     height: auto;
     max-height: 100%;
-    overflow-y: scroll;
+    overflow-y: visible;
     border-radius: 60px;
   }
 }
