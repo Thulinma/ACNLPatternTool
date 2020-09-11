@@ -186,10 +186,21 @@
       :patternDetails="patternDetails"
     />
 
-    <QRCode v-if="qrPreviewOpen" @close="qrPreviewOpen = false" :drawingTool="drawingTool" />
+    <QRCode
+      v-if="qrPreviewOpen"
+      @close="qrPreviewOpen = false"
+      :drawingTool="drawingTool"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    />
 
-    <Storage v-if="storageOpen" @close="storageOpen = false"
-     @load="load"/>
+    <Storage
+      v-if="storageOpen"
+      @close="storageOpen = false"
+      @load="load"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    />
   </div>
 </template>
 

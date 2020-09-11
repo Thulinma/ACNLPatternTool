@@ -195,7 +195,11 @@ export default {
     this.storedMeta.creator.name = meta.creator.name;
     this.storedMeta.town.id = meta.town.id;
     this.storedMeta.town.name = meta.town.name;
+    this.$emit('scroll-freeze');
   },
+  beforeDestroy() {
+    this.$emit('scroll-unfreeze');
+  }
 };
 </script>
 

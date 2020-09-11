@@ -108,6 +108,8 @@
       @close="publishing = false"
       @pinkify="backgroundIsPink = true"
       @unpinkify="backgroundIsPink = false"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
     />
 
     <ConvertImage
@@ -115,6 +117,8 @@
       :drawing-tool="drawingTool"
       @close="convertImage = false"
       @load="drawingTool.load($event)"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
     />
   </main>
 </template>

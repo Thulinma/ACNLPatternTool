@@ -56,7 +56,11 @@ export default {
   },
   async mounted() {
     this.dataURL = await generateACNLQR(this.drawingTool);
-  }
+    this.$emit('scroll-freeze');
+  },
+  beforeDestroy() {
+    this.$emit('scroll-unfreeze');
+  },
 }
 </script>
 

@@ -155,6 +155,12 @@ export default {
       await saver.saveDrawingToolsAsBoth(selection);
     },
   },
+  mounted() {
+    this.$emit('scroll-freeze');
+  },
+  beforeDestroy() {
+    this.$emit('scroll-unfreeze');
+  },
 };
 </script>
 

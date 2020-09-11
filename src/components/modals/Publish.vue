@@ -224,11 +224,11 @@ export default {
     }
   },
   mounted() {
-    this.$emit("pinkify");
+    this.$emit('scroll-freeze');
   },
-  destroyed() {
-    this.$emit("unpinkify");
-  }
+  beforeDestroy() {
+    this.$emit('scroll-unfreeze');
+  },
 };
 </script>
 

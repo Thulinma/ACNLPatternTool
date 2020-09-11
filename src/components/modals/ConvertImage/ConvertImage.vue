@@ -663,6 +663,12 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$emit('scroll-freeze');
+  },
+  beforeDestroy() {
+    this.$emit('scroll-unfreeze');
+  },
 };
 </script>
 
