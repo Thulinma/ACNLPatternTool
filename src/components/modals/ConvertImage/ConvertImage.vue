@@ -1,5 +1,9 @@
 <template>
-  <ModalContainer @modal-close="$emit('close')">
+  <ModalContainer
+    @modal-close="$emit('close')"
+    @scroll-freeze="$emit('scroll-freeze')"
+    @scroll-unfreeze="$emit('scroll-unfreeze')"
+  >
     <template #window>
       <div
         :class="{
@@ -482,7 +486,12 @@ export default {
       // make size match for drawing
       drawingCanvas.height = drawingTool.width * 4;
       drawingCanvas.width = drawingTool.width * 4;
-      drawingContext.clearRect(0, 0, drawingTool.width * 4, drawingTool.width * 4);
+      drawingContext.clearRect(
+        0,
+        0,
+        drawingTool.width * 4,
+        drawingTool.width * 4
+      );
       drawingTool.render();
 
       // start by pixelating the image based on conversion quality
@@ -663,12 +672,6 @@ export default {
       }
     },
   },
-  mounted() {
-    this.$emit('scroll-freeze');
-  },
-  beforeDestroy() {
-    this.$emit('scroll-unfreeze');
-  },
 };
 </script>
 
@@ -688,7 +691,7 @@ export default {
   overscroll-behavior: contain;
   padding: 40px 30px 30px 30px;
   overflow: scroll;
-  
+
   @include tablet-landscape {
     overflow: visible;
     padding: 0 0 0 0;

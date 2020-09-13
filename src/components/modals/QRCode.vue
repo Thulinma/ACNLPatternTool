@@ -1,34 +1,37 @@
 <template>
-    <ModalContainer @modal-close="$emit('close')">
-      <template #window>
-        <div class="editor--qr-preview-window">
-          <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
-          <img class="editor--qr-preview" :src="dataURL" />
-          <div class="editor--qr-save-button-container">
-            <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
-          </div>
+  <ModalContainer
+    @modal-close="$emit('close')"
+    @scroll-freeze="$emit('scroll-freeze')"
+    @scroll-unfreeze="$emit('scroll-unfreeze')"
+  >
+    <template #window>
+      <div class="editor--qr-preview-window">
+        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
+        <img class="editor--qr-preview" :src="dataURL" />
+        <div class="editor--qr-save-button-container">
+          <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
         </div>
-      </template>
-    </ModalContainer>
+      </div>
+    </template>
+  </ModalContainer>
 </template>
 
 <script>
-import ModalContainer from '~/components/positioned/ModalContainer.vue';
+import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from '~/libs/DrawingTool';
+import DrawingTool from "~/libs/DrawingTool";
 
-import ACNLQRGenerator from '~/components/ACNLQRGenerator.vue';
-
+import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
 
 /* libs */
 import generateACNLQR from "~/libs/ACNLQRGenerator";
 
 /* svg icons */
-import IconBase from '~/components/icons/IconBase.vue';
-import IconQRCode from '~/components/icons/IconQRCode.vue';
+import IconBase from "~/components/icons/IconBase.vue";
+import IconQRCode from "~/components/icons/IconQRCode.vue";
 
 export default {
-  name: 'QRCode',
+  name: "QRCode",
   components: {
     ModalContainer,
     IconBase,
@@ -40,28 +43,24 @@ export default {
     drawingTool: {
       type: DrawingTool,
       required: true,
-    }
+    },
   },
-  data: function() {
+  data: function () {
     const dataURL = "";
     return {
       dataURL,
     };
   },
   methods: {
-    async downloadPNG(){
+    async downloadPNG() {
       if (this.dataURL === "") return;
       saveAs(this.dataURL, this.drawingTool.title + ".png");
     },
   },
   async mounted() {
     this.dataURL = await generateACNLQR(this.drawingTool);
-    this.$emit('scroll-freeze');
   },
-  beforeDestroy() {
-    this.$emit('scroll-unfreeze');
-  },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -76,9 +75,7 @@ export default {
   left: 50%;
   transform: translate(-50%, 0px);
   z-index: 999;
-  
-  
-  
+
   @include tablet-landscape {
     @include absolute-center;
   }
@@ -94,8 +91,7 @@ export default {
   border-color: $cannon-pink;
   background-color: $cannon-pink;
   border-radius: 30px;
-  
-  
+
   @include tablet-landscape {
     width: auto;
   }

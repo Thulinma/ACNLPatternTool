@@ -1,5 +1,8 @@
 <template>
-  <ModalContainer @modal-close="$emit('close')">
+  <ModalContainer
+    @modal-close="$emit('close')"
+    @scroll-freeze="$emit('scroll-freeze')"
+    @scroll-unfreeze="$emit('scroll-unfreeze')" >
     <template #window>
       <div class="settings--window">
         <CancelButton @click="$emit('close')" />
@@ -195,11 +198,7 @@ export default {
     this.storedMeta.creator.name = meta.creator.name;
     this.storedMeta.town.id = meta.town.id;
     this.storedMeta.town.name = meta.town.name;
-    this.$emit('scroll-freeze');
   },
-  beforeDestroy() {
-    this.$emit('scroll-unfreeze');
-  }
 };
 </script>
 

@@ -1,5 +1,9 @@
 <template>
-  <ModalContainer @modal-close="$emit('close')">
+  <ModalContainer
+    @modal-close="$emit('close')"
+    @scroll-freeze="$emit('scroll-freeze')"
+    @scroll-unfreeze="$emit('scroll-unfreeze')"
+  >
     <template #window>
       <div class="storage--window">
         <CancelButton @click="$emit('close')" />
@@ -155,12 +159,6 @@ export default {
       await saver.saveDrawingToolsAsBoth(selection);
     },
   },
-  mounted() {
-    this.$emit('scroll-freeze');
-  },
-  beforeDestroy() {
-    this.$emit('scroll-unfreeze');
-  },
 };
 </script>
 
@@ -189,8 +187,6 @@ export default {
   justify-items: center;
   align-items: flex-start;
   align-content: flex-start;
-  
-  
   
   @include tablet-landscape {
     @include absolute-center;

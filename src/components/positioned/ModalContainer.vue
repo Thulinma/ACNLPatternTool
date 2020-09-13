@@ -53,10 +53,12 @@ export default {
       throw new MissingContentError("");
     }
     this.$emit("modal-open");
+    this.$emit("scroll-freeze");
   },
   destroyed: function() {
     window.removeEventListener("keyup", this.onKeyEscape);
     this.$emit("modal-close");
+    this.$emit("scroll-unfreeze");
   }
 }
 </script>

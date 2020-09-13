@@ -1,5 +1,8 @@
 <template>
-  <ModalContainer @modal-close="$emit('close')">
+  <ModalContainer
+    @modal-close="$emit('close')"
+    @scroll-freeze="$emit('scroll-freeze')"
+    @scroll-unfreeze="$emit('scroll-unfreeze')" >
     <template #window>
       <div class="publish--window">
         <div class="publish--header">
@@ -222,12 +225,6 @@ export default {
       }
       this.isUploading = false;
     }
-  },
-  mounted() {
-    this.$emit('scroll-freeze');
-  },
-  beforeDestroy() {
-    this.$emit('scroll-unfreeze');
   },
 };
 </script>
