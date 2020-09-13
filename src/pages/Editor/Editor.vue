@@ -8,7 +8,12 @@
       @change-current-color="onChangeCurrentColor"
       @color-picked="onColorPicked"
     />
-    <ModalContainer v-if="colorPicker != null" @modal-close="onChangeColorPicker(null)">
+    <ModalContainer
+      v-if="colorPicker != null"
+      @modal-close="onChangeColorPicker(null)"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    >
       <template #window>
         <div class="editor--color-picker-window" style="text-align: center">
           <ColorTools
@@ -18,6 +23,7 @@
             @change-current-color="onChangeCurrentColor"
             @color-picked="onColorPicked"
           />
+          <CancelButton class="editor--color-picker-close" @click="onChangeColorPicker(null)" />
         </div>
       </template>
       <!-- transparent overlay -->
@@ -62,21 +68,10 @@
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
           <button class="editor--dropup-menu-item" @click="convertImage = true">Convert from IMG</button>
-          <button class="editor--dropup-menu-item"
-            @click="readQRCode">Read from QR Code
-          </button>
-          <FileLoader
-            ref="imageFileLoader"
-            fileType="image"
-            @load="load" />
-          <button
-            class="editor--dropup-menu-item"
-            @click="openACNL">Open .ACNL File
-          </button>
-          <FileLoader
-            ref="acnlFileLoader"
-            fileType="acnl"
-            @load="load" />
+          <button class="editor--dropup-menu-item" @click="readQRCode">Read from QR Code</button>
+          <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
+          <button class="editor--dropup-menu-item" @click="openACNL">Open .ACNL File</button>
+          <FileLoader ref="acnlFileLoader" fileType="acnl" @load="load" />
         </div>
       </div>
 
@@ -148,7 +143,7 @@ import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import FileLoader from "~/components/FileLoader.vue";
-
+import CancelButton from "~/components/modals/CancelButton.vue";
 
 export default {
   name: "Editor",
@@ -163,6 +158,7 @@ export default {
     IconCaretUp,
     Publish,
     FileLoader,
+    CancelButton,
   },
   data: function () {
     // randomize the gender
@@ -334,7 +330,7 @@ export default {
     },
     openACNL() {
       this.$refs.acnlFileLoader.open();
-    }
+    },
   },
   mounted: async function () {
     // setup drawingTool
@@ -416,6 +412,20 @@ export default {
 
   transform: translate(-50%, 0%);
   z-index: 999;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+
+  @include tablet-portrait {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    overflow-y: scroll;
+  }
+}
+
+.editor--color-picker-close {
+  
 }
 
 .editor--color-picker-overlay {
@@ -660,8 +670,7 @@ export default {
     transform: translate(0, -100%) scale(0.8);
     background-color: $olive-haze;
     border-radius: 20px;
-    
-    
+
     font-size: 0.9rem;
     padding: 15px 20px;
     @include phone-landscape {

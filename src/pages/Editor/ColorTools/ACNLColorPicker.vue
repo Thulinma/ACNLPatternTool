@@ -8,7 +8,8 @@
         :style="{
           borderColor: block[4],
           backgroundColor: block[4]
-          }">
+          }"
+      >
         <div
           :class="{
             'color-picker--vibrant-color': true,
@@ -18,12 +19,13 @@
           :key="color"
           :style="{ backgroundColor: color }"
           @click="onColorClick($event, color)"
-          @mousemove="onColorMousemove($event, color)">
+          @mousemove="onColorMousemove($event, color)"
+        >
           <div class="color-picker--vibrant-color-highlight"></div>
         </div>
       </div>
     </div>
-    <div class="color-picker--mono-block" >
+    <div class="color-picker--mono-block">
       <div
         :class="{
           'color-picker--mono-color': true,
@@ -33,7 +35,8 @@
         :key="color"
         :style="{ backgroundColor: color }"
         @click="onColorClick($event, color)"
-        @mousemove="onColorMousemove($event, color)">
+        @mousemove="onColorMousemove($event, color)"
+      >
         <div class="color-picker--mono-color-highlight"></div>
       </div>
     </div>
@@ -50,18 +53,18 @@ export default {
     drawingTool: {
       type: DrawingTool,
       required: true,
-    }
+    },
   },
-  data: function() {
+  data: function () {
     const vibrantBlocks = [];
-    for (let i = 0x00; i < 0xFF; i += 0x10) {
+    for (let i = 0x00; i < 0xff; i += 0x10) {
       let vibrantBlock = [];
       for (let j = 0x00; j < 0x09; j += 0x01)
         vibrantBlock.push(ACNLFormat.paletteColors[i + j]);
       vibrantBlocks.push(vibrantBlock);
-    };
+    }
     const monoBlock = [];
-    for (let i = 0x0F; i < 0xFF; i += 0x10)
+    for (let i = 0x0f; i < 0xff; i += 0x10)
       monoBlock.push(ACNLFormat.paletteColors[i]);
     return {
       vibrantBlocks,
@@ -70,32 +73,33 @@ export default {
     };
   },
   methods: {
-    onColorClick: function(event, color) {
+    onColorClick: function (event, color) {
       // if color is the same, gets blocked at parent
       this.$emit("color-picked", color);
     },
-    onColorMousemove: function(event, color) {
+    onColorMousemove: function (event, color) {
       // if color is the same, gets blocked at parent
       if (event.buttons === 1) {
         this.$emit("color-picked", color);
       }
     },
-    updateCurrColor: function() {
+    updateCurrColor: function () {
       this.$data.currColor = this.drawingTool.color;
-    }
+    },
   },
-  mounted: function(){
+  mounted: function () {
     this.drawingTool.onColorChange(this.updateCurrColor);
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     this.drawingTool.onColorChangeRemove(this.updateCurrColor);
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 @import "styles/colors";
 @import "styles/transitions";
+@import "styles/screens";
 
 .color-picker--container {
   user-select: none;
@@ -109,34 +113,47 @@ export default {
   row-gap: 20px;
 }
 
-$vibrant-block-size: 100px;
-$vibrant-block-border-radius: 10px;
-$vibrant-color-border-radius: $vibrant-block-border-radius - 4px;
 .color-picker--vibrant-block {
-  width: $vibrant-block-size;
-  height: $vibrant-block-size;
+  width: 65px;
+  height: 65px;
 
   border-width: 4px;
   border-style: solid;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
+  border-radius: 7px;
+  
+  @include phone-landscape {
+    width: 85px;
+    height: 85px;
+  }
+  @include tablet-portrait {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+  }
+}
 
-  border-radius: $vibrant-block-border-radius;
+@mixin vibrant-color-block-radius($size) {
+  &:nth-child(1) {
+    border-top-left-radius: $size;
+  }
+  &:nth-child(3) {
+    border-top-right-radius: $size
+  }
+  &:nth-child(7) {
+    border-bottom-left-radius: $size;
+  }
+  &:nth-child(9) {
+    border-bottom-right-radius: $size;
+  }
 }
 
 .color-picker--vibrant-color {
-  &:nth-child(1) {
-    border-top-left-radius: $vibrant-color-border-radius;
-  }
-  &:nth-child(3) {
-    border-top-right-radius: $vibrant-color-border-radius;
-  }
-  &:nth-child(7) {
-    border-bottom-left-radius: $vibrant-color-border-radius;
-  }
-  &:nth-child(9) {
-    border-bottom-right-radius: $vibrant-color-border-radius;
+  @include vibrant-color-block-radius(3px);
+  @include tablet-portrait {
+    @include vibrant-color-block-radius(6px);
   }
 }
 
@@ -171,7 +188,6 @@ $mono-color-border-radius: $mono-block-border-radius - 5px;
   border-radius: $mono-block-border-radius;
 }
 
-
 .color-picker--mono-color {
   &:nth-child(1) {
     border-top-left-radius: $mono-color-border-radius;
@@ -181,7 +197,6 @@ $mono-color-border-radius: $mono-block-border-radius - 5px;
     border-top-right-radius: $mono-color-border-radius;
     border-bottom-right-radius: $mono-color-border-radius;
   }
-
 }
 
 .color-picker--vibrant-color,
@@ -192,7 +207,7 @@ $mono-color-border-radius: $mono-block-border-radius - 5px;
   left: 0;
 
   cursor: pointer;
-  transition: transform 0.10s $energetic;
+  transition: transform 0.1s $energetic;
   &.picked {
     border-width: 4px;
     border-style: solid;

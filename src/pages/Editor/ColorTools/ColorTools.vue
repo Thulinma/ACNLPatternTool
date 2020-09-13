@@ -133,8 +133,6 @@ export default {
   padding-top: 5px;
   padding-bottom: 5px;
 
-  @include phone-landscape {
-  }
   @include tablet-portrait {
     width: auto;
     display: inline-block;
@@ -158,9 +156,15 @@ export default {
   &.picking {
     @include stripes($pink-lace, $piggy-pink , 20px);
     @include moving-stripes(20s);
+    position: relative;
+    height: 100%;
+    padding-bottom: 0px;
+    border-radius: 0px;
 
     @include tablet-portrait {
+      height: auto;
       $full-thickness: 25px;
+      border-radius: 0px 0px 20px 20px;
       padding-right: $full-thickness;
       padding-bottom: $full-thickness;
       padding-left: $full-thickness;
@@ -176,6 +180,11 @@ export default {
 
 .color-tools--color-pickers {
   margin-top: 15px;
+  width: 100%;
+  
+  @include tablet-portrait {
+    width: auto;
+  }
 }
 
 .color-tools--tabs {
@@ -222,7 +231,7 @@ export default {
   left: 0;
 
   background-color: $pink-lace;
-  padding: 20px 25px;
+  padding: 20px 10px;
   border-radius: 0px 0px 20px 20px;
 
   &.acnl {
@@ -235,5 +244,9 @@ export default {
   // &.wheel {
   //   border-radius: 0px 0px 20px 20px;
   // }
+  
+  @include tablet-landscape {
+    padding: 20px 25px;
+  }
 }
 </style>
