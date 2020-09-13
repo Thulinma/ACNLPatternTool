@@ -406,7 +406,7 @@ export default {
 
 .editor--color-picker-window {
   display: inline-block;
-  position: relative;
+  position: fixed;
   top: 0;
   left: 50%;
 
@@ -524,6 +524,8 @@ export default {
   height: calc-canvas-size(9);
 
   @include phone-landscape {
+    width: calc-canvas-size(10);
+    height: calc-canvas-size(10);
   }
   @include tablet-portrait {
     width: calc-canvas-size(13);
