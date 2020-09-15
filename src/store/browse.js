@@ -207,12 +207,12 @@ const actions = {
     if (pageSize != null) {
       if (pageSize < PAGE_SIZE_MIN || pageSize > PAGE_SIZE_MAX)
         throw RangeError(`Invalid page size`);
-      else viewOptions = {...viewOptions, pageSize};
+      else viewOptions = { ...viewOptions, pageSize };
     };
     if (pageNumber != null) {
       if (pageNumber < 0)
         throw RangeError(`Invalid page number`);
-      else viewOptions = {...viewOptions, pageNumber};
+      else viewOptions = { ...viewOptions, pageNumber };
     }
     commit('setViewOptions', viewOptions);
   },
@@ -242,25 +242,18 @@ const actions = {
     const currSearchOptions = getters.searchOptions;
     // know results will change if changed, need to update cache
     if (searchOptionsChanged) {
-      // determine how prevSearchOptions are handled
-      const prevMatchSearchOptions = [...cache.keys()].find((searchOptions) => {
-        return optionsAreEqual(prevSearchOptions, searchOptions);
-      });
-      if (prevMatchSearchOptions != null) {
-        cache.delete(prevSearchOptions);
-        cache.set(prevSearchOptions, results.slice());
+      // determine how prevSearchOptions are handled      
+      if (cache.get(JSON.stringify(prevSearchOptions)) != null) {
+        cache.set(JSON.stringify(prevSearchOptions), results.slice());
         console.log("updated cache entry:", prevSearchOptions);
       }
       else {
-        cache.set(prevSearchOptions, results.slice());
+        cache.set(JSON.stringify(prevSearchOptions), results.slice());
         console.log("added new cache entry:", prevSearchOptions);
       }
       // look for old cache entry, load it
-      const currMatchSearchOptions = [...cache.keys()].find((searchOptions) => {
-        return optionsAreEqual(currSearchOptions, searchOptions);
-      });
-      if (currMatchSearchOptions != null) {
-        results = cache.get(currMatchSearchOptions);
+      if (cache.get(JSON.stringify(currSearchOptions)) != null) {
+        results = cache.get(JSON.stringify(currSearchOptions));
         console.log("loaded cache entry:", currSearchOptions);
       }
       // prevent merges with old search options if not in cache
@@ -290,7 +283,7 @@ const actions = {
       if (query == null) {
         results = results.slice(); // force vue to detect change
         for (let i = 0; i < moreResults.length; ++i)
-          results[i] = moreResults[i];
+          results.splice(i, 1, moreResults[i]);
       }
     }
 
@@ -299,20 +292,20 @@ const actions = {
       // commit results from checking originResultSize
       if (moreResults != null || searchOptionsChanged)
         commit('setSearchResults', { results, currSearchOptions });
-      return
+      return;
     };
     // find origin page that fulfills a portion of the availablePage
     let lastIdxAvailable;
     for (let i = 0; i < availablePage.length; ++i)
-      if (results[startIdx + i] !=  null)
+      if (results[startIdx + i] != null)
         lastIdxAvailable = startIdx + i;
       else break;
 
     let originPageNumber;
     if (lastIdxAvailable == null)
-      originPageNumber = Math.floor(startIdx/originResultsSize);
+      originPageNumber = Math.floor(startIdx / originResultsSize);
     else
-      originPageNumber = Math.floor((lastIdxAvailable + 1)/originResultsSize);
+      originPageNumber = Math.floor((lastIdxAvailable + 1) / originResultsSize);
 
     do {
       const options = correctOptions({
@@ -323,13 +316,16 @@ const actions = {
       // determine request types
       if (query == null) moreResults = await origin.popular(options);
       else moreResults = await origin.search(query, options);
-      // no more results, stop
-      if (moreResults.length < originResultsSize) break;
 
       // merge results
       results = results.slice(); // force vue to detect change
       for (let i = 0; i < moreResults.length; ++i)
-        results[startIdx + i] = moreResults[i];
+        results.splice(startIdx + i, 1, moreResults[i]);
+
+      // no more results, stop
+      if (moreResults.length < originResultsSize) {
+        break;
+      }
 
       // ready next loop
       availablePage = results.slice(startIdx, endIdx);
