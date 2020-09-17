@@ -1,5 +1,6 @@
 <template>
   <div class="menu--container">
+    <CancelButton class="nav-menu-cancel" @click="$emit('modal-close')" />
     <div class="menu--header">
       <div class="menu--header-icons-left">
         <img class="menu--header-img menu--header-bars" :src="barsSvg" />
@@ -100,7 +101,6 @@
           <IconNavTwitter class="menu--nav-item" />
         </div>
       </a>
-
     </div>
   </div>
 </template>
@@ -120,6 +120,8 @@ import IconNavHome from "~/components/icons/IconNavHome.vue";
 import IconNavAbout from "~/components/icons/IconNavAbout.vue";
 import IconNavTwitter from "~/components/icons/IconNavTwitter.vue";
 
+import CancelButton from "~/components/modals/CancelButton.vue";
+
 const menuTitleDefault = "Main Menu";
 export default {
   name: "NookPhoneMenu",
@@ -131,9 +133,10 @@ export default {
     IconNavAbout,
     IconNavUpdates,
     IconNavDiscord,
-    IconNavTwitter
+    IconNavTwitter,
+    CancelButton,
   },
-  data: function() {
+  data: function () {
     return {
       barsSvg,
       gpsSvg,
@@ -141,9 +144,9 @@ export default {
       dateObj: new Date(),
       time: new Date().toLocaleTimeString("en-US", {
         hour: "2-digit",
-        timeZoneName: "short"
+        timeZoneName: "short",
       }),
-      menuTitle: "Main Menu"
+      menuTitle: "Main Menu",
     };
   },
   mounted() {
@@ -151,16 +154,16 @@ export default {
       () =>
         (this.time = this.dateObj.toLocaleTimeString("en-US", {
           hour: "2-digit",
-          timeZoneName: "short"
+          timeZoneName: "short",
         })),
       1000
     );
   },
   methods: {
-    enterNavItem: async function(menuTitle = menuTitleDefault) {
+    enterNavItem: async function (menuTitle = menuTitleDefault) {
       this.menuTitle = menuTitle;
     },
-    leaveNavItem: async function() {
+    leaveNavItem: async function () {
       const curr = this.menuTitle;
       await new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -168,8 +171,8 @@ export default {
         }, 300);
       });
       if (this.menuTitle === curr) this.menuTitle = menuTitleDefault;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -178,21 +181,38 @@ export default {
 @import "styles/icon-colors";
 @import "styles/positioning";
 @import "styles/transitions";
+@import "styles/screens";
+
+.nav-menu-cancel {
+  @include tablet-portrait {
+    top: 20px;
+    right: 12px;
+  }
+}
 
 .menu--container {
+  box-sizing: border-box;
   display: inline-block;
   background-color: $ecru-white;
   user-select: none;
+  
+  width: 100%;
+  height: 100%;
 
   position: relative;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
   animation: menu-open 0.15s ease-in-out 1 forwards;
-
-  border-radius: 90px;
   padding: 30px 30px;
   z-index: 999;
+
+  @include tablet-portrait {
+    position: fixed;
+    width: auto;
+    height: auto;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 90px;
+  }
 }
 
 .menu--header {

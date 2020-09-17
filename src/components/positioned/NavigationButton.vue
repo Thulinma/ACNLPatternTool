@@ -4,14 +4,20 @@
       'menu-button--container': true,
       'open': open
     }"
-    @click="open=!open">
+    @click="open=!open"
+  >
     <div class="menu-button--icon-wrapper">
       <IconCompass class="menu-button--icon" />
     </div>
 
-    <ModalContainer v-if="open" @modal-close="open=false">
+    <ModalContainer
+      v-if="open"
+      @modal-close="open=false"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    >
       <template #window>
-        <NavigationMenu @modal-close="open = false"/>
+        <NavigationMenu @modal-close="open = false" />
       </template>
     </ModalContainer>
   </button>
@@ -19,11 +25,11 @@
 
 <script>
 import NavigationMenu from "~/components/positioned/NavigationMenu.vue";
-import ModalContainer from '~/components/positioned/ModalContainer.vue';
+import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import IconCompass from "~/components/icons/IconCompass.vue";
 
 export default {
-  data: function() {
+  data: function () {
     return {
       open: false,
     };
@@ -31,8 +37,8 @@ export default {
   components: {
     ModalContainer,
     NavigationMenu,
-    IconCompass
-  }
+    IconCompass,
+  },
 };
 </script>
 
@@ -90,7 +96,8 @@ export default {
     transform: scale(1) rotate(30deg);
   }
 
-  &:hover, &.menu-button--container.open {
+  &:hover,
+  &.menu-button--container.open {
     .menu-button--icon {
       transform: scale(0.9) rotate(-360deg);
     }

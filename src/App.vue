@@ -2,7 +2,7 @@
   <div id="app" :class="{ 'scroll-froze': scrollFroze }">
     <router-view @scroll-freeze="scrollFreeze" @scroll-unfreeze="scrollUnfreeze"></router-view>
     <Banner />
-    <NavigationButton />
+    <NavigationButton @scroll-freeze="scrollFreeze" @scroll-unfreeze="scrollUnfreeze" />
     <ModalManager />
   </div>
 </template>
