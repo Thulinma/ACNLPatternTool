@@ -21,6 +21,8 @@ class RenderTarget{
     for (let entry of entries) {
       this.width = entry.contentRect.width;
       this.height = entry.contentRect.height;
+      if (this.width < 64){this.width = 64;}
+      if (this.height < 64){this.height = 64;}
       this.canvas.width = this.width;
       this.canvas.height = this.height;
       //recalculate zoom level
@@ -52,7 +54,7 @@ class RenderTarget{
   }
 
   /// Draws the given pixel with the given HTML color
-  drawPixel(x, y, color){
+  drawPixel(x, y, color, colIndex){
     //If we've gone under 64 pixels, assume we meant the right side instead.
     if (y > 63){
       y -= 64; x += 32;
@@ -78,6 +80,20 @@ class RenderTarget{
         this.context.fillStyle = "#AAAAAA";
       }
       this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-((y%8==7)?2:1),this.zoom,(y%8==7)?2:1);
+    }
+    if (this.opt.pbn){
+      this.context.font = this.zoom+"px monospace";
+
+      let lightness = parseInt(color.substr(1, 2), 16) * 0.299 + parseInt(color.substr(3, 2), 16) * 0.587 + parseInt(color.substr(5, 2), 16) * 0.114;
+      if (lightness > 150){
+        this.context.fillStyle = "#000000";
+      }else{
+        this.context.fillStyle = "#FFFFFF";
+      }
+
+      this.context.textAlign = "center";
+      this.context.textBaseline = "middle";
+      this.context.fillText(String.fromCharCode(65+colIndex), (x+0.5)*this.zoom, (y+0.5)*this.zoom);
     }
   }
 
@@ -563,9 +579,9 @@ class DrawingTool{
       let x = (i % 32);
       let y = Math.floor(i / 32);
       if (this.pixels[i] == 0xFC || this.pixels[i] == 15){
-        this.renderTargets[0].drawPixel(x, y, "");
+        this.renderTargets[0].drawPixel(x, y, "", 15);
       }else{
-        this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
+        this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]], this.pixels[i]);
       }
     }
     this.renderTargets[0].drawCallback();
@@ -573,7 +589,20 @@ class DrawingTool{
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width, this.pattern.texWidth);
-      this.renderTargets[i].blitFrom(this.renderTargets[0]);
+      if (!this.renderTargets[i].opt.pbn){
+        this.renderTargets[i].blitFrom(this.renderTargets[0]);
+      }else{
+        for (let j = 0; j < pixCount; j++){
+          let x = (j % 32);
+          let y = Math.floor(j / 32);
+          if (this.pixels[j] == 0xFC || this.pixels[j] == 15){
+            this.renderTargets[i].drawPixel(x, y, "", 15);
+          }else{
+            this.renderTargets[i].drawPixel(x, y, palette[this.pixels[j]], this.pixels[j]);
+          }
+        }
+        this.renderTargets[0].drawCallback();
+      }
     }
   }
 
@@ -612,7 +641,7 @@ class DrawingTool{
     if (color === false){return;}
     let htmlColor = this.getPalette(color);
     for (let i in this.renderTargets){
-      this.renderTargets[i].drawPixel(x, y, htmlColor);
+      this.renderTargets[i].drawPixel(x, y, htmlColor, color);
       this.renderTargets[i].drawCallback();
     }
   }
