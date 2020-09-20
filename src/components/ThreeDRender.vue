@@ -64,6 +64,7 @@ export default {
       adjusting: false,
       rotating: false,
       hasAnimReq: false,
+      loading: false,
       rotx: 0,
       roty: 0,
       rotstart: 0,
@@ -71,6 +72,11 @@ export default {
   },
   methods: {
     loadModel(d){
+      if (this.loading){
+        setTimeout(this.loadModel, 100, d);
+        return;
+      }
+      this.loading = true;
       if (this.model){
         this.scene.remove(this.model);
         this.model = false;
@@ -210,7 +216,6 @@ export default {
         this.model = gltf.scene.children[0];
         this.model.traverse((child) => {
           if (child instanceof Mesh){
-            // console.log(child);
             //child.material = new MeshPhongMaterial();
             const meshName = child.name.split("__")[1];
             const redraw = ()=>{
@@ -263,6 +268,7 @@ export default {
         this.model.position.z = modelOffset.z;
         this.scene.add(this.model);
         if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
+        this.loading = false;
       });
       this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.texWidth;
       this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.texWidth*4;
@@ -326,8 +332,8 @@ export default {
 
 
     //If the type of pattern changes, change the model too
-    this.drawingTool.onLoad(this.loadModel);
     this.loadModel(this.drawingTool);
+    this.drawingTool.onLoad(this.loadModel);
 
 
     loader.parse(JSON.stringify(injected.clothing_stand), "", (gltf) => {

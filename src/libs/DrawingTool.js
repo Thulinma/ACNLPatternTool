@@ -6,14 +6,17 @@ class RenderTarget{
   //Valid options for RenderTargets:
   // - tall: If true, will assume 1x4 layout for 3D texture use
   // - grid: If true, will draw a pixel grid on top
+  // - pbn: If true, will draw Paint-By-Numbers style letters on top of pixels
   constructor(c, opt = {}){
     this.canvas = c;
     this.context = c.getContext("2d");
     this.opt = opt;
     this.width = this.canvas.width;
     this.height = this.canvas.height;
-    const ro = new ResizeObserver(entries => this.resizeHandler(entries));
-    ro.observe(c);
+    if (!opt.texture){
+      const ro = new ResizeObserver(entries => this.resizeHandler(entries));
+      ro.observe(c);
+    }
   }
 
   
@@ -27,7 +30,6 @@ class RenderTarget{
       this.canvas.height = this.height;
       //recalculate zoom level
       this.calcZoom();
-      console.log("New size", this.width, this.height, this.zoom, this.opt);
       //re-render
       this.opt.tool.render();
     }
@@ -46,10 +48,20 @@ class RenderTarget{
     this.context.imageSmoothingEnabled = false;
     if (this.opt.tall){
       this.zoom = this.width/32;
-    }else if (this.width < this.height){
-      this.zoom = Math.floor(this.width / this.pWidth);
     }else{
-      this.zoom = Math.floor(this.height / this.pWidth);
+      if (this.width < this.pWidth){
+        this.width = this.pWidth;
+        this.canvas.width = this.width;
+      }
+      if (this.height < this.pWidth){
+        this.height = this.pWidth;
+        this.canvas.height = this.height;
+      }
+      if (this.width < this.height){
+        this.zoom = Math.floor(this.width / this.pWidth);
+      }else{
+        this.zoom = Math.floor(this.height / this.pWidth);
+      }
     }
   }
 
@@ -81,11 +93,11 @@ class RenderTarget{
       }
       this.context.fillRect(x*this.zoom,y*this.zoom+this.zoom-((y%8==7)?2:1),this.zoom,(y%8==7)?2:1);
     }
-    if (this.opt.pbn){
+    if (this.opt.pbn && color.length){
       this.context.font = this.zoom+"px monospace";
 
       let lightness = parseInt(color.substr(1, 2), 16) * 0.299 + parseInt(color.substr(3, 2), 16) * 0.587 + parseInt(color.substr(5, 2), 16) * 0.114;
-      if (lightness > 150){
+      if (lightness > 120){
         this.context.fillStyle = "#000000";
       }else{
         this.context.fillStyle = "#FFFFFF";
@@ -562,6 +574,22 @@ class DrawingTool{
     c.addEventListener("contextmenu", (e) => {this.handleCanvasClick(e); e.preventDefault();});
   }
 
+  renderToTarget(t, palette){
+    let pixCount = this.pattern.width == 32 ? 1024 : 4096;
+    t.calcZoom(this.pattern.width, this.pattern.texWidth);
+    for (let i = 0; i < pixCount; i++){
+      let x = (i % 32);
+      let y = Math.floor(i / 32);
+      let pxl = this.pixels[i];
+      if (pxl == 0xFC || pxl == 15){
+        t.drawPixel(x, y, "", 15);
+      }else{
+        t.drawPixel(x, y, palette[pxl], pxl);
+      }
+    }
+    t.drawCallback();
+  }
+
   /// Renders a full image to all internally stored render targets
   /// Does so by first drawing all pixels to the first target, then blitting the first onto the others
   /// This function also recalculates zoom levels
@@ -572,36 +600,18 @@ class DrawingTool{
     //Build lookup table of palette colors
     let palette = [];
     for (let i = 0; i < 16; ++i){palette.push(this.getPalette(i));}
-    //Render all pixels to the first target
-    this.renderTargets[0].calcZoom(this.pattern.width, this.pattern.texWidth);
-    let pixCount = this.pattern.width == 32 ? 1024 : 4096;
-    for (let i = 0; i < pixCount; i++){
-      let x = (i % 32);
-      let y = Math.floor(i / 32);
-      if (this.pixels[i] == 0xFC || this.pixels[i] == 15){
-        this.renderTargets[0].drawPixel(x, y, "", 15);
-      }else{
-        this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]], this.pixels[i]);
-      }
-    }
-    this.renderTargets[0].drawCallback();
 
     //Finally, copy to all others
-    for (let i = 1; i < this.renderTargets.length; ++i){
-      this.renderTargets[i].calcZoom(this.pattern.width, this.pattern.texWidth);
-      if (!this.renderTargets[i].opt.pbn){
-        this.renderTargets[i].blitFrom(this.renderTargets[0]);
+    for (let j = 0; j < this.renderTargets.length; ++j){
+      if (!j || this.renderTargets[j].opt.pbn){
+        //The first target and paint-by-numbers targets can't use the copy method
+        // - The first target is the copy source
+        // - PBN targets need to know every pixel's color number
+        this.renderToTarget(this.renderTargets[j], palette);
       }else{
-        for (let j = 0; j < pixCount; j++){
-          let x = (j % 32);
-          let y = Math.floor(j / 32);
-          if (this.pixels[j] == 0xFC || this.pixels[j] == 15){
-            this.renderTargets[i].drawPixel(x, y, "", 15);
-          }else{
-            this.renderTargets[i].drawPixel(x, y, palette[this.pixels[j]], this.pixels[j]);
-          }
-        }
-        this.renderTargets[0].drawCallback();
+        //Other targets can be fast and just blit from the first target. Yay!
+        this.renderTargets[j].calcZoom(this.pattern.width, this.pattern.texWidth);
+        this.renderTargets[j].blitFrom(this.renderTargets[0]);
       }
     }
   }
