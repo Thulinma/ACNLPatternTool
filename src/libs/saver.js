@@ -5,7 +5,7 @@ import lzString from "lz-string";
 
 const saveDrawingToolAsAcnl = async (drawingTool) => {
   const blob = new Blob([drawingTool.toBytes()], { type: "application/octet-stream" });
-  saveAs(blob, `${drawingTool.title}.acnl`);
+  saveAs(blob, `${drawingTool.title}.${drawingTool.compatMode.toLowerCase()}`);
 };
 
 const saveDrawingToolsAsAcnl = async (drawingTools) => {
@@ -18,7 +18,7 @@ const saveDrawingToolsAsAcnl = async (drawingTools) => {
       filename = `${drawingTool.title}(${++id})`;
     }
     usedFilenames.add(filename);
-    zip.file(`${filename}.acnl`, drawingTool.toBytes());
+    zip.file(`${filename}.${drawingTool.compatMode.toLowerCase()}`, drawingTool.toBytes());
   }
   const zipFile = await zip.generateAsync({ type: "blob" });
   saveAs(zipFile, "patterns.zip");
@@ -34,7 +34,9 @@ const saveDrawingToolsAsPng = async (drawingTools) => {
   const zip = new JSZip();
   const usedFilenames = new Set();
   for (const drawingTool of drawingTools) {
+    
     const img = await generateACNLQR(drawingTool);
+    
     let filename = drawingTool.title;
     let id = 0;
     while (usedFilenames.has(filename)) {
@@ -65,7 +67,7 @@ const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
       filename = `${drawingTool.title}(${++id})`;
     }
     usedFilenames.add(filename);
-    zip.file(`${filename}.acnl`, drawingTool.toBytes());
+    zip.file(`${filename}.${drawingTool.compatMode.toLowerCase()}`, drawingTool.toBytes());
     zip.file(`${filename}.png`, img.substr(22), { base64: true });
   }
   const zipFile = await zip.generateAsync({ type: "blob" });

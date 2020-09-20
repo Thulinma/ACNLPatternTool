@@ -1,7 +1,6 @@
 <template>
   <main :class="{
     'editor--container': true,
-    'pinkified': backgroundIsPink
   }">
     <ColorTools
       :drawingTool="drawingTool"
@@ -101,8 +100,6 @@
       :patternDetails="patternDetails"
       @update-details="updatePatternDetails"
       @close="publishing = false"
-      @pinkify="backgroundIsPink = true"
-      @unpinkify="backgroundIsPink = false"
       @scroll-freeze="$emit('scroll-freeze')"
       @scroll-unfreeze="$emit('scroll-unfreeze')"
     />
@@ -164,7 +161,6 @@ export default {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
-      backgroundIsPink: false,
       drawingTool: new DrawingTool(),
       patternDetails: {
         // redundant mirrored properties, need these to sync
@@ -251,7 +247,7 @@ export default {
       saveAs(img, this.drawingTool.title + ".png");
     },
     async saveToStorage() {
-      await saver.saveToStorage(this.drawingTool);
+      await saver.saveDrawingToolToStorage(this.drawingTool);
       window.alert("Successfully saved to Storage!");
     },
     // ---------------------------------------------
@@ -372,8 +368,6 @@ export default {
   padding-bottom: 100px;
   background-color: $pink-lace;
 
-  @include phone-landscape {
-  }
   @include tablet-portrait {
     grid-template-areas:
       "color-tools color-tools"
@@ -398,10 +392,6 @@ export default {
     grid-template-rows: repeat(3, max-content);
     row-gap: 0px;
   }
-
-  &.pinkified {
-    background-color: #f7d7c9;
-  }
 }
 
 .editor--color-picker-window {
@@ -425,7 +415,6 @@ export default {
 }
 
 .editor--color-picker-close {
-  
 }
 
 .editor--color-picker-overlay {
@@ -457,22 +446,22 @@ export default {
     display: block;
   }
   @include desktop-hd {
-    padding: 48px;
+    padding: 32px;
   }
 }
 
 .editor--preview {
-  width: 192px;
-  height: 192px;
+  width: calc-canvas-size(3);
+  height: calc-canvas-size(3);
   background-color: white;
 
   @include tablet-portrait {
-    width: 160px;
-    height: 160px;
+    width: calc-canvas-size(2);
+    height: calc-canvas-size(2);
   }
   @include desktop-hd {
-    width: 192px;
-    height: 192px;
+    width: calc-canvas-size(3);
+    height: calc-canvas-size(3);
   }
 }
 
@@ -520,28 +509,28 @@ export default {
 }
 
 .editor--canvas {
-  width: calc-canvas-size(9);
-  height: calc-canvas-size(9);
+  width: calc-canvas-size(4);
+  height: calc-canvas-size(4);
 
   @include phone-landscape {
-    width: calc-canvas-size(10);
-    height: calc-canvas-size(10);
+    width: calc-canvas-size(5);
+    height: calc-canvas-size(5);
   }
   @include tablet-portrait {
-    width: calc-canvas-size(13);
-    height: calc-canvas-size(13);
+    width: calc-canvas-size(6);
+    height: calc-canvas-size(6);
   }
   @include tablet-landscape {
-    width: calc-canvas-size(16);
-    height: calc-canvas-size(16);
+    width: calc-canvas-size(8);
+    height: calc-canvas-size(8);
   }
   @include desktop {
     // width: 512px;
     // height: 512px;
   }
   @include desktop-hd {
-    width: calc-canvas-size(18);
-    height: calc-canvas-size(18);
+    width: calc-canvas-size(9);
+    height: calc-canvas-size(9);
   }
 }
 
