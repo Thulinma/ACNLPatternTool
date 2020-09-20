@@ -156,6 +156,8 @@ export default {
             path = injected.hat;
             modelType = 2;
           break;
+          case 8:
+          break;
           case 9:
             modelType = 0;
             //path = injected.easel;
