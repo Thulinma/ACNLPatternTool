@@ -357,9 +357,9 @@ export default {
   grid-template-areas:
     "color-tools"
     "canvas"
+    "preview" // hide this b/c user not sure which version to use on mobile
     "toolbar"
-    "three-d"
-    "preview";
+    "three-d";
   grid-template-columns: 1fr;
   grid-template-rows: min-content;
   justify-content: center;
@@ -468,7 +468,7 @@ export default {
 .editor--preview-3d {
   grid-area: three-d;
   justify-self: center;
-  display: none;
+  display: block;
 
   @include tablet-portrait {
     display: block;
