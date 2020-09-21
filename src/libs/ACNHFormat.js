@@ -112,25 +112,25 @@ class ACNHFormat{
       }
     }
 
-    /*
     //No pattern yet? Let's create one based on the create_pat_type type.
     if (this.b === null){
       //If we're creating new patterns, make them easel-type, unless our argument was a number, then use that type number.
-      let create_pat_type = 9;//easel
+      let create_pat_type = 0;//easel
       if ((typeof qr_buffer) == "number"){create_pat_type = qr_buffer;}
-      this.b = new ArrayBuffer(ACNLFormat.bytesForType(create_pat_type));
+      this.b = new ArrayBuffer(ACNHFormat.bytesForType(create_pat_type));
       this.dataView = new DataView(this.b, 0, this.b.byteLength);
       this.dataBytes = new Uint8Array(this.b, 0, this.b.byteLength);
       this.title = "Empty";
-      this.creator = ["Unknown", 0];
-      this.town = ["Unknown", 0];
-      this.unknown_a = 0x3119;
+      this.creator = ["Unknown", 0xFFFFFFFF];
+      this.town = ["Unknown", 0xFFFFFFFF];//Island name, but named "town" for compatibility
       this.setDefaultPalette();
-      this.unknown_b = 0xCC;
-      this.unknown_c = 10;
       this.patternType = create_pat_type;
+      this.dataBytes[0x004] = 9;//Unknown byte: always 9...?
+      this.dataBytes[0x070] = 0x0F;//Unknown byte: imported patterns set this to 0x0F
+      this.dataBytes[0x071] = 0xDD;//Unknown byte: imported patterns set this to 0xDD
     }
 
+    /*
     if (ACNLFormat.typeInfo[this.patternType]){
       this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
     }else{
@@ -282,13 +282,12 @@ class ACNHFormat{
     return [this.utf16_decode(0x3C, 20), this.dataView.getUint32(0x38, true)];
   };
   setDefaultPalette(){
-    for (let i = 0; i < 15; i++){this.setPalette([i*17, i*17, i*17]);}
+    for (let i = 0; i < 15; i++){this.setPalette(i, [i*17, i*17, i*17]);}
   };
-  /*
   set patternType(newVal){
-    if (this.width != ACNLFormat.widthForType(newVal)){
+    if (this.width != ACNHFormat.widthForType(newVal)){
       //Create new buffer
-      let nb = new ArrayBuffer(ACNLFormat.widthForType(newVal) > 32 ? 2160 : 620);
+      let nb = new ArrayBuffer(ACNHFormat.widthForType(newVal) > 32 ? 2216 : 680);
       let ndataView = new DataView(nb);
       let ndataBytes = new Uint8Array(nb);
       //Copy contents from original
@@ -299,15 +298,18 @@ class ACNHFormat{
       this.dataView = ndataView;
       this.dataBytes = ndataBytes;
       this.b = nb;
+      this.dataBytes[this.dataBytes.byteLength-2] = 0;
+      this.dataBytes[this.dataBytes.byteLength-1] = 0;
     }
-    this.dataBytes[0x69] = newVal;
+    this.dataBytes[this.dataBytes.byteLength-3] = newVal;
+    /*
     if (ACNLFormat.typeInfo[this.patternType]){
       this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
     }else{
       this.currMask = null;
     }
+    */
   };
-  */
   get patternType(){
     return this.dataBytes[this.dataBytes.byteLength-3];
   };
@@ -427,13 +429,14 @@ ACNHFormat.typeInfo[0x0E] = {name:"Robe (ACNH)", size:64, texSize:64, sections:[
 ACNHFormat.typeInfo[0x0F] = {name:"Brimmed cap (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x10] = {name:"Knit cap (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x11] = {name:"Brimmed hat (ACNH)", size:64, texSize:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x12] = {name:"Unknown 1 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x12] = {name:"Short sleeve dress (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x13] = {name:"Long sleeve dress (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x14] = {name:"Unknown 2 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x15] = {name:"Unknown 3 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
-ACNHFormat.typeInfo[0x16] = {name:"unKnown 4 (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x14] = {name:"Sleeveless dress (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x15] = {name:"Short sleeve shirt (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
+ACNHFormat.typeInfo[0x16] = {name:"Long sleeve shirt (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x17] = {name:"Sleeveless shirt (ACNL)", size:64, texSize:64, sections:[0, 0, 64, 64]};
 ACNHFormat.typeInfo[0x18] = {name:"Hat (ACNL)", size:32, texSize:32, sections:[0, 0, 32, 32]};
+ACNHFormat.typeInfo[0x19] = {name:"Horned Hat (ACNL)", size:32, texSize:32, sections:[0, 0, 32, 32]};
 
 export default ACNHFormat;
 
