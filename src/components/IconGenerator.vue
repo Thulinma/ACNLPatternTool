@@ -127,14 +127,30 @@ export default {
             path = injected.brimmed_hat;
             modelType = 2;
             break;
-          case 0x13:
+          case 0x12://short sleeve dress
+            path = injected.dress_half;
+            break;
+          case 0x13://long sleeve dress
             path = injected.dress_long;
             break;
-          case 0x17:
+          case 0x14://sleeveless dress
+            path = injected.dress_none;
+            break;
+          case 0x15://short sleeve shirt
+            path = injected.shirt_half;
+            break;
+          case 0x16://long sleeve shirt
+            path = injected.shirt_long;
+            break;
+          case 0x17://sleeveless shirt
             path = injected.shirt_none;
             break;
-          case 0x18:
+          case 0x18://hat
             path = injected.hat;
+            modelType = 2;
+            break;
+          case 0x19://horned hat
+            path = injected.hornhat;
             modelType = 2;
             break;
           default: return;
