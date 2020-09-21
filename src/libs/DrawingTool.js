@@ -176,9 +176,19 @@ class DrawingTool{
 
   load(data){
     if ((typeof data) == "string" && data.startsWith("LZ|")){
-      this.pattern = new ACNLFormat(lzString.decompressFromBase64(data.substr(3)));
+      let str = lzString.decompressFromBase64(data.substr(3));
+      if (str.length == 2216 || str.length == 680){
+        this.pattern = new ACNHFormat(str);
+      }else{
+        this.pattern = new ACNLFormat(str);
+      }
     }else if ((typeof data) == "string" && data.startsWith("B6|")){
-      this.pattern = new ACNLFormat(atob(data.substr(3)));
+      let str = atob(data.substr(3));
+      if (str.length == 2216 || str.length == 680){
+        this.pattern = new ACNHFormat(str);
+      }else{
+        this.pattern = new ACNLFormat(str);
+      }
     }else if (data instanceof DrawingTool){
       this.pattern = data.pattern;
     }else if (data instanceof Uint8Array){
@@ -188,7 +198,11 @@ class DrawingTool{
         this.pattern = new ACNLFormat(data);
       }
     }else{
-      this.pattern = new ACNLFormat(data);
+      if (data.length == 2216 || data.length == 680){
+        this.pattern = new ACNHFormat(data);
+      }else{
+        this.pattern = new ACNLFormat(data);
+      }
     }
     this.pixels_buffer = new ArrayBuffer(4096);
     this.pixels = new Uint8Array(this.pixels_buffer);
