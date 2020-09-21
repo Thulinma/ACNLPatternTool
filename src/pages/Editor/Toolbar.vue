@@ -4,6 +4,7 @@
       <div v-show="tool === 'brush'" class="toolbar--options-set brush">
         <button
           @click="selectTool('brush', 'small')"
+          @contextmenu.prevent="selectTool('brush', 'small', true)"
           :class="{
               'toolbar--option brush-small': true,
               'active': tool === 'brush' && option === 'small',
@@ -13,6 +14,7 @@
         </button>
         <button
           @click="selectTool('brush', 'medium')"
+          @contextmenu.prevent="selectTool('brush', 'medium', true)"
           :class="{
               'toolbar--option brush-medium': true,
               'active': tool === 'brush' && option === 'medium',
@@ -22,6 +24,7 @@
         </button>
         <button
           @click="selectTool('brush', 'large')"
+          @contextmenu.prevent="selectTool('brush', 'large', true)"
           :class="{
               'toolbar--option brush-large': true,
               'active': tool === 'brush' && option === 'large',
@@ -114,6 +117,7 @@
               'active': tool === 'eyeDropper',
               }"
           @click="selectTool('eyeDropper', null)"
+          @contextmenu.prevent="selectTool('eyeDropper', null, true)"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconEyeDropper class="toolbar--shortcut-icon" />
@@ -172,7 +176,7 @@
             <IconQRCode class="toolbar--shortcut-icon" />
           </div>
           <div class="toolbar--shortcut-tooltip">Preview QR Code</div>
-          <div class="toolbar--shortcut-hint short persistent">P</div>
+          <div class="toolbar--shortcut-hint short">P</div>
         </button>
       </div>
     </div>
@@ -356,7 +360,7 @@ export default {
      * @param {String} mode
      * @param {String} option
      */
-    selectTool: function(newTool, newOption = null) {
+    selectTool: function(newTool, newOption = null, alt = false) {
       // no matching tool, bail
       if (!(newTool in toolMappings)) return;
       let tool = toolMappings[newTool];
@@ -364,9 +368,12 @@ export default {
         if (!(newOption in toolMappings[newTool])) return;
         tool = tool[newOption];
       }
-      this.drawingTool.drawHandler = tool;
-      this.tool = newTool;
-      this.option = newOption;
+      if (alt) this.drawingTool.drawHandlerAlt = tool;
+      else {
+        this.drawingTool.drawHandler = tool;
+        this.tool = newTool;
+        this.option = newOption;
+      }
     },
     // helps determines if the passed tool is the current tool drawHandler
     // can also determine if a tool has options
@@ -433,6 +440,7 @@ export default {
   },
   mounted: function() {
     this.selectTool("brush", "small");
+    this.selectTool("eyeDropper", null, true);
     window.addEventListener("keydown", this.onKey);
   },
   beforeDestroy: function() {
