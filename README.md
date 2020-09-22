@@ -10,11 +10,14 @@ At the root of the project directory:
 git submodule update --init --recursive
 cd zxing-js-library
 yarn # need this to bypass sharp missing binaries
+# ^ if yarn throws an error, ignore it. it's sharp's maintainer's fault
 cd ..
 
 # main repo setup
 npm install
 npm run build:submodule # build the submodule
+# submodule ALWAYS needs to be rebuilt if it changes
+# e.g. switching branches, making updates to the submodule, etc.
 ```
 
  ## Available Scripts
@@ -48,7 +51,7 @@ root. Can build the the project in development mode or production mode. By
 default builds in the mode specified by the `.env`, but can otherwise override
 with a command line option.
 *Any time the submodule changes, this command needs to be rerun.*
-Parallel development bewteen the main project and the subdmodule can be made
+Parallel development bewteen the main project and the submodule can be made
 easier by using the `npm run watch` directly from the zxing directory.
 
 ### `npm run clean`
