@@ -67,10 +67,12 @@
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
           <button class="editor--dropup-menu-item" @click="convertImage = true">Convert from IMG</button>
-          <button class="editor--dropup-menu-item" @click="readQRCode">Read from QR Code</button>
+          <button class="editor--dropup-menu-item" @click="readQRCode">Open QR Code</button>
           <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
-          <button class="editor--dropup-menu-item" @click="openACNL">Open .ACNL File</button>
-          <FileLoader ref="acnlFileLoader" fileType="acnl" @load="load" />
+          <button class="editor--dropup-menu-item" @click="openPattern">Open .ACNL / .ACNH</button>
+          <FileLoader ref="patternFileLoader" fileType="acnl" @load="load" />
+          <button class="editor--dropup-menu-item" @click="fileLoadCollection = true">Open .ZIP / .DAT</button>
+          <FileLoaderCollection v-if="fileLoadCollection" @load="load" @close="fileLoadCollection = false"/>
         </div>
       </div>
 
@@ -140,6 +142,7 @@ import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import FileLoader from "~/components/FileLoader.vue";
+import FileLoaderCollection from "~/components/FileLoaderCollection.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
 
 export default {
@@ -155,6 +158,7 @@ export default {
     IconCaretUp,
     Publish,
     FileLoader,
+    FileLoaderCollection,
     CancelButton,
   },
   data: function () {
@@ -183,6 +187,7 @@ export default {
       // modals
       convertImage: null,
       publishing: false,
+      fileLoadCollection: false,
     };
   },
   methods: {
@@ -324,9 +329,12 @@ export default {
     readQRCode() {
       this.$refs.imageFileLoader.open();
     },
-    openACNL() {
-      this.$refs.acnlFileLoader.open();
+    openPattern() {
+      this.$refs.patternFileLoader.open();
     },
+    openCollection() {
+      this.$refs.collectionFileLoader.open();
+    }
   },
   mounted: async function () {
     // setup drawingTool
@@ -560,8 +568,12 @@ export default {
 
 .editor--dropup {
   user-select: none;
-  margin-right: 10px;
+  margin-right: 5px;
   @include relative-in-place;
+
+  @include phone-landscape {
+    margin-right: 10px;
+  }
 
   .editor--dropup-button {
     display: flex;
@@ -623,12 +635,16 @@ export default {
 
   .editor--dropup-text {
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 5px;
     margin-right: 2px;
 
     color: $ecru-white;
     font-weight: 600;
     font-size: 1rem;
+
+    @include phone-landscape {
+      margin-left: 10px;
+    }
 
     @include tablet-portrait {
       font-size: 1.35rem;
@@ -647,6 +663,21 @@ export default {
   }
   &:hover .editor--dropup-bridge {
     display: block;
+  }
+  
+  .editor--dropup-menu-text {
+    @include relative-in-place;
+    font-weight: 600;
+    line-height: 1.25;
+    color: $ecru-white;
+    display: block;
+    font-size: 0.9rem;
+    @include phone-landscape {
+      font-size: 1rem;
+    }
+    @include tablet-portrait {
+      font-size: 1rem;
+    }
   }
 
   .editor--dropup-menu {
@@ -670,6 +701,10 @@ export default {
     @include tablet-portrait {
       padding: 30px 40px;
       font-size: 1.25rem;
+    }
+    
+    &.for-text {
+      padding: 15px;
     }
   }
   &.save .editor--dropup-menu {

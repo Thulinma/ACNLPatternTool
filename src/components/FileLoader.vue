@@ -26,7 +26,7 @@ export default {
       type: String,
       required: true,
       validator: function (value) {
-        return ["image", "acnl", "acnh", "acpattern", null, undefined].includes(
+        return ["image", "acnl", "acnh", "acpattern", "collection", null, undefined].includes(
           value
         );
       },
@@ -37,11 +37,15 @@ export default {
     if (this.fileType === "image") accept.add("image/*");
     else if (this.fileType === "acnl") accept.add(".acnl");
     else if (this.fileType === "acnh") accept.add(".acnh");
+    else if (this.fileType === "collection") {
+      accept.add(".zip");
+      accept.add(".dat");
+    }
     else if (this.fileType === "acpattern") {
       accept.add(".acnl");
       accept.add(".acnh");
-      accept.add(".dat");
-    } else {
+    }
+    else {
       accept.add("image/*");
       accept.add(".acnl");
       accept.add(".acnh");
@@ -239,13 +243,13 @@ export default {
       console.log(
         "Read " + Object.keys(results).length + " patterns from files!"
       );
-      const message = "No qr codes were read from image";
-      if (results.length === 0) window.alert("failed", message);
+      const message = "No qr codes could be read from the image.";
+      if (Object.keys(results).length === 0) window.alert(message);
       if (Object.keys(results).length == 1) {
         this.$emit("load", results[Object.keys(results)[0]]);
       }
       else if (Object.keys(results).length > 1) {
-        this.$emit("multiload", results);
+        this.$emit("multiload", [...Object.values(results)]); // note results is an object
       }
       this.$refs.files.value = null;
     },

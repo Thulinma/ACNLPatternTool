@@ -2,13 +2,14 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import generateACNLQR from "/libs/ACNLQRGenerator";
 import lzString from "lz-string";
+import DrawingTool from "/libs/DrawingTool";
 
-const saveDrawingToolAsAcnl = async (drawingTool) => {
+const saveDrawingToolAsPattern = async (drawingTool) => {
   const blob = new Blob([drawingTool.toBytes()], { type: "application/octet-stream" });
   saveAs(blob, `${drawingTool.title}.${drawingTool.compatMode.toLowerCase()}`);
 };
 
-const saveDrawingToolsAsAcnl = async (drawingTools) => {
+const saveDrawingToolsAsPattern = async (drawingTools) => {
   const zip = new JSZip();
   const usedFilenames = new Set();
   for (const drawingTool of drawingTools) {
@@ -34,9 +35,9 @@ const saveDrawingToolsAsPng = async (drawingTools) => {
   const zip = new JSZip();
   const usedFilenames = new Set();
   for (const drawingTool of drawingTools) {
-    
+
     const img = await generateACNLQR(drawingTool);
-    
+
     let filename = drawingTool.title;
     let id = 0;
     while (usedFilenames.has(filename)) {
@@ -51,8 +52,8 @@ const saveDrawingToolsAsPng = async (drawingTools) => {
 
 
 const saveDrawingToolAsBoth = async (drawingTool) => {
-  saveDrawingToolAsAcnl(drawingTool);
-  saveDrawingToolAsPng(drawingTool);
+  await saveDrawingToolAsPattern(drawingTool);
+  await saveDrawingToolAsPng(drawingTool);
 };
 
 const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
@@ -74,29 +75,68 @@ const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
   saveAs(zipFile, "patterns.zip");
 };
 
-const saveDrawingToolToStorage = async (drawingTool) => {
-  drawingTool.fixIssues();
-  const hash = drawingTool.fullHash;
-  localStorage.setItem(
-    "acnl_" + hash,
-    lzString.compressToUTF16(drawingTool.toString()),
-  );
-};
+// --- LOCAL STORAGE MODIFICATION MEHODS ---
 
+/**
+ * Saves patterns to local storage
+ * @param {Array} drawingTools - An Array of DrawingTool instances
+ */
 const saveDrawingToolsToStorage = async (drawingTools) => {
   for (const drawingTool of drawingTools) {
-    saveDrawingToolToStorage(drawingTool);
+    drawingTool.fixIssues();
+    const hash = drawingTool.fullHash;
+    let namespacePrefix;
+    if (drawingTool.compatMode === "ACNL") namespacePrefix = "acnl_";
+    else if (drawingTool.compatMode === "ACNH") namespacePrefix = "acnh_";
+    else continue;
+    localStorage.setItem(
+      `${namespacePrefix}${hash}`,
+      lzString.compressToUTF16(drawingTool.toString()),
+    );
+  }
+};
+
+/**
+ * Gets all patterns from local storage
+ * @returns {Array} - an Array of DrawingTool intances
+ */
+const getDrawingToolsFromStorage = async () => {
+  const drawingTools = [];
+  for (let i = 0; i < localStorage.length; ++i) {
+    const key = localStorage.key(i);
+    if (key.startsWith("acnl_") || key.startsWith("acnh_")) {
+      const fromStorage = new DrawingTool(
+        lzString.decompressFromUTF16(localStorage.getItem(key))
+      );
+      drawingTools.push(fromStorage);
+    };
+  }
+  return drawingTools;
+};
+
+/**
+ * Deletes patterns from local storage
+ * @param {Array} drawingTools - An Array of DrawingTool instances
+ */
+const deleteDrawingToolsFromStorage = async (drawingTools) => {
+  for (const drawingTool of drawingTools) {
+    let namespacePrefix;
+    if (drawingTool.compatMode === "ACNL") namespacePrefix = "acnl_";
+    else if (drawingTool.compatMode === "ACNH") namespacePrefix = "acnh_";
+    drawingTool.fixIssues();
+    localStorage.removeItem(`${namespacePrefix}${drawingTool.fullHash}`);
   }
 };
 
 
 export default {
-  saveDrawingToolAsAcnl,
-  saveDrawingToolsAsAcnl,
+  saveDrawingToolAsPattern,
+  saveDrawingToolsAsPattern,
   saveDrawingToolAsPng,
   saveDrawingToolsAsPng,
   saveDrawingToolAsBoth,
   saveDrawingToolsAsBoth,
-  saveDrawingToolToStorage,
   saveDrawingToolsToStorage,
+  getDrawingToolsFromStorage,
+  deleteDrawingToolsFromStorage,
 };
