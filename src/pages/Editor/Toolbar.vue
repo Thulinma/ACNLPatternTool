@@ -179,6 +179,13 @@
           <div class="toolbar--shortcut-hint short">P</div>
         </button>
       </div>
+
+      <div class="toolbar--toggle">
+        <div class="toggle--wrapper">
+          <input @change="changeGameMode" class="toggle--input" id="pattern-mode" type="checkbox">
+          <label class="toggle--label" for="pattern-mode"></label>
+        </div>
+      </div>
     </div>
 
     <PatternSettings
@@ -436,6 +443,9 @@ export default {
       if (event.metaKey) return;
       this.settingsOpen = false;
       if (event.code === "KeyP") this.qrPreviewOpen = true;
+    },
+    changeGameMode(event) {
+      event.target.checked ? this.drawingTool.compatMode = 'ACNH' : this.drawingTool.compatMode = 'ACNL'
     }
   },
   mounted: function() {
@@ -651,6 +661,7 @@ $toolbar--options-width: 75px;
     background-color: $olive-haze;
   }
 }
+
 .toolbar--shortcuts {
   position: relative;
   top: 0;
@@ -788,6 +799,11 @@ $toolbar--options-width: 75px;
         fill: $jambalaya;
       }
     }
+  }
+
+  &.etc {
+    margin-top: 14px;
+    margin-bottom: 10px;
   }
 }
 
@@ -952,6 +968,79 @@ $toolbar--options-width: 75px;
   }
   &:hover .toolbar--shortcut-hint {
     @include visible;
+  }
+}
+
+.toolbar--toggle {
+	overflow: hidden;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  * {
+    box-sizing: border-box;
+    &:before, &:after {
+      content: '';
+      position: absolute;
+    }
+  }
+
+  .toggle--wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .toggle--input {
+    height: 5px;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 5px;
+
+    &:checked + label {
+	    &:before {
+        transform: translateX(50px);
+        z-index: 20;
+      }
+      &:after {
+        transform: translateX(20px);
+        left: 0px;
+        content: 'NH'
+      }
+    }
+  }
+
+  .toggle--label {
+    display: inline-block;
+    border-radius: 50px;
+    position: relative;
+    transition: all .3s ease;
+    transform-origin: 20% center;
+    cursor: pointer;
+    background: transparent;
+    border: 3px solid $light-pink;
+    height: 50px;
+    width: 100px;
+
+    &:before {
+      display: block;
+			border-radius: 100%;
+			transition: .3s ease;
+			border: 3px solid $azalea;
+			width: 30px;
+			height: 30px;
+			top: 4px;
+			left: 4px;
+      background: $azalea;
+      z-index: 20;
+    }
+    &:after {
+      content: 'NL';
+      top: 15px;
+      left: 2px;
+      transform: translateX(50px);
+    }
   }
 }
 </style>

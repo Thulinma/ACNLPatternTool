@@ -1,9 +1,20 @@
 <template>
   <div id="acnh-sliders">
     <section>
-      <label>Hue</label>
+      <label>
+        Hue
+        <div v-if="mode" class="slider-slot-label">
+          <button @click="() => {if (hue > 0) hue--; setSliderColors()}">
+            <IconLeftArrow class="slider-slot-label-arrow"/>
+          </button>
+            {{ parseInt(hue) + 1 }}
+          <button @click="() => {if (hue < 29) hue++; setSliderColors()}">
+            <IconRightArrow class="slider-slot-label-arrow"/>
+          </button>
+        </div>
+      </label>
       <div class="slider-container">
-        <input type="range" id="hue" min="0" max="30"
+        <input type="range" id="hue" min="0" max="29"
           v-model="hue"
           :style="hueGradient"
           @change="setSliderColors"
@@ -12,9 +23,20 @@
     </section><!-- hue -->
 
     <section>
-      <label>Vividness</label>
+      <label>
+        Vividness
+        <div v-if="mode" class="slider-slot-label">
+          <button @click="() => {if (vividness > 0) vividness--; setSliderColors()}">
+            <IconLeftArrow class="slider-slot-label-arrow"/>
+          </button>
+            {{ parseInt(vividness) + 1 }}
+          <button @click="() => {if (vividness < 14) vividness++; setSliderColors()}">
+            <IconRightArrow class="slider-slot-label-arrow"/>
+          </button>
+        </div>
+      </label>
       <div class="slider-container">
-        <input type="range" id="vividness" min="0" max="15"
+        <input type="range" id="vividness" min="0" max="14"
           v-model="vividness"
           :style="vividnessGradient"
           @change="setSliderColors"
@@ -23,9 +45,20 @@
     </section><!-- vividness -->
 
     <section>
-      <label>Brightness</label>
+      <label>
+        Brightness
+        <div v-if="mode" class="slider-slot-label">
+          <button @click="() => {if (brightness > 0) brightness--; setSliderColors()}">
+            <IconLeftArrow class="slider-slot-label-arrow"/>
+          </button>
+            {{ parseInt(brightness) + 1 }}
+          <button @click="() => {if (brightness < 14) brightness++; setSliderColors()}">
+            <IconRightArrow class="slider-slot-label-arrow"/>
+          </button>
+        </div>
+      </label>
       <div class="slider-container">
-        <input type="range" id="brightness" min="0" max="15"
+        <input type="range" id="brightness" min="0" max="14"
           v-model="brightness"
           :style="brightnessGradient"
           @change="setSliderColors"
@@ -38,8 +71,15 @@
 <script>
 import colorMaker from "/libs/ACNHFormat";
 
+import IconLeftArrow from "~/components/icons/IconLeftArrow.vue";
+import IconRightArrow from "~/components/icons/IconRightArrow.vue";
+
 export default {
   name: "ACNHColorPicker",
+  components: {
+    IconLeftArrow,
+    IconRightArrow
+  },
   props: {
     drawingTool: Object,
   },
@@ -61,6 +101,7 @@ export default {
         background: '',
       },
       currentColor: 0,
+      mode: this.drawingTool.compatMode === 'ACNH'
     }
   },
   methods: {
@@ -68,12 +109,12 @@ export default {
       // color of draw tool will be in HSV format
       // increments based on slots in sliders in ACNH
       // H = hue 1 - 30
-      // S = vividness 1 - 15
-      // V = brightness 1 - 15
+      // S = vividness 1 - 16
+      // V = brightness 1 - 16
 
       // hue
       let hueSlider = [];
-      for (let i = 0; i <= 30; i++) {
+      for (let i = 0; i <= 29; i++) {
         hueSlider.push(colorMaker.slidersToColor(i, this.vividness, this.brightness));
       }
       this.hueSliderColors = [...hueSlider];
@@ -81,7 +122,7 @@ export default {
       // vividness & brightness
       let vividnessSlider = [];
       let brightnessSlider = [];
-      for (let i = 0; i <= 15; i++) {
+      for (let i = 0; i <= 14; i++) {
         vividnessSlider.push(colorMaker.slidersToColor(this.hue, i, this.brightness));
         brightnessSlider.push(colorMaker.slidersToColor(this.hue, this.vividness, i));
       }
@@ -162,5 +203,21 @@ export default {
       margin-top: -4px;
     }
   }
+ }
+ label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+ }
+ button {
+  appearance: none;
+  outline: none;
+  padding: 0px;
+  border: 0px;
+
+  background: none;
+
+  cursor: pointer;
  }
 </style>
