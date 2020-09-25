@@ -723,5 +723,5 @@ class DrawingTool{
 
 };
 
-export default DrawingTool;
+export {DrawingTool as default, RenderTarget};
 

@@ -1,76 +1,38 @@
 import DrawingTool from "/libs/DrawingTool";
-
-//For QR generation
+import ACNHFormat from '/libs/ACNHFormat';
 import { QRCodeEncoder, QRCodeDecoderErrorCorrectionLevel, EncodeHintType } from '@zxing/library';
-
-//for 3D renders
-import {
-  Scene,
-  Texture,
-  sRGBEncoding,
-  NearestFilter,
-  PerspectiveCamera,
-  Mesh,
-  MeshBasicMaterial,
-  WebGLRenderer
-} from '@three/core';
-import {
-  GLTFLoader
-} from '@three/loaders/GLTFLoader';
-import injected from "/utils/injected";
-
+import {drawPreviewFromTool} from "/libs/Preview3D";
 
 async function generateACNLQR(newData){
   //Load pattern, prepare render canvas
-  const drawingTool = (newData instanceof DrawingTool) ? newData : new DrawingTool(newData);
+  let drawingTool = (newData instanceof DrawingTool) ? newData : new DrawingTool(newData);
+
+  if (drawingTool.pattern instanceof ACNHFormat){
+    console.log("Forcing pattern format to ACNL for QR code generation");
+    drawingTool.compatMode = "ACNL";
+  }
+
   drawingTool.fixIssues();
   const tInfo = drawingTool.typeInfo;
   const bytes = drawingTool.toBytes();
-  const renderCanvas = document.createElement("canvas");
-  renderCanvas.width = tInfo.size;
-  renderCanvas.height = tInfo.size;
-  drawingTool.addCanvas(renderCanvas);
   const qrCanvas = document.createElement("canvas");
-  const textureCanvas = document.createElement("canvas");
   let width = 440;
   let height = 270;
-  //Check if we should 3D render or not
-  let path3D;
-  switch (drawingTool.patternType){
-    case 0: path3D = injected.dress_long; break;
-    case 1: path3D = injected.dress_half; break;
-    case 2: path3D = injected.dress_none; break;
-    case 3: path3D = injected.shirt_long; break;
-    case 4: path3D = injected.shirt_half; break;
-    case 5: path3D = injected.shirt_none; break;
-  }
-  if (path3D){
-    //We need to 3D render!
-    textureCanvas.width = 128;
-    textureCanvas.height = 512;
-    drawingTool.addCanvas(textureCanvas, {tall:true});
-    drawingTool.render();
-    textureCanvas.getContext("2d").clearRect(0, 0, 128, 1);
-  }else{
-    drawingTool.render();
-  }
 
   //Update internal canvas size to width/height
   //Only happens right before redraw
-  if (drawingTool.width > 32){
+  if (bytes.byteLength > 620){
     width = 760;
     height = 460;
   }
   qrCanvas.width = width;
   qrCanvas.height = height;
-  //Ensure blitted images are not smoothed ( = keep pixel look!)
-  let ctx = qrCanvas.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
 
+  let ctx = qrCanvas.getContext('2d');
 
   //Create QR code(s) in memory
   let codes = [];
-  if (tInfo.size > 32){
+  if (bytes.byteLength > 620){
     const hints = new Map();
     const parityByte = Math.round(Math.random()*255);
     hints.set(EncodeHintType.STRUCTURED_APPEND, [0, 3, parityByte]);
@@ -89,17 +51,9 @@ async function generateACNLQR(newData){
   const spc = 8;
   let sQR = 0;
   codes.forEach((c) => {if (c.getMatrix().getWidth()*2 > sQR){sQR = c.getMatrix().getWidth()*2;}});
-  let pattHeight = 0; //is calculated later
-  let sPw = tInfo.size;//default pattern width
-  let sPh = tInfo.size;//default pattern height
-  if (tInfo.sections instanceof Array){//If we have a simple pattern type, take the custom width/height from it
-    sPw = tInfo.sections[2];//custom width
-    sPh = tInfo.sections[3];//custom height
-  }
   let qrWidth = (sQR+spc*4)*2-6;
   if (bytes.byteLength <= 620){qrWidth = width/2;}
   const pattCenter = (width - qrWidth)/2;
-
 
   //Create pretty background pattern on temp canvas
   const bgCanvas = document.createElement("canvas");
@@ -119,52 +73,8 @@ async function generateACNLQR(newData){
   ctx.fillStyle = ctx.createPattern(bgCanvas, "repeat");
   ctx.fillRect(0, 0, width, height);
 
-  //Draw the pattern itself to canvas
-  if (!path3D){
-    const pattSize = Math.floor((height-60)/sPh);
-    pattHeight = pattSize*sPh;
-    ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, pattCenter-(sPw*pattSize)/2, (height-pattHeight)/2, pattSize*sPw, pattHeight);
-  }else{
-    pattHeight = height-60;
-    //3D render!
-    const threeCanvas = document.createElement("canvas");
-    threeCanvas.width = width;
-    threeCanvas.height = pattHeight/2;
-    const renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas, antialias:true});
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
-    let model = false;
-    renderer.setClearColor( 0x000000, 0 );
-    let texture = new Texture(textureCanvas)
-    texture.needsUpdate = true;
-    texture.encoding = sRGBEncoding;
-    texture.flipY = false;
-    texture.magFilter = NearestFilter;
-    const texMat = new MeshBasicMaterial({map:texture});
-    const loadModel = (x) => {return new Promise(resolve => {
-      let loader = new GLTFLoader();
-      loader.parse(JSON.stringify(x), "", (gltf) => {resolve(gltf);});
-    });};
-    const gltf = await loadModel(path3D);
-    model = gltf.scene.children[0];
-    model.traverse((child) => {
-      if (child instanceof Mesh){child.material = texMat;}
-    });
-    scene.add(model);
-    camera.position.z = 15;
-    camera.position.y = 25;
-    camera.rotation.x = 5.85;
-    renderer.render(scene, camera);
-    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2, threeCanvas.width, threeCanvas.height);
-    model.rotation.y = Math.PI;
-    renderer.render(scene, camera);
-    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2+threeCanvas.height, threeCanvas.width, threeCanvas.height);
-    //Free ThreeJS-related resources
-    scene.dispose();
-    texMat.dispose();
-    texture.dispose();
-    renderer.dispose();
-  }
+  const pattHeight = height - 60;
+  await drawPreviewFromTool(ctx, drawingTool, 0, (height-pattHeight)/2, width-qrWidth, pattHeight);
 
   //Prepare background pattern for text
   bgCanvas.width=1;
@@ -204,7 +114,7 @@ async function generateACNLQR(newData){
 
   if (bytes.byteLength > 620){
     ctx.font = '15pt Calibri';
-    drawTxtWithBg(pattCenter, (height-pattHeight)/4+(path3D?4:0), drawingTool.title, "#FFFFFF");
+    drawTxtWithBg(pattCenter, (height-pattHeight)/4+4, drawingTool.title, "#FFFFFF");
     ctx.font = '10pt Calibri';
     drawTxtWithBg(pattCenter, height-(height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
   }
