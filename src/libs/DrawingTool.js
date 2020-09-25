@@ -371,7 +371,7 @@ class DrawingTool{
         default: this.patternType = 0x00; break;//others
       }
     }
-
+    this.onLoad();
   }
   get allTypes(){
     if (this.pattern instanceof ACNHFormat){
