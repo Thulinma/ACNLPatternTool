@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="home--counter-row">
-        <div class="home--counter">1,000,000</div>
+        <div class="home--counter">500,000+</div>
       </div>
       <div class="home--stamps-row">
         <div class="home--stamps">

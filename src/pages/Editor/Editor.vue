@@ -70,7 +70,7 @@
           <button class="editor--dropup-menu-item" @click="readQRCode">Open QR Code</button>
           <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
           <button class="editor--dropup-menu-item" @click="openPattern">Open .ACNL / .ACNH</button>
-          <FileLoader ref="patternFileLoader" fileType="acnl" @load="load" />
+          <FileLoader ref="patternFileLoader" fileType="acpattern" @load="load" />
           <button class="editor--dropup-menu-item" @click="fileLoadCollection = true">Open .ZIP / .DAT</button>
           <FileLoaderCollection v-if="fileLoadCollection" @load="load" @close="fileLoadCollection = false"/>
         </div>
@@ -91,7 +91,7 @@
           <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
           <button @click="downloadQR" class="editor--dropup-menu-item">as QR Code</button>
           <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
-          <button class="editor--dropup-menu-item" @click="publishing = true;">Publish</button>
+          <button class="editor--dropup-menu-item" @click="beginPublishing;">Publish</button>
         </div>
       </div>
     </div>
@@ -190,7 +190,7 @@ export default {
       fileLoadCollection: false,
     };
   },
-  methods: {
+  methods: {    
     // ------------------
     // REACTION FUNCTIONS
     // ------------------
@@ -255,6 +255,14 @@ export default {
       await saver.saveDrawingToolToStorage(this.drawingTool);
       window.alert("Successfully saved to Storage!");
     },
+
+    // MODAL REACTION
+    beginPublishing() {
+      if (this.drawingTool.compatMode === "ACNH")
+        window.alert("Publishing is not available for ACNH formatted patterns.");
+      this.publishing = true;
+    },
+    
     // ---------------------------------------------
     // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
     // ---------------------------------------------
@@ -326,6 +334,7 @@ export default {
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
     },
+    // IMPORTING / EXPORTING FUNCTIONS
     readQRCode() {
       this.$refs.imageFileLoader.open();
     },

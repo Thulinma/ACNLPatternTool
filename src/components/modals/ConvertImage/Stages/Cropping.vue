@@ -20,7 +20,7 @@
         class="cropping--button cropping--button--advanced"
         @click="showAdvanced = !showAdvanced"
       >
-        <span>Advanced</span>
+        <span>Tiling Mode</span>
         <IconChevronDown
           :class="{
             'cropping--advanced-expand-icon': true,
