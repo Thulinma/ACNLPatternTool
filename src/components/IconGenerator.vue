@@ -6,26 +6,6 @@
 import DrawingTool from "/libs/DrawingTool";
 import {drawPreviewFromTool} from "/libs/Preview3D"
 
-//for 3D renders
-import {
-  Scene,
-  Texture,
-  sRGBEncoding,
-  NearestFilter,
-  OrthographicCamera,
-  Mesh,
-  MeshStandardMaterial,
-  MeshPhongMaterial,
-  WebGLRenderer,
-  DirectionalLight,
-  HemisphereLight,
-  AmbientLight,
-  DoubleSide,
-  TextureLoader,
-  MixOperation,
-  Vector3,
-} from '@three/core';
-
 export default {
   name: 'IconGenerator',
   props: ["pattern", "decoration", "text", "width", "height"],
