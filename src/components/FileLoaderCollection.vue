@@ -10,16 +10,11 @@
       @select="toggleSelection"
     />
     <FileLoader ref="collectionFileLoader" fileType="collection" @multiload="multiload" />
-    <DownloadButton
-      @close="download = null"
-      v-if="download != null"
-      :toDownload="download" />
   </div>
 </template>
 
 <script>
 import PatternContainer from "~/components/positioned/PatternContainer.vue";
-import DownloadButton from "~/components/positioned/DownloadButton";
 import FileLoader from "~/components/FileLoader.vue";
 import saver from "~/libs/saver";
 import { saveAs } from "file-saver";
@@ -29,13 +24,11 @@ export default {
   components: {
     PatternContainer,
     FileLoader,
-    DownloadButton,
   },
   data() {
     return {
       drawingTools: [],
       selectedMap: [],
-      download: null,
     };
   },
   computed: {
@@ -83,13 +76,13 @@ export default {
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
-            this.download = await saver.saveDrawingToolAsPattern(drawingTool);
+            await saver.saveDrawingToolAsPattern(drawingTool);
             return;
           }
           let source;
           if (selected.length === 0) source = drawingTools;
           else source = selected;
-          this.download = await saver.saveDrawingToolsAsPattern(source);
+          await saver.saveDrawingToolsAsPattern(source);
         },
       };
 
@@ -98,13 +91,13 @@ export default {
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
-            this.download = await saver.saveDrawingToolAsPng(drawingTool);
+            await saver.saveDrawingToolAsPng(drawingTool);
             return;
           }
           let source;
           if (selected.length === 0) source = drawingTools;
           else source = selected;
-          this.download = await saver.saveDrawingToolsAsPng(source);
+          await saver.saveDrawingToolsAsPng(source);
         },
       };
 
@@ -113,13 +106,13 @@ export default {
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
-            this.download = await saver.saveDrawingToolAsBoth(drawingTool);
+            await saver.saveDrawingToolAsBoth(drawingTool);
             return;
           }
           let source;
           if (selected.length === 0) source = drawingTools;
           else source = selected;
-          this.download = await saver.saveDrawingToolsAsBoth(source);
+          await saver.saveDrawingToolsAsBoth(source);
         },
       };
 
