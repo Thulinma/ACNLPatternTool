@@ -169,6 +169,9 @@ class ACNHFormat{
     return str;
   }
 
+  fixIssues(){
+    //Does nothing - issues not known yet
+  }
 
   ///Decodes a raw pattern to internal JSON format
   toJSON(b){

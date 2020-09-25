@@ -108,7 +108,7 @@
 
     <ConvertImage
       v-if="convertImage"
-      :drawing-tool="drawingTool"
+      :sourcetool="drawingTool"
       @close="convertImage = false"
       @load="drawingTool.load($event)"
       @scroll-freeze="$emit('scroll-freeze')"

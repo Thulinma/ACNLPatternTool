@@ -148,6 +148,9 @@ class RenderTarget{
 // Fallback drawing handler, when none is set.
 function basicDrawing(x, y, tool){tool.drawPixel(x, y);}
 
+//number to hex helper function
+function toHex(n){return (n<16?"0":"")+n.toString(16);}
+
 class DrawingTool{
   constructor(data = null){
     this.renderTargets = []; //TODO: Should this be a map, perhaps? How do maps work in JS? Can we de-duplicate..?
@@ -393,6 +396,8 @@ class DrawingTool{
       console.log("Invalid color lookup argument: ", c);
       return 0;
     }
+    //ACNH has no palette colors - just plain RGB
+    if (this.pattern instanceof ACNHFormat){return "#"+toHex(rgb[0])+toHex(rgb[1])+toHex(rgb[2]);}
     //Find the closest match
     let best = 255*255*3;
     let bestno = 0;
@@ -450,6 +455,8 @@ class DrawingTool{
   /// Finds the closest YUV global palette index we can find to the color c
   /// Supports [r,g,b]-style only.
   findYUV(rgb){
+    //ACNH has no palette colors - just plain RGB
+    if (this.pattern instanceof ACNHFormat){return "#"+toHex(rgb[0])+toHex(rgb[1])+toHex(rgb[2]);}
     //Convert to YUV
     let yuv = [rgb[0] *  .299000 + rgb[1] *  .587000 + rgb[2] *  .114000, rgb[0] * -.168736 + rgb[1] * -.331264 + rgb[2] *  .500000 + 128, rgb[0] *  .500000 + rgb[1] * -.418688 + rgb[2] * -.081312 + 128];
     //Find the closest match
@@ -480,7 +487,12 @@ class DrawingTool{
     let best = 255*255*3;
     let bestno = 0;
     for (let i = 0; i < 15; i++){
-      let m = ACNLFormat.YUVLookup[this.pattern.getPalette(i)];
+      let m;
+      if (this.pattern instanceof ACNHFormat){
+        m = this.pattern.getPalette(i);
+      }else{
+        m = ACNLFormat.YUVLookup[this.pattern.getPalette(i)];
+      }
       if (m === null){continue;}
       let yD = (m[0] - yuv[0]);
       let uD = (m[1] - yuv[1]);
@@ -516,7 +528,6 @@ class DrawingTool{
   getPalette(idx){
     if (idx < 0 || idx > 14){return "";}//abort for invalid indexes
     if (this.pattern instanceof ACNHFormat){
-      function toHex(n){return (n<16?"0":"")+n.toString(16);}
       const c = this.pattern.getPalette(idx);
       return "#"+toHex(c[0])+toHex(c[1])+toHex(c[2]);
     }

@@ -108,7 +108,7 @@ export default {
       // retain full transparency
       transparency: 100, // range: [0, 100]
       saturation: 0, // range: [-100, 100]
-      paletteSelectionMethod: paletteSelectionMethods.rgb,
+      paletteSelectionMethod: paletteSelectionMethods.medianCut,
       conversionQuality: conversionQualities.high,
       // only shows up when rows and columns === 1
       isSplitPalette: true, // prioritize accuracy for murals
@@ -135,6 +135,7 @@ export default {
       return this.rows > 1 || this.columns > 1;
     },
   },
+  props: ["sourcetool"],
   methods: {
     toCropping(forward = true) {
       this.state = states.cropping;
@@ -347,7 +348,7 @@ export default {
         ];
         let idx = this.drawingTool.findRGB(rgb);
         if (!uniqCol.has(idx)) {
-          colors.push(idx);
+          colors.push(rgb);
           uniqCol.add(idx);
         }
       };
@@ -408,10 +409,6 @@ export default {
         colors.splice(bucketB); //Must remove B first, since B is guaranteed to be the latter entry
         colors.splice(bucketA); //Now we can remove A too, since it was before B and thus couldn't have shifted
         pushAvg(bucketC);
-        uniqCol = new Set(colors);
-        // console.log(
-        //   "Unique colors after merge of closest two: " + uniqCol.size
-        // );
       }
 
       //Set palette to chosen colors
@@ -434,6 +431,7 @@ export default {
       for (let i = 9; i < 15; i++) this.drawingTool.setPalette(i, 0x60 + i - 6);
     },
     selectPalette(imgData) {
+      this.drawingTool.compatMode = this.sourcetool.compatMode;
       if (this.paletteSelectionMethod === paletteSelectionMethods.rgb)
         this.selectRGBPaletteFromImgData(imgData);
       else if (this.paletteSelectionMethod === paletteSelectionMethods.yuv)
