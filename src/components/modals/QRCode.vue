@@ -6,11 +6,11 @@
   >
     <template #window>
       <div class="editor--qr-preview-window">
-        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
         <img class="editor--qr-preview" :src="dataURL" />
         <div class="editor--qr-save-button-container">
           <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
         </div>
+        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
       </div>
     </template>
   </ModalContainer>
@@ -70,10 +70,11 @@ export default {
 @import "styles/resets";
 
 .editor--qr-preview-window {
-  position: fixed;
-  top: 15px;
+  position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 0px);
+  max-width: 100%;
+  transform: translate(-50%, -50%);
   z-index: 999;
 
   @include tablet-landscape {
@@ -83,9 +84,6 @@ export default {
 
 .editor--qr-preview {
   display: block;
-  object-fit: contain;
-  width: 300px;
-  height: 300px;
   border-width: 5px;
   border-style: solid;
   border-color: $cannon-pink;

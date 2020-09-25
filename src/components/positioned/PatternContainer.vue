@@ -6,7 +6,7 @@
   >
     <template #window>
       <div class="storage--window">
-        <CancelButton @click="$emit('close')" />
+        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
         <div class="storage--patterns-grid-container">
           <div class="storage--patterns-grid">
             <div
@@ -308,5 +308,9 @@ export default {
       display: block;
     }
   }
+}
+
+.cancel-button-adjust {
+  z-index: 3;
 }
 </style>

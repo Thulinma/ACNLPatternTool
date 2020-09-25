@@ -1,12 +1,16 @@
 import JSZip from "jszip";
-import { saveAs } from "file-saver";
-import generateACNLQR from "/libs/ACNLQRGenerator";
+import generateACNLQR from "~/libs/ACNLQRGenerator";
+import { saveAs } from "file-saver"; 
 import lzString from "lz-string";
-import DrawingTool from "/libs/DrawingTool";
+import DrawingTool from "~/libs/DrawingTool";
 
+// RUN `saveAs` on per result on the return, loop over array
 const saveDrawingToolAsPattern = async (drawingTool) => {
   const blob = new Blob([drawingTool.toBytes()], { type: "application/octet-stream" });
-  saveAs(blob, `${drawingTool.title}.${drawingTool.compatMode.toLowerCase()}`);
+
+  const content = blob;
+  const filename = `${drawingTool.title}.${drawingTool.compatMode.toLowerCase()}`;
+  saveAs(content, filename);
 };
 
 const saveDrawingToolsAsPattern = async (drawingTools) => {
@@ -22,23 +26,29 @@ const saveDrawingToolsAsPattern = async (drawingTools) => {
     zip.file(`${filename}.${drawingTool.compatMode.toLowerCase()}`, drawingTool.toBytes());
   }
   const zipFile = await zip.generateAsync({ type: "blob" });
-  saveAs(zipFile, "patterns.zip");
+
+  const content = zipFile;
+  const filename = "patterns.zip";
+  saveAs(content, filename);
 };
 
 
-const saveDrawingToolAsPng = async (drawingTool) => {
+const saveDrawingToolAsPng = async (drawingTool) => {  
   const img = await generateACNLQR(drawingTool);
-  saveAs(img, `${drawingTool.title}.png`);
+  const content = img;
+  const filename = `${drawingTool.title}.png`;
+  saveAs(content, filename);
 };
 
 const saveDrawingToolsAsPng = async (drawingTools) => {
   const zip = new JSZip();
   const usedFilenames = new Set();
   for (const drawingTool of drawingTools) {
-
+    drawingTool.fixIssues();
     const img = await generateACNLQR(drawingTool);
-
+    
     let filename = drawingTool.title;
+    
     let id = 0;
     while (usedFilenames.has(filename)) {
       filename = `${drawingTool.title}(${++id})`;
@@ -47,13 +57,22 @@ const saveDrawingToolsAsPng = async (drawingTools) => {
     zip.file(`${filename}.png`, img.substr(22), { base64: true });
   }
   const zipFile = await zip.generateAsync({ type: "blob" });
-  saveAs(zipFile, "patterns.zip");
+
+  const content = zipFile;
+  const filename = "patterns.zip";
+  saveAs(content, filename);
 };
 
 
 const saveDrawingToolAsBoth = async (drawingTool) => {
-  await saveDrawingToolAsPattern(drawingTool);
-  await saveDrawingToolAsPng(drawingTool);
+  const zip = new JSZip();
+  zip.file(`${drawingTool.title}.${drawingTool.compatMode.toLowerCase()}`, drawingTool.toBytes());
+  const img = await generateACNLQR(drawingTool);
+  zip.file(`${drawingTool.title}.png`, img.substr(22), { base64: true });
+  const zipFile = await zip.generateAsync({ type: "blob" });
+  const content = zipFile;
+  const filename = `${drawingTool.title}.zip`;
+  saveAs(content, filename);
 };
 
 const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
@@ -72,7 +91,10 @@ const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
     zip.file(`${filename}.png`, img.substr(22), { base64: true });
   }
   const zipFile = await zip.generateAsync({ type: "blob" });
-  saveAs(zipFile, "patterns.zip");
+
+  const content = zipFile;
+  const filename = "patterns.zip";
+  saveAs(content, filename);
 };
 
 // --- LOCAL STORAGE MODIFICATION MEHODS ---

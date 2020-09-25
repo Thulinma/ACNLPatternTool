@@ -10,24 +10,32 @@
       @select="toggleSelection"
     />
     <FileLoader ref="collectionFileLoader" fileType="collection" @multiload="multiload" />
+    <DownloadButton
+      @close="download = null"
+      v-if="download != null"
+      :toDownload="download" />
   </div>
 </template>
 
 <script>
 import PatternContainer from "~/components/positioned/PatternContainer.vue";
+import DownloadButton from "~/components/positioned/DownloadButton";
 import FileLoader from "~/components/FileLoader.vue";
 import saver from "~/libs/saver";
+import { saveAs } from "file-saver";
 
 export default {
   name: "FileLoaderCollection",
   components: {
     PatternContainer,
     FileLoader,
+    DownloadButton,
   },
   data() {
     return {
       drawingTools: [],
       selectedMap: [],
+      download: null,
     };
   },
   computed: {
@@ -75,28 +83,28 @@ export default {
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
-            await saver.saveDrawingToolAsPattern(drawingTool);
+            this.download = await saver.saveDrawingToolAsPattern(drawingTool);
             return;
           }
           let source;
           if (selected.length === 0) source = drawingTools;
           else source = selected;
-          saver.saveDrawingToolsAsPattern(source);
+          this.download = await saver.saveDrawingToolsAsPattern(source);
         },
       };
 
       const downloadAsPng = {
-        label: `Download ${selected.length === 0 ? "all " : ""}as QRs / PBL`,
+        label: `Download ${selected.length === 0 ? "all " : ""}as QR / PBL`,
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
-            await saver.saveDrawingToolAsPng(drawingTool);
+            this.download = await saver.saveDrawingToolAsPng(drawingTool);
             return;
           }
           let source;
           if (selected.length === 0) source = drawingTools;
           else source = selected;
-          await saver.saveDrawingToolsAsPng(source);
+          this.download = await saver.saveDrawingToolsAsPng(source);
         },
       };
 
@@ -105,13 +113,13 @@ export default {
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
-            await saver.saveDrawingToolAsBoth(drawingTool);
+            this.download = await saver.saveDrawingToolAsBoth(drawingTool);
             return;
           }
           let source;
           if (selected.length === 0) source = drawingTools;
           else source = selected;
-          await saver.saveDrawingToolsAsBoth(source);
+          this.download = await saver.saveDrawingToolsAsBoth(source);
         },
       };
 

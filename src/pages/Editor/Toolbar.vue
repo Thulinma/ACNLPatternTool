@@ -175,7 +175,7 @@
           <div class="toolbar--shortcut-icon-container">
             <IconQRCode class="toolbar--shortcut-icon" />
           </div>
-          <div class="toolbar--shortcut-tooltip">Preview QR Code</div>
+          <div class="toolbar--shortcut-tooltip">Preview</div>
           <div class="toolbar--shortcut-hint short">P</div>
         </button>
       </div>

@@ -1,5 +1,5 @@
 <template>
-  <portal-target name="ModalManager">
+  <portal-target name="ModalManager" multiple>
   </portal-target>
 </template>
 
