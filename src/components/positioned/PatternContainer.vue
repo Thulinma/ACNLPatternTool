@@ -13,15 +13,17 @@
               v-for="(drawingTool, idx) in drawingTools"
               :key="idx"
               :class="{
-              'storage--pattern-container': true,
-              'selected': (selectedMap.length === drawingTools.length) && selectedMap[idx],
-            }"
+                'storage--pattern-container': true,
+                selected:
+                  selectedMap.length === drawingTools.length &&
+                  selectedMap[idx],
+              }"
             >
               <div class="storage--pattern-wrapper">
                 <PreviewGenerator
                   class="storage--pattern"
                   :drawingTool="drawingTool"
-                  @click="isOptionsOpen = false; $emit('select', drawingTool)"
+                  @click="$emit('select', drawingTool)"
                 />
                 <div class="storage--pattern-selected-border"></div>
                 <div class="storage--pattern-selected-icon-container">
@@ -32,19 +34,7 @@
             </div>
           </div>
         </div>
-        
-        <div @click="isOptionsOpen = !isOptionsOpen" class="storage--options-container">
-          <IconKebab class="storage--options-icon" />
-        </div>
-
-        <div v-if="isOptionsOpen && options.length !== 0" class="storage--options-menu">
-          <div
-            v-for="(option, idx) in options"
-            :key="idx"
-            class="storage--option"
-            @click="option.callback()"
-          >{{ option.label }}</div>
-        </div>
+        <UtilityBar v-if="options.length > 0" :options="options" />
       </div>
     </template>
   </ModalContainer>
@@ -57,6 +47,7 @@ import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import IconCheck from "~/components/icons/IconCheck.vue";
 import IconKebab from "~/components/icons/IconKebab.vue";
+import UtilityBar from "~/components/positioned/UtilityBar.vue";
 
 export default {
   name: "PatternContainer",
@@ -66,6 +57,7 @@ export default {
     IconCheck,
     IconKebab,
     CancelButton,
+    UtilityBar,
   },
   props: {
     drawingTools: {
@@ -77,10 +69,6 @@ export default {
       required: false,
       default: () => new Array(),
     },
-    // [{
-    //  label: str,
-    //  callback: function (),
-    // }]
     options: {
       type: Array,
       required: false,

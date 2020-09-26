@@ -13,6 +13,11 @@
 <script>
 import PatternContainer from "~/components/positioned/PatternContainer.vue";
 import saver from "~/libs/saver";
+import openSvg from "~/assets/icons/utilitybar/bxs-envelope-open.svg";
+import deleteSvg from "~/assets/icons/utilitybar/bxs-trash.svg";
+import downloadAsPatternSvg from "~/assets/icons/utilitybar/bxs-file-blank.svg";
+import downloadAsPngSvg from "~/assets/icons/utilitybar/bxs-image-alt.svg";
+import downloadAsBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
 
 export default {
   name: "Storage",
@@ -38,16 +43,23 @@ export default {
       const { selected, selectedMap, drawingTools } = this;
       let options = [];
       if (drawingTools.length === 0) return options;
+      
+      const isNone = selected.size === 0;
+      const isSingle = selected.size === 1;
+      const isMultiple = selected.size > 1;
 
       const open = {
+        imgSrc: openSvg,
         label: `Open`,
         callback: async () => {
           const [drawingTool, ..._] = [...selected];
           this.$emit("load", drawingTool.toString());
+          this.$emit("close");
         },
       };
       
       const del = {
+        imgSrc: deleteSvg,
         label: `Delete`,
         callback: async () => {
           const message = "Are you sure you want to delete these patterns from storage?";
@@ -61,8 +73,10 @@ export default {
         }
       };
       
+      
       const downloadAsPattern = {
-        label: `Download ${selected.size === 0 ? "all " : ""}as .ACNL / .ACNH`,
+        imgSrc: downloadAsPatternSvg,
+        label: `.ACNL / .ACNH`,
         callback: async () => {
           if (selected.size === 1) {
             const [drawingTool, ..._] = [...selected];
@@ -77,7 +91,8 @@ export default {
       };
       
       const downloadAsPng = {
-        label: `Download ${selected.size === 0 ? "all " : ""}as QRs / PBL`,
+        imgSrc: downloadAsPngSvg,
+        label: `QR / PBL`,
         callback: async () => {
           if (selected.size === 1) {
             const [drawingTool, ..._] = [...selected];
@@ -92,7 +107,8 @@ export default {
       };
       
       const downloadAsBoth = {
-        label: `Download ${selected.size === 0 ? "all " : ""}as Both`,
+        imgSrc: downloadAsBothSvg,
+        label: `Both`,
         callback: async () => {
           if (selected.size === 1) {
             const [drawingTool, ..._] = [...selected];

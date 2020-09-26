@@ -17,7 +17,14 @@
 import PatternContainer from "~/components/positioned/PatternContainer.vue";
 import FileLoader from "~/components/FileLoader.vue";
 import saver from "~/libs/saver";
-import { saveAs } from "file-saver";
+
+import saveToStorageSvg from "~/assets/icons/utilitybar/bxs-inbox.svg";
+import openSvg from "~/assets/icons/utilitybar/bxs-envelope-open.svg";
+import removeSvg from "~/assets/icons/utilitybar/bxs-trash.svg";
+import downloadAsPatternSvg from "~/assets/icons/utilitybar/bxs-file-blank.svg";
+import downloadAsPngSvg from "~/assets/icons/utilitybar/bxs-image-alt.svg";
+import downloadAsBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
+
 
 export default {
   name: "FileLoaderCollection",
@@ -43,15 +50,18 @@ export default {
       if (drawingTools.length === 0) return options;
 
       const open = {
+        imgSrc: openSvg,
         label: `Open`,
         callback: async () => {
           const drawingTool = selected[0];
           console.log(drawingTool);
           this.$emit("load", drawingTool.toString());
+          this.$emit("close");
         },
       };
 
       const remove = {
+        imgSrc: removeSvg,
         label: `Remove`,
         callback: async () => {
           for (const drawingTool of selected) {
@@ -62,7 +72,8 @@ export default {
       };
 
       const saveToStorage = {
-        label: `Save ${selected.length === 0 ? "all " : ""}to Storage`,
+        imgSrc: saveToStorageSvg,
+        label: `Storage`,
         callback: async () => {
           let source;
           if (selected.length === 0) source = drawingTools;
@@ -72,7 +83,8 @@ export default {
       };
 
       const downloadAsPattern = {
-        label: `Download ${selected.length === 0 ? "all " : ""}as .ACNL / .ACNH`,
+        imgSrc: downloadAsPatternSvg,
+        label: `.ACNL / .ACNH`,
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
@@ -87,7 +99,8 @@ export default {
       };
 
       const downloadAsPng = {
-        label: `Download ${selected.length === 0 ? "all " : ""}as QR / PBL`,
+        imgSrc: downloadAsPngSvg,
+        label: `QR / PBL`,
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
@@ -102,7 +115,8 @@ export default {
       };
 
       const downloadAsBoth = {
-        label: `Download ${selected.length === 0 ? "all " : ""}as Both`,
+        imgSrc: downloadAsBothSvg,
+        label: `Both`,
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
