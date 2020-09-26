@@ -118,6 +118,7 @@ export default {
     box-sizing: border-box;
     width: 970px;
     height: auto;
+    min-height: 300px;
     max-width: unset;
     max-height: 80%;
     overflow: visible;

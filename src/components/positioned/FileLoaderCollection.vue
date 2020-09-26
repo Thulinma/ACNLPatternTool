@@ -45,7 +45,7 @@ export default {
       );
     },
     options() {
-      const { selected, drawingTools } = this;
+      const { selected, selectedMap, drawingTools } = this;
       let options = [];
       if (drawingTools.length === 0) return options;
 
@@ -67,6 +67,7 @@ export default {
           for (const drawingTool of selected) {
             const idx = drawingTools.indexOf(drawingTool);
             drawingTools.splice(idx, 1);
+            selectedMap.splice(idx, 1);
           }
         },
       };
