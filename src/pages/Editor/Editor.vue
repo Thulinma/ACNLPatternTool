@@ -142,7 +142,7 @@ import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import FileLoader from "~/components/FileLoader.vue";
-import FileLoaderCollection from "~/components/FileLoaderCollection.vue";
+import FileLoaderCollection from "~/components/positioned/FileLoaderCollection.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
 
 export default {
@@ -429,9 +429,6 @@ export default {
     max-height: 100%;
     overflow-y: scroll;
   }
-}
-
-.editor--color-picker-close {
 }
 
 .editor--color-picker-overlay {

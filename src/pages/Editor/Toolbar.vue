@@ -168,9 +168,9 @@
         <button
           :class="{
               'toolbar--shortcut preview': true,
-              'active': qrPreviewOpen,
+              'active': previewOpen,
               }"
-          @click="qrPreviewOpen = true"
+          @click="previewOpen = true"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconQRCode class="toolbar--shortcut-icon" />
@@ -197,9 +197,9 @@
       :patternDetails="patternDetails"
     />
 
-    <QRCode
-      v-if="qrPreviewOpen"
-      @close="qrPreviewOpen = false"
+    <Preview
+      v-if="previewOpen"
+      @close="previewOpen = false"
       :drawingTool="drawingTool"
       @scroll-freeze="$emit('scroll-freeze')"
       @scroll-unfreeze="$emit('scroll-unfreeze')"
@@ -218,7 +218,7 @@
 <script>
 import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
-import QRCode from "~/components/modals/QRCode.vue";
+import Preview from "~/components/modals/Preview.vue";
 import Storage from "~/components/modals/Storage.vue";
 
 // icons
@@ -312,7 +312,7 @@ export default {
   name: "ToolBar",
   components: {
     PatternSettings,
-    QRCode,
+    Preview,
     Storage,
     IconInbox,
     IconPaintTube,
@@ -350,7 +350,7 @@ export default {
       tool: null,
       option: null,
       settingsOpen: false,
-      qrPreviewOpen: false,
+      previewOpen: false,
       storageOpen: false,
       gameMode: false
     };
@@ -424,7 +424,7 @@ export default {
           // need to wait 2 ticks for portal to process
           await this.$nextTick();
           await this.$nextTick();
-          this.qrPreviewOpen = true;
+          this.previewOpen = true;
           return;
         }
       }
@@ -435,15 +435,6 @@ export default {
           else this.drawingTool.undo();
         }
       }
-    },
-    onOpenQrPreview(event) {
-      const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } = event;
-      if (event.ctrlKey) return;
-      if (event.altKey) return;
-      if (event.shiftKey) return;
-      if (event.metaKey) return;
-      this.settingsOpen = false;
-      if (event.code === "KeyP") this.qrPreviewOpen = true;
     },
     changeGameMode(event) {
       event.target.checked ? this.drawingTool.compatMode = 'ACNH' : this.drawingTool.compatMode = 'ACNL'

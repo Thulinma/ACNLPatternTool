@@ -31,7 +31,7 @@ import IconBase from "~/components/icons/IconBase.vue";
 import IconQRCode from "~/components/icons/IconQRCode.vue";
 
 export default {
-  name: "QRCode",
+  name: "Preview",
   components: {
     ModalContainer,
     IconBase,
