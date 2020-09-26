@@ -52,7 +52,7 @@ export default {
   position: absolute;
   left: 50%;
   bottom: 0;
-  transform: translate(-50%, 0%);
+  transform: translate(-50%, 1px);
   background-color: $pink-lace;
   padding: 8px 15px;
   border-radius: 10px 10px 0px 0px;

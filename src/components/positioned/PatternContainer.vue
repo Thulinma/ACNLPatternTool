@@ -137,10 +137,9 @@ export default {
   width: 100%;
   max-height: 100%;
   overflow: scroll;
-  padding: 50px 20px;
+  padding: 50px 20px 80px 20px;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
 }
 
 .storage--patterns-grid {
@@ -148,13 +147,14 @@ export default {
   box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(1, 200px);
-  justify-content: space-between;
+  justify-content: center;
   justify-items: center;
   row-gap: 20px;
   column-gap: 10px;
 
   @include phone-landscape {
     grid-template-columns: repeat(2, 200px);
+    justify-content: space-between;
   }
   @include tablet-portrait {
     grid-template-columns: repeat(4, 150px);
