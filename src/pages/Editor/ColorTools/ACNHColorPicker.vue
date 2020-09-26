@@ -1,20 +1,20 @@
 <template>
-  <div id="acnh-sliders">
-    <section>
-      <label>
+  <div class="acnh-sliders">
+    <section class="sliders--slider-section">
+      <label class="sliders--slider-label">
         Hue
-        <div v-if="mode" class="slider-slot-label">
-          <button @click="() => {if (hue > 0) hue--; setSliderColors()}">
-            <IconLeftArrow class="slider-slot-label-arrow"/>
+        <div v-if="acnh" class="slider--label-slot">
+          <button class="slider--label-slot-button" @click="() => {if (hue > 0) hue--; setSliderColors()}">
+            <IconLeftArrow class="arrow"/>
           </button>
-            {{ parseInt(hue) + 1 }}
-          <button @click="() => {if (hue < 29) hue++; setSliderColors()}">
-            <IconRightArrow class="slider-slot-label-arrow"/>
+            <div class="slider--label-slot-number">{{ parseInt(hue) + 1 }}</div>
+          <button class="slider--label-slot-button" @click="() => {if (hue < 29) hue++; setSliderColors()}">
+            <IconRightArrow class="arrow"/>
           </button>
         </div>
       </label>
-      <div class="slider-container">
-        <input type="range" id="hue" min="0" max="29"
+      <div class="sliders--slider-container">
+        <input class="sliders--slider" type="range" id="hue" min="0" max="29"
           v-model="hue"
           :style="hueGradient"
           @change="setSliderColors"
@@ -22,21 +22,21 @@
       </div>
     </section><!-- hue -->
 
-    <section>
-      <label>
+    <section class="sliders--slider-section">
+      <label class="sliders--slider-label">
         Vividness
-        <div v-if="mode" class="slider-slot-label">
-          <button @click="() => {if (vividness > 0) vividness--; setSliderColors()}">
-            <IconLeftArrow class="slider-slot-label-arrow"/>
+        <div v-if="acnh" class="slider--label-slot">
+          <button class="slider--label-slot-button" @click="() => {if (vividness > 0) vividness--; setSliderColors()}">
+            <IconLeftArrow class="arrow"/>
           </button>
-            {{ parseInt(vividness) + 1 }}
-          <button @click="() => {if (vividness < 14) vividness++; setSliderColors()}">
-            <IconRightArrow class="slider-slot-label-arrow"/>
+            <div class="slider--label-slot-number">{{ parseInt(vividness) + 1 }}</div>
+          <button class="slider--label-slot-button" @click="() => {if (vividness < 14) vividness++; setSliderColors()}">
+            <IconRightArrow class="arrow"/>
           </button>
         </div>
       </label>
-      <div class="slider-container">
-        <input type="range" id="vividness" min="0" max="14"
+      <div class="sliders--slider-container">
+        <input class="sliders--slider" type="range" id="vividness" min="0" max="14"
           v-model="vividness"
           :style="vividnessGradient"
           @change="setSliderColors"
@@ -44,21 +44,21 @@
       </div>
     </section><!-- vividness -->
 
-    <section>
-      <label>
+    <section class="sliders--slider-section">
+      <label class="sliders--slider-label">
         Brightness
-        <div v-if="mode" class="slider-slot-label">
-          <button @click="() => {if (brightness > 0) brightness--; setSliderColors()}">
-            <IconLeftArrow class="slider-slot-label-arrow"/>
+        <div v-if="acnh" class="slider--label-slot">
+          <button class="slider--label-slot-button" @click="() => {if (brightness > 0) brightness--; setSliderColors()}">
+            <IconLeftArrow class="arrow"/>
           </button>
-            {{ parseInt(brightness) + 1 }}
-          <button @click="() => {if (brightness < 14) brightness++; setSliderColors()}">
-            <IconRightArrow class="slider-slot-label-arrow"/>
+            <div class="slider--label-slot-number">{{ parseInt(brightness) + 1 }}</div>
+          <button class="slider--label-slot-button" @click="() => {if (brightness < 14) brightness++; setSliderColors()}">
+            <IconRightArrow class="arrow"/>
           </button>
         </div>
       </label>
-      <div class="slider-container">
-        <input type="range" id="brightness" min="0" max="14"
+      <div class="sliders--slider-container">
+        <input class="sliders--slider" type="range" id="brightness" min="0" max="14"
           v-model="brightness"
           :style="brightnessGradient"
           @change="setSliderColors"
@@ -83,7 +83,7 @@ export default {
   props: {
     drawingTool: Object,
   },
-  data: function() {
+  data() {
     return {
       hue: 0,
       vividness: 0,
@@ -101,7 +101,7 @@ export default {
         background: '',
       },
       currentColor: 0,
-      mode: this.drawingTool.compatMode === 'ACNH'
+      acnh: this.drawingTool.compatMode === 'ACNH'
     }
   },
   methods: {
@@ -161,7 +161,7 @@ export default {
       this.brightness = sliderPositions[2];
     },
   },
-  mounted: function() {
+  mounted() {
     this.setSliderPosition(this.drawingTool.color);
     this.setSliderColors();
     this.drawingTool.onColorChange(() => {
@@ -173,16 +173,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #acnh-sliders {
-    padding: 10px 20px 15px;
-    width: 470px;
-    user-select: none;
-    margin: auto;
-  }
- .slider-container {
-   width: 100%;
-   padding: 10px 0;
-  input[type="range"] {
+.acnh-sliders {
+  padding: 10px 20px 15px;
+  width: 470px;
+  user-select: none;
+  margin: auto;
+}
+
+.sliders--slider-container {
+  width: 100%;
+  padding: 10px 0;
+
+  .sliders--slider {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
@@ -203,21 +205,34 @@ export default {
       margin-top: -4px;
     }
   }
- }
- label {
+}
+
+.sliders--slider-label {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
- }
- button {
+
+  .slider--label-slot {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.slider--label-slot-button {
   appearance: none;
   outline: none;
   padding: 0px;
   border: 0px;
-
   background: none;
-
   cursor: pointer;
- }
+  display: inline-block;
+
+  // .arrow {}
+}
+
+.slider--label-slot-number {
+  width: 20px;
+  text-align: center;
+}
 </style>

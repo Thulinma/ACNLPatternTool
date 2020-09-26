@@ -182,7 +182,7 @@
 
       <div class="toolbar--toggle">
         <div class="toggle--wrapper">
-          <input @change="changeGameMode" class="toggle--input" v-model="gameMode" id="pattern-mode" type="checkbox">
+          <input @click="changeGameMode" :checked="gameMode" class="toggle--input" v-model="gameMode" id="pattern-mode" type="checkbox">
           <label class="toggle--label" for="pattern-mode"></label>
         </div>
       </div>
@@ -345,14 +345,14 @@ export default {
       required: true
     }
   },
-  data: function() {
+  data() {
     return {
       tool: null,
       option: null,
       settingsOpen: false,
       previewOpen: false,
       storageOpen: false,
-      gameMode: false
+      gameMode: this.drawingTool.compatMode === 'ACNH'
     };
   },
   methods: {
@@ -441,7 +441,7 @@ export default {
       this.gameMode = (this.drawingTool.compatMode == "ACNH");
     }
   },
-  mounted: function() {
+  mounted() {
     this.selectTool("brush", "small");
     this.selectTool("eyeDropper", null, true);
     window.addEventListener("keydown", this.onKey);
@@ -449,7 +449,7 @@ export default {
       this.gameMode = (t.compatMode == "ACNH");
     });
   },
-  beforeDestroy: function() {
+  beforeDestroy() {
     window.removeEventListener("keydown", this.onKey);
   }
 };
