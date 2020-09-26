@@ -154,7 +154,7 @@ export default {
 
   @include phone-landscape {
     grid-template-columns: repeat(2, 200px);
-    justify-content: space-between;
+    justify-content: space-around;
   }
   @include tablet-portrait {
     grid-template-columns: repeat(4, 150px);
@@ -162,6 +162,7 @@ export default {
   @include tablet-landscape {
     grid-template-columns: repeat(5, 150px);
     column-gap: 30px;
+    justify-content: space-between;
   }
   @include desktop {
   }

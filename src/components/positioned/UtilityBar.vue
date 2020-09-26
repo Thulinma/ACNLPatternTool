@@ -54,8 +54,8 @@ export default {
   bottom: 0;
   transform: translate(-50%, 1px);
   background-color: $pink-lace;
-  padding: 8px 15px;
-  border-radius: 10px 10px 0px 0px;
+  padding: 10px 15px 6px 15px;
+  border-radius: 15px 15px 0px 0px;
 
   display: flex;
   flex-direction: row;
@@ -67,9 +67,9 @@ export default {
 
 .item {
   @include reset-button;
-  padding: 5px 5px;
+  padding: 5px 8px;
   background-color: $light-pink;
-  border-radius: 4px 4px;
+  border-radius: 8px 8px;
   white-space: nowrap;
 
   &:hover {
