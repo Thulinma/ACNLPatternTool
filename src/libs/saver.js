@@ -6,6 +6,8 @@ import DrawingTool from "~/libs/DrawingTool";
 
 // RUN `saveAs` on per result on the return, loop over array
 const saveDrawingToolAsPattern = async (drawingTool) => {
+  drawingTool.fixIssues();
+  drawingTool.toString();
   const blob = new Blob([drawingTool.toBytes()], { type: "application/octet-stream" });
 
   const content = blob;
@@ -17,6 +19,8 @@ const saveDrawingToolsAsPattern = async (drawingTools) => {
   const zip = new JSZip();
   const usedFilenames = new Set();
   for (const drawingTool of drawingTools) {
+    drawingTool.fixIssues();
+    drawingTool.toString();
     let filename = drawingTool.title;
     let id = 0;
     while (usedFilenames.has(filename)) {
@@ -34,6 +38,8 @@ const saveDrawingToolsAsPattern = async (drawingTools) => {
 
 
 const saveDrawingToolAsPng = async (drawingTool) => {  
+  drawingTool.fixIssues();
+  drawingTool.toString();
   const img = await generateACNLQR(drawingTool);
   const content = img;
   const filename = `${drawingTool.title}.png`;
@@ -45,6 +51,7 @@ const saveDrawingToolsAsPng = async (drawingTools) => {
   const usedFilenames = new Set();
   for (const drawingTool of drawingTools) {
     drawingTool.fixIssues();
+    drawingTool.toString();
     const img = await generateACNLQR(drawingTool);
     
     let filename = drawingTool.title;
@@ -65,6 +72,8 @@ const saveDrawingToolsAsPng = async (drawingTools) => {
 
 
 const saveDrawingToolAsBoth = async (drawingTool) => {
+  drawingTool.fixIssues();
+  drawingTool.toString();
   const zip = new JSZip();
   zip.file(`${drawingTool.title}.${drawingTool.compatMode.toLowerCase()}`, drawingTool.toBytes());
   const img = await generateACNLQR(drawingTool);
@@ -80,6 +89,8 @@ const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
   const usedFilenames = new Set();
   for (let i = 0; i < drawingTools.length; ++i) {
     const drawingTool = drawingTools[i];
+    drawingTool.fixIssues();
+    drawingTool.toString();      
     const img = await generateACNLQR(drawingTool);
     let filename = drawingTool.title;
     let id = 0;
@@ -105,12 +116,13 @@ const saveDrawingToolsAsBoth = async (drawingTools, filenames) => {
  */
 const saveDrawingToolsToStorage = async (drawingTools) => {
   for (const drawingTool of drawingTools) {
-    drawingTool.fixIssues();
-    const hash = drawingTool.fullHash;
     let namespacePrefix;
     if (drawingTool.compatMode === "ACNL") namespacePrefix = "acnl_";
     else if (drawingTool.compatMode === "ACNH") namespacePrefix = "acnh_";
     else continue;
+    drawingTool.fixIssues();
+    drawingTool.toString();
+    const hash = drawingTool.fullHash;
     localStorage.setItem(
       `${namespacePrefix}${hash}`,
       lzString.compressToUTF16(drawingTool.toString()),
@@ -146,6 +158,7 @@ const deleteDrawingToolsFromStorage = async (drawingTools) => {
     if (drawingTool.compatMode === "ACNL") namespacePrefix = "acnl_";
     else if (drawingTool.compatMode === "ACNH") namespacePrefix = "acnh_";
     drawingTool.fixIssues();
+    drawingTool.toString();
     localStorage.removeItem(`${namespacePrefix}${drawingTool.fullHash}`);
   }
 };

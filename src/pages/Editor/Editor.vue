@@ -253,7 +253,7 @@ export default {
       saveAs(img, this.drawingTool.title + ".png");
     },
     async saveToStorage() {
-      await saver.saveDrawingToolToStorage(this.drawingTool);
+      await saver.saveDrawingToolsToStorage([this.drawingTool]);
       window.alert("Successfully saved to Storage!");
     },
 

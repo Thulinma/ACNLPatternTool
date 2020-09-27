@@ -78,9 +78,17 @@ export default {
         label: `Storage`,
         callback: async () => {
           let source;
-          if (selected.length === 0) source = drawingTools;
-          else source = [...selected];
+          let message;
+          if (selected.length === 0) {
+            source = drawingTools;
+            message = "Saved all patterns to storage.";
+          }
+          else {
+            source = [...selected];
+            message = "Saved selected patterns to storage.";
+          }
           await saver.saveDrawingToolsToStorage(source);
+          window.alert(message);
         },
       };
 

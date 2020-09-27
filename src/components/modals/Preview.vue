@@ -58,6 +58,8 @@ export default {
     },
   },
   async mounted() {
+    this.drawingTool.fixIssues();
+    this.drawingTool.toString();
     this.dataURL = await generateACNLQR(this.drawingTool);
   },
 };
