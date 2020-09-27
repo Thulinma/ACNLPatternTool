@@ -62,13 +62,13 @@
 
         <button
           class="settings--advanced-button"
-          v-if="!showAdvanced"
+          v-if="!showAdvanced && drawingTool.compatMode === 'ACNL'"
           @click="showAdvanced = !showAdvanced"
         >
           Advanced
           <IconChevronDown class="settings--advanced-expand-icon" />
         </button>
-        <button class="settings--advanced-button" v-if="showAdvanced" @click="storeMeta">
+        <button class="settings--advanced-button" v-if="showAdvanced && drawingTool.compatMode === 'ACNL'" @click="storeMeta">
           Store Meta Info
           <Tooltip class="settings--tooltip">
             <div class="settings--tooltip-content">
@@ -78,7 +78,7 @@
             </div>
           </Tooltip>
         </button>
-        <button class="settings--advanced-button" v-if="showAdvanced" @click="loadMeta">
+        <button class="settings--advanced-button" v-if="showAdvanced  && drawingTool.compatMode === 'ACNL'" @click="loadMeta">
           Load Meta Info
           <Tooltip class="settings--tooltip">
             <div class="settings--tooltip-content">
