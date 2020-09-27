@@ -439,7 +439,8 @@ export default {
     changeGameMode(event) {
       event.target.checked ? this.drawingTool.compatMode = 'ACNH' : this.drawingTool.compatMode = 'ACNL'
       this.gameMode = (this.drawingTool.compatMode == "ACNH");
-    }
+      this.$emit("change-prev-color-picker", this.drawingTool.compatMode.toLowerCase());
+    },
   },
   mounted() {
     this.selectTool("brush", "small");
@@ -782,6 +783,10 @@ $toolbar--options-width: 75px;
   &.colors {
     margin-top: 14px;
     margin-bottom: 10px;
+  }
+  
+  .toolbar--shortcut.palette {
+    visibility: hidden;
   }
 
   &.drawing {

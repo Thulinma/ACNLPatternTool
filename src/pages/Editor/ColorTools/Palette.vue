@@ -78,6 +78,10 @@ export default {
     },
     onColorClick: function(event, idx) {
       if (this.invalidIdx(idx)) return;
+      // DOUBLE CLICK, OPEN COLOR PICKER
+      if (this.drawingTool.currentColor === idx) {
+        this.$emit("change-color-picker");
+      }
       this.$emit("change-current-color", idx);
     },
     onColorMousemove: function(event, idx) {

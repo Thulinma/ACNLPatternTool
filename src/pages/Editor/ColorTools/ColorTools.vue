@@ -7,6 +7,7 @@
     <Palette
       class="color-tools--palette"
       :drawingTool="drawingTool"
+      @change-color-picker="$emit('change-color-picker', prevColorPicker)"
       @change-current-color="$emit('change-current-color', $event)"/>
 
     <div v-show="isPicking" class="color-tools--color-pickers">
@@ -77,9 +78,13 @@ export default {
       type: DrawingTool,
       required: true
     },
+    prevColorPicker: {
+      type: String,
+      required: false,
+    },
     colorPicker: {
       type: String,
-      required: false
+      required: false,
     },
     isNewPattern: {
       type: Boolean,

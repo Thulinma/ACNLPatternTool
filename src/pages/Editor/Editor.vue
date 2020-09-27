@@ -4,6 +4,8 @@
   }">
     <ColorTools
       :drawingTool="drawingTool"
+      :prevColorPicker="prevColorPicker"
+      @change-color-picker="onChangeColorPicker"
       @change-current-color="onChangeCurrentColor"
       @color-picked="onColorPicked"
     />
@@ -48,6 +50,7 @@
       :prevColorPicker="prevColorPicker"
       :colorPicker="colorPicker"
       @change-color-picker="onChangeColorPicker"
+      @change-prev-color-picker="onChangePrevColorPicker"
       @update-details="updatePatternDetails"
       :patternDetails="patternDetails"
       @load="load"
@@ -137,7 +140,7 @@ import IconCaretUp from "~/components/icons/IconCaretUp.vue";
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ConvertImage from "~/components/modals/ConvertImage";
-import Publish from "~/components/modals/Publish";
+import Publish from "~/components/modals/Publish.vue";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
@@ -221,6 +224,10 @@ export default {
     onChangeColorPicker: function (mode) {
       if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
       this.colorPicker = mode;
+    },
+    onChangePrevColorPicker: function(mode) {
+      if (!["acnh", "acnl"].includes(mode)) return;
+      else this.prevColorPicker = mode;
     },
     updatePatternDetails: function (patternDetails) {
       // update current with incoming
