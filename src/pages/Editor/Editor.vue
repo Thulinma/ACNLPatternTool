@@ -94,7 +94,7 @@
           <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
           <button @click="downloadQR" class="editor--dropup-menu-item">as QR Code</button>
           <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
-          <button class="editor--dropup-menu-item" @click="beginPublishing;">Publish</button>
+          <button class="editor--dropup-menu-item" @click="beginPublishing">Publish</button>
         </div>
       </div>
     </div>
@@ -266,8 +266,10 @@ export default {
 
     // MODAL REACTION
     beginPublishing() {
-      if (this.drawingTool.compatMode === "ACNH")
+      if (this.drawingTool.compatMode === "ACNH") {
         window.alert("Publishing is not available for ACNH formatted patterns.");
+        return;
+      }
       this.publishing = true;
     },
     
