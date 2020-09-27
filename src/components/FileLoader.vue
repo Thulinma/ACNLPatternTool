@@ -101,7 +101,8 @@ export default {
             // check for multi-part qr code
             const hints = new Map();
             hints.set(DecodeHintType.TRY_HARDER, true);
-            const r = await codeReader.decodeFromImageUrl(iUrl, hints);
+            codeReader.hints = hints;
+            const r = await codeReader.decodeFromImageUrl(iUrl);
             r.forEach((code) => {
               if (
                 code.resultMetadata.has(
