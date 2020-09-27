@@ -71,8 +71,8 @@
           <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
           <button class="editor--dropup-menu-item" @click="openPattern">Open .ACNL / .ACNH</button>
           <FileLoader ref="patternFileLoader" fileType="acpattern" @load="load" />
-          <button class="editor--dropup-menu-item" @click="fileLoadCollection = true">Open .ZIP / .DAT</button>
-          <FileLoaderCollection v-if="fileLoadCollection" @load="load" @close="fileLoadCollection = false"/>
+          <button class="editor--dropup-menu-item" @click="openCollection">Open .ZIP / .DAT</button>
+          <FileLoaderCollection v-if="fileLoadingCollection" @load="load" ref="collectionFileLoader" @close="fileLoadingCollection = false"/>
         </div>
       </div>
 
@@ -187,7 +187,7 @@ export default {
       // modals
       convertImage: null,
       publishing: false,
-      fileLoadCollection: false,
+      fileLoadingCollection: false,
     };
   },
   methods: {    
@@ -196,6 +196,7 @@ export default {
     // ------------------
     // data can be binary string or any drawingTool accepted data type
     load(data) {
+      console.log("debug here");
       this.drawingTool.load(data);
       this.drawingTool.render();
       this.syncPatternDetails();
@@ -341,8 +342,11 @@ export default {
     openPattern() {
       this.$refs.patternFileLoader.open();
     },
-    openCollection() {
+    async openCollection() {
+      this.fileLoadingCollection = true;
+      await this.$nextTick();
       this.$refs.collectionFileLoader.open();
+      console.log("opening collection");
     }
   },
   mounted: async function () {

@@ -62,10 +62,19 @@ export default {
         imgSrc: deleteSvg,
         label: `Delete`,
         callback: async () => {
-          const message = "Are you sure you want to delete these patterns from storage?";
+          let message;
+          let source;
+          if (selected.size !== 0) {
+            message = "Are you sure you want to delete these patterns from storage?";
+            source = [...selected];
+          }
+          else {
+            message = "Are you sure you want to clear the storage?";
+            source = [...drawingTools];
+          }
           if (!window.confirm(message)) return;
-          saver.deleteDrawingToolsFromStorage([...selected]);
-          for (const drawingTool of [...selected]) {
+          saver.deleteDrawingToolsFromStorage(source);
+          for (const drawingTool of source) {
             const idx = drawingTools.indexOf(drawingTool);
             drawingTools.splice(idx, 1);
             selectedMap.splice(idx, 1);
@@ -124,9 +133,7 @@ export default {
       if (selected.size === 1) {
         options.push(open);
       }
-      if (selected.size >= 1) {
-        options.push(del);
-      }
+      options.push(del);
       options.push(
         downloadAsPattern,
         downloadAsPng,

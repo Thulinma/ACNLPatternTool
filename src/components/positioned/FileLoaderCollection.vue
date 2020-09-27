@@ -1,6 +1,7 @@
 <template>
   <div>
     <PatternContainer
+      v-if="drawingTools.length > 0"
       @close="$emit('close')"
       @scroll-freeze="$emit('scroll-freeze')"
       @scroll-unfreeze="$emit('scroll-unfreeze')"
@@ -166,8 +167,5 @@ export default {
       }
     }
   },
-  mounted() {
-    this.open();
-  }
 };
 </script>

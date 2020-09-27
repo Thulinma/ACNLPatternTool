@@ -96,6 +96,9 @@ export default {
     vertical-align: middle;
   }
   
+  @include phone-landscape {
+    padding: 5px 10px;
+  }
   @include tablet-portrait {
     .item-label {
       display: inline;
