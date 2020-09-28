@@ -52,9 +52,12 @@ export default {
   position: absolute;
   left: 50%;
   bottom: 0;
-  transform: translate(-50%, 1px);
+  transform: translate(-50%, 0px);
   background-color: $pink-lace;
   padding: 10px 15px 6px 15px;
+  border-color: $light-pink;
+  border-width: 2px 2px 0px 2px;
+  border-style: solid;
   border-radius: 15px 15px 0px 0px;
 
   display: flex;
