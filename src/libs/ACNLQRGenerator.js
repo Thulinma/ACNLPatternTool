@@ -5,7 +5,12 @@ import {drawPreviewFromTool} from "/libs/Preview3D";
 
 async function generateACNLQR(newData){
   //Load pattern, prepare render canvas
-  let drawingTool = (newData instanceof DrawingTool) ? newData : new DrawingTool(newData);
+  let drawingTool;
+  if (newData instanceof DrawingTool) {
+    drawingTool = new DrawingTool();
+    drawingTool.load(newData.toString());
+  }
+  else drawingTool = new DrawingTool(newData);  
 
   if (drawingTool.pattern instanceof ACNHFormat){
     console.log("Forcing pattern format to ACNL for QR code generation");
