@@ -364,10 +364,6 @@ export default {
       this.stand.position.y = -6;
     });
   },
-  beforeDestroy() {
-    const callbackIdx = this.drawingTool.handleOnLoad.indexOf()
-    this.drawingTool.handleOnLoad.splice(callbackIdx, 1);
-  }
 }
 </script>
 
