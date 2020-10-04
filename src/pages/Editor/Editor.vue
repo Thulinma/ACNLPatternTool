@@ -91,10 +91,13 @@
         </div>
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
-          <button @click="downloadBinary" class="editor--dropup-menu-item">as .ACNL</button>
-          <button @click="downloadQR" class="editor--dropup-menu-item">as QR Code</button>
+          <button @click="downloadBinary" class="editor--dropup-menu-item">as .{{drawingTool.compatMode}}</button>
+          <button v-if="drawingTool.compatMode !== '???'" @click="downloadQR" class="editor--dropup-menu-item">
+            as <span v-if="drawingTool.compatMode === 'ACNL'">QR Code</span>
+              <span v-else-if="drawingTool.compatMode === 'ACNH'">PBL</span>
+          </button>
           <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
-          <button class="editor--dropup-menu-item" @click="beginPublishing">Publish</button>
+          <button v-if="drawingTool.compatMode === 'ACNL'" class="editor--dropup-menu-item" @click="beginPublishing">Publish</button>
         </div>
       </div>
     </div>
@@ -256,8 +259,7 @@ export default {
       saveAs(blob, `${this.drawingTool.title}.${ext}`);
     },
     async downloadQR() {
-      const img = await generateACNLQR(this.drawingTool);
-      saveAs(img, this.drawingTool.title + ".png");
+      await saver.saveDrawingToolAsPng(this.drawingTool);
     },
     async saveToStorage() {
       await saver.saveDrawingToolsToStorage([this.drawingTool]);
