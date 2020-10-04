@@ -12,11 +12,11 @@
           <div class="publish--header-text">Publish Your Design!</div>
         </div>
 
-        <ThreeDRender
+        <IconGenerator
           class="publish--render"
           :width="280"
           :height="280"
-          :drawingTool="drawingTool"
+          :pattern="drawingTool"
         />
 
         <div class="publish--inputs">
@@ -119,7 +119,7 @@
 <script>
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import IconCloud from "~/components/icons/IconCloud.vue";
-import ThreeDRender from "/components/ThreeDRender.vue";
+import IconGenerator from "~/components/IconGenerator.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import origin from "/libs/origin";
 
@@ -127,7 +127,7 @@ export default {
   name: "Publish",
   components: {
     ModalContainer,
-    ThreeDRender,
+    IconGenerator,
     IconCloud
   },
   props: {
