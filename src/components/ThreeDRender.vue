@@ -87,6 +87,7 @@ export default {
       }
       //Get new model properties
       let modelType = toolToModelType(d);
+      if (modelType > 2){return;}
       let path = toolToModelPath(d);
       let modelOffset = {x: 0, y:-6, z:0, rough: 1.5};
       this.controls.maxZoom = 2.0;
