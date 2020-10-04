@@ -3,12 +3,12 @@
     <section class="sliders--slider-section">
       <label class="sliders--slider-label">
         Hue
-        <div v-if="acnh" class="slider--label-slot">
-          <button class="slider--label-slot-button" @click="() => {if (hue > 0) hue--; setSliderColors()}">
+        <div class="slider--label-slot">
+          <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (hue > 0) hue--; setSliderColors()}">
             <IconLeftArrow class="arrow"/>
           </button>
             <div class="slider--label-slot-number">{{ parseInt(hue) + 1 }}</div>
-          <button class="slider--label-slot-button" @click="() => {if (hue < 29) hue++; setSliderColors()}">
+          <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (hue < 29) hue++; setSliderColors()}">
             <IconRightArrow class="arrow"/>
           </button>
         </div>
@@ -25,12 +25,12 @@
     <section class="sliders--slider-section">
       <label class="sliders--slider-label">
         Vividness
-        <div v-if="acnh" class="slider--label-slot">
-          <button class="slider--label-slot-button" @click="() => {if (vividness > 0) vividness--; setSliderColors()}">
+        <div class="slider--label-slot">
+          <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (vividness > 0) vividness--; setSliderColors()}">
             <IconLeftArrow class="arrow"/>
           </button>
             <div class="slider--label-slot-number">{{ parseInt(vividness) + 1 }}</div>
-          <button class="slider--label-slot-button" @click="() => {if (vividness < 14) vividness++; setSliderColors()}">
+          <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (vividness < 14) vividness++; setSliderColors()}">
             <IconRightArrow class="arrow"/>
           </button>
         </div>
@@ -47,12 +47,12 @@
     <section class="sliders--slider-section">
       <label class="sliders--slider-label">
         Brightness
-        <div v-if="acnh" class="slider--label-slot">
-          <button class="slider--label-slot-button" @click="() => {if (brightness > 0) brightness--; setSliderColors()}">
+        <div class="slider--label-slot">
+          <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (brightness > 0) brightness--; setSliderColors()}">
             <IconLeftArrow class="arrow"/>
           </button>
             <div class="slider--label-slot-number">{{ parseInt(brightness) + 1 }}</div>
-          <button class="slider--label-slot-button" @click="() => {if (brightness < 14) brightness++; setSliderColors()}">
+          <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (brightness < 14) brightness++; setSliderColors()}">
             <IconRightArrow class="arrow"/>
           </button>
         </div>
