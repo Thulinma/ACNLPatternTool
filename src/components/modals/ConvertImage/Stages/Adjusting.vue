@@ -23,14 +23,27 @@
 
       <div class="slider-option">
         <div class="slider-option-title">Saturation</div>
+
         <div class="slider-option-indicator"></div>
         <input
           type="range"
-          min="-100"
+          min="0"
           max="100"
           :value="saturation"
           @change="$emit('update:saturation', Number($event.target.value))"
         />
+
+        <div class="checkbox-option" :class="{ active: applySaturation }">
+          <input
+            type="checkbox"
+            id="saturation-effect"
+            name="saturation-effect"
+            :checked="applySaturation"
+            :value="applySaturation"
+            @change="$emit('update:applySaturation', Boolean($event.target.checked))"
+          />
+          <label class="checkbox-option-title" for="saturation-effect">Apply Saturation Effect</label>
+        </div>
       </div>
 
       <div class="radio-options">
@@ -175,6 +188,10 @@ export default {
     },
     saturation: {
       type: Number,
+      required: true,
+    },
+    applySaturation: {
+      type: Boolean,
       required: true,
     },
     conversionQuality: {

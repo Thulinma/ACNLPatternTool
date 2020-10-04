@@ -34,6 +34,8 @@
           @update:transparency="updateTransparency"
           :saturation="saturation"
           @update:saturation="updateSaturation"
+          :applySaturation="applySaturation"
+          @update:applySaturation="updateApplySaturation"
           :conversionQuality="conversionQuality"
           @update:conversionQuality="updateConversionQuality"
           :isSplitPalette="isSplitPalette"
@@ -107,7 +109,8 @@ export default {
       // --- OPTIONS ---
       // retain full transparency
       transparency: 100, // range: [0, 100]
-      saturation: 0, // range: [-100, 100]
+      saturation: 50, // range: [0, 100]
+      applySaturation: false, // dont apply saturation automatically
       paletteSelectionMethod: paletteSelectionMethods.medianCut,
       conversionQuality: conversionQualities.high,
       // only shows up when rows and columns === 1
@@ -164,6 +167,10 @@ export default {
       this.saturation = saturation;
       this.updatePreviewDataURL();
     },
+    updateApplySaturation(applySaturation) {
+      this.applySaturation = applySaturation;
+      this.updatePreviewDataURL();
+    },
     updateTransparency(transparency) {
       this.transparency = transparency;
       this.updatePreviewDataURL();
@@ -180,16 +187,17 @@ export default {
       this.paletteSelectionMethod = paletteSelectionMethod;
       this.updatePreviewDataURL();
     },
-    saturateImgData(imgData) {
-      const data = imgData.data;
-      const contrast = this.saturation / 100 + 1;
-      let intercept = 128 * (1 - contrast);
-      for (let i = 0; i < data.length; i += 4) {
-        // r, g, b, a
-        data[i] = data[i] * contrast + intercept;
-        data[i + 1] = data[i + 1] * contrast + intercept;
-        data[i + 2] = data[i + 2] * contrast + intercept;
-      }
+    saturateImage() {
+      const {
+        croppedCanvas,
+        mixingContext,
+        saturation,
+      } = this;
+
+      mixingContext.globalCompositeOperation = `saturation`; // switch to saturation comp
+      mixingContext.fillStyle = `hsl(0, ${saturation}%, 50%)`;  // apply amount of saturation
+      mixingContext.fillRect(0, 0, croppedCanvas.width, croppedCanvas.height);  // apply the comp filter
+      mixingContext.globalCompositeOperation = `source-over`;  // restore default comp
     },
     selectRGBPaletteFromImgData(imgData) {
       let palette = [];
@@ -462,6 +470,7 @@ export default {
         columns,
         transparency,
         saturation,
+        applySaturation,
         conversionQuality,
         isSplitPalette,
         paletteSelectionMethod,
@@ -505,13 +514,8 @@ export default {
       // draws pixelated verison
       mixingContext.drawImage(croppedCanvas, 0, 0, width, height);
 
-      // pixels
-      const imgData = mixingContext.getImageData(0, 0, width, height);
       // saturate the mixing canvas
-      if (saturation > 0) {
-        this.saturateImgData(imgData);
-        mixingContext.putImageData(imgData, 0, 0);
-      }
+      if (applySaturation) this.saturateImage();
 
       // select palette
       if (!isSplitPalette) this.selectPalette(imgData);

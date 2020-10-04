@@ -158,3 +158,34 @@
   background-color: $ecru-white;
   margin-right: 10px;
 }
+
+.checkbox-option {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  background-color: $albescent-white;
+  border-radius: 8px;
+  color: $domino;
+  font-weight: 600;
+  margin: 15px 0;
+  padding: 10px;
+
+  &.active {
+    background-color: $domino;
+    color: $ecru-white;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  input {
+    width: 10px;
+    height: 10px;
+    background-color: $ecru-white;
+    margin-right: 10px;
+  }
+}
