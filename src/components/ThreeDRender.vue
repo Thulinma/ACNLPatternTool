@@ -12,6 +12,7 @@
 import DrawingTool from "/libs/DrawingTool";
 import ACNHFormat from "/libs/ACNHFormat";
 import { applyFilter } from '/libs/xbrz';
+import {toolToModelType,toolToModelPath} from '/libs/Preview3D';
 
 import {
   Scene,
@@ -72,161 +73,57 @@ export default {
   },
   methods: {
     loadModel(d){
+      //This prevents a race condition from happening when changing pattern while a model was still being loaded
+      //We simply postpone the event by 100ms repeatedly until the previous load completed.
       if (this.loading){
         setTimeout(this.loadModel, 100, d);
         return;
       }
       this.loading = true;
+      //Remove old model from the scene
       if (this.model){
         this.scene.remove(this.model);
         this.model = false;
       }
-      let path;
+      //Get new model properties
+      let modelType = toolToModelType(d);
+      let path = toolToModelPath(d);
       let modelOffset = {x: 0, y:-6, z:0, rough: 1.5};
       this.controls.maxZoom = 2.0;
       this.controls.minZoom = 0.8;
       this.camera.position.set( 0, 20, 100 );
-      this.controls.update();
-      let modelType = 1;
-      if (d.pattern instanceof ACNHFormat){
-        switch (d.patternType){
-          case 0x00://Pattern
-          case 0x01://Pro pattern
-            path = injected.easel;
-            modelType = 0;
-            break;
-          case 0x02://plain tank top
-            path = injected.tank_simp;
-            break;
-          case 0x03://ls dress shirt
-            path = injected.dressshirt_long;
-            break;
-          case 0x04://short sleeve tee
-            path = injected.tee_short;
-            break;
-          case 0x05://pro tank top
-            path = injected.tank_pro;
-            break;
-          case 0x06://sweater
-            path = injected.sweater;
-            break;
-          case 0x07://hoodie
-            path = injected.hoodie;
-            break;
-          case 0x08://coat
-            path = injected.coat;
-            break;
-          case 0x09://shortsleeve dress
-            path = injected.dress_acnh_short;
-            break;
-          case 0x0A://sleeveless dress
-            path = injected.dress_acnh_none;
-            break;
-          case 0x0B://long sleeve dress
-            path = injected.dress_acnh_long;
-            break;
-          case 0x0C://balloon hem dress
-            path = injected.dress_balloon;
-            break;
-          case 0x0D://round dress
-            path = injected.dress_round;
-            break;
-          case 0x0E://robe
-            path = injected.robe;
-            break;
-          case 0x0F://brimmed cap
-            path = injected.brimmed_cap;
-            modelType = 2;
-            break;
-          case 0x10://knit cap
-            path = injected.knit_cap;
-            modelType = 2;
-            break;
-          case 0x11://brimmed hat
-            path = injected.brimmed_hat;
-            modelType = 2;
-            break;
-          case 0x12://short sleeve dress
-            path = injected.dress_half;
-            break;
-          case 0x13://long sleeve dress
-            path = injected.dress_long;
-            break;
-          case 0x14://sleeveless dress
-            path = injected.dress_none;
-            break;
-          case 0x15://short sleeve shirt
-            path = injected.shirt_half;
-            break;
-          case 0x16://long sleeve shirt
-            path = injected.shirt_long;
-            break;
-          case 0x17://sleeveless shirt
-            path = injected.shirt_none;
-            break;
-          case 0x18://hat
-            path = injected.hat;
-            modelType = 2;
-            break;
-          case 0x19://horned hat
-            path = injected.hornhat;
-            modelType = 2;
-            break;
-          default: return;
-        }
-
-      }else{
-        switch (d.patternType){
-          case 0: path = injected.dress_long; break;
-          case 1: path = injected.dress_half; break;
-          case 2: path = injected.dress_none; break;
-          case 3: path = injected.shirt_long; break;
-          case 4: path = injected.shirt_half; break;
-          case 5: path = injected.shirt_none; break;
-          case 6:
-            path = injected.hornhat;
-            modelType = 2;
-          break;
-          case 7:
-            path = injected.hat;
-            modelType = 2;
-          break;
-          case 9:
-            path = injected.easel;
-            modelType = 0;
-          break;
-          default: return;
-        }
-      }
-      let stand = true;
+      let stand = false;
       switch (modelType){
         case 0://easel style
           modelOffset.rough = 0.5;
           modelOffset.y = -7;
-          stand = false;
           this.controls.maxZoom = 2.0;
           this.controls.minZoom = 0.8;
           this.controls.zoom = 1.5;
-          this.controls.update();
         break;
         case 1://clothing style
           this.controls.maxZoom = 4.0;
           this.controls.minZoom = 1.5;
-          this.controls.update();
+          stand = true;
         break;
         case 2://hat style
           modelOffset.y = -1;
-          stand = false;
           this.controls.maxZoom = 2.0;
           this.controls.minZoom = 0.8;
-          this.controls.update();
         break;
       }
+      this.controls.update();
       this.$refs.canvas3d.dispatchEvent(new WheelEvent("wheel", {"deltaY":50}));
+      //Remove stand and re-add if it should be displayed
       this.scene.remove(this.stand);
       if (stand && this.stand){this.scene.add(this.stand);}
+      //Wipe the renderCanvas
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       this.mixImg = false;
+      this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.texWidth;
+      this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.texWidth*4;
+      this.drawingTool.render();
+      //The loader has an async callback. This is fine, as we don't run any other code after it.
       loader.load(injected.getObjectUrl(path["model.gltf"]), (gltf) => {
         if (this.model){this.scene.remove(this.model);}
         this.model = gltf.scene.children[0];
@@ -285,10 +182,7 @@ export default {
         this.scene.add(this.model);
         if (!this.hasAnimReq){this.hasAnimReq = requestAnimationFrame(this.animate);}
         this.loading = false;
-      });
-      this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.texWidth;
-      this.renderCanvas.height = this.renderCanvas.width = this.drawingTool.texWidth*4;
-      this.drawingTool.render();
+      });//end of loader callback
     },
     animate(){
       this.controls.update();
