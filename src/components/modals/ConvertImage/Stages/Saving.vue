@@ -54,7 +54,7 @@ const savingMethodOptions = [
   },
   {
     name: "Both as .ZIP",
-    savingMethod: saver.saveDrawingToolAsBoth,
+    savingMethod: saver.saveDrawingToolsAsBoth,
   },
 ];
 
