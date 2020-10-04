@@ -22,12 +22,10 @@ class RenderTarget{
   
   resizeHandler(entries){
     for (let entry of entries) {
-      this.width = entry.contentRect.width;
-      this.height = entry.contentRect.height;
-      if (this.width < 64){this.width = 64;}
-      if (this.height < 64){this.height = 64;}
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
+      this.canvas.width = Math.floor(entry.contentRect.width / 64)*64;
+      this.canvas.height = Math.floor(entry.contentRect.height / 64)*64;
+      if (this.canvas.width < 64){this.canvas.width = 64;}
+      if (this.canvas.height < 64){this.canvas.height = 64;}
       //recalculate zoom level
       this.calcZoom();
       //re-render
@@ -38,6 +36,8 @@ class RenderTarget{
   /// Calculates the correct zoom level, given the current pattern width
   /// Should be called every time the pattern (or canvas) changes width
   calcZoom(pWidth, tWidth){
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
     if (pWidth && tWidth){
       if (this.opt.texture){
         pWidth = tWidth;
