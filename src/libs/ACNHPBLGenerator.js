@@ -35,7 +35,17 @@ async function generateACNHPBL(newData){
 
   //Build lookup table of palette colors
   let palette = [];
-  for (let i = 0; i < 16; ++i){palette.push(drawingTool.getPalette(i));}
+  for (let i = 0; i < 16; ++i){
+    const slrs = ACNHFormat.colorToSliders(drawingTool.getPalette(i));
+    //Quantify to nearest slider position
+    const hex = ACNHFormat.slidersToColor(slrs[0], slrs[1], slrs[2]);
+    drawingTool.setPalette(i, hex);
+  }
+  drawingTool.dedupeColors();
+  drawingTool.sortColors();
+  for (let i = 0; i < 16; ++i){
+    palette.push(drawingTool.getPalette(i));
+  }
 
   //Draw PBL grid
   {
@@ -104,9 +114,11 @@ async function generateACNHPBL(newData){
 
   //Write slider positions
   for (let i = 0; i < 15; ++i){
-    drawLetter(660, 212+((630-212)/14*i), palette[i], i);
-    const slrs = ACNHFormat.colorToSliders(palette[i]);
-    drawTxtWithBg(660+35, 212+((630-212)/14*i)+10, (slrs[0]+1)+", "+(slrs[1]+1)+", "+(slrs[2]+1), "#FFFFFF");
+    if (drawingTool.countPixelsWithColor(i) > 0){
+      drawLetter(660, 212+((630-212)/14*i), palette[i], i);
+      const slrs = ACNHFormat.colorToSliders(palette[i]);
+      drawTxtWithBg(660+35, 212+((630-212)/14*i)+10, (slrs[0]+1)+", "+(slrs[1]+1)+", "+(slrs[2]+1), "#FFFFFF");
+    }
   }
 
   return pblCanvas.toDataURL("image/png");

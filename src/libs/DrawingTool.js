@@ -645,6 +645,63 @@ class DrawingTool{
     }
   }
 
+  /// Returns a count of the amount of pixels using the given color index
+  countPixelsWithColor(idx){
+    let n = 0;
+    let pixCount = this.pattern.width == 32 ? 1024 : 4096;
+    for (let i = 0; i < pixCount; ++i){
+      if (this.pixels[i] == idx){++n;}
+    }
+    return n;
+  }
+
+  /// Removes duplicate colors by setting all pixels to the lowest index of that color
+  dedupeColors(){
+    let pixCount = this.pattern.width == 32 ? 1024 : 4096;
+    let indexMap = [];
+    let colorMap = {};
+    //Calculate new indexes from old indexes
+    for (let i = 0; i < 15; ++i){
+      const c = this.getPalette(i);
+      if (colorMap.hasOwnProperty(c)){
+        indexMap[i] = colorMap[c];
+      }else{
+        colorMap[c] = i;
+        indexMap[i] = i;
+      }
+    }
+    //Change pixels to their respective indexes
+    for (let i = 0; i < pixCount; ++i){
+      const c = this.pixels[i];
+      if (c >= 15){continue;}
+      this.pixels[i] = indexMap[c];
+    }
+  }
+
+  /// Sorts color indexes from most-used to least-used
+  sortColors(){
+    let pixCount = this.pattern.width == 32 ? 1024 : 4096;
+    let indexMap = [];
+    let colorMap = [];
+    //Check pixel counts
+    for (let i = 0; i < 15; ++i){
+      colorMap.push({color: this.getPalette(i), count: this.countPixelsWithColor(i), prev:i});
+    }
+    //Sort by pixel count
+    colorMap.sort((a,b)=>(b.count-a.count));
+    //Create mapping, update palette colors
+    for (let i = 0; i < 15; ++i){
+      indexMap[colorMap[i].prev] = i;
+      this.setPalette(i, colorMap[i].color);
+    }
+    //Change pixels to their respective indexes
+    for (let i = 0; i < pixCount; ++i){
+      const c = this.pixels[i];
+      if (c >= 15){continue;}
+      this.pixels[i] = indexMap[c];
+    }
+  }
+
   /// Returns the color (palette index) of the given pixel
   getPixel(x, y){
     if (x < 0 || y < 0 || x > 63 || y > 63 || isNaN(x) || isNaN(y)){return false;}
