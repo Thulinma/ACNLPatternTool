@@ -380,7 +380,7 @@ class ACNHFormat{
     return `#${hex.toUpperCase()}`;
   }
   static colorToSliders(r,g,b){
-    if (typeof r == "string" && r.length == 7 && r.substr(0, 1) == 1){r = r.substr(1);}
+    if (typeof r == "string" && r.length == 7 && r.substr(0, 1) == '#'){r = r.substr(1);}
     if (typeof r == "string" && r.length == 6){
       g = parseInt(r.substring(2,4), 16);
       b = parseInt(r.substring(4,6), 16);
@@ -405,7 +405,11 @@ class ACNHFormat{
     if (h<0){h+=6;}
     const s=((!M)?0:(C/M))*100;
     const v = M*100;
-    return [Math.min(29,Math.round(h*5)), Math.min(14,Math.round(s/Sinc)), Math.min(14,Math.round((v-Vstart)/Vinc))];
+    return [
+      Math.max(0,Math.min(29,Math.round(h*5))),
+      Math.max(0,Math.min(14,Math.round(s/Sinc))),
+      Math.max(0,Math.min(14,Math.round((v-Vstart)/Vinc)))
+    ];
   }
 };
 

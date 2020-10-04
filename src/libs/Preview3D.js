@@ -310,7 +310,7 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
 
     //Render the scene
     renderer.render(scene, camera);
-    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, 0, 0, threeCanvas.width, threeCanvas.height);
+    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, x, y, threeCanvas.width, threeCanvas.height);
     //Free ThreeJS-related resources
     scene.dispose();
     texture.dispose();

@@ -161,7 +161,11 @@ class DrawingTool{
     this.undoHistory = [];
     this.redoHistory = [];
     this.xbrz = true;
-    if (data != null){this.load(data);}
+    if (data instanceof DrawingTool){
+      this.load(data.toString());
+    }else{
+      if (data != null){this.load(data);}
+    }
   }
 
   ///Clears all data (except render targets and onLoad handlers) to defaults

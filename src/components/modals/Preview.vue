@@ -25,6 +25,7 @@ import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
 
 /* libs */
 import generateACNLQR from "~/libs/ACNLQRGenerator";
+import generateACNHPBL from "~/libs/ACNHPBLGenerator";
 
 /* svg icons */
 import IconBase from "~/components/icons/IconBase.vue";
@@ -58,7 +59,11 @@ export default {
     },
   },
   async mounted() {
-    this.dataURL = await generateACNLQR(this.drawingTool);
+    if (this.drawingTool.compatMode == "ACNL"){
+      this.dataURL = await generateACNLQR(this.drawingTool);
+    }else{
+      this.dataURL = await generateACNHPBL(this.drawingTool);
+    }
   },
 };
 </script>
