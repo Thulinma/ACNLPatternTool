@@ -244,7 +244,7 @@ export default {
       console.log(
         "Read " + Object.keys(results).length + " patterns from files!"
       );
-      const message = "No qr codes could be read from the image.";
+      const message = "No QR codes could be read from the image.";
       if (Object.keys(results).length === 0) window.alert(message);
       if (Object.keys(results).length == 1) {
         this.$emit("load", results[Object.keys(results)[0]]);

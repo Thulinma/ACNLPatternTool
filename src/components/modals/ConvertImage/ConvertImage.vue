@@ -90,6 +90,9 @@ export default {
     drawingTool.addCanvas(drawingCanvas);
     const drawingContext = drawingCanvas.getContext("2d");
 
+    const saturationCanvas = document.createElement("canvas");
+    const saturationContext = saturationCanvas.getContext("2d");
+
     const mixingCanvas = document.createElement("canvas");
     const mixingContext = mixingCanvas.getContext("2d");
 
@@ -122,6 +125,9 @@ export default {
       drawingContext,
       // selected crop, keep this intact
       croppedCanvas: null,
+      // saturation effect, pre-mid-process
+      saturationCanvas,
+      saturationContext,
       // mid-process
       mixingCanvas,
       mixingContext,
@@ -190,14 +196,20 @@ export default {
     saturateImage() {
       const {
         croppedCanvas,
-        mixingContext,
+        saturationCanvas,
+        saturationContext,
         saturation,
+        applySaturation,
       } = this;
 
-      mixingContext.globalCompositeOperation = `saturation`; // switch to saturation comp
-      mixingContext.fillStyle = `hsl(0, ${saturation}%, 50%)`;  // apply amount of saturation
-      mixingContext.fillRect(0, 0, croppedCanvas.width, croppedCanvas.height);  // apply the comp filter
-      mixingContext.globalCompositeOperation = `source-over`;  // restore default comp
+      saturationContext.drawImage(croppedCanvas, 0, 0, croppedCanvas.width, croppedCanvas.height);
+
+      if (applySaturation) {
+        saturationContext.globalCompositeOperation = `saturation`; // switch to saturation comp
+        saturationContext.fillStyle = `hsl(0, ${saturation}%, 50%)`;  // apply amount of saturation
+        saturationContext.fillRect(0, 0, saturationCanvas.width, saturationCanvas.height);  // apply the comp filter
+        saturationContext.globalCompositeOperation = `source-over`;  // restore default comp
+      }
     },
     selectRGBPaletteFromImgData(imgData) {
       let palette = [];
@@ -461,6 +473,8 @@ export default {
         croppedCanvas,
         drawingCanvas,
         drawingContext,
+        saturationCanvas,
+        saturationContext,
         mixingCanvas,
         mixingContext,
         previewCanvas,
@@ -482,6 +496,10 @@ export default {
       const width = columns * drawingTool.width;
       const height = rows * drawingTool.width;
       // match aspect ratio
+      saturationCanvas.width = croppedCanvas.width;
+      saturationCanvas.height = croppedCanvas.height;
+      saturationContext.clearRect(0, 0, croppedCanvas.width, croppedCanvas.height);
+
       mixingCanvas.width = width;
       mixingCanvas.height = height;
       mixingContext.clearRect(0, 0, width, height);
@@ -501,6 +519,9 @@ export default {
       );
       drawingTool.render();
 
+      // saturate the cropped image
+      this.saturateImage();
+
       // start by pixelating the image based on conversion quality
       if (conversionQuality !== conversionQuality.sharp) {
         mixingContext.imageSmoothingEnabled = true;
@@ -511,11 +532,11 @@ export default {
         else if (conversionQuality === conversionQualities.low)
           mixingContext.imageSmoothingQuality = "low";
       } else mixingContext.imageSmoothingEnabled = false;
-      // draws pixelated verison
-      mixingContext.drawImage(croppedCanvas, 0, 0, width, height);
+      // draws pixelated version
+      mixingContext.drawImage(saturationCanvas, 0, 0, saturationCanvas.width, saturationCanvas.height, 0, 0, width, height);
 
-      // saturate the mixing canvas
-      if (applySaturation) this.saturateImage();
+      // get image data to make palette from
+      const imgData = mixingContext.getImageData(0, 0, width, height);
 
       // select palette
       if (!isSplitPalette) this.selectPalette(imgData);
