@@ -5,11 +5,11 @@
         Hue
         <div class="slider--label-slot">
           <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (hue > 0) hue--; setSliderColors()}">
-            <IconLeftArrow class="arrow"/>
+            <IconLeftArrow class="arrow" />
           </button>
             <div class="slider--label-slot-number">{{ parseInt(hue) + 1 }}</div>
           <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (hue < 29) hue++; setSliderColors()}">
-            <IconRightArrow class="arrow"/>
+            <IconRightArrow class="arrow" />
           </button>
         </div>
       </label>
@@ -27,11 +27,11 @@
         Vividness
         <div class="slider--label-slot">
           <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (vividness > 0) vividness--; setSliderColors()}">
-            <IconLeftArrow class="arrow"/>
+            <IconLeftArrow class="arrow" />
           </button>
             <div class="slider--label-slot-number">{{ parseInt(vividness) + 1 }}</div>
           <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (vividness < 14) vividness++; setSliderColors()}">
-            <IconRightArrow class="arrow"/>
+            <IconRightArrow class="arrow" />
           </button>
         </div>
       </label>
@@ -49,11 +49,11 @@
         Brightness
         <div class="slider--label-slot">
           <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (brightness > 0) brightness--; setSliderColors()}">
-            <IconLeftArrow class="arrow"/>
+            <IconLeftArrow class="arrow" />
           </button>
             <div class="slider--label-slot-number">{{ parseInt(brightness) + 1 }}</div>
           <button v-if="acnh" class="slider--label-slot-button" @click="() => {if (brightness < 14) brightness++; setSliderColors()}">
-            <IconRightArrow class="arrow"/>
+            <IconRightArrow class="arrow" />
           </button>
         </div>
       </label>
@@ -173,6 +173,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "styles/colors";
+
 .acnh-sliders {
   padding: 10px 20px 15px;
   width: 470px;
@@ -220,15 +222,20 @@ export default {
 }
 
 .slider--label-slot-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   appearance: none;
   outline: none;
   padding: 0px;
   border: 0px;
+  border-radius: 20px;
   background: none;
+  background-color: $salmon; 
   cursor: pointer;
-  display: inline-block;
-
-  // .arrow {}
+  margin: 0 5px;
+  padding: 2px;
 }
 
 .slider--label-slot-number {
