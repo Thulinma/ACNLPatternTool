@@ -7,10 +7,10 @@
     <template #window>
       <div
         :class="{
-        'converter--window': true,
-        'cropping': state === states.cropping,
-        'adjusting': state === states.adjusting,
-        'saving': state === states.saving,
+          'converter--window': true,
+          cropping: state === states.cropping,
+          adjusting: state === states.adjusting,
+          saving: state === states.saving,
         }"
       >
         <CancelButton @click="$emit('close')" />
@@ -123,15 +123,19 @@ export default {
       drawingTool,
       drawingCanvas,
       drawingContext,
-      // selected crop, keep this intact
+      // selected crop, keep this intact ALWAYS, need to this reapply adjustments
+      // raw image crop width/height
       croppedCanvas: null,
       // saturation effect, pre-mid-process
+      // raw image crop width/height
       saturationCanvas,
       saturationContext,
-      // mid-process
+      // mid-process, holds the FINAL mixing result
+      // downscaled using final mural width/height
       mixingCanvas,
       mixingContext,
       // use this to draw the final preview
+      // downscaled using final mural width/height
       previewCanvas,
       previewContext,
       // to be passed to later stages for responsive previews
@@ -202,13 +206,24 @@ export default {
         applySaturation,
       } = this;
 
-      saturationContext.drawImage(croppedCanvas, 0, 0, croppedCanvas.width, croppedCanvas.height);
+      saturationContext.drawImage(
+        croppedCanvas,
+        0,
+        0,
+        croppedCanvas.width,
+        croppedCanvas.height
+      );
 
       if (applySaturation) {
         saturationContext.globalCompositeOperation = `saturation`; // switch to saturation comp
-        saturationContext.fillStyle = `hsl(0, ${saturation}%, 50%)`;  // apply amount of saturation
-        saturationContext.fillRect(0, 0, saturationCanvas.width, saturationCanvas.height);  // apply the comp filter
-        saturationContext.globalCompositeOperation = `source-over`;  // restore default comp
+        saturationContext.fillStyle = `hsl(0, ${saturation}%, 50%)`; // apply amount of saturation
+        saturationContext.fillRect(
+          0,
+          0,
+          saturationCanvas.width,
+          saturationCanvas.height
+        ); // apply the comp filter
+        saturationContext.globalCompositeOperation = `source-over`; // restore default comp
       }
     },
     selectRGBPaletteFromImgData(imgData) {
@@ -493,12 +508,26 @@ export default {
       // reset outputs
       outputs.splice(0, outputs.length);
 
-      const width = columns * drawingTool.width;
-      const height = rows * drawingTool.width;
-      // match aspect ratio
+      // SUMMARY
+      // croppedCanvas stays intact, always, result from cropper
+      // saturationCanvas (to draw saturated cropped) =>
+      // mixingCanvas (final mix result) =>
+      // drawingCanvas (to draw invidual sections) =>
+      // previewCanvas (to draw all sections pieced together);
+      
+      // SETUP ALL CANVASES FIRST
       saturationCanvas.width = croppedCanvas.width;
       saturationCanvas.height = croppedCanvas.height;
-      saturationContext.clearRect(0, 0, croppedCanvas.width, croppedCanvas.height);
+      saturationContext.clearRect(
+        0,
+        0,
+        croppedCanvas.width,
+        croppedCanvas.height
+      );
+
+      // The final pixelated size for the mural.
+      const width = columns * drawingTool.width;
+      const height = rows * drawingTool.width;
 
       mixingCanvas.width = width;
       mixingCanvas.height = height;
@@ -519,10 +548,11 @@ export default {
       );
       drawingTool.render();
 
-      // saturate the cropped image
+      // BEGIN PROCESSING
+      // saturate the cropped image onto the saturation canvas
       this.saturateImage();
 
-      // start by pixelating the image based on conversion quality
+      // determine how to pixelate the image based on conversion quality
       if (conversionQuality !== conversionQuality.sharp) {
         mixingContext.imageSmoothingEnabled = true;
         if (conversionQuality === conversionQualities.high)
@@ -532,8 +562,19 @@ export default {
         else if (conversionQuality === conversionQualities.low)
           mixingContext.imageSmoothingQuality = "low";
       } else mixingContext.imageSmoothingEnabled = false;
-      // draws pixelated version
-      mixingContext.drawImage(saturationCanvas, 0, 0, saturationCanvas.width, saturationCanvas.height, 0, 0, width, height);
+      
+      // draws pixelated version from the saturation canvas (applies downscaling here)
+      mixingContext.drawImage(
+        saturationCanvas,
+        0,
+        0,
+        saturationCanvas.width, // greater than
+        saturationCanvas.height, // greater than
+        0,
+        0,
+        width,
+        height
+      );
 
       // get image data to make palette from
       const imgData = mixingContext.getImageData(0, 0, width, height);
@@ -541,11 +582,14 @@ export default {
       // select palette
       if (!isSplitPalette) this.selectPalette(imgData);
 
+      // draw each section onto the drawingCanvas after selecting colors
+      // then take that image and piece it together with the preview
       for (let column = 0; column < columns; ++column) {
         for (let row = 0; row < rows; ++row) {
           const xOffset = column * drawingTool.width;
           const yOffset = row * drawingTool.width;
 
+          // grab the section
           const sectionImgData = mixingContext.getImageData(
             xOffset, // x offset
             yOffset, // y offset
@@ -583,8 +627,7 @@ export default {
           outputs.push(drawingTool.toString());
 
           // apply changes to drawingCanvas which draws the section preview
-          // drawingContext.clearRect(0, 0, drawingTool.width, drawingTool.width);
-          drawingTool.render();
+          drawingContext.clearRect(0, 0, drawingTool.width, drawingTool.width);
           drawingTool.render();
           previewContext.imageSmoothingEnabled = false;
           // copy section from drawingCanvas to preview

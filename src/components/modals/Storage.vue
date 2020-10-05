@@ -151,6 +151,11 @@ export default {
   },
   async mounted() {
     const drawingTools = await saver.getDrawingToolsFromStorage();
+    drawingTools.sort((a, b) => {
+      if (a.title < b.title) return -1;
+      if (a.title > b.title) return 1;
+      return 0;
+    });
     for (const drawingTool of drawingTools) {
       this.drawingTools.push(drawingTool);
       this.selectedMap.push(false);
