@@ -2,9 +2,11 @@
   <ModalContainer
     @modal-close="$emit('close')"
     @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')" >
+    @scroll-unfreeze="$emit('scroll-unfreeze')"
+  >
     <template #window>
       <div class="publish--window">
+        <CancelButton @click="$emit('close')" />
         <div class="publish--header">
           <div class="publish--icon-cloud-container">
             <IconCloud class="publish--icon-cloud" />
@@ -77,7 +79,13 @@
               v-model="selectedStyles[i]"
             >
               <option value>- - -</option>
-              <option v-for="style in styleOptionSets[i]" :value="style" :key="style">{{ style }}</option>
+              <option
+                v-for="style in styleOptionSets[i]"
+                :value="style"
+                :key="style"
+              >
+                {{ style }}
+              </option>
             </select>
           </div>
         </div>
@@ -92,7 +100,13 @@
               v-model="selectedTypes[i]"
             >
               <option value>- - -</option>
-              <option v-for="type in typeOptionSets[i]" :value="type" :key="type">{{ type }}</option>
+              <option
+                v-for="type in typeOptionSets[i]"
+                :value="type"
+                :key="type"
+              >
+                {{ type }}
+              </option>
             </select>
           </div>
         </div>
@@ -105,11 +119,13 @@
 
           <button
             :class="{
-            'publish--publish-button': true,
-            'active': isUploading,
+              'publish--publish-button': true,
+              active: isUploading,
             }"
             @click="publish"
-          >Publish</button>
+          >
+            Publish
+          </button>
         </div>
       </div>
     </template>
@@ -118,6 +134,7 @@
 
 <script>
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import CancelButton from "~/components/modals/CancelButton.vue";
 import IconCloud from "~/components/icons/IconCloud.vue";
 import IconGenerator from "~/components/IconGenerator.vue";
 import DrawingTool from "~/libs/DrawingTool";
@@ -127,20 +144,21 @@ export default {
   name: "Publish",
   components: {
     ModalContainer,
+    CancelButton,
     IconGenerator,
-    IconCloud
+    IconCloud,
   },
   props: {
     drawingTool: {
       type: DrawingTool,
-      required: true
+      required: true,
     },
     patternDetails: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  data: function() {
+  data: function () {
     const styles = [...origin.tags_style];
     const types = [...origin.tags_type];
     const selectedStyles = new Array(3).fill("");
@@ -149,12 +167,12 @@ export default {
       styles,
       types,
       details: {
-        ...this.$props.patternDetails
+        ...this.$props.patternDetails,
       },
       selectedStyles,
       selectedTypes,
       isNSFW: false,
-      isUploading: false
+      isUploading: false,
     };
   },
   computed: {
@@ -164,7 +182,7 @@ export default {
         return this.styles
           .slice()
           .filter(
-            option =>
+            (option) =>
               this.selectedStyles.indexOf(option) <= -1 ||
               this.selectedStyles.indexOf(option) === i
           );
@@ -175,12 +193,12 @@ export default {
         return this.types
           .slice()
           .filter(
-            option =>
+            (option) =>
               this.selectedTypes.indexOf(option) <= -1 ||
               this.selectedTypes.indexOf(option) === i
           );
       });
-    }
+    },
   },
   methods: {
     update() {
@@ -195,7 +213,7 @@ export default {
       }
 
       this.$emit("update-details", {
-        ...this.details
+        ...this.details,
       });
     },
 
@@ -224,7 +242,7 @@ export default {
         this.$emit("close");
       }
       this.isUploading = false;
-    }
+    },
   },
 };
 </script>
@@ -233,36 +251,64 @@ export default {
 @import "styles/colors";
 @import "styles/positioning";
 @import "styles/resets";
+@import "styles/screens";
 
 .publish--window {
-  @include absolute-center;
+  box-sizing: border-box;
+  @include relative-in-place;
+  position: fixed;
   z-index: 999;
 
   display: grid;
-  grid-template-areas:
-    "header header header header header header"
-    "render render inputs inputs inputs inputs"
-    "style-tags style-tags style-tags type-tags type-tags type-tags"
-    "bottom-row bottom-row bottom-row bottom-row bottom-row bottom-row";
   grid-template-rows: auto;
-  padding: 30px 40px;
+  grid-template-columns: auto;
+  grid-auto-columns: auto;
+  grid-auto-columns: auto;
   row-gap: 25px;
-  column-gap: 20px;
-  box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
+
+  padding: 14px 23px;
 
   background-color: $ecru-white;
-  border-radius: 45px;
   color: $jambalaya;
+
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+
+  @include phone-landscape {
+    padding: 28px 46px;
+  }
+  @include tablet-landscape {
+    @include absolute-center;
+    width: auto;
+    height: auto;
+    grid-template-rows: unset;
+    grid-template-columns: unset;
+    grid-auto-columns: unset;
+    grid-auto-columns: unset;
+    grid-template-areas:
+      "header header header header header header"
+      "render render inputs inputs inputs inputs"
+      "style-tags style-tags style-tags type-tags type-tags type-tags"
+      "bottom-row bottom-row bottom-row bottom-row bottom-row bottom-row";
+    padding: 30px 40px;
+    column-gap: 20px;
+    box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
+    border-radius: 45px;
+    overflow: visible;
+  }
 }
 
 .publish--header {
-  grid-area: header;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: left;
   align-content: center;
   align-items: center;
+  @include tablet-landscape {
+    grid-area: header;
+  }
 }
 
 .publish--icon-cloud-container {
@@ -284,22 +330,39 @@ export default {
 }
 
 .publish--render {
-  grid-area: render;
+  justify-self: center;
   align-self: center;
   background-color: $cinderella;
   border-radius: 10px;
   border-style: dashed;
   border-color: #707070;
   border-width: 4px;
+  
+  width: 250px;
+  height: 250px;
+  
+  @include phone-landscape {
+    width: 300px;
+    height: 300px;
+  }
+  
+  @include tablet-landscape {
+    justify-self: flex-start;
+    grid-area: render;
+  }
 }
 
 .publish--inputs {
-  grid-area: inputs;
   display: grid;
   row-gap: 20px;
+  justify-items: stretch;
 
-  min-width: 500px;
-  margin-left: 50px;
+  @include tablet-landscape {
+    justify-items: auto;
+    min-width: 500px;
+    margin-left: 50px;
+    grid-area: inputs;
+  }
 }
 
 .settings--input-field {
@@ -349,10 +412,16 @@ export default {
 }
 
 .publish--style-tags {
-  grid-area: style-tags;
+  @include tablet-landscape {
+    grid-area: style-tags;
+  }
 }
-.publish--type-tags {
-  grid-area: type-tags;
+
+
+.publish--type-tags {  
+  @include tablet-landscape {
+    grid-area: type-tags;
+  }
 }
 
 .publish--style-tags,
@@ -368,11 +437,18 @@ export default {
 .publish--style-tag-selectors,
 .publish--type-tag-selectors {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto;
   justify-content: left;
-  justify-items: auto;
+  justify-items: stretch;
   column-gap: 10px;
+  row-gap: 20px;
+  
+  @include phone-landscape {
+    justify-items: auto;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 0px;
+  }
 }
 
 select {
@@ -389,13 +465,19 @@ select {
 }
 
 .publish--bottom-row {
-  grid-area: bottom-row;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
   align-content: center;
   align-items: center;
+  
+  margin-bottom: 30px;
+
+  @include tablet-landscape {
+    margin-bottom: 0px;
+    grid-area: bottom-row;
+  }
 }
 
 .publish--nsfw {
