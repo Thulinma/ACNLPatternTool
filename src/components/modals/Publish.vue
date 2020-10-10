@@ -23,9 +23,21 @@
 
         <div class="publish--inputs">
           <label class="settings--input-field">
-            <div class="settings--input-field-name required">Title</div>
+            <div class="settings--input-field-name required">
+              Title<span class="asterisk">*</span>
+              <Tooltip class="settings--tooltip">
+                <div class="settings--tooltip-content">
+                  <div class="settings--tooltip-content">
+                    <div>Title character limits:</div>
+                    <div>ACNL: 21 chars.</div>
+                    <div>ACNH: 20 chars.</div>
+                  </div>
+                </div>
+              </Tooltip>
+            </div>
             <div class="settings--input-container">
               <input
+                v-if="drawingTool.compatMode === 'ACNL'"
                 id="pattern-title"
                 class="settings--input"
                 type="text"
@@ -35,16 +47,47 @@
                 v-model="details.title"
                 @keydown.stop
               />
+              <input
+                v-else-if="drawingTool.compatMode === 'ACNH'"
+                id="pattern-title"
+                class="settings--input"
+                type="text"
+                maxlength="21"
+                spellcheck="false"
+                autocomplete="off"
+                v-model="details.title"
+                @keydown.stop
+              />
             </div>
           </label>
 
           <label class="settings--input-field">
-            <div class="settings--input-field-name required">Author</div>
+            <div class="settings--input-field-name required">
+              Author<span class="asterisk">*</span>
+              <Tooltip class="settings--tooltip">
+                <div class="settings--tooltip-content">
+                  <div>Author character limit:</div>
+                  <div>ACNL: 9 chars.</div>
+                  <div>ACNH: 10 chars.</div>
+                </div>
+              </Tooltip>
+            </div>
             <div class="settings--input-container">
               <input
+                v-if="drawingTool.compatMode === 'ACNL'"
                 class="settings--input"
                 type="text"
                 maxlength="9"
+                spellcheck="false"
+                autocomplete="off"
+                v-model="details.creator.name"
+                @keydown.stop
+              />
+              <input
+                v-else-if="drawingTool.compatMode === 'ACNH'"
+                class="settings--input"
+                type="text"
+                maxlength="10"
                 spellcheck="false"
                 autocomplete="off"
                 v-model="details.creator.name"
@@ -54,12 +97,32 @@
           </label>
 
           <label class="settings--input-field">
-            <div class="settings--input-field-name required">Town</div>
+            <div class="settings--input-field-name required">
+              Town<span class="asterisk">*</span>
+              <Tooltip class="settings--tooltip">
+                <div class="settings--tooltip-content">
+                  <div>Town character limit:</div>
+                  <div>ACNL: 9 chars.</div>
+                  <div>ACNH: 10 chars.</div>
+                </div>
+              </Tooltip>
+            </div>
             <div class="settings--input-container">
               <input
+                v-if="drawingTool.compatMode === 'ACNL'"
                 class="settings--input"
                 type="text"
                 maxlength="9"
+                spellcheck="false"
+                autocomplete="off"
+                v-model="details.town.name"
+                @keydown.stop
+              />
+              <input
+                v-else-if="drawingTool.compatMode === 'ACNH'"
+                class="settings--input"
+                type="text"
+                maxlength="10"
                 spellcheck="false"
                 autocomplete="off"
                 v-model="details.town.name"
@@ -138,7 +201,8 @@ import CancelButton from "~/components/modals/CancelButton.vue";
 import IconCloud from "~/components/icons/IconCloud.vue";
 import IconGenerator from "~/components/IconGenerator.vue";
 import DrawingTool from "~/libs/DrawingTool";
-import origin from "/libs/origin";
+import Tooltip from "~/components/Tooltip.vue";
+import origin from "~/libs/origin";
 
 export default {
   name: "Publish",
@@ -147,6 +211,7 @@ export default {
     CancelButton,
     IconGenerator,
     IconCloud,
+    Tooltip,
   },
   props: {
     drawingTool: {
@@ -337,15 +402,15 @@ export default {
   border-style: dashed;
   border-color: #707070;
   border-width: 4px;
-  
+
   width: 250px;
   height: 250px;
-  
+
   @include phone-landscape {
     width: 300px;
     height: 300px;
   }
-  
+
   @include tablet-landscape {
     justify-self: flex-start;
     grid-area: render;
@@ -375,9 +440,10 @@ export default {
   display: block;
   margin-bottom: 10px;
 
-  &.required:after {
-    content: "*";
-    color: $tiffany-blue;
+  &.required {
+    .asterisk {
+      color: $tiffany-blue;
+    }
   }
 }
 
@@ -417,8 +483,7 @@ export default {
   }
 }
 
-
-.publish--type-tags {  
+.publish--type-tags {
   @include tablet-landscape {
     grid-area: type-tags;
   }
@@ -443,7 +508,7 @@ export default {
   justify-items: stretch;
   column-gap: 10px;
   row-gap: 20px;
-  
+
   @include phone-landscape {
     justify-items: auto;
     grid-template-columns: 1fr 1fr 1fr;
@@ -471,7 +536,7 @@ select {
   justify-content: center;
   align-content: center;
   align-items: center;
-  
+
   margin-bottom: 30px;
 
   @include tablet-landscape {
@@ -513,6 +578,23 @@ select {
     border-color: $turquoise;
     @include stripes($tiffany-blue, $tiffany-blue-light, 15px);
     @include moving-stripes(3s);
+  }
+}
+
+.settings--tooltip {
+  margin-left: 5px;
+}
+
+.settings--tooltip-content {
+  width: 150px;
+  font-size: 0.9rem;
+
+  @include phone-landscape {
+    width: 300px;
+  }
+
+  @include tablet-portrait {
+    font-size: 1rem;
   }
 }
 </style>

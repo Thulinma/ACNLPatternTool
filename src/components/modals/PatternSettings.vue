@@ -2,14 +2,27 @@
   <ModalContainer
     @modal-close="$emit('close')"
     @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')" >
+    @scroll-unfreeze="$emit('scroll-unfreeze')"
+  >
     <template #window>
       <div class="settings--window">
         <CancelButton @click="$emit('close')" />
         <label class="settings--input-field">
-          <div class="settings--input-field-name required">Title</div>
+          <div class="settings--input-field-name required">
+            Title<span class="asterisk">*</span>
+            <Tooltip class="settings--tooltip">
+              <div class="settings--tooltip-content">
+                <div class="settings--tooltip-content">
+                  <div>Title character limits:</div>
+                  <div>ACNL: 21 chars.</div>
+                  <div>ACNH: 20 chars.</div>
+                </div>
+              </div>
+            </Tooltip>
+          </div>
           <div class="settings--input-container">
             <input
+              v-if="drawingTool.compatMode === 'ACNL'"
               id="pattern-title"
               class="settings--input"
               type="text"
@@ -19,16 +32,47 @@
               v-model="details.title"
               @keydown.stop
             />
+            <input
+              v-else-if="drawingTool.compatMode === 'ACNH'"
+              id="pattern-title"
+              class="settings--input"
+              type="text"
+              maxlength="21"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.title"
+              @keydown.stop
+            />
           </div>
         </label>
 
         <label class="settings--input-field">
-          <div class="settings--input-field-name required">Author</div>
+          <div class="settings--input-field-name required">
+            Author<span class="asterisk">*</span>
+            <Tooltip class="settings--tooltip">
+              <div class="settings--tooltip-content">
+                  <div>Author character limit:</div>
+                  <div>ACNL: 9 chars.</div>
+                  <div>ACNH: 10 chars.</div>
+              </div>
+            </Tooltip>
+          </div>
           <div class="settings--input-container">
             <input
+              v-if="drawingTool.compatMode === 'ACNL'"
               class="settings--input"
               type="text"
               maxlength="9"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.creator.name"
+              @keydown.stop
+            />
+            <input
+              v-else-if="drawingTool.compatMode === 'ACNH'"
+              class="settings--input"
+              type="text"
+              maxlength="10"
               spellcheck="false"
               autocomplete="off"
               v-model="details.creator.name"
@@ -38,12 +82,32 @@
         </label>
 
         <label class="settings--input-field">
-          <div class="settings--input-field-name required">Town</div>
+          <div class="settings--input-field-name required">
+            Town<span class="asterisk">*</span>
+            <Tooltip class="settings--tooltip">
+              <div class="settings--tooltip-content">
+                  <div>Town character limit:</div>
+                  <div>ACNL: 9 chars.</div>
+                  <div>ACNH: 10 chars.</div>
+              </div>
+            </Tooltip>
+          </div>
           <div class="settings--input-container">
             <input
+              v-if="drawingTool.compatMode === 'ACNL'"
               class="settings--input"
               type="text"
               maxlength="9"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.town.name"
+              @keydown.stop
+            />
+            <input
+              v-else-if="drawingTool.compatMode === 'ACNH'"
+              class="settings--input"
+              type="text"
+              maxlength="10"
               spellcheck="false"
               autocomplete="off"
               v-model="details.town.name"
@@ -54,10 +118,24 @@
 
         <div class="settings--row-4">
           <select class="settings--type" v-model="details.type">
-            <option v-for="(type, index) in patternTypes" :key="index" :value="index">{{type.name}}</option>
+            <option
+              v-for="(type, index) in patternTypes"
+              :key="index"
+              :value="index"
+            >
+              {{ type.name }}
+            </option>
           </select>
 
-          <button class="settings--confirm" @click="update(); $emit('close');">Confirm</button>
+          <button
+            class="settings--confirm"
+            @click="
+              update();
+              $emit('close');
+            "
+          >
+            Confirm
+          </button>
         </div>
 
         <button
@@ -68,22 +146,31 @@
           Advanced
           <IconChevronDown class="settings--advanced-expand-icon" />
         </button>
-        <button class="settings--advanced-button" v-if="showAdvanced && drawingTool.compatMode === 'ACNL'" @click="storeMeta">
+        <button
+          class="settings--advanced-button"
+          v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
+          @click="storeMeta"
+        >
           Store Meta Info
           <Tooltip class="settings--tooltip">
             <div class="settings--tooltip-content">
-              Stores current hidden fields to make another pattern editable in ACNL only.
-              The current pattern loaded should be a pattern coming from your
-              ACNL save.
+              Stores current hidden fields to make another pattern editable in
+              ACNL only. The current pattern loaded should be a pattern coming
+              from your ACNL save.
             </div>
           </Tooltip>
         </button>
-        <button class="settings--advanced-button" v-if="showAdvanced  && drawingTool.compatMode === 'ACNL'" @click="loadMeta">
+        <button
+          class="settings--advanced-button"
+          v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
+          @click="loadMeta"
+        >
           Load Meta Info
           <Tooltip class="settings--tooltip">
             <div class="settings--tooltip-content">
-              Loads hidden fields to make another pattern editable in ACNL only. The current
-              pattern loaded should not be a pattern coming from your ACNL save.
+              Loads hidden fields to make another pattern editable in ACNL only.
+              The current pattern loaded should not be a pattern coming from
+              your ACNL save.
               <div>{{ metaCreatorStr }}</div>
               <div>{{ metaTownStr }}</div>
             </div>
@@ -249,9 +336,10 @@ export default {
   display: block;
   margin-bottom: 8px;
 
-  &.required:after {
-    content: "*";
-    color: $tiffany-blue;
+  &.required {
+    .asterisk {
+      color: $tiffany-blue;
+    }
   }
 }
 
@@ -383,6 +471,15 @@ export default {
 }
 
 .settings--tooltip-content {
-  width: 300px;
+  width: 150px;
+  font-size: 0.9rem;
+
+  @include phone-landscape {
+    width: 300px;
+  }
+  
+  @include tablet-portrait {
+    font-size: 1rem;
+  }
 }
 </style>
