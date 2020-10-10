@@ -249,14 +249,8 @@ export default {
     // ------------------
     // SAVING FUNCTIONS
     // ------------------
-    downloadBinary() {
-      const blob = new Blob([this.drawingTool.toBytes()], {
-        type: "application/octet-stream",
-      });
-      let ext = "acnl";
-      const isACNL = this.drawingTool.pattern instanceof ACNLFormat;
-      if (!isACNL) ext = "acnh";
-      saveAs(blob, `${this.drawingTool.title}.${ext}`);
+    async downloadBinary() {
+      saver.saveDrawingToolAsPattern(this.drawingTool);
     },
     async downloadQR() {
       await saver.saveDrawingToolAsPng(this.drawingTool);
@@ -369,6 +363,10 @@ export default {
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
+    
+    this.drawingTool.onLoad(() => {
+      this.syncPatternDetails();
+    });
   },
 };
 </script>
