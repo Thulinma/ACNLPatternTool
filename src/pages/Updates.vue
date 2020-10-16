@@ -2,6 +2,27 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>October 17, 2020</dt>
+    <dd>
+      <ul>
+        <li>Sorry for the long wait! We totally overdid the amount of content for a single update, and we still don't feel it's "perfect", but it's close enough that we're comfortable releasing this. Hopefully we'll be doing short and sweet updates from here on forward. 🤞</li>
+        <li>What amounts to effectively a complete redesign of the while website/tool, graphically. We hope you like it.</li>
+        <li>Pagination capabilities for the browse function (no longer stuck only viewing page 1!)</li>
+        <li>Browsing patterns now caches results and has history, which should speed things up significantly.</li>
+        <li>Improved mobile-readiness</li>
+        <li>Added a modified version of the xbrz library, which is the pattern algorithm the game itself uses for upscaling. That means the pattern previews will now actually look like they do in-game. Yay!</li>
+        <li>Support for ACNH format patterns (both reading and writing) as well as loading decrypted ACNH savegames directly into the tool</li>
+        <li>For coders: the ACNLFormat class documentation was updated with information extracted from the official NSO application</li>
+        <li>Added accurate 3D previews for both ACNL and ACNH patterns in ACNH-style.</li>
+        <li>Added a fancy 3D easel preview for non-pro patterns</li>
+        <li>Added capability to convert patterns between ACNL and ACNH formats with one click (may lose some detail in the process, so please do keep backups of your originals!)</li>
+        <li>Added support for an ACNH-style color picker. This will also show you the nearest color in the in-game GUI. Sliders are accurate to within less than 0.1% error.</li>
+        <li>Support for exporting ACNH-format paint-by-numbers images. These show how to re-create a pattern in game in a straightforward and easy to read way. Simply put the editor into ACNH mode and click the QR-code button: it will export a paint-by-numbers graphic instead of a QR code.</li>
+        <li>Added a few more advanced drawing tools, like brush sizes.</li>
+        <li>Added saturation slider during image conversion, for last-minute saturation tweaks.</li>
+        <li>Tons of other little "under the hood" improvements/fixes/etc! Check our <a href="https://github.com/Thulinma/ACNLPatternTool/commits/master">github</a> for full history.</li>
+      </ul>
+    </dd>
     <dt>March 24, 2020</dt>
     <dd>
       <ul>
