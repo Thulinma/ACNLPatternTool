@@ -45,6 +45,11 @@ $pink-lace: #FFCAD2;
 $provincial-pink: #FFF7F2;
 
 
+// greens
+$chrome-white: #E6F0CF;
+
+
+
 @mixin polkadots($primary, $secondary) {
   background-image: radial-gradient($secondary 2px, transparent 2px),
       radial-gradient($secondary 2px, transparent 2px);
