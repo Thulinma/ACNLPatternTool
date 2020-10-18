@@ -2,7 +2,7 @@
   <div>
   <h1>Changelog</h1>
   <dl>
-    <dt>October 17, 2020</dt>
+    <dt>October 18, 2020</dt>
     <dd>
       <ul>
         <li>Sorry for the long wait! We totally overdid the amount of content for a single update, and we still don't feel it's "perfect", but it's close enough that we're comfortable releasing this. Hopefully we'll be doing short and sweet updates from here on forward. 🤞</li>
