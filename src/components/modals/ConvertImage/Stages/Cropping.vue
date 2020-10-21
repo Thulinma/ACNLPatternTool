@@ -322,13 +322,18 @@ export default {
 
 .cropping--size-inputs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-auto-columns: auto;
   grid-template-rows: auto;
   grid-auto-rows: auto;
   column-gap: 20px;
+  row-gap: 30px;
 
   margin-top: 30px;
+  
+  @include tablet-portrait {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cropping--size-input {

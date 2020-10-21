@@ -6,20 +6,34 @@
   >
     <template #window>
       <div class="editor--qr-preview-window">
-        <img class="editor--qr-preview" :src="dataURL" />
-        <div class="editor--qr-save-button-container">
+        <img class="editor--qr-preview" :src="dataURL" alt="QR Code"/>
+        <div class="editor--qr-buttons-container">
           <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
+          <button
+            v-if="drawingTool.compatMode === 'ACNH'"
+            @click="gameModeInfo = true" class="editor--qr-info-button">No QR Code?</button>
         </div>
         <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
+        <Info
+          v-if="gameModeInfo"
+          @modal-close="$emit('close')"
+          @scroll-freeze="$emit('scroll-freeze')"
+          @scroll-unfreeze="$emit('scroll-unfreeze')"
+          @close="gameModeInfo = false"
+        >
+          <ACNLToACNHInfo />
+        </Info>
       </div>
     </template>
   </ModalContainer>
 </template>
 
 <script>
+import DrawingTool from "~/libs/DrawingTool";
 import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from "~/libs/DrawingTool";
+import Info from "~/components/modals/Info.vue";
+import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 
 import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
 
@@ -39,6 +53,8 @@ export default {
     IconQRCode,
     ACNLQRGenerator,
     CancelButton,
+    Info,
+    ACNLToACNHInfo,
   },
   props: {
     drawingTool: {
@@ -50,6 +66,7 @@ export default {
     const dataURL = "";
     return {
       dataURL,
+      gameModeInfo: false,
     };
   },
   methods: {
@@ -100,16 +117,19 @@ export default {
   }
 }
 
-.editor--qr-save-button-container {
+.editor--qr-buttons-container {
   pointer-events: none;
   margin-top: 30px;
-  display: flex;
-  flex-direction: row;
+  display: grid;
   justify-content: center;
+  justify-items: stretch;
+  align-content: center;
   align-items: center;
+  row-gap: 10px;
 }
 
-.editor--qr-save-button {
+.editor--qr-save-button,
+.editor--qr-info-button {
   @include reset-button;
   cursor: pointer;
 

@@ -182,7 +182,14 @@
 
       <div class="toolbar--toggle">
         <div class="toggle--wrapper">
-          <input @click="changeGameMode" :checked="gameMode" class="toggle--input" v-model="gameMode" id="pattern-mode" type="checkbox">
+          <input
+            @click="changeGameModeWithWarning"
+            :class="{
+              'toggle--input': true,
+              'checked': gameMode,
+            }"
+            id="pattern-mode"
+            type="checkbox">
           <label class="toggle--label" for="pattern-mode"></label>
         </div>
       </div>
@@ -212,6 +219,20 @@
       @scroll-freeze="$emit('scroll-freeze')"
       @scroll-unfreeze="$emit('scroll-unfreeze')"
     />
+    
+    <Warning
+      v-if="gameModeWarning"
+      @scroll-freeze="$emit('scroll-freeze')"
+      @scroll-unfreeze="$emit('scroll-unfreeze')"
+      @close="gameModeWarning = false"
+      @dismiss="changeGameModeFromWarning"
+      foreverDismissable
+    >
+     <template>
+       <ACNHToACNLInfo v-if="gameMode" />
+       <ACNLToACNHInfo v-else />
+     </template>
+    </Warning>
   </div>
 </template>
 
@@ -220,6 +241,9 @@ import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
 import Preview from "~/components/modals/Preview.vue";
 import Storage from "~/components/modals/Storage.vue";
+import Warning from "~/components/modals/Warning.vue";
+import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
+import ACNHToACNLInfo from "~/components/partials/ACNHToACNLInfo.vue";
 
 // icons
 import IconInbox from "~/components/icons/IconInbox.vue";
@@ -325,7 +349,10 @@ export default {
     IconUndo,
     IconRedo,
     IconDetail,
-    IconQRCode
+    IconQRCode,
+    Warning,
+    ACNLToACNHInfo,
+    ACNHToACNLInfo,
   },
   props: {
     drawingTool: {
@@ -352,7 +379,9 @@ export default {
       settingsOpen: false,
       previewOpen: false,
       storageOpen: false,
-      gameMode: this.drawingTool.compatMode === 'ACNH'
+      // isACNH
+      gameMode: this.drawingTool.compatMode === 'ACNH',
+      gameModeWarning: false,
     };
   },
   methods: {
@@ -436,11 +465,31 @@ export default {
         }
       }
     },
-    changeGameMode(event) {
-      event.target.checked ? this.drawingTool.compatMode = 'ACNH' : this.drawingTool.compatMode = 'ACNL'
-      this.gameMode = (this.drawingTool.compatMode == "ACNH");
+    changeGameModeWithWarning(event) {
+      event.preventDefault(); // stop checkbox from automatically checking itself
+      const targetCompatMode = this.drawingTool.compatMode === "ACNH"? "ACNL" : "ACNH";
+      const currentCompatMode = targetCompatMode === "ACNH"? "ACNL" : "ACNH";
+      const dismissForever = localStorage
+        .getItem(`dismiss${currentCompatMode}To${targetCompatMode}`) === "true";
+      if (!dismissForever) {
+        this.gameModeWarning = true;
+        return;
+      }
+      this.drawingTool.compatMode = targetCompatMode;
+      this.gameMode = this.drawingTool.compatMode === "ACNH";
       this.$emit("change-prev-color-picker", this.drawingTool.compatMode.toLowerCase());
     },
+    changeGameModeFromWarning(dismissForever) {
+      this.gameModeWarning = false;
+      const targetCompatMode = this.drawingTool.compatMode === "ACNH"? "ACNL" : "ACNH";
+      const currentCompatMode = targetCompatMode === "ACNH"? "ACNL" : "ACNH";
+      if (dismissForever) {
+        localStorage.setItem(`dismiss${currentCompatMode}To${targetCompatMode}`, true); 
+      }
+      this.drawingTool.compatMode = targetCompatMode;
+      this.gameMode = this.drawingTool.compatMode === "ACNH";
+      this.$emit("change-prev-color-picker", this.drawingTool.compatMode.toLowerCase());
+    }
   },
   mounted() {
     this.selectTool("brush", "small");
@@ -999,7 +1048,7 @@ $toolbar--options-width: 75px;
     top: 0;
     width: 5px;
 
-    &:checked + label {
+    &.checked + label {
 	    &:before {
         transform: translateX(50px);
         z-index: 20;
