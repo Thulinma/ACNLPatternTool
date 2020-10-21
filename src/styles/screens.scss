@@ -6,39 +6,76 @@ $break-tablet-landscape: 992px;
 $break-desktop: 1200px;
 $break-desktop-hd: 1400px;
 
+$break-small: 480px;
+$break-smallX: 620px;
+$break-medium: 780px;
+$break-large: 900px;
+
 // mobile is both phone and tablet
-@mixin respond-to($breakpoint) {
+@mixin respond-to-width($breakpoint) {
   @media only screen and (min-width: $breakpoint) {
     @content;
   }
 }
 
+@mixin respond-to-height($breakpoint) {
+  @media only screen and (min-height: $breakpoint) {
+    @content;
+  }
+}
+
+
 @mixin phone-landscape {
-  @include respond-to($break-phone-landscape) {
+  @include respond-to-width($break-phone-landscape) {
     @content;
   }
 }
 
 @mixin tablet-portrait {
-  @include respond-to($break-tablet-portrait) {
+  @include respond-to-width($break-tablet-portrait) {
     @content;
   }
 }
 
 @mixin tablet-landscape {
-  @include respond-to($break-tablet-landscape) {
+  @include respond-to-width($break-tablet-landscape) {
     @content;
   }
 }
 
 @mixin desktop {
-  @include respond-to($break-desktop) {
+  @include respond-to-width($break-desktop) {
     @content;
   }
 }
 
 @mixin desktop-hd {
-  @include respond-to($break-desktop-hd) {
+  @include respond-to-width($break-desktop-hd) {
+    @content;
+  }
+}
+
+
+@mixin screen-small {
+  @include respond-to-height($break-small) {
+    @content;
+  }
+}
+
+@mixin screen-smallX {
+  @include respond-to-height($break-smallX) {
+    @content;
+  }
+}
+
+@mixin screen-medium {
+  @include respond-to-height($break-medium) {
+    @content;
+  }
+}
+
+@mixin screen-large {
+  @include respond-to-height($break-large) {
     @content;
   }
 }

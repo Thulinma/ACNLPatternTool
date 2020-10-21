@@ -116,25 +116,25 @@ export default {
     IconNavUpdates,
     IconNavDiscord,
     IconRibbonTailLeft,
-    IconStamp
+    IconStamp,
   },
-  data: function() {
+  data: function () {
     return {};
   },
   methods: {
-    goToBrowse: function() {
+    goToBrowse: function () {
       this.$router.push({ path: `/browse` });
     },
-    goToEditor: function() {
+    goToEditor: function () {
       this.$router.push({ path: `/editor` });
     },
-    goToFAQ: function() {
+    goToFAQ: function () {
       this.$router.push({ path: `/faq` });
     },
-    goToChanges: function() {
+    goToChanges: function () {
       this.$router.push({ path: `/updates` });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -212,13 +212,16 @@ export default {
       "faq faq faq discord discord discord";
   }
   @include tablet-landscape {
-    padding-top: 200px;
+    padding-top: 100px;
     padding-bottom: 0px;
     grid-template-areas: "updates browse editor faq discord";
-  }
-  @include desktop {
-  }
-  @include desktop-hd {
+    @include screen-medium {
+      position: fixed;
+      width: 100%;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 }
 
@@ -419,15 +422,22 @@ export default {
   width: 100%;
   height: 130px;
   overflow: hidden;
-
   @include tablet-landscape {
-    height: 250px;
-  }
-  @include desktop {
-    height: 275px;
-  }
-  @include desktop-hd {
-    height: 350px;
+    display: none;
+    height: 125px;
+    @include screen-small {
+      display: block;
+    }
+    @include screen-smallX {
+      display: block;
+      height: 250px;
+    }
+    @include screen-medium {
+      height: 275px;
+    }
+    @include screen-large {
+      height: 325px;
+    }
   }
 }
 
@@ -502,16 +512,8 @@ export default {
 .home--counter-row {
   margin-top: 20px;
   text-align: center;
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
   @include desktop {
     margin-top: 30px;
-  }
-  @include desktop-hd {
   }
 }
 
@@ -541,14 +543,12 @@ export default {
 
   margin-top: 20px;
   @include tablet-landscape {
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-  }
-  @include desktop {
-  }
-  @include desktop-hd {
-    margin-top: 40px;
+    @include screen-smallX {
+      display: flex;
+    }
   }
 }
 
@@ -579,11 +579,18 @@ export default {
     margin-left: 15px;
   }
 
-  @include desktop-hd {
-    height: 130px;
-    width: 130px;
+  @include tablet-landscape {
+    height: 75px;
+    width: 75px;
+    @include screen-small {
+      height: 100px;
+      width: 100px;
+    }
+    @include screen-large {
+      height: 130px;
+      width: 130px;
+    }
   }
-
 
   $base-transform: translate(-50%, -50%);
   &:nth-child(2) .home--stamp {
