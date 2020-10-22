@@ -1,5 +1,6 @@
 import ACNLFormat from '/libs/ACNLFormat';
 import ACNHFormat from '/libs/ACNHFormat';
+import { ResizeObserver } from "@juggle/resize-observer";
 import lzString from 'lz-string';
 
 class RenderTarget{
