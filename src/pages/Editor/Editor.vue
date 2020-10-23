@@ -604,11 +604,12 @@ export default {
     @include relative-in-place;
     padding: 7px 10px;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
       cursor: pointer;
     }
     &:hover ~ .editor--dropup-menu,
-    &:active ~ .editor--dropup-menu {
+    &:active ~ .editor--dropup-menu,
+    &:focus ~ .editor--dropup-menu {
       display: block;
     }
   }
@@ -682,7 +683,8 @@ export default {
     height: $bridge-distance;
   }
   &:hover .editor--dropup-bridge,
-  &:active .editor--dropup-bridge {
+  &:active .editor--dropup-bridge,
+  &:focus ~ .editor--dropup-bridge {
     display: block;
   }
   
