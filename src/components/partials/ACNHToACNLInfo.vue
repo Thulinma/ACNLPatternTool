@@ -8,9 +8,9 @@
     
     <ul>
       <li>You're restricted to colors and design styles that the previous game (ACNL) had available.</li>
-      <li>Colors not available in ACNL will be converted to the nearest available color.<strong>This may lower the quality of your design!</strong></li>
-      <li>Paint by letter color maps are disabled, and QR codes are made available again.</li>
-      <li>ACNL patterns are not shareble inside ACNH through other means than QR codes!</li>
+      <li>If you're using colors or designs that are not available, the tool will automatically go to the nearest available for you. <strong>This may lower the quality of your design!</strong></li>
+      <li>Paint By Letter color maps are disabled, and QR codes are made available again.</li>
+      <li><strong>Note: QR codes are not shareable or editable inside ACNH through other means than QR codes!</strong></li>
     </ul>
     
   </div>
