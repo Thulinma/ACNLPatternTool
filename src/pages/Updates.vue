@@ -2,6 +2,15 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>October 25, 2020</dt>
+    <dd>
+      <ul>
+        <li>Improved app styling to look better on non-standard screen sizes</li>
+        <li>Fix for the popup menus not showing when tapped on some devices</li>
+        <li>Fix for Safari compatibility (added resize observer polyfill)</li>
+        <li>Added warning screen when switching between ACNL and ACNH modes, detailing the differences of the two formats</li>
+      </ul>
+    </dd>
     <dt>October 18, 2020</dt>
     <dd>
       <ul>
