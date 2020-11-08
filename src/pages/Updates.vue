@@ -2,6 +2,13 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>November 8, 2020</dt>
+    <dd>
+      <ul>
+        <li>Fixed bug in showing previews for ACNH-style patterns (including the Paint-By-Letter generator not working for these)</li>
+        <li>Preview rendering now uses a global context, which should speed up the browse page quite a bit as well as improve performance on slower devices.</li>
+      </ul>
+    </dd>
     <dt>October 25, 2020</dt>
     <dd>
       <ul>
