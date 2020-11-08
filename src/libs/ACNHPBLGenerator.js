@@ -60,7 +60,11 @@ async function generateACNHPBL(newData){
   }
 
   //Draw preview image
-  await drawPreviewFromTool(ctx, drawingTool, 660, 10, 192, 192);
+  try{
+    await drawPreviewFromTool(ctx, drawingTool, 660, 10, 192, 192);
+  }catch(e){
+    console.log(e);
+  }
 
   //Prepare background pattern for text
   bgCanvas.width=1;

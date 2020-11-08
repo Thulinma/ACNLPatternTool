@@ -26,6 +26,22 @@ import {
 } from '@three/loaders/GLTFLoader';
 import injected from "/utils/injected";
 
+//Global canvas and renderer
+let threeCanvas = document.createElement("canvas");
+threeCanvas.width = 100;
+threeCanvas.height = 100;
+let renderer = new WebGLRenderer({ alpha: true, canvas: threeCanvas, antialias: true});
+renderer.outputEncoding = sRGBEncoding;
+renderer.setClearColor(0x000000, 0);
+
+/// Helper function that renders onto the given context at the give coordinates, a given scene and camera with the given width and height.
+export function renderToContext(ctx, scene, camera, x, y, width, height){
+  renderer.setSize(width, height);
+  renderer.render(scene, camera);
+  ctx.drawImage(threeCanvas, 0, 0, width, height, x, y, width, height);
+}
+
+
 /// Renders the given DrawingTool instance to a canvas element with upscaling algorithm applied and returns it.
 export function toolToUpscaledCanvas(tool, transparent = true){
   //Prepare the canvases and render target
@@ -150,6 +166,18 @@ export async function loadStand(){
   });
 }
 
+/// Helper function that loads a texture with some basic error handling
+function loadTexture(tex,name){
+  return new Promise(r=>{
+    texLdr.load(injected.getObjectUrl(tex),(done)=>{
+      r(done);
+    },undefined,()=>{
+      console.log("Failed loading texture "+name);
+      r(false);
+    });
+  });
+}
+
 /// Loads the 3D model for the given DrawingTool instance and returns it.
 /// Returns false if there is no available model or there was a load failure.
 /// Note: Will draw to the textureCanvas if a mix image is available for the model!
@@ -166,15 +194,15 @@ export async function loadModelForTool(tool, texture, textureCanvas){
           promises.push(new Promise(async (travResolve) => {
             const meshName = child.name.split("__")[1];
             if (path.hasOwnProperty(meshName+"_Nrm.png")){
-              child.material.normalMap = await new Promise(r=>{texLdr.load(injected.getObjectUrl(path[meshName+"_Nrm.png"]),r);});
+              child.material.normalMap = await loadTexture(path[meshName+"_Nrm.png"],"normalmap");
               child.material.normalMap.flipY = false;
             }
             if (path.hasOwnProperty(meshName+"_Crv.png")){
-              child.material.lightMap = await new Promise(r=>{texLdr.load(injected.getObjectUrl(path[meshName+"_Crv.png"],r));});
+              child.material.lightMap = await loadTexture(path[meshName+"_Crv.png"],"lightmap");
               child.material.lightMap.flipY = false;
             }
             if (path.hasOwnProperty(meshName+"_OP.png")){
-              child.material.alphaMap = await new Promise(r=>{texLdr.load(injected.getObjectUrl(path[meshName+"_OP.png"],r));});
+              child.material.alphaMap = await loadTexture(path[meshName+"_OP.png"],"alphamap");
               child.material.alphaMap.flipY = false;
               child.material.transparent = true;
               child.material.alphaTest = 0.5;
@@ -183,9 +211,9 @@ export async function loadModelForTool(tool, texture, textureCanvas){
               await new Promise((d) => {
                 let img = new Image();
                 img.onload = ()=>{
-                  let ctx = renderCanvas.getContext('2d');
+                  let ctx = textureCanvas.getContext('2d');
                   ctx.globalAlpha = 0.75;
-                  ctx.drawImage(img,0,0,renderCanvas.width,renderCanvas.height);
+                  ctx.drawImage(img,0,0,textureCanvas.width,textureCanvas.height);
                   ctx.globalAlpha = 1;
                   d();
                 }
@@ -194,7 +222,7 @@ export async function loadModelForTool(tool, texture, textureCanvas){
               });
             }
             if (path.hasOwnProperty(meshName+"_Alb.png")){
-              child.material.map = await new Promise(r=>{texLdr.load(injected.getObjectUrl(path[meshName+"_Alb.png"],r));});
+              child.material.map = await loadTexture(path[meshName+"_Alb.png"],"material");
               child.material.map.flipY = false;
             }
             if (child.skeleton && child.skeleton.bones && child.skeleton.bones.length){
@@ -228,7 +256,7 @@ export async function loadModelForTool(tool, texture, textureCanvas){
         ret.position.y = -6;
       }
       texture.needsUpdate = true;
-      Promise.all(promises).then(() => resolve(ret)); 
+      Promise.all(promises).then(() => resolve(ret)).catch(()=>resolve(false)); 
     });
   });
 }
@@ -257,13 +285,6 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
   }else{
     //3D mode
 
-    let threeCanvas = document.createElement("canvas");
-    threeCanvas.width = width;
-    threeCanvas.height = height;
-    let renderer = new WebGLRenderer({ alpha: true, canvas: threeCanvas, antialias: true});
-    renderer.outputEncoding = sRGBEncoding;
-    renderer.setClearColor(0x000000, 0);
-
     let scene = new Scene();
 
     //Prepare texture
@@ -279,8 +300,12 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
     }
 
     //Load model and add to scene
+    try{
     let model = await loadModelForTool(tool, texture, renderCanvas);
     if (model){scene.add(model);}
+    }catch(e){
+      console.log("Could not load model: ", e);
+    }
 
     //Create and position the camera
     let scale = 45;
@@ -296,7 +321,7 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
     }
     let factor = 190/Math.min(width,height);
     scale /= factor;
-    let camera = new OrthographicCamera( -threeCanvas.width/scale, threeCanvas.width/scale, threeCanvas.height/scale, -threeCanvas.height/scale, 0.1, 100000 );
+    let camera = new OrthographicCamera( -width/scale, width/scale, height/scale, -height/scale, 0.1, 100000 );
     camera.position.set( 0, camUp, 100);
     camera.lookAt(new Vector3(0,0,camPan));
 
@@ -309,14 +334,10 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
     dirLight.position.multiplyScalar(50);
 
     //Render the scene
-    renderer.render(scene, camera);
-    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, x, y, threeCanvas.width, threeCanvas.height);
+    renderToContext(ctx, scene, camera, x, y, width, height);
     //Free ThreeJS-related resources
     scene.dispose();
     texture.dispose();
-    renderer.forceContextLoss();
-    renderer.dispose();
-
   }
 }
 
