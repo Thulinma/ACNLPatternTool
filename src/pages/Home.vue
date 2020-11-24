@@ -322,14 +322,6 @@ export default {
 
   background-color: $ecru-white;
   border-radius: 9999px;
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
-  }
   @include desktop-hd {
     padding: 20px;
   }
@@ -342,15 +334,7 @@ export default {
   border-style: solid;
   border-color: $orange-white;
   overflow: hidden;
-
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
-  }
+  
   @include desktop-hd {
     border-width: 15px;
   }
@@ -363,15 +347,9 @@ export default {
   height: 140px;
   border-radius: 9999px;
 
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
   @include tablet-landscape {
     width: 120px;
     height: 120px;
-  }
-  @include desktop {
   }
   @include desktop-hd {
     width: 150px;
@@ -401,17 +379,6 @@ export default {
   border-radius: 999px;
   background-color: $ecru-white;
   color: $olive-haze;
-
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
-  }
-  @include desktop-hd {
-  }
 }
 
 .home--achievements {
@@ -607,9 +574,5 @@ export default {
   left: 50%;
   height: calc(100% + 10px);
   transform: translate(-50%, -50%);
-
-  @include desktop-hd {
-
-  }
 }
 </style>

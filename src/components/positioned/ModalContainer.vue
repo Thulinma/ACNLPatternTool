@@ -2,23 +2,22 @@
   <portal to="ModalManager">
     <div class="modal">
       <!-- window content -->
-      <slot
-        name="window">
-      </slot>
+      <slot name="window"> </slot>
 
       <!-- provided overlayed -->
       <slot
         v-if="!!$slots.overlay"
         name="overlay"
-        @click.self="onOverlayClick($event)">
+        @click.self="onOverlayClick($event)"
+      >
       </slot>
 
       <!-- default overlay -->
       <div
         v-if="!$slots.overlay"
         class="overlay--default"
-        @click.self="onOverlayClick($event)">
-      </div>
+        @click.self="onOverlayClick($event)"
+      ></div>
     </div>
   </portal>
 </template>
@@ -34,33 +33,35 @@ class MissingContentError extends Error {
 
 export default {
   name: "ModalContainer",
-  data: function() {return {};},
+  data: function () {
+    return {};
+  },
   methods: {
-    onOverlayClick: function(event) {
+    onOverlayClick: function (event) {
       this.$emit("modal-close");
     },
-    onKeyEscape: function(event) {
+    onKeyEscape: function (event) {
       if (event.keyCode === 27) {
         this.$emit("modal-close");
       }
-    }
+    },
   },
-  created: function() {
+  created: function () {
     window.addEventListener("keyup", this.onKeyEscape);
   },
-  mounted: function() {
+  mounted: function () {
     if (this.$slots.window == null) {
       throw new MissingContentError("");
     }
     this.$emit("modal-open");
     this.$emit("scroll-freeze");
   },
-  destroyed: function() {
+  destroyed: function () {
     window.removeEventListener("keyup", this.onKeyEscape);
     this.$emit("modal-close");
     this.$emit("scroll-unfreeze");
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>

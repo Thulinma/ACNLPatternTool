@@ -16,16 +16,15 @@
           />
         </div>
       </label>
-      <button 
-        class="browse--search-button"
-        @click="search"
-      >
-        Search
-      </button>
+      <button class="browse--search-button" @click="search">Search</button>
     </nav>
 
     <div class="browse--pattern-grid" v-if="page.length">
-      <BrowsePatternInfo v-for="pattern in page" :key="pattern.bytes" :pattern="pattern" />
+      <BrowsePatternInfo
+        v-for="pattern in page"
+        :key="pattern.bytes"
+        :pattern="pattern"
+      />
     </div>
     <h1 v-else>No results found!</h1>
 
@@ -36,10 +35,7 @@
       >
         <IconLeftArrow class="browse--nav-icon" />
       </button>
-      <button
-        @click="toPage()">
-        Jump
-      </button>
+      <button @click="toPage()">Jump</button>
       <button @click="toPage(pageNumber + 1)">
         <IconRightArrow class="browse--nav-icon" />
       </button>
@@ -48,40 +44,39 @@
 </template>
 
 <script>
-import lzString from 'lz-string';
-import { mapState, mapGetters, mapActions } from 'vuex';
-import DrawingTool from '/libs/DrawingTool';
-import origin from '/libs/origin';
-
-import BrowsePatternInfo from '/components/partials/BrowsePatternInfo.vue';
+import lzString from "lz-string";
+import { mapState, mapGetters, mapActions } from "vuex";
+import DrawingTool from "~/libs/DrawingTool";
+import origin from "~/libs/origin";
+import BrowsePatternInfo from "~/components/partials/BrowsePatternInfo.vue";
 
 import IconLeftArrow from "~/components/icons/IconLeftArrow.vue";
 import IconRightArrow from "~/components/icons/IconRightArrow.vue";
 
 const colors = {
-  "natural": '#EAC558',
-  "cute": '#E96598',
-  "sporty": '#5EC299',
-  "cool": '#6BB6DC',
-  "rustic": '#74940D',
-  "hip": '#EB7E32',
-  "harmonious": '#DC3D32',
-  "elegant": '#D589E8',
-  "modern": '#5BC0B3',
-  "historical": '#8D2E4B',
-  "civic": '#4F57C8',
-  "silly": '#E64369',
-  "spooky": '#363655',
-  'sci-fi': '#408877',
-  "aquatic": '#328BCE',
-  "floral": '#EA80DA',
-  "animal": '#AF2E33',
-  "holiday": '#48903B',
-  "food": '#B156FD',
-  "brand": '#E93F33',
-  "anime": '#EB8D77',
-  "video-game": '#0D1010',
-  "meme": '#52307C',
+  natural: "#EAC558",
+  cute: "#E96598",
+  sporty: "#5EC299",
+  cool: "#6BB6DC",
+  rustic: "#74940D",
+  hip: "#EB7E32",
+  harmonious: "#DC3D32",
+  elegant: "#D589E8",
+  modern: "#5BC0B3",
+  historical: "#8D2E4B",
+  civic: "#4F57C8",
+  silly: "#E64369",
+  spooky: "#363655",
+  "sci-fi": "#408877",
+  aquatic: "#328BCE",
+  floral: "#EA80DA",
+  animal: "#AF2E33",
+  holiday: "#48903B",
+  food: "#B156FD",
+  brand: "#E93F33",
+  anime: "#EB8D77",
+  "video-game": "#0D1010",
+  meme: "#52307C",
 };
 
 export default {
@@ -89,43 +84,32 @@ export default {
   components: {
     BrowsePatternInfo,
     IconLeftArrow,
-    IconRightArrow
+    IconRightArrow,
   },
-  beforeRouteUpdate: async function(to, from, next) {
+  beforeRouteUpdate: async function (to, from, next) {
     await this.loadFromRoute(to);
     next();
   },
-  beforeRouteLeave: function(to, from, next) {
+  beforeRouteLeave: function (to, from, next) {
     next();
   },
   computed: {
     // map using store module search
-    ...mapState('browse', [
-      'query',
-      'pageNumber'
-    ]),
-    ...mapGetters('browse', [
-      'page'
-    ])
+    ...mapState("browse", ["query", "pageNumber"]),
+    ...mapGetters("browse", ["page"]),
   },
   methods: {
     // map using store module search
-    ...mapActions('browse', [
-      'setViewOptions',
-      'setSearchOptions',
-      'getSearchResults'
+    ...mapActions("browse", [
+      "setViewOptions",
+      "setSearchOptions",
+      "getSearchResults",
     ]),
     async loadFromRoute(route) {
       // aliases
       // all destructured from route query are strings
-      const {
-        q: query,
-      } = route.query;
-      let {
-        p: pageNumber,
-        nsfc,
-        unapproved
-      } = route.query;
+      const { q: query } = route.query;
+      let { p: pageNumber, nsfc, unapproved } = route.query;
       let searchOptions = {};
       let viewOptions = {};
       let queryOptions = {};
@@ -133,9 +117,8 @@ export default {
 
       if (query != null) {
         // correct the url
-        searchOptions = {...searchOptions, query};
-        if (query.length !== 0)
-          queryOptions = {...queryOptions, q: query};
+        searchOptions = { ...searchOptions, query };
+        if (query.length !== 0) queryOptions = { ...queryOptions, q: query };
         else isCorrecting = true;
       }
       if (pageNumber != null) {
@@ -144,11 +127,10 @@ export default {
         // no page number and page number = 0 are both valid
         else if (pageNumber < 0) isCorrecting = true;
         else {
-          viewOptions = {...viewOptions, pageNumber};
-          queryOptions = {...queryOptions, p: pageNumber};
+          viewOptions = { ...viewOptions, pageNumber };
+          queryOptions = { ...queryOptions, p: pageNumber };
         }
-      }
-      else viewOptions = {...viewOptions, pageNumber: 0};
+      } else viewOptions = { ...viewOptions, pageNumber: 0 };
       // if any 'invalid' or uncessary data in query, correct it
       // next loop around will load results
       if (isCorrecting) {
@@ -164,7 +146,7 @@ export default {
       const query = event.target.value;
       await this.setSearchOptions({ query });
     },
-    async search(){
+    async search() {
       // duplicated history guard
       const currQuery = this.query;
       let prevQuery = this.$route.query.q;
@@ -173,7 +155,7 @@ export default {
       // duplication guard
       if (currQuery === prevQuery) return;
 
-      let queryOptions = {}
+      let queryOptions = {};
       if (currQuery.length !== 0) queryOptions = { q: currQuery };
       // let route guard handle the rest
       await this.$router.push({ query: queryOptions });
@@ -181,7 +163,7 @@ export default {
     async toPage(n) {
       // should not trigger retrieval
       if (n == null) {
-        const response = window.prompt('Please enter a valid page number.');
+        const response = window.prompt("Please enter a valid page number.");
         n = Number.parseInt(response);
         if (Number.isNaN(n) || n < 0) {
           window.alert(`'${n}' is not a valid page number.`);
@@ -190,19 +172,21 @@ export default {
       }
       // should trigger retrieval
       await this.setViewOptions({ pageNumber: n });
-      this.$router.push({ query: {
-        ...this.$router.query,
-        p: n
-      }});
+      this.$router.push({
+        query: {
+          ...this.$router.query,
+          p: n,
+        },
+      });
     },
     async goToEditor() {
       await this.$router.push({ path: `/editor` });
-    }
+    },
   },
-  mounted: async function(){
+  mounted: async function () {
     await this.loadFromRoute(this.$route);
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -259,7 +243,6 @@ nav {
   background-color: $cinderella;
   padding: 15px 25px;
   border-radius: 8px;
-
 
   &:hover {
     background-color: $salmon;

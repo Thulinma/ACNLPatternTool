@@ -1,16 +1,18 @@
 <template>
   <div class="cropping--container">
-    <div :class="{
-      'cropping--cropper': true,
-      'loaded': dataURL != null,
-    }">
+    <div
+      :class="{
+        'cropping--cropper': true,
+        loaded: dataURL != null,
+      }"
+    >
       <Cropper
         v-if="dataURL != null"
         class="cropping--cropper"
         backgroundClassname="cropping--cropper-background"
         ref="cropper"
         :src="dataURL"
-        :stencilProps="{aspectRatio: aspectRatio}"
+        :stencilProps="{ aspectRatio: aspectRatio }"
       />
     </div>
 
@@ -24,33 +26,57 @@
         <IconChevronDown
           :class="{
             'cropping--advanced-expand-icon': true,
-            'active': showAdvanced
-          }" />
+            active: showAdvanced,
+          }"
+        />
       </button>
       <button
         class="cropping--button cropping--button--upload"
         @click="$refs.inputFiles.click()"
-      >Upload Image</button>
+      >
+        Upload Image
+      </button>
       <button
         v-if="dataURL != null"
         class="cropping--button cropping--button--next"
         @click="onNext"
-      >Next</button>
+      >
+        Next
+      </button>
     </div>
 
     <div v-show="showAdvanced && dataURL != null" class="cropping--size-inputs">
       <div class="cropping--size-input">
-        <input :value="rows" type="range" min="1" max="9" step="1" @input="onRowsInput" />
+        <input
+          :value="rows"
+          type="range"
+          min="1"
+          max="9"
+          step="1"
+          @input="onRowsInput"
+        />
         <div class="cropping--manual-size-input">
           <span>Rows:</span>
           <input :value="rows" type="number" min="1" @input="onRowsInput" />
         </div>
       </div>
       <div class="cropping--size-input">
-        <input :value="columns" type="range" min="1" max="9" step="1" @input="onColumnsInput" />
+        <input
+          :value="columns"
+          type="range"
+          min="1"
+          max="9"
+          step="1"
+          @input="onColumnsInput"
+        />
         <div class="cropping--manual-size-input">
           <div>Columns:</div>
-          <input :value="columns" type="number" min="1" @input="onColumnsInput" />
+          <input
+            :value="columns"
+            type="number"
+            min="1"
+            @input="onColumnsInput"
+          />
         </div>
       </div>
     </div>
@@ -245,7 +271,6 @@ export default {
   align-content: center;
 
   @include phone-landscape {
-    
   }
   @include tablet-portrait {
     grid-template-areas: "advanced upload next";
@@ -314,7 +339,7 @@ export default {
   margin-left: 10px;
   fill: white;
   width: 16px;
-  
+
   &.active {
     transform: rotate(180deg);
   }
@@ -330,7 +355,7 @@ export default {
   row-gap: 30px;
 
   margin-top: 30px;
-  
+
   @include tablet-portrait {
     grid-template-columns: 1fr;
   }

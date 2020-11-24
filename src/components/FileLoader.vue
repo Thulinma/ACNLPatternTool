@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import DrawingTool from "/libs/DrawingTool";
+import DrawingTool from "~/libs/DrawingTool";
 import JSZip from "jszip";
 import {
   BrowserQRCodeReader,

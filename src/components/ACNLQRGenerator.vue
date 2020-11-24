@@ -3,32 +3,38 @@
 </template>
 
 <script>
-import generateACNLQR from "/libs/ACNLQRGenerator";
+import generateACNLQR from "~/libs/ACNLQRGenerator";
 
 export default {
   name: "ACNLQRGenerator",
   props: {
     pattern: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  data: function(){return {image:""};},
+  data: function () {
+    return { image: "" };
+  },
   watch: {
     //Whenever pattern changes, draw it!
-    pattern (newData, oldData) {
-      generateACNLQR(newData).then((d)=>{this.image=d;});
-    }
+    pattern(newData, oldData) {
+      generateACNLQR(newData).then((d) => {
+        this.image = d;
+      });
+    },
   },
-  mounted: function(){
-    generateACNLQR(this.pattern).then((d)=>{this.image=d;});
+  mounted: function () {
+    generateACNLQR(this.pattern).then((d) => {
+      this.image = d;
+    });
   },
   methods: {
-    pattClick(){
-      this.$emit('pattclick', this.pattern);
-    }
-  }
-}
+    pattClick() {
+      this.$emit("pattclick", this.pattern);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

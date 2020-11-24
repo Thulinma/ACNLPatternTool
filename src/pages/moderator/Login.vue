@@ -18,7 +18,8 @@
           type="text"
           :value="username"
           @input="onUsernameChange"
-          @keyup.enter="onLogIn"/>
+          @keyup.enter="onLogIn"
+        />
       </div>
       <div class="form-row">
         <label for="password" class="input-label">
@@ -36,10 +37,7 @@
       </div>
       <div class="form-row submit">
         <div class="button-container">
-          <button
-            class="submit-button"
-            type="button"
-            @click="onLogIn">
+          <button class="submit-button" type="button" @click="onLogIn">
             Sign in
           </button>
         </div>
@@ -49,7 +47,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapActions, mapState } from "vuex";
 
 export default {
   name: "ModeratorLogin",
@@ -61,50 +59,46 @@ export default {
     };
   },
   computed: {
-    ...mapState('profile', {
-      'usedUsername': 'username',
-      'usedPassword': 'password',
+    ...mapState("profile", {
+      usedUsername: "username",
+      usedPassword: "password",
     }),
-    ...mapGetters('profile', [
-      'isLoggedIn',
-    ]),
+    ...mapGetters("profile", ["isLoggedIn"]),
   },
   methods: {
-    ...mapActions('profile', [
-      'logIn',
-    ]),
-    onUsernameChange: function(event) {
+    ...mapActions("profile", ["logIn"]),
+    onUsernameChange: function (event) {
       const username = event.target.value;
       this.username = username;
       this.didFail = false;
     },
-    onPasswordChange: function(event) {
+    onPasswordChange: function (event) {
       const password = event.target.value;
       this.password = password;
       this.didFail = false;
     },
     // refocuses if one field is missing, submit with all fields
-    onLogIn: async function() {
+    onLogIn: async function () {
       const { username, password, $refs } = this;
       if (username.length <= 0) {
         $refs.username.focus();
         return;
-      };
+      }
       if (password.length <= 0) {
         $refs.password.focus();
         return;
-      };
+      }
       await this.logIn({ username, password });
       if (!this.isLoggedIn) this.didFail = true;
       else this.$emit("redirect");
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     // only restores on success, handles back navigation edge case
     this.username = this.usedUsername;
     this.password = this.usedPassword;
-  }
-}
+  },
+};
 </script>
 
 
@@ -115,7 +109,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  color: #7E7261;
+  color: #7e7261;
   background-color: #fffae5;
 }
 
@@ -158,15 +152,16 @@ export default {
   width: 100px;
 
   &:hover {
-    cursor: pointer
+    cursor: pointer;
   }
 
   span {
-    color: #00B6A7;
+    color: #00b6a7;
   }
 }
 
-.input-username, .input-password {
+.input-username,
+.input-password {
   display: block;
   width: 400px;
   height: 48px;
@@ -178,7 +173,7 @@ export default {
   border-radius: 5px;
   border-width: 2px;
   border-style: solid;
-  border-color:#7E7261;
+  border-color: #7e7261;
   background-color: transparent;
   color: inherit;
 
@@ -189,7 +184,7 @@ export default {
 
 /* need this for animation */
 .button-container {
-  background-color: #00B6A7;
+  background-color: #00b6a7;
   padding: 3px;
   border-radius: 5px;
 }
@@ -200,8 +195,8 @@ export default {
   display: inline-block;
   font-family: inherit;
   text-align: center;
-  background-color: #00B6A7;
-  color: #FFFFFF;
+  background-color: #00b6a7;
+  color: #ffffff;
   box-sizing: border-box;
   padding: 10px 16px;
   font-size: 1rem;

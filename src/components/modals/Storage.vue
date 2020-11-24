@@ -32,7 +32,9 @@ export default {
   },
   computed: {
     selected() {
-      const selectedArr = this.drawingTools.filter((dt, i) => this.selectedMap[i]);
+      const selectedArr = this.drawingTools.filter(
+        (dt, i) => this.selectedMap[i]
+      );
       const selected = new Set();
       for (const selectedItem of selectedArr) {
         selected.add(selectedItem);
@@ -43,7 +45,7 @@ export default {
       const { selected, selectedMap, drawingTools } = this;
       let options = [];
       if (drawingTools.length === 0) return options;
-      
+
       const isNone = selected.size === 0;
       const isSingle = selected.size === 1;
       const isMultiple = selected.size > 1;
@@ -57,7 +59,7 @@ export default {
           this.$emit("close");
         },
       };
-      
+
       const del = {
         imgSrc: deleteSvg,
         label: `Delete`,
@@ -65,10 +67,10 @@ export default {
           let message;
           let source;
           if (selected.size !== 0) {
-            message = "Are you sure you want to delete these patterns from storage?";
+            message =
+              "Are you sure you want to delete these patterns from storage?";
             source = [...selected];
-          }
-          else {
+          } else {
             message = "Are you sure you want to clear the storage?";
             source = [...drawingTools];
           }
@@ -79,10 +81,9 @@ export default {
             drawingTools.splice(idx, 1);
             selectedMap.splice(idx, 1);
           }
-        }
+        },
       };
-      
-      
+
       const downloadAsPattern = {
         imgSrc: downloadAsPatternSvg,
         label: `.ACNL / .ACNH`,
@@ -98,7 +99,7 @@ export default {
           saver.saveDrawingToolsAsPattern(source);
         },
       };
-      
+
       const downloadAsPng = {
         imgSrc: downloadAsPngSvg,
         label: `QR / PBL`,
@@ -114,7 +115,7 @@ export default {
           await saver.saveDrawingToolsAsPng(source);
         },
       };
-      
+
       const downloadAsBoth = {
         imgSrc: downloadAsBothSvg,
         label: `Both`,
@@ -134,11 +135,7 @@ export default {
         options.push(open);
       }
       options.push(del);
-      options.push(
-        downloadAsPattern,
-        downloadAsPng,
-        downloadAsBoth,
-      );
+      options.push(downloadAsPattern, downloadAsPng, downloadAsBoth);
       return options;
     },
   },

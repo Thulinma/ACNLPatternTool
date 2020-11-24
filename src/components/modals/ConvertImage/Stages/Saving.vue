@@ -13,9 +13,9 @@
           v-for="(option, index) in savingMethodOptions"
           :key="index"
           :class="{
-          'radio-option': true,
-          'active': option.savingMethod === savingMethod
-        }"
+            'radio-option': true,
+            active: option.savingMethod === savingMethod,
+          }"
         >
           <span class="radio-option-indicator"></span>
           <span>{{ option.name }}</span>
@@ -91,7 +91,7 @@ export default {
       if (this.savingMethod === saver.saveDrawingToolsToStorage) {
         window.alert("Patterns successfully saved to Storage.");
       }
-    }
+    },
   },
 };
 </script>
@@ -107,7 +107,7 @@ export default {
 
 .save-button {
   justify-self: flex-start;
-  align-self: flex-end; 
+  align-self: flex-end;
   cursor: pointer;
   @include reset-button;
 

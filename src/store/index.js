@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 // aggregate all individual modules
-import browse from '/store/browse';
-import profile from '/store/profile';
+import browse from '~/store/browse';
+import profile from '~/store/profile';
 
 Vue.use(Vuex);
 

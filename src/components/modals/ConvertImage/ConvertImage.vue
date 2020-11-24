@@ -514,7 +514,7 @@ export default {
       // mixingCanvas (final mix result) =>
       // drawingCanvas (to draw invidual sections) =>
       // previewCanvas (to draw all sections pieced together);
-      
+
       // SETUP ALL CANVASES FIRST
       saturationCanvas.width = croppedCanvas.width;
       saturationCanvas.height = croppedCanvas.height;
@@ -562,7 +562,7 @@ export default {
         else if (conversionQuality === conversionQualities.low)
           mixingContext.imageSmoothingQuality = "low";
       } else mixingContext.imageSmoothingEnabled = false;
-      
+
       // draws pixelated version from the saturation canvas (applies downscaling here)
       mixingContext.drawImage(
         saturationCanvas,

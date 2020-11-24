@@ -1,7 +1,9 @@
 <template>
-  <main :class="{
-    'editor--container': true,
-  }">
+  <main
+    :class="{
+      'editor--container': true,
+    }"
+  >
     <ColorTools
       :drawingTool="drawingTool"
       :prevColorPicker="prevColorPicker"
@@ -24,12 +26,18 @@
             @change-current-color="onChangeCurrentColor"
             @color-picked="onColorPicked"
           />
-          <CancelButton class="editor--color-picker-close" @click="onChangeColorPicker(null)" />
+          <CancelButton
+            class="editor--color-picker-close"
+            @click="onChangeColorPicker(null)"
+          />
         </div>
       </template>
       <!-- transparent overlay -->
       <template #overlay>
-        <div @click="onChangeColorPicker(null)" class="editor--color-picker-overlay"></div>
+        <div
+          @click="onChangeColorPicker(null)"
+          class="editor--color-picker-overlay"
+        ></div>
       </template>
     </ModalContainer>
     <!-- color picker dropdown -->
@@ -38,7 +46,12 @@
     <div class="editor--preview-container">
       <canvas class="editor--preview" ref="preview" />
     </div>
-    <ThreeDRender class="editor--preview-3d" :width="250" :height="450" :drawingTool="drawingTool" />
+    <ThreeDRender
+      class="editor--preview-3d"
+      :width="250"
+      :height="450"
+      :drawingTool="drawingTool"
+    />
     <!-- width/height must be multiples of 32 and ratio of 1:1 -->
     <div class="editor--canvas-container">
       <canvas class="editor--canvas" ref="main" />
@@ -69,13 +82,30 @@
         </div>
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
-          <button class="editor--dropup-menu-item" @click="convertImage = true">Convert from IMG</button>
-          <button class="editor--dropup-menu-item" @click="readQRCode">Open QR Code</button>
+          <button class="editor--dropup-menu-item" @click="convertImage = true">
+            Convert from IMG
+          </button>
+          <button class="editor--dropup-menu-item" @click="readQRCode">
+            Open QR Code
+          </button>
           <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
-          <button class="editor--dropup-menu-item" @click="openPattern">Open .ACNL / .ACNH</button>
-          <FileLoader ref="patternFileLoader" fileType="acpattern" @load="load" />
-          <button class="editor--dropup-menu-item" @click="openCollection">Open .ZIP / .DAT</button>
-          <FileLoaderCollection v-if="fileLoadingCollection" @load="load" ref="collectionFileLoader" @close="fileLoadingCollection = false"/>
+          <button class="editor--dropup-menu-item" @click="openPattern">
+            Open .ACNL / .ACNH
+          </button>
+          <FileLoader
+            ref="patternFileLoader"
+            fileType="acpattern"
+            @load="load"
+          />
+          <button class="editor--dropup-menu-item" @click="openCollection">
+            Open .ZIP / .DAT
+          </button>
+          <FileLoaderCollection
+            v-if="fileLoadingCollection"
+            @load="load"
+            ref="collectionFileLoader"
+            @close="fileLoadingCollection = false"
+          />
         </div>
       </div>
 
@@ -91,13 +121,27 @@
         </div>
         <div class="editor--dropup-bridge"></div>
         <div class="editor--dropup-menu">
-          <button @click="downloadBinary" class="editor--dropup-menu-item">as .{{drawingTool.compatMode}}</button>
-          <button v-if="drawingTool.compatMode !== '???'" @click="downloadQR" class="editor--dropup-menu-item">
-            as <span v-if="drawingTool.compatMode === 'ACNL'">QR Code</span>
-              <span v-else-if="drawingTool.compatMode === 'ACNH'">PBL</span>
+          <button @click="downloadBinary" class="editor--dropup-menu-item">
+            as .{{ drawingTool.compatMode }}
           </button>
-          <button class="editor--dropup-menu-item" @click="saveToStorage">to Storage</button>
-          <button v-if="drawingTool.compatMode === 'ACNL'" class="editor--dropup-menu-item" @click="beginPublishing">Publish</button>
+          <button
+            v-if="drawingTool.compatMode !== '???'"
+            @click="downloadQR"
+            class="editor--dropup-menu-item"
+          >
+            as <span v-if="drawingTool.compatMode === 'ACNL'">QR Code</span>
+            <span v-else-if="drawingTool.compatMode === 'ACNH'">PBL</span>
+          </button>
+          <button class="editor--dropup-menu-item" @click="saveToStorage">
+            to Storage
+          </button>
+          <button
+            v-if="drawingTool.compatMode === 'ACNL'"
+            class="editor--dropup-menu-item"
+            @click="beginPublishing"
+          >
+            Publish
+          </button>
         </div>
       </div>
     </div>
@@ -196,7 +240,7 @@ export default {
       fileLoadingCollection: false,
     };
   },
-  methods: {    
+  methods: {
     // ------------------
     // REACTION FUNCTIONS
     // ------------------
@@ -228,7 +272,7 @@ export default {
       if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
       this.colorPicker = mode;
     },
-    onChangePrevColorPicker: function(mode) {
+    onChangePrevColorPicker: function (mode) {
       if (!["acnh", "acnl"].includes(mode)) return;
       else this.prevColorPicker = mode;
     },
@@ -263,12 +307,14 @@ export default {
     // MODAL REACTION
     beginPublishing() {
       if (this.drawingTool.compatMode === "ACNH") {
-        window.alert("Publishing is not available for ACNH formatted patterns.");
+        window.alert(
+          "Publishing is not available for ACNH formatted patterns."
+        );
         return;
       }
       this.publishing = true;
     },
-    
+
     // ---------------------------------------------
     // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
     // ---------------------------------------------
@@ -352,7 +398,7 @@ export default {
       await this.$nextTick();
       this.$refs.collectionFileLoader.open();
       console.log("opening collection");
-    }
+    },
   },
   mounted: async function () {
     // setup drawingTool
@@ -363,7 +409,7 @@ export default {
     this.drawingTool.addCanvas(this.$refs.main, { grid: true });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
-    
+
     this.drawingTool.onLoad(() => {
       this.syncPatternDetails();
     });
@@ -604,7 +650,9 @@ export default {
     @include relative-in-place;
     padding: 7px 10px;
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
       cursor: pointer;
     }
     &:hover ~ .editor--dropup-menu,
@@ -687,7 +735,7 @@ export default {
   &:focus ~ .editor--dropup-bridge {
     display: block;
   }
-  
+
   .editor--dropup-menu-text {
     @include relative-in-place;
     font-weight: 600;
@@ -725,7 +773,7 @@ export default {
       padding: 30px 40px;
       font-size: 1.25rem;
     }
-    
+
     &.for-text {
       padding: 15px;
     }

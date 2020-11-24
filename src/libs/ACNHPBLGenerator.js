@@ -1,6 +1,6 @@
-import {default as DrawingTool, RenderTarget} from "/libs/DrawingTool";
-import ACNHFormat from '/libs/ACNHFormat';
-import {drawPreviewFromTool} from "/libs/Preview3D";
+import {default as DrawingTool, RenderTarget} from "~/libs/DrawingTool";
+import ACNHFormat from '~/libs/ACNHFormat';
+import {drawPreviewFromTool} from "~/libs/Preview3D";
 
 async function generateACNHPBL(newData){
   //Load pattern, prepare render canvas

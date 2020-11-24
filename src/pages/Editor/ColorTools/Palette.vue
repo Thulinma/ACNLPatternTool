@@ -4,14 +4,14 @@
       <div
         :class="{
           'palette--color-container': true,
-          'picked': drawingTool.currentColor === i-1
+          picked: drawingTool.currentColor === i - 1,
         }"
         v-for="i in 15"
         :key="i"
-        @click="onColorClick($event, i-1)"
-        @mousemove="onColorMousemove($event, i-1)"
+        @click="onColorClick($event, i - 1)"
+        @mousemove="onColorMousemove($event, i - 1)"
       >
-        <IconColorBlob class="palette--color" :color="paletteColors[i-1]" />
+        <IconColorBlob class="palette--color" :color="paletteColors[i - 1]" />
 
         <div class="palette--selected-indicator"></div>
       </div>
@@ -19,7 +19,7 @@
       <div
         :class="{
           'palette--color-container': true,
-          'picked': drawingTool.currentColor === 15
+          picked: drawingTool.currentColor === 15,
         }"
         @click="onColorClick($event, 15)"
         @mousemove="onColorMousemove($event, 15)"
@@ -31,12 +31,14 @@
 
     <div
       class="palette--button-hint left"
-      @click="onColorClick($event, drawingTool.currentColor - 1)">
+      @click="onColorClick($event, drawingTool.currentColor - 1)"
+    >
       <div class="hint">L</div>
     </div>
     <div
       class="palette--button-hint right"
-      @click="onColorClick($event, drawingTool.currentColor + 1)">
+      @click="onColorClick($event, drawingTool.currentColor + 1)"
+    >
       <div class="hint">R</div>
     </div>
   </div>
@@ -53,15 +55,15 @@ export default {
   name: "Palette",
   components: {
     IconColorBlob,
-    IconTransparentBlob
+    IconTransparentBlob,
   },
   props: {
     drawingTool: {
       type: DrawingTool,
-      required: true
-    }
+      required: true,
+    },
   },
-  data: function() {
+  data: function () {
     const paletteColors = [];
     for (let i = 0; i < 15; ++i)
       paletteColors.push(this.drawingTool.getPalette(i));
@@ -70,13 +72,13 @@ export default {
     };
   },
   methods: {
-    invalidIdx: function(idx) {
-      if (idx > 15 ||idx < 0) {
+    invalidIdx: function (idx) {
+      if (idx > 15 || idx < 0) {
         console.log("detected invalid current color value:", idx);
         return true;
       }
     },
-    onColorClick: function(event, idx) {
+    onColorClick: function (event, idx) {
       if (this.invalidIdx(idx)) return;
       // DOUBLE CLICK, OPEN COLOR PICKER
       if (this.drawingTool.currentColor === idx) {
@@ -84,25 +86,25 @@ export default {
       }
       this.$emit("change-current-color", idx);
     },
-    onColorMousemove: function(event, idx) {
+    onColorMousemove: function (event, idx) {
       if (event.buttons === 1) {
         if (this.invalidIdx(idx)) return;
         this.$emit("change-current-color", idx);
       }
     },
-    updatePaletteColors: function() {
+    updatePaletteColors: function () {
       for (let i = 0; i < 15; ++i) {
         const paletteColor = this.drawingTool.getPalette(i);
         this.paletteColors.splice(i, 1, paletteColor);
       }
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     this.drawingTool.onColorChange(this.updatePaletteColors);
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     this.drawingTool.onColorChangeRemove(this.updatePaletteColors);
-  }
+  },
 };
 </script>
 
@@ -111,7 +113,6 @@ export default {
 @import "styles/transitions";
 @import "styles/positioning";
 @import "styles/screens";
-
 
 .palette--container {
   display: inline-block;
@@ -179,7 +180,7 @@ export default {
     bottom: -8px;
     transform: translate(-50%, 0px) scale(0);
 
-    transition: transform 0.10s $energetic;
+    transition: transform 0.1s $energetic;
     background-color: $persian-green;
     border-radius: 4px;
     opacity: 0;
@@ -237,5 +238,4 @@ export default {
     cursor: pointer;
   }
 }
-
 </style>

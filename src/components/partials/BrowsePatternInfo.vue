@@ -12,19 +12,31 @@
         {{ pattern.f_type_b }}
       </span>
     </div>
-    <IconGenerator :pattern="pattern.bytes" width=150 height=150 />
+    <IconGenerator :pattern="pattern.bytes" width="150" height="150" />
     <div class="browse--pattern-details">
       <span>by {{ pattern.author }}</span>
       <span>from {{ pattern.town }}</span>
     </div>
     <div class="browse--style-tags">
-      <span v-if="pattern.style_main != null" class="browse--tag" :style="tagClass(pattern.style_main)">
+      <span
+        v-if="pattern.style_main != null"
+        class="browse--tag"
+        :style="tagClass(pattern.style_main)"
+      >
         {{ pattern.style_main }}
       </span>
-      <span v-if="pattern.style_sub_a != null" class="browse--tag" :style="tagClass(pattern.style_sub_a)">
+      <span
+        v-if="pattern.style_sub_a != null"
+        class="browse--tag"
+        :style="tagClass(pattern.style_sub_a)"
+      >
         {{ pattern.style_sub_a }}
       </span>
-      <span v-if="pattern.style_sub_b != null" class="browse--tag" :style="tagClass(pattern.style_sub_b)">
+      <span
+        v-if="pattern.style_sub_b != null"
+        class="browse--tag"
+        :style="tagClass(pattern.style_sub_b)"
+      >
         {{ pattern.style_sub_b }}
       </span>
     </div>
@@ -32,51 +44,54 @@
 </template>
 
 <script>
-import IconGenerator from '/components/IconGenerator.vue';
+import IconGenerator from "~/components/IconGenerator.vue";
 
 const colors = {
-  "natural": '#EAC558',
-  "cute": '#E96598',
-  "sporty": '#5EC299',
-  "cool": '#6BB6DC',
-  "rustic": '#74940D',
-  "hip": '#EB7E32',
-  "harmonious": '#DC3D32',
-  "elegant": '#D589E8',
-  "modern": '#5BC0B3',
-  "historical": '#8D2E4B',
-  "civic": '#4F57C8',
-  "silly": '#E64369',
-  "spooky": '#363655',
-  'sci-fi': '#408877',
-  "aquatic": '#328BCE',
-  "floral": '#EA80DA',
-  "animal": '#AF2E33',
-  "holiday": '#48903B',
-  "food": '#B156FD',
-  "brand": '#E93F33',
-  "anime": '#EB8D77',
-  "video-game": '#0D1010',
-  "meme": '#52307C',
+  natural: "#EAC558",
+  cute: "#E96598",
+  sporty: "#5EC299",
+  cool: "#6BB6DC",
+  rustic: "#74940D",
+  hip: "#EB7E32",
+  harmonious: "#DC3D32",
+  elegant: "#D589E8",
+  modern: "#5BC0B3",
+  historical: "#8D2E4B",
+  civic: "#4F57C8",
+  silly: "#E64369",
+  spooky: "#363655",
+  "sci-fi": "#408877",
+  aquatic: "#328BCE",
+  floral: "#EA80DA",
+  animal: "#AF2E33",
+  holiday: "#48903B",
+  food: "#B156FD",
+  brand: "#E93F33",
+  anime: "#EB8D77",
+  "video-game": "#0D1010",
+  meme: "#52307C",
 };
 
 export default {
-  name: 'BrowsePatternInfo',
-  components: { 
-    IconGenerator
+  name: "BrowsePatternInfo",
+  components: {
+    IconGenerator,
   },
   props: {
     pattern: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     tagClass(tag) {
-      if (tag != null) return { backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')] }` };
+      if (tag != null)
+        return {
+          backgroundColor: `${colors[tag.toLowerCase().replace(" ", "-")]}`,
+        };
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -97,14 +112,14 @@ export default {
   max-width: 220px;
   max-height: 300px;
   margin: 10px;
-  box-shadow: 5px 5px 12px -3px rgba(0,0,0,0.2);
-  background-image: radial-gradient($persian-green 20%, transparent 20%), radial-gradient($persian-green 20%, transparent 20%);
+  box-shadow: 5px 5px 12px -3px rgba(0, 0, 0, 0.2);
+  background-image: radial-gradient($persian-green 20%, transparent 20%),
+    radial-gradient($persian-green 20%, transparent 20%);
   background-position: 0 0, 5px 5px;
   background-size: 10px 10px;
   color: $jambalaya;
 }
 .browse--pattern-title {
-
 }
 .browse--pattern-details {
   background-color: $albescent-white;
@@ -115,7 +130,8 @@ export default {
   padding: 8px 12px;
   width: 150px;
 }
-.browse--type-tags, .browse--style-tags {
+.browse--type-tags,
+.browse--style-tags {
   min-height: 30px;
 
   display: flex;

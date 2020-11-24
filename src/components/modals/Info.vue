@@ -59,7 +59,7 @@ export default {
   z-index: 99999;
   display: grid;
   justify-content: center;
-  
+
   @include tablet-landscape {
     @include absolute-center;
     position: fixed;
@@ -79,7 +79,7 @@ export default {
     width: 600px;
   }
   @include tablet-landscape {
-    width: 650px; 
+    width: 650px;
     max-height: calc(80vh - 80px);
     overflow: scroll;
   }
@@ -91,25 +91,29 @@ export default {
   font-weight: 600;
   line-height: 1.5;
   font-size: 1rem;
-  
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin-top: 10px;
     margin-bottom: 10px;
     text-align: center;
   }
-  
+
   ul {
     margin-top: 10px;
     margin-bottom: 10px;
     list-style: outside;
     padding-left: 1em;
   }
-  
+
   strong {
     font-weight: bolder;
   }
-  
+
   h1 {
     font-weight: 700;
     font-size: 1.5rem;
@@ -130,13 +134,12 @@ export default {
 
   h6 {
   }
-  
+
   p {
     margin-bottom: 10px;
   }
-  
+
   img {
-    
   }
 }
 
@@ -158,11 +161,9 @@ export default {
   border-style: solid;
   color: white;
   background-color: $robin-egg-blue;
-  
+
   &.normal {
     background-color: $olive-haze;
   }
 }
-
-
 </style>

@@ -98,7 +98,7 @@ export default {
     font-size: 1rem;
     vertical-align: middle;
   }
-  
+
   @include phone-landscape {
     padding: 5px 10px;
   }

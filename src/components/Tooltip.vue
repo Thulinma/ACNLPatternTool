@@ -9,8 +9,8 @@
 
 <script>
 export default {
-  name: "Tooltip"
-}
+  name: "Tooltip",
+};
 </script>
 
 <style lang="scss" scoped>
@@ -30,7 +30,7 @@ export default {
   width: 20px;
   height: 20px;
   border-radius: 100%;
-  
+
   .question-mark {
     text-align: center;
     color: white;

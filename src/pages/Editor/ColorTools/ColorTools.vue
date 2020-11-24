@@ -1,31 +1,35 @@
 <template>
-  <div :class="{
+  <div
+    :class="{
       'color-tools--container': true,
-      'picking': isPicking,
-    }">
-
+      picking: isPicking,
+    }"
+  >
     <Palette
       class="color-tools--palette"
       :drawingTool="drawingTool"
       @change-color-picker="$emit('change-color-picker', prevColorPicker)"
-      @change-current-color="$emit('change-current-color', $event)"/>
+      @change-current-color="$emit('change-current-color', $event)"
+    />
 
     <div v-show="isPicking" class="color-tools--color-pickers">
       <div class="color-tools--tabs acnl">
         <div
           :class="{
             'color-tools--tab': true,
-            'open': isACNL,
+            open: isACNL,
           }"
-          @click="onChangeColorPicker('acnl')">
+          @click="onChangeColorPicker('acnl')"
+        >
           ACNL
         </div>
         <div
           :class="{
             'color-tools--tab': true,
-            'open': isACNH,
+            open: isACNH,
           }"
-          @click="onChangeColorPicker('acnh')">
+          @click="onChangeColorPicker('acnh')"
+        >
           ACNH
         </div>
         <!-- <div
@@ -38,22 +42,25 @@
         <div class="color-tools--tab-cover"></div>
       </div>
 
-      <div :class="{
-        'color-tools--color-picker-content': true,
-        'acnl': isACNL,
-        'acnh': isACNH,
-      }">
+      <div
+        :class="{
+          'color-tools--color-picker-content': true,
+          acnl: isACNL,
+          acnh: isACNH,
+        }"
+      >
         <ACNLColorPicker
           v-show="isACNL"
           :drawingTool="drawingTool"
-          @color-picked="$emit('color-picked', $event)"/>
+          @color-picked="$emit('color-picked', $event)"
+        />
         <ACNHColorPicker
           v-if="isACNH"
           :drawingTool="drawingTool"
-          @color-picked="$emit('color-picked', $event)"/>
+          @color-picked="$emit('color-picked', $event)"
+        />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -71,12 +78,12 @@ export default {
   components: {
     Palette,
     ACNLColorPicker,
-    ACNHColorPicker
+    ACNHColorPicker,
   },
   props: {
     drawingTool: {
       type: DrawingTool,
-      required: true
+      required: true,
     },
     prevColorPicker: {
       type: String,
@@ -89,33 +96,33 @@ export default {
     isNewPattern: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    isPicking: function() {
+    isPicking: function () {
       return this.colorPicker != null;
     },
-    isACNL: function() {
+    isACNL: function () {
       return this.colorPicker === "acnl";
     },
-    isACNH: function() {
-      return this.colorPicker === "acnh"
+    isACNH: function () {
+      return this.colorPicker === "acnh";
     },
-    isWheel: function() {
-      return this.colorPicker === "wheel"
+    isWheel: function () {
+      return this.colorPicker === "wheel";
     },
   },
   methods: {
     // also responsible for closing, send null to close
-    onChangeColorPicker: function(colorPickerMode) {
+    onChangeColorPicker: function (colorPickerMode) {
       this.$emit("change-color-picker", colorPickerMode);
     },
-    onChangeCurrentColor: function(idx) {
+    onChangeCurrentColor: function (idx) {
       this.$emit("change-current-color", idx);
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -154,12 +161,12 @@ export default {
   }
 
   &:hover {
-    @include stripes($pink-lace, $piggy-pink , 20px);
+    @include stripes($pink-lace, $piggy-pink, 20px);
     @include moving-stripes;
   }
 
   &.picking {
-    @include stripes($pink-lace, $piggy-pink , 20px);
+    @include stripes($pink-lace, $piggy-pink, 20px);
     @include moving-stripes(20s);
     position: relative;
     height: 100%;
@@ -186,7 +193,7 @@ export default {
 .color-tools--color-pickers {
   margin-top: 15px;
   width: 100%;
-  
+
   @include tablet-portrait {
     width: auto;
   }
@@ -249,7 +256,7 @@ export default {
   // &.wheel {
   //   border-radius: 0px 0px 20px 20px;
   // }
-  
+
   @include tablet-landscape {
     padding: 20px 25px;
   }

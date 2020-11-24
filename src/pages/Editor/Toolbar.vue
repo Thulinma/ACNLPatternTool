@@ -6,9 +6,9 @@
           @click="selectTool('brush', 'small')"
           @contextmenu.prevent="selectTool('brush', 'small', true)"
           :class="{
-              'toolbar--option brush-small': true,
-              'active': tool === 'brush' && option === 'small',
-            }"
+            'toolbar--option brush-small': true,
+            active: tool === 'brush' && option === 'small',
+          }"
         >
           <IconBrushSmall class="toolbar--option-icon" />
         </button>
@@ -16,9 +16,9 @@
           @click="selectTool('brush', 'medium')"
           @contextmenu.prevent="selectTool('brush', 'medium', true)"
           :class="{
-              'toolbar--option brush-medium': true,
-              'active': tool === 'brush' && option === 'medium',
-            }"
+            'toolbar--option brush-medium': true,
+            active: tool === 'brush' && option === 'medium',
+          }"
         >
           <IconBrushMedium class="toolbar--option-icon" />
         </button>
@@ -26,9 +26,9 @@
           @click="selectTool('brush', 'large')"
           @contextmenu.prevent="selectTool('brush', 'large', true)"
           :class="{
-              'toolbar--option brush-large': true,
-              'active': tool === 'brush' && option === 'large',
-            }"
+            'toolbar--option brush-large': true,
+            active: tool === 'brush' && option === 'large',
+          }"
         >
           <IconBrushLarge class="toolbar--option-icon" />
         </button>
@@ -38,7 +38,6 @@
         <button @click="cycleOptions" class="hint">T</button>
       </div>
     </div>
-
 
     <div class="toolbar--shortcuts">
       <button class="toolbar--storage-button" @click="storageOpen = true">
@@ -51,9 +50,9 @@
       <div class="toolbar--shortcuts-row colors">
         <button
           :class="{
-              'toolbar--shortcut palette': true,
-              'active': colorPicker === 'palettes',
-              }"
+            'toolbar--shortcut palette': true,
+            active: colorPicker === 'palettes',
+          }"
         >
           <div class="toolbar--shortcut-icon-container">
             <IconPalette class="toolbar--shortcut-icon" />
@@ -63,9 +62,9 @@
 
         <button
           :class="{
-                'toolbar--shortcut color-picker': true,
-                'active': colorPicker !== null && colorPicker !== 'palettes',
-              }"
+            'toolbar--shortcut color-picker': true,
+            active: colorPicker !== null && colorPicker !== 'palettes',
+          }"
           @click="onChangeColorPicker(prevColorPicker)"
         >
           <div class="toolbar--shortcut-icon-container">
@@ -79,9 +78,9 @@
       <div class="toolbar--shortcuts-row drawing">
         <button
           :class="{
-              'toolbar--shortcut brush': true,
-              'active': tool === 'brush',
-              }"
+            'toolbar--shortcut brush': true,
+            active: tool === 'brush',
+          }"
           @click="selectTool('brush', 'small')"
         >
           <div class="toolbar--shortcut-icon-container">
@@ -100,9 +99,9 @@
 
         <button
           :class="{
-              'toolbar--shortcut fill': true,
-              'active': tool === 'fill',
-              }"
+            'toolbar--shortcut fill': true,
+            active: tool === 'fill',
+          }"
           @click="selectTool('fill', null)"
         >
           <div class="toolbar--shortcut-icon-container">
@@ -113,9 +112,9 @@
 
         <button
           :class="{
-              'toolbar--shortcut eye-dropper': true,
-              'active': tool === 'eyeDropper',
-              }"
+            'toolbar--shortcut eye-dropper': true,
+            active: tool === 'eyeDropper',
+          }"
           @click="selectTool('eyeDropper', null)"
           @contextmenu.prevent="selectTool('eyeDropper', null, true)"
         >
@@ -154,9 +153,9 @@
       <div class="toolbar--shortcuts-row etc">
         <button
           :class="{
-              'toolbar--shortcut settings': true,
-              'active': settingsOpen,
-              }"
+            'toolbar--shortcut settings': true,
+            active: settingsOpen,
+          }"
           @click="settingsOpen = true"
         >
           <div class="toolbar--shortcut-icon-container">
@@ -167,9 +166,9 @@
 
         <button
           :class="{
-              'toolbar--shortcut preview': true,
-              'active': previewOpen,
-              }"
+            'toolbar--shortcut preview': true,
+            active: previewOpen,
+          }"
           @click="previewOpen = true"
         >
           <div class="toolbar--shortcut-icon-container">
@@ -186,10 +185,11 @@
             @click="changeGameModeWithWarning"
             :class="{
               'toggle--input': true,
-              'checked': gameMode,
+              checked: gameMode,
             }"
             id="pattern-mode"
-            type="checkbox">
+            type="checkbox"
+          />
           <label class="toggle--label" for="pattern-mode"></label>
         </div>
       </div>
@@ -219,7 +219,7 @@
       @scroll-freeze="$emit('scroll-freeze')"
       @scroll-unfreeze="$emit('scroll-unfreeze')"
     />
-    
+
     <Warning
       v-if="gameModeWarning"
       @scroll-freeze="$emit('scroll-freeze')"
@@ -228,10 +228,10 @@
       @dismiss="changeGameModeFromWarning"
       foreverDismissable
     >
-     <template>
-       <ACNHToACNLInfo v-if="gameMode" />
-       <ACNLToACNHInfo v-else />
-     </template>
+      <template>
+        <ACNHToACNLInfo v-if="gameMode" />
+        <ACNLToACNHInfo v-else />
+      </template>
     </Warning>
   </div>
 </template>
@@ -329,7 +329,7 @@ const fill = (x, y, tool) => {
 const toolMappings = {
   brush,
   fill,
-  eyeDropper
+  eyeDropper,
 };
 
 export default {
@@ -357,20 +357,20 @@ export default {
   props: {
     drawingTool: {
       type: DrawingTool,
-      required: true
+      required: true,
     },
     prevColorPicker: {
       type: String,
-      required: false
+      required: false,
     },
     colorPicker: {
       type: String,
-      required: false
+      required: false,
     },
     patternDetails: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -380,15 +380,15 @@ export default {
       previewOpen: false,
       storageOpen: false,
       // isACNH
-      gameMode: this.drawingTool.compatMode === 'ACNH',
+      gameMode: this.drawingTool.compatMode === "ACNH",
       gameModeWarning: false,
     };
   },
   methods: {
-    load: function(binaryString) {
-      this.$emit('load', binaryString)
+    load: function (binaryString) {
+      this.$emit("load", binaryString);
     },
-    onChangeColorPicker: function(mode) {
+    onChangeColorPicker: function (mode) {
       this.$emit("change-color-picker", mode);
     },
     /**
@@ -397,7 +397,7 @@ export default {
      * @param {String} mode
      * @param {String} option
      */
-    selectTool: function(newTool, newOption = null, alt = false) {
+    selectTool: function (newTool, newOption = null, alt = false) {
       // no matching tool, bail
       if (!(newTool in toolMappings)) return;
       let tool = toolMappings[newTool];
@@ -417,7 +417,7 @@ export default {
     // -1 means invalid, none matching
     // 0 counts itself
     // 1+ for options not counting itself
-    countToolOptions: function(newTool, newOption) {
+    countToolOptions: function (newTool, newOption) {
       if (!(newTool in toolMappings)) return -1;
       if (typeof toolMappings[newTool] === "function") return 0;
       if (typeof toolMappings[newTool] === "object") {
@@ -427,7 +427,7 @@ export default {
       }
       return -1;
     },
-    cycleOptions: function() {
+    cycleOptions: function () {
       const { tool, option } = this;
       if (this.option == null) return;
       const options = Object.keys(toolMappings[tool]);
@@ -437,8 +437,15 @@ export default {
       this.option = nextOption;
       this.selectTool(tool, nextOption);
     },
-    onKey: async function(event) {
-      const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } = event;
+    onKey: async function (event) {
+      const {
+        ctrlKey,
+        altKey,
+        metaKey,
+        shiftKey,
+        code,
+        preventDefault,
+      } = event;
       const noMod = !ctrlKey && !altKey && !metaKey && !shiftKey;
       if (noMod) {
         // cycle tool options
@@ -467,41 +474,54 @@ export default {
     },
     changeGameModeWithWarning(event) {
       event.preventDefault(); // stop checkbox from automatically checking itself
-      const targetCompatMode = this.drawingTool.compatMode === "ACNH"? "ACNL" : "ACNH";
-      const currentCompatMode = targetCompatMode === "ACNH"? "ACNL" : "ACNH";
-      const dismissForever = localStorage
-        .getItem(`dismiss${currentCompatMode}To${targetCompatMode}`) === "true";
+      const targetCompatMode =
+        this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
+      const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
+      const dismissForever =
+        localStorage.getItem(
+          `dismiss${currentCompatMode}To${targetCompatMode}`
+        ) === "true";
       if (!dismissForever) {
         this.gameModeWarning = true;
         return;
       }
       this.drawingTool.compatMode = targetCompatMode;
       this.gameMode = this.drawingTool.compatMode === "ACNH";
-      this.$emit("change-prev-color-picker", this.drawingTool.compatMode.toLowerCase());
+      this.$emit(
+        "change-prev-color-picker",
+        this.drawingTool.compatMode.toLowerCase()
+      );
     },
     changeGameModeFromWarning(dismissForever) {
       this.gameModeWarning = false;
-      const targetCompatMode = this.drawingTool.compatMode === "ACNH"? "ACNL" : "ACNH";
-      const currentCompatMode = targetCompatMode === "ACNH"? "ACNL" : "ACNH";
+      const targetCompatMode =
+        this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
+      const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
       if (dismissForever) {
-        localStorage.setItem(`dismiss${currentCompatMode}To${targetCompatMode}`, true); 
+        localStorage.setItem(
+          `dismiss${currentCompatMode}To${targetCompatMode}`,
+          true
+        );
       }
       this.drawingTool.compatMode = targetCompatMode;
       this.gameMode = this.drawingTool.compatMode === "ACNH";
-      this.$emit("change-prev-color-picker", this.drawingTool.compatMode.toLowerCase());
-    }
+      this.$emit(
+        "change-prev-color-picker",
+        this.drawingTool.compatMode.toLowerCase()
+      );
+    },
   },
   mounted() {
     this.selectTool("brush", "small");
     this.selectTool("eyeDropper", null, true);
     window.addEventListener("keydown", this.onKey);
-    this.drawingTool.onLoad((t)=>{
-      this.gameMode = (t.compatMode == "ACNH");
+    this.drawingTool.onLoad((t) => {
+      this.gameMode = t.compatMode == "ACNH";
     });
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.onKey);
-  }
+  },
 };
 </script>
 
@@ -539,7 +559,6 @@ $toolbar--options-width: 75px;
   overflow: visible;
 
   @include phone-landscape {
-
   }
   @include tablet-portrait {
     grid-template-columns: auto 1fr 1fr;
@@ -550,7 +569,6 @@ $toolbar--options-width: 75px;
     border-radius: 0px 50px 50px 0px;
   }
   @include tablet-landscape {
-
   }
   @include desktop {
     width: 320px;
@@ -658,19 +676,14 @@ $toolbar--options-width: 75px;
     width: 44%;
   }
 
-
   // for copy/pasting
   @include phone-landscape {
-
   }
   @include tablet-portrait {
-
   }
   @include tablet-landscape {
-
   }
   @include desktop {
-
   }
 }
 
@@ -772,16 +785,13 @@ $toolbar--options-width: 75px;
   background-color: $olive-haze;
   border-radius: 999px;
 
-
   @include phone-landscape {
-
   }
   @include tablet-portrait {
     width: 30px;
     height: 30px;
   }
   @include tablet-landscape {
-
   }
   @include desktop {
     width: 35px;
@@ -804,13 +814,11 @@ $toolbar--options-width: 75px;
   letter-spacing: 0.5px;
 
   @include phone-landscape {
-
   }
   @include tablet-portrait {
     font-size: 1.2rem;
   }
   @include tablet-landscape {
-
   }
   @include desktop {
     font-size: 1.7rem;
@@ -833,7 +841,7 @@ $toolbar--options-width: 75px;
     margin-top: 14px;
     margin-bottom: 10px;
   }
-  
+
   .toolbar--shortcut.palette {
     visibility: hidden;
   }
@@ -880,7 +888,6 @@ $toolbar--options-width: 75px;
   top: 0;
   left: 0;
 
-
   .toolbar--shortcut-icon-container {
     box-sizing: border-box;
     width: 50px;
@@ -893,10 +900,8 @@ $toolbar--options-width: 75px;
     border-radius: 999px;
 
     @include phone-landscape {
-
     }
     @include tablet-portrait {
-
     }
     @include tablet-landscape {
       width: 60px;
@@ -1022,15 +1027,16 @@ $toolbar--options-width: 75px;
 }
 
 .toolbar--toggle {
-	overflow: hidden;
+  overflow: hidden;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
 
   * {
     box-sizing: border-box;
-    &:before, &:after {
-      content: '';
+    &:before,
+    &:after {
+      content: "";
       position: absolute;
     }
   }
@@ -1049,14 +1055,14 @@ $toolbar--options-width: 75px;
     width: 5px;
 
     &.checked + label {
-	    &:before {
+      &:before {
         transform: translateX(50px);
         z-index: 20;
       }
       &:after {
         transform: translateX(20px);
         left: 0px;
-        content: 'NH'
+        content: "NH";
       }
     }
   }
@@ -1065,7 +1071,7 @@ $toolbar--options-width: 75px;
     display: inline-block;
     border-radius: 50px;
     position: relative;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     transform-origin: 20% center;
     cursor: pointer;
     background: transparent;
@@ -1075,18 +1081,18 @@ $toolbar--options-width: 75px;
 
     &:before {
       display: block;
-			border-radius: 100%;
-			transition: .3s ease;
-			border: 3px solid $azalea;
-			width: 30px;
-			height: 30px;
-			top: 4px;
-			left: 4px;
+      border-radius: 100%;
+      transition: 0.3s ease;
+      border: 3px solid $azalea;
+      width: 30px;
+      height: 30px;
+      top: 4px;
+      left: 4px;
       background: $azalea;
       z-index: 20;
     }
     &:after {
-      content: 'NL';
+      content: "NL";
       top: 15px;
       left: 2px;
       transform: translateX(50px);

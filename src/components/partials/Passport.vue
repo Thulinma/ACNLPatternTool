@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import IconBase from "/components/icons/IconBase.vue";
-import IconHouse from "/components/icons/IconHouse.vue";
-import IconContactCard from "/components/icons/IconContactCard.vue";
+import IconBase from "~/components/icons/IconBase.vue";
+import IconHouse from "~/components/icons/IconHouse.vue";
+import IconContactCard from "~/components/icons/IconContactCard.vue";
 
 export default {
   props: {
@@ -144,14 +144,14 @@ export default {
     column-gap: 50px;
     padding: 30px 50px 50px 50px;
   }
-  
+
   @include tablet-landscape {
     column-gap: 80px;
     padding: 30px 80px 50px 80px;
     max-width: 950px;
     justify-self: center;
   }
-  
+
   @include desktop {
     max-width: 1150px;
     column-gap: 100px;
@@ -172,7 +172,7 @@ export default {
       border-radius: 18px;
       padding: 13px;
     }
-    
+
     .photo-container {
       background-color: $chrome-white;
       border-radius: 8px;
@@ -192,7 +192,7 @@ export default {
           height: 200px;
           width: 200px;
         }
-        
+
         @include desktop {
           height: 250px;
           width: 250px;
@@ -212,7 +212,7 @@ export default {
   grid-template-rows: auto;
   grid-auto-rows: auto;
   font-size: 1.2rem;
-  
+
   @include tablet-landscape {
     width: 500px;
   }

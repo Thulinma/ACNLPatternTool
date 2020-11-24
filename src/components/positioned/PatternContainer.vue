@@ -120,7 +120,7 @@ export default {
     height: auto;
     min-height: 300px;
     max-width: unset;
-    max-height: unquote('min(#{90%}, 700px)');
+    max-height: unquote("min(#{90%}, 700px)");
     overflow: visible;
     border-radius: 40px;
     padding: 0px 40px;

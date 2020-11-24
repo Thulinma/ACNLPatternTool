@@ -1,16 +1,14 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
 
 <script>
 export default {
-  name: "Missing"
-}
+  name: "Missing",
+};
 </script>
 
 
 <style lang="scss" scoped>
-
 </style>

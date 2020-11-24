@@ -1,5 +1,5 @@
-import origin from '/libs/origin';
-import DrawingTool from '/libs/DrawingTool';
+import origin from '~/libs/origin';
+import DrawingTool from '~/libs/DrawingTool';
 
 // 'data' for stores, when mapping, use computed
 const state = {

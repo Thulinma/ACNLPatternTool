@@ -1,7 +1,7 @@
-import DrawingTool from "/libs/DrawingTool";
-import ACNHFormat from '/libs/ACNHFormat';
+import DrawingTool from "~/libs/DrawingTool";
+import ACNHFormat from '~/libs/ACNHFormat';
 import { QRCodeEncoder, QRCodeDecoderErrorCorrectionLevel, EncodeHintType } from '@zxing/library';
-import {drawPreviewFromTool} from "/libs/Preview3D";
+import {drawPreviewFromTool} from "~/libs/Preview3D";
 
 async function generateACNLQR(newData){
   //Load pattern, prepare render canvas

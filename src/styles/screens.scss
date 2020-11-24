@@ -24,7 +24,6 @@ $break-large: 900px;
   }
 }
 
-
 @mixin phone-landscape {
   @include respond-to-width($break-phone-landscape) {
     @content;
@@ -55,7 +54,6 @@ $break-large: 900px;
   }
 }
 
-
 @mixin screen-small {
   @include respond-to-height($break-small) {
     @content;
@@ -80,20 +78,14 @@ $break-large: 900px;
   }
 }
 
-
 // for copy/pasting
 @include phone-landscape {
-
 }
 @include tablet-portrait {
-
 }
 @include tablet-landscape {
-
 }
 @include desktop {
-
 }
 @include desktop-hd {
-
 }

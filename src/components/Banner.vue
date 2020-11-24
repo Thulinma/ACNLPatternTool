@@ -8,13 +8,12 @@
 export default {
   name: "Banner",
   props: {
-    bannerText: String
+    bannerText: String,
   },
-  data: function() {
-    return {
-    };
+  data: function () {
+    return {};
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -36,8 +35,9 @@ $banner-flag-color: #f1a8b2;
   align-items: center;
   margin-top: -113px;
 
-  &::before, &::after {
-    content: '';
+  &::before,
+  &::after {
+    content: "";
     position: absolute;
     z-index: -1;
     left: -40px;

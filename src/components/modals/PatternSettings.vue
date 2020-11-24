@@ -51,9 +51,9 @@
             Author<span class="asterisk">*</span>
             <Tooltip class="settings--tooltip">
               <div class="settings--tooltip-content">
-                  <div>Author character limit:</div>
-                  <div>ACNL: 9 chars.</div>
-                  <div>ACNH: 10 chars.</div>
+                <div>Author character limit:</div>
+                <div>ACNL: 9 chars.</div>
+                <div>ACNH: 10 chars.</div>
               </div>
             </Tooltip>
           </div>
@@ -86,9 +86,9 @@
             Town<span class="asterisk">*</span>
             <Tooltip class="settings--tooltip">
               <div class="settings--tooltip-content">
-                  <div>Town character limit:</div>
-                  <div>ACNL: 9 chars.</div>
-                  <div>ACNH: 10 chars.</div>
+                <div>Town character limit:</div>
+                <div>ACNL: 9 chars.</div>
+                <div>ACNH: 10 chars.</div>
               </div>
             </Tooltip>
           </div>
@@ -477,7 +477,7 @@ export default {
   @include phone-landscape {
     width: 300px;
   }
-  
+
   @include tablet-portrait {
     font-size: 1rem;
   }

@@ -59,16 +59,18 @@ const vueRule = {
 
 
 const scssRuleDev = {
-  test: /\.s?css$/i,
+  test: /\.(css|scss)$/i,
   use: [
     'vue-style-loader',
     'css-loader',
     {
       loader: 'sass-loader',
       options: {
+        implementation: require("sass"),
         sourceMap: true,
         sassOptions: {
-          includePaths: [pathToClientSrc]
+          includePaths: [pathToClientSrc],
+          indentedSyntax: false,
         }
       }
     }
@@ -94,6 +96,44 @@ const scssRuleProd = {
   ]
 }
 
+const sassRuleDev = {
+  test: /\.(sass)$/i,
+  use: [
+    'vue-style-loader',
+    'css-loader',
+    {
+      loader: 'sass-loader',
+      options: {
+        implementation: require("sass"),
+        sourceMap: true,
+        sassOptions: {
+          includePaths: [pathToClientSrc],
+          indentedSyntax: true,
+        }
+      }
+    }
+  ]
+};
+
+const sassRuleProd = {
+  ...sassRuleDev,
+  sideEffects: true,
+  use: [
+    MiniCssExtractPlugin.loader,
+    'css-loader',
+    {
+      loader: 'sass-loader',
+      options: {
+        sourceMap: false,
+        sassOptions: {
+          ...sassRuleDev.use[2].options.sassOptions,
+          outputStyle: 'compressed',
+        }
+      }
+    }
+  ]
+}
+
 
 // use resourceQuery for svgs
 const svgRule = {
@@ -107,7 +147,17 @@ const svgRule = {
           loader: "babel-loader",
           options: babelDevConfig,
         },
-        "vue-svg-loader",
+        {
+          loader: "vue-svg-loader",
+          options: {
+            svgo: {
+              plugins: [
+                { removeDimensions: true },
+                { removeViewBox: false },
+              ],
+            },
+          },
+        },
       ]
     },
     {
@@ -121,7 +171,25 @@ const svgRule = {
   ],
 };
 
+
+const mdRule = {
+  test: /\.(md)$/i,
+  use: [
+    {
+      loader: "vue-loader",
+    },
+    {
+      loader: 'vue-markdown-loader/lib/markdown-compiler',
+      options: {
+        raw: true,
+      }
+    }
+  ]
+};
+
+
 const fileRules = [
+  mdRule,
   svgRule,
   {
     // file-loader for image assets
@@ -161,6 +229,7 @@ const rulesDev = [
   babelRuleDev,
   vueRule,
   scssRuleDev,
+  sassRuleDev,
   ...fileRules
 ];
 
@@ -168,6 +237,7 @@ const rulesProd = [
   babelRuleProd,
   vueRule,
   scssRuleProd,
+  sassRuleProd,
   ...fileRules
 ];
 
@@ -186,7 +256,7 @@ const plugins = [
   new VueLoaderPlugin(),
   new OptimizeThreePlugin(),
   new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
-  new webpack.DefinePlugin({"process.injected": JSON.stringify(injection)}),
+  new webpack.DefinePlugin({ "process.injected": JSON.stringify(injection) }),
 ];
 
 const pluginsDev = [
@@ -250,6 +320,9 @@ const resolve = {
     ".js",
     ".vue"
   ],
+  alias: {
+    "~": pathToClientSrc,
+  }
 };
 
 const webpackDevConfig = {

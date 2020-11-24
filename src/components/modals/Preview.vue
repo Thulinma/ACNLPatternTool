@@ -6,12 +6,18 @@
   >
     <template #window>
       <div class="editor--qr-preview-window">
-        <img class="editor--qr-preview" :src="dataURL" alt="QR Code"/>
+        <img class="editor--qr-preview" :src="dataURL" alt="QR Code" />
         <div class="editor--qr-buttons-container">
-          <button @click="downloadPNG" class="editor--qr-save-button">Save QR</button>
+          <button @click="downloadPNG" class="editor--qr-save-button">
+            Save QR
+          </button>
           <button
             v-if="drawingTool.compatMode === 'ACNH'"
-            @click="gameModeInfo = true" class="editor--qr-info-button">No QR Code?</button>
+            @click="gameModeInfo = true"
+            class="editor--qr-info-button"
+          >
+            No QR Code?
+          </button>
         </div>
         <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
         <Info
@@ -76,9 +82,9 @@ export default {
     },
   },
   async mounted() {
-    if (this.drawingTool.compatMode == "ACNL"){
+    if (this.drawingTool.compatMode == "ACNL") {
       this.dataURL = await generateACNLQR(this.drawingTool);
-    }else{
+    } else {
       this.dataURL = await generateACNHPBL(this.drawingTool);
     }
   },

@@ -82,7 +82,11 @@
         </div>
       </router-link>
 
-      <a class="discord" href="https://discord.com/invite/9rGkZNk" target="_blank">
+      <a
+        class="discord"
+        href="https://discord.com/invite/9rGkZNk"
+        target="_blank"
+      >
         <div
           class="menu--nav-icon-container"
           @mouseover="enterNavItem('Discord')"
@@ -107,9 +111,9 @@
 
 <script>
 // header svgs
-import nookSvg from "/assets/icons/nookphone/nook-head.svg";
-import gpsSvg from "/assets/icons/nookphone/nook-gps.svg";
-import barsSvg from "/assets/icons/nookphone/nook-service.svg";
+import nookSvg from "~/assets/icons/nookphone/nook-head.svg";
+import gpsSvg from "~/assets/icons/nookphone/nook-gps.svg";
+import barsSvg from "~/assets/icons/nookphone/nook-service.svg";
 
 import IconNavBrowse from "~/components/icons/IconNavBrowse.vue";
 import IconNavEditor from "~/components/icons/IconNavEditor.vue";
@@ -195,7 +199,7 @@ export default {
   display: inline-block;
   background-color: $ecru-white;
   user-select: none;
-  
+
   width: 100%;
   height: 100%;
 

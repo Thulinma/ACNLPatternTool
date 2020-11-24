@@ -18,12 +18,17 @@
               class="warning--dismiss-check"
               type="checkbox"
               value="false"
-              v-model="dismissForever"/>
-              <span>Dismiss Forever</span>
+              v-model="dismissForever"
+            />
+            <span>Dismiss Forever</span>
           </label>
         </div>
-        <button @click="$emit('close')" class="info--button normal">Cancel</button>
-        <button @click="$emit('dismiss', dismissForever)" class="info--button">Continue</button>
+        <button @click="$emit('close')" class="info--button normal">
+          Cancel
+        </button>
+        <button @click="$emit('dismiss', dismissForever)" class="info--button">
+          Continue
+        </button>
       </div>
     </template>
   </Info>
@@ -72,38 +77,38 @@ export default {
   color: $jambalaya;
 }
 
-input[type=checkbox] {
-    width: 30px;
-    height: 30px;
-    margin-right: 8px;
-    cursor: pointer;
-    font-size: 17px;
-    visibility: hidden;
-  }
-  
-  input[type=checkbox]:after {
-    content: "";
-    display: inline-block;
-    color: $olive-haze;
-    width: 22px;
-    height: 25px;
-    visibility: visible;
-    border: 1px solid $olive-haze;
-    padding-left: 3px;
-    border-radius: 5px;
-  }
-  
-  input[type=checkbox]:checked:after {
-    content: "\2714";
-    padding: -5px;
-    font-size: 1.4rem;
-  }
-  
-  .warning--dismiss-container {
-    display: inline-flex;
-    flex-direction: row;
-    align-content: center;
-    align-items: center;
-    cursor: pointer;
-  }
+input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 17px;
+  visibility: hidden;
+}
+
+input[type="checkbox"]:after {
+  content: "";
+  display: inline-block;
+  color: $olive-haze;
+  width: 22px;
+  height: 25px;
+  visibility: visible;
+  border: 1px solid $olive-haze;
+  padding-left: 3px;
+  border-radius: 5px;
+}
+
+input[type="checkbox"]:checked:after {
+  content: "\2714";
+  padding: -5px;
+  font-size: 1.4rem;
+}
+
+.warning--dismiss-container {
+  display: inline-flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  cursor: pointer;
+}
 </style>

@@ -13,7 +13,7 @@ import IconBanner from "~/components/icons/IconBanner.vue";
 export default {
   name: "Banner",
   components: {
-    IconBanner
+    IconBanner,
   },
 };
 </script>
@@ -60,18 +60,13 @@ export default {
   height: 20px;
   margin-right: 3px;
 
-
   @include phone-landscape {
-
   }
   @include tablet-portrait {
-
   }
   @include tablet-landscape {
-
   }
   @include desktop {
-
   }
   @include tablet-portrait {
     height: 35px;
@@ -84,14 +79,11 @@ export default {
   font-size: 1rem;
   display: none;
 
-
   @include phone-landscape {
-
   }
   @include tablet-portrait {
   }
   @include tablet-landscape {
-
   }
   @include desktop {
     display: block;

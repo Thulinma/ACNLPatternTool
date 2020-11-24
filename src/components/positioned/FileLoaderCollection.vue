@@ -10,7 +10,11 @@
       :selectedMap="selectedMap"
       @select="toggleSelection"
     />
-    <FileLoader ref="collectionFileLoader" fileType="collection" @multiload="multiload" />
+    <FileLoader
+      ref="collectionFileLoader"
+      fileType="collection"
+      @multiload="multiload"
+    />
   </div>
 </template>
 
@@ -26,7 +30,6 @@ import downloadAsPatternSvg from "~/assets/icons/utilitybar/bxs-file-blank.svg";
 import downloadAsPngSvg from "~/assets/icons/utilitybar/bxs-image-alt.svg";
 import downloadAsBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
 
-
 export default {
   name: "FileLoaderCollection",
   components: {
@@ -41,9 +44,7 @@ export default {
   },
   computed: {
     selected() {
-      return this.drawingTools.filter(
-        (dt, i) => this.selectedMap[i]
-      );
+      return this.drawingTools.filter((dt, i) => this.selectedMap[i]);
     },
     options() {
       const { selected, selectedMap, drawingTools } = this;
@@ -82,8 +83,7 @@ export default {
           if (selected.length === 0) {
             source = drawingTools;
             message = "Saved all patterns to storage.";
-          }
-          else {
+          } else {
             source = [...selected];
             message = "Saved selected patterns to storage.";
           }
@@ -173,7 +173,7 @@ export default {
         this.drawingTools.push(drawingTool);
         this.selectedMap.push(false);
       }
-    }
+    },
   },
 };
 </script>

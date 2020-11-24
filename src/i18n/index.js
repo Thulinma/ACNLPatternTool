@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import { isProd } from '/utils/if-env';
+import { isProd } from '~/utils/if-env';
 
 // language files
-import en from '/i18n/en';
+import en from '~/i18n/en';
 
 // needs to be registered before instance
 Vue.use(VueI18n);

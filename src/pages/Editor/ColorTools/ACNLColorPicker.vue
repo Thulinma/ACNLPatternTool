@@ -7,13 +7,13 @@
         :key="i"
         :style="{
           borderColor: block[4],
-          backgroundColor: block[4]
-          }"
+          backgroundColor: block[4],
+        }"
       >
         <div
           :class="{
             'color-picker--vibrant-color': true,
-            'picked': color === currColor
+            picked: color === currColor,
           }"
           v-for="color in block"
           :key="color"
@@ -29,7 +29,7 @@
       <div
         :class="{
           'color-picker--mono-color': true,
-          'picked': color === currColor
+          picked: color === currColor,
         }"
         v-for="color in monoBlock"
         :key="color"
@@ -123,7 +123,7 @@ export default {
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   border-radius: 7px;
-  
+
   @include phone-landscape {
     width: 85px;
     height: 85px;
@@ -140,7 +140,7 @@ export default {
     border-top-left-radius: $size;
   }
   &:nth-child(3) {
-    border-top-right-radius: $size
+    border-top-right-radius: $size;
   }
   &:nth-child(7) {
     border-bottom-left-radius: $size;
