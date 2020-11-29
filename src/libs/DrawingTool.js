@@ -292,7 +292,16 @@ class DrawingTool{
   get patternType(){return this.pattern.patternType;}
   set patternType(n){
     if (this.pattern.patternType != n){
+      let oldWidth = this.width;
       this.pattern.patternType = n;
+      if (oldWidth < this.width){
+        //Copy the first 32x32 to the others
+        for (let pix = 0; pix < 1024; ++pix){
+          this.pixels[pix+1024] = this.pixels[pix];
+          this.pixels[pix+1024*2] = this.pixels[pix];
+          this.pixels[pix+1024*3] = this.pixels[pix];
+        }
+      }
       this.pattern.fromPixels(this.pixels);
       this.pattern.toPixels(this.pixels);
       this.onLoad();

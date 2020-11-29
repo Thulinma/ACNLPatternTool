@@ -2,6 +2,12 @@
   <div>
   <h1>Changelog</h1>
   <dl>
+    <dt>November 29, 2020</dt>
+    <dd>
+      <ul>
+        <li>Changing pattern type from 32x32 to 64x64 will now duplicate the pattern to all four quadrants, to make it easier to make shirts from converted images. This is a "quick and dirty" method to handle this until we add proper handling of pattern types when converting.</li>
+      </ul>
+    </dd>
     <dt>November 8, 2020</dt>
     <dd>
       <ul>
