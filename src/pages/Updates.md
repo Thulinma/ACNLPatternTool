@@ -1,5 +1,10 @@
 # Updates
 
+## December 13, 2020
+
+- Fixed problems on some mobile devices with buttons in bottom right of editor (the "drop up" menus)
+- Some updates to the underlying workings of the web-app (see git for details)
+
 ## November 29, 2020
 
 * Changing pattern type from 32x32 to 64x64 will now duplicate the pattern to all four quadrants, to make it easier to make shirts from converted images. This is a "quick and dirty" method to handle this until we add proper handling of pattern types when converting.
