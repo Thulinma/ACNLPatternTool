@@ -69,82 +69,36 @@
       @load="load"
     />
 
-    <div class="editor--dropups">
-      <div class="editor--dropup import">
-        <div class="editor--dropup-button">
-          <div class="editor--dropup-icon-container">
-            <IconImport class="editor--dropup-icon" />
-          </div>
-          <div class="editor--dropup-text">Import</div>
-          <div class="editor--dropup-icon-container indicator">
-            <IconCaretUp class="editor--dropup-icon" />
-          </div>
-        </div>
-        <div class="editor--dropup-bridge"></div>
-        <div class="editor--dropup-menu">
-          <button class="editor--dropup-menu-item" @click="convertImage = true">
-            Convert from IMG
-          </button>
-          <button class="editor--dropup-menu-item" @click="readQRCode">
-            Open QR Code
-          </button>
-          <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
-          <button class="editor--dropup-menu-item" @click="openPattern">
-            Open .ACNL / .ACNH
-          </button>
-          <FileLoader
-            ref="patternFileLoader"
-            fileType="acpattern"
-            @load="load"
-          />
-          <button class="editor--dropup-menu-item" @click="openCollection">
-            Open .ZIP / .DAT
-          </button>
-          <FileLoaderCollection
-            v-if="fileLoadingCollection"
-            @load="load"
-            ref="collectionFileLoader"
-            @close="fileLoadingCollection = false"
-          />
-        </div>
-      </div>
-
-      <div class="editor--dropup save">
-        <div class="editor--dropup-button">
-          <div class="editor--dropup-icon-container">
-            <IconSave class="editor--dropup-icon" />
-          </div>
-          <div class="editor--dropup-text">Save</div>
-          <div class="editor--dropup-icon-container indicator">
-            <IconCaretUp class="editor--dropup-icon" />
-          </div>
-        </div>
-        <div class="editor--dropup-bridge"></div>
-        <div class="editor--dropup-menu">
-          <button @click="downloadBinary" class="editor--dropup-menu-item">
-            as .{{ drawingTool.compatMode }}
-          </button>
-          <button
-            v-if="drawingTool.compatMode !== '???'"
-            @click="downloadQR"
-            class="editor--dropup-menu-item"
-          >
-            as <span v-if="drawingTool.compatMode === 'ACNL'">QR Code</span>
-            <span v-else-if="drawingTool.compatMode === 'ACNH'">PBL</span>
-          </button>
-          <button class="editor--dropup-menu-item" @click="saveToStorage">
-            to Storage
-          </button>
-          <button
-            v-if="drawingTool.compatMode === 'ACNL'"
-            class="editor--dropup-menu-item"
-            @click="beginPublishing"
-          >
-            Publish
-          </button>
-        </div>
-      </div>
+    <div class="dropups">
+      <Dropup :items="importMenuItems">
+        <template #icon>
+          <BxsFileImport />
+        </template>
+        <template #text>Import</template>
+      </Dropup>
+      
+      <Dropup :items="exportMenuItems" :variant="DropupVariants.action">
+        <template #icon>
+          <BxsSave />
+        </template>
+        <template #text>Save</template>
+      </Dropup>
     </div>
+
+    <FileLoader
+      ref="patternFileLoader"
+      fileType="acpattern"
+      @load="load"
+    />
+
+    <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
+
+    <FileLoaderCollection
+      v-if="fileLoadingCollection"
+      @load="load"
+      ref="collectionFileLoader"
+      @close="fileLoadingCollection = false"
+    />
 
     <Publish
       v-if="publishing"
@@ -180,9 +134,9 @@ import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
 // icons
-import IconImport from "~/components/icons/IconImport.vue";
-import IconSave from "~/components/icons/IconSave.vue";
-import IconCaretUp from "~/components/icons/IconCaretUp.vue";
+
+import BxsFileImport from "~/assets/icons/bxs-file-import.svg?inline";
+import BxsSave from "~/assets/icons/bxs-save.svg?inline";
 
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
@@ -194,6 +148,9 @@ import Toolbar from "./Toolbar.vue";
 import FileLoader from "~/components/FileLoader.vue";
 import FileLoaderCollection from "~/components/positioned/FileLoaderCollection.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
+import Dropup, { variants as DropupVariants } from "~/components/Dropup.vue";
+
+import BxsFileArchiveSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg?inline";
 
 export default {
   name: "Editor",
@@ -203,18 +160,19 @@ export default {
     ModalContainer,
     ThreeDRender,
     Toolbar,
-    IconImport,
-    IconSave,
-    IconCaretUp,
     Publish,
     FileLoader,
     FileLoaderCollection,
     CancelButton,
+    Dropup,
+    BxsFileImport,
+    BxsSave,
   },
-  data: function () {
+  data() {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
+      DropupVariants,
       drawingTool: new DrawingTool(),
       patternDetails: {
         // redundant mirrored properties, need these to sync
@@ -238,7 +196,74 @@ export default {
       convertImage: null,
       publishing: false,
       fileLoadingCollection: false,
+
+      // menu states
+      forceShowImportMenu: false,
+      forceShowExportMenu: false,
     };
+  },
+  computed: {
+    importMenuItems() {
+      const items = [
+        {
+          label: "Convert from IMG",
+          onSelect: () => {
+            this.convertImage = true;
+          }
+        },
+        {
+          label: "Open QR Code",
+          onSelect: this.readQRCode,
+        },
+        {
+          label: "Open .ACNL / .ACNH",
+          onSelect: this.openPattern,
+        },
+        {
+          label: "Open .ZIP / .DAT",
+          onSelect: this.openCollection,
+        }
+      ];
+      return items;
+    },
+    exportMenuItems() {
+      const items = [];
+      if (this.drawingTool.compatMode === "ACNL") {
+        items.push(
+          {
+            label: "as .ACNL",
+            onSelect: this.downloadBinary,
+          },
+          {
+            label: "as QR Code",
+            onSelect: this.downloadQR,
+          },
+        );
+      }
+      if (this.drawingTool.compatMode === "ACNH") {
+        items.push(
+          {
+            label: "as .ACNH",
+            onSelect: this.downloadBinary,
+          },
+          {
+            label: "as PBL",
+            onSelect: this.downloadQR,
+          },
+        );
+      }
+      items.push({
+        label: "to Storage",
+        onSelect: this.saveToStorage,
+      });
+      if (this.drawingTool.compatMode === "ACNL") {
+        items.push({
+              label: "Publish",
+              onSelect: this.beginPublishing,
+        });
+      }
+      return items;
+    },
   },
   methods: {
     // ------------------
@@ -398,6 +423,13 @@ export default {
       await this.$nextTick();
       this.$refs.collectionFileLoader.open();
       console.log("opening collection");
+    },
+
+    onImportTouchStart() {
+      this.forceShowImportMenu = !this.forceShowImportMenu;
+    },
+    onExportTouchStart() {
+      this.forceShowExportClick = !this.forceShowExportClick;
     },
   },
   mounted: async function () {
@@ -607,14 +639,16 @@ export default {
   }
 }
 
-.editor--dropups {
+.dropups {
   position: fixed;
   right: 0px;
   bottom: 15px;
   z-index: 999;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   justify-content: flex-end;
+  column-gap: 10px;
 
   @include phone-landscape {
     right: 5px;
@@ -628,199 +662,6 @@ export default {
   }
   @include desktop {
     right: 30px;
-  }
-}
-
-.editor--dropup {
-  user-select: none;
-  margin-right: 5px;
-  @include relative-in-place;
-
-  @include phone-landscape {
-    margin-right: 10px;
-  }
-
-  .editor--dropup-button {
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    align-items: center;
-    background-color: $olive-haze;
-    border-radius: 15px;
-    @include relative-in-place;
-    padding: 7px 10px;
-
-    &:hover,
-    &:active,
-    &:focus {
-      cursor: pointer;
-    }
-    &:hover ~ .editor--dropup-menu,
-    &:active ~ .editor--dropup-menu,
-    &:focus ~ .editor--dropup-menu {
-      display: block;
-    }
-  }
-  &.save .editor--dropup-button {
-    background-color: $robin-egg-blue;
-  }
-
-  .editor--dropup-icon-container {
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-
-    width: 20px;
-    @include relative-in-place;
-    background-color: $ecru-white;
-    border-radius: 999px;
-
-    @include phone-landscape {
-      width: 30px;
-    }
-    &.indicator {
-      background-color: transparent;
-      .editor--dropup-icon {
-        fill: $ecru-white;
-      }
-    }
-
-    &:after {
-      display: block;
-      content: "";
-      padding-bottom: 100%;
-    }
-  }
-
-  .editor--dropup-icon {
-    width: 70%;
-    fill: $olive-haze;
-  }
-  &.save .editor--dropup-icon {
-    fill: $robin-egg-blue;
-  }
-
-  .editor--dropup-text {
-    display: inline-block;
-    margin-left: 5px;
-    margin-right: 2px;
-
-    color: $ecru-white;
-    font-weight: 600;
-    font-size: 1rem;
-
-    @include phone-landscape {
-      margin-left: 10px;
-    }
-
-    @include tablet-portrait {
-      font-size: 1.35rem;
-    }
-  }
-
-  $bridge-distance: 20px;
-  .editor--dropup-bridge {
-    display: none;
-    position: absolute;
-    top: 1px; // ensure connection
-    right: 0;
-    transform: translate(0%, -100%);
-    width: 100%;
-    height: $bridge-distance;
-  }
-  &:hover .editor--dropup-bridge,
-  &:active .editor--dropup-bridge,
-  &:focus ~ .editor--dropup-bridge {
-    display: block;
-  }
-
-  .editor--dropup-menu-text {
-    @include relative-in-place;
-    font-weight: 600;
-    line-height: 1.25;
-    color: $ecru-white;
-    display: block;
-    font-size: 0.9rem;
-    @include phone-landscape {
-      font-size: 1rem;
-    }
-    @include tablet-portrait {
-      font-size: 1rem;
-    }
-  }
-
-  .editor--dropup-menu {
-    display: block;
-    // pretend display: none
-    pointer-events: none;
-    opacity: 0;
-    position: absolute;
-    top: -$bridge-distance;
-    right: 0;
-    transition: transform 0.15s $energetic;
-    transform: translate(0, -100%) scale(0.8);
-    background-color: $olive-haze;
-    border-radius: 20px;
-
-    font-size: 0.9rem;
-    padding: 15px 20px;
-    @include phone-landscape {
-      font-size: 1rem;
-    }
-    @include tablet-portrait {
-      padding: 30px 40px;
-      font-size: 1.25rem;
-    }
-
-    &.for-text {
-      padding: 15px;
-    }
-  }
-  &.save .editor--dropup-menu {
-    background-color: $robin-egg-blue;
-  }
-  &:hover .editor--dropup-menu {
-    pointer-events: initial;
-    transform: translate(0, -100%) scale(1);
-    opacity: 1;
-  }
-
-  .editor--dropup-menu-item {
-    @include reset-button-properties;
-    @include relative-in-place;
-    display: block;
-    color: $ecru-white;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-
-    &:after {
-      display: none;
-      width: calc(100% + 20px);
-      height: 70%;
-      content: "";
-
-      position: absolute;
-      left: 50%;
-      bottom: -3px;
-      z-index: -1;
-      transform: translate(-50%);
-
-      background-color: $jambalaya;
-      border-radius: 3px;
-    }
-    &:hover:after {
-      display: block;
-    }
-
-    &:nth-child(1) ~ .editor--dropup-menu-item {
-      margin-top: 16px;
-    }
-  }
-  &.save .editor--dropup-menu-item:after {
-    background-color: $persian-green;
   }
 }
 </style>
