@@ -119,9 +119,8 @@ export default {
     width: 970px;
     height: auto;
     min-height: 300px;
-    max-width: unset;
     max-height: unquote("min(#{90%}, 700px)");
-    overflow: visible;
+    overflow-y: visible;
     border-radius: 40px;
     padding: 0px 40px;
   }
@@ -136,7 +135,7 @@ export default {
   box-sizing: border-box;
   width: 100%;
   max-height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
   padding: 50px 20px 80px 20px;
   display: flex;
   flex-direction: column;
