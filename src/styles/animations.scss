@@ -1,0 +1,11 @@
+@mixin spin($duration: 3s, $transforms: translate(0, 0)) {
+  @keyframes spin {
+    from {
+      transform: $transforms rotate(0deg)
+    }
+    to {
+      transform: $transforms rotate(360deg)
+    }
+  }
+  animation:spin $duration linear infinite;
+}

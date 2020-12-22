@@ -16,14 +16,26 @@ const api = (() => {
 const encodeQueryParams = (params) => {
   const keys = Object.keys(params);
   if (keys.length === 0) return "";
-  let paramsString = Object.keys(params).reduce((accum, curr, index) => {
+  let paramsString = keys.reduce((accum, curr, index) => {
       let query = accum;
       let param = curr;
-      let value = params[curr]
-      if (index > 0) query += "&";
-      const encodedParam = encodeURIComponent(param);
-      const encodedValue = encodeURIComponent(value);
-      return query + `${encodedParam}=${encodedValue}`;
+      let value = params[curr];
+      if (value instanceof Array) {
+        value = value.filter(v => v != null);
+        if (value.length <= 0) return query;
+        const encodedParam = encodeURIComponent(param) + "[]";
+        const paramVal = value.reduce((accum, curr) => {
+          const encodedValue = encodeURIComponent(curr);
+          return `${accum}&${encodedParam}=${encodedValue}`;
+        }, "");
+        return query + `${paramVal}`;
+      }
+      else {
+        if (index > 0) query += "&";
+        const encodedParam = encodeURIComponent(param);
+        const encodedValue = encodeURIComponent(value);
+        return query + `${encodedParam}=${encodedValue}`;
+      }
   }, "?");
   return paramsString;
 };
@@ -70,6 +82,54 @@ const search = async (query, options) => {
 
   const response = await api.get(`api.php${params}`);
   return response.data;
+};
+
+const sortingOptions = {
+  popular: "popular",
+  recent: "recent",
+  random: null,
+};
+
+const browse = async (options) => {
+  const {
+    q, // query
+    a, // author
+    t, // town
+    st, // style tags
+    tt, // type tags
+    start,
+    nsfc,
+    letsgetdangerous,
+    sorting,
+  } = options;
+  
+  const params = {
+    q,
+    a,
+    t,
+    st,
+    tt, 
+    start,
+    nsfc,
+    letsgetdangerous,
+  };
+  
+  // set the sort option
+  if (sorting !== sortingOptions.random) params[sorting] = 1;
+  
+  const encodedParams = encodeQueryParams(params);
+  const response = await api.get(`api.php${encodedParams}`);
+  
+  // result count stored in headers for backwards compatibility with other api users
+  let totalResultsCount;
+  if (response.headers.hasOwnProperty("x-result-count")) {
+    totalResultsCount = Number.parseInt(response.headers["x-result-count"]);
+  }
+  const pageResults = response.data;
+  return {
+    totalResultsCount,
+    pageResults,
+  };
 };
 
 
@@ -185,6 +245,8 @@ export default {
   popular,
   search,
   view,
+  sortingOptions,
+  browse,
   upload,
   modLogIn,
   modPending,
