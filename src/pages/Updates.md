@@ -1,5 +1,9 @@
 # Updates
 
+## March 21, 2021
+
+- Fixed switching between ACNH and ACNL modes causing advanced patterns to copy one quarter to all quarters. Sorry! 😅
+
 ## December 13, 2020
 
 - Fixed problems on some mobile devices with buttons in bottom right of editor (the "drop up" menus)

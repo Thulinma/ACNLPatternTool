@@ -328,10 +328,59 @@ class DrawingTool{
     let tmpPal = [];
     for (let i = 0; i < 15; ++i){tmpPal.push(this.getPalette(i));}
 
+    let newType = 0;
+    if (tmpMode == "ACNH"){
+      //Convert from NH to NL pattern type
+      switch (tmpType){
+        case 0x00: newType = 0x09; break;//normal pattern
+        case 0x01: newType = 0x09; break;//sample pro pattern
+        case 0x02: newType = 0x09; break;//tank top (non-pro)
+        case 0x03: newType = 0x03; break;//long sleeve dress shirt
+        case 0x04: newType = 0x01; break;//short sleeve tee
+        case 0x05: newType = 0x05; break;//tank top (pro)
+        case 0x06: newType = 0x03; break;//sweater
+        case 0x07: newType = 0x03; break;//hoodie
+        case 0x08: newType = 0x00; break;//coat
+        case 0x09: newType = 0x01; break;//short sleeve dress
+        case 0x0a: newType = 0x02; break;//sleeveless dress
+        case 0x0b: newType = 0x00; break;//long sleeve dress
+        case 0x0c: newType = 0x01; break;//balloon hem dress
+        case 0x0d: newType = 0x02; break;//round dress
+        case 0x0e: newType = 0x00; break;//robe
+        case 0x0f: newType = 0x07; break;//brimmed cap
+        case 0x10: newType = 0x07; break;//knit cap
+        case 0x11: newType = 0x07; break;//brimmed hat
+        case 0x12: newType = 0x01; break;//ACNL dress shortsleeve
+        case 0x13: newType = 0x00; break;//ACNL dress longsleeve
+        case 0x14: newType = 0x02; break;//ACNL dress sleeveless
+        case 0x15: newType = 0x04; break;//ACNL shirt shortsleeve
+        case 0x16: newType = 0x03; break;//ACNL shirt longsleeve
+        case 0x17: newType = 0x05; break;//ACNL shirt nosleeve
+        case 0x18: newType = 0x07; break;//ACNL hat
+        case 0x19: newType = 0x06; break;//ACNL horned hat
+        default: newType = 0x09; break;//others
+      }
+    }else if (tmpMode == "ACNL"){
+      //Convert from NL to NH pattern type
+      switch (tmpType){
+        case 0x00: newType = 0x13; break;//longsleeve dress
+        case 0x01: newType = 0x12; break;//halfleeve dress
+        case 0x02: newType = 0x14; break;//sleeveless dress
+        case 0x03: newType = 0x16; break;//longsleeve shirt
+        case 0x04: newType = 0x15; break;//halfleeve shirt
+        case 0x05: newType = 0x17; break;//sleeveless shirt
+        case 0x06: newType = 0x19; break;//hornedhat
+        case 0x07: newType = 0x18; break;//plainhat
+        case 0x08: newType = 0x01; break;//standee, not supported but let's make it an empty pro pattern I guess
+        case 0x09: newType = 0x00; break;//plain pattern
+        default: newType = 0x00; break;//others
+      }
+    }
+
     if (n == "ACNH"){
-      this.pattern = new ACNHFormat();
+      this.pattern = new ACNHFormat(newType);
     }else if (n == "ACNL"){
-      this.pattern = new ACNLFormat();
+      this.pattern = new ACNLFormat(newType);
     }
 
 
@@ -341,53 +390,6 @@ class DrawingTool{
     this.town = tmpTown;
     for (let i = 0; i < 15; ++i){this.setPalette(i, tmpPal[i]);}
 
-    if (tmpMode == "ACNH"){
-      //Convert from NH to NL pattern type
-      switch (tmpType){
-        case 0x00: this.patternType = 0x09; break;//normal pattern
-        case 0x01: this.patternType = 0x09; break;//sample pro pattern
-        case 0x02: this.patternType = 0x09; break;//tank top (non-pro)
-        case 0x03: this.patternType = 0x03; break;//long sleeve dress shirt
-        case 0x04: this.patternType = 0x01; break;//short sleeve tee
-        case 0x05: this.patternType = 0x05; break;//tank top (pro)
-        case 0x06: this.patternType = 0x03; break;//sweater
-        case 0x07: this.patternType = 0x03; break;//hoodie
-        case 0x08: this.patternType = 0x00; break;//coat
-        case 0x09: this.patternType = 0x01; break;//short sleeve dress
-        case 0x0a: this.patternType = 0x02; break;//sleeveless dress
-        case 0x0b: this.patternType = 0x00; break;//long sleeve dress
-        case 0x0c: this.patternType = 0x01; break;//balloon hem dress
-        case 0x0d: this.patternType = 0x02; break;//round dress
-        case 0x0e: this.patternType = 0x00; break;//robe
-        case 0x0f: this.patternType = 0x07; break;//brimmed cap
-        case 0x10: this.patternType = 0x07; break;//knit cap
-        case 0x11: this.patternType = 0x07; break;//brimmed hat
-        case 0x12: this.patternType = 0x01; break;//ACNL dress shortsleeve
-        case 0x13: this.patternType = 0x00; break;//ACNL dress longsleeve
-        case 0x14: this.patternType = 0x02; break;//ACNL dress sleeveless
-        case 0x15: this.patternType = 0x04; break;//ACNL shirt shortsleeve
-        case 0x16: this.patternType = 0x03; break;//ACNL shirt longsleeve
-        case 0x17: this.patternType = 0x05; break;//ACNL shirt nosleeve
-        case 0x18: this.patternType = 0x07; break;//ACNL hat
-        case 0x19: this.patternType = 0x06; break;//ACNL horned hat
-        default: this.patternType = 0x09; break;//others
-      }
-    }else if (tmpMode == "ACNL"){
-      //Convert from NL to NH pattern type
-      switch (tmpType){
-        case 0x00: this.patternType = 0x13; break;//longsleeve dress
-        case 0x01: this.patternType = 0x12; break;//halfleeve dress
-        case 0x02: this.patternType = 0x14; break;//sleeveless dress
-        case 0x03: this.patternType = 0x16; break;//longsleeve shirt
-        case 0x04: this.patternType = 0x15; break;//halfleeve shirt
-        case 0x05: this.patternType = 0x17; break;//sleeveless shirt
-        case 0x06: this.patternType = 0x19; break;//hornedhat
-        case 0x07: this.patternType = 0x18; break;//plainhat
-        case 0x08: this.patternType = 0x01; break;//standee, not supported but let's make it an empty pro pattern I guess
-        case 0x09: this.patternType = 0x00; break;//plain pattern
-        default: this.patternType = 0x00; break;//others
-      }
-    }
     this.onLoad();
   }
   get allTypes(){
