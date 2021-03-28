@@ -1,5 +1,9 @@
 # Updates
 
+## March 28, 2021
+
+- Improved "Browse" page, which is not only faster than before but has more control over where your search terms apply to, as well as allowing searches by pattern style and type.
+
 ## March 21, 2021
 
 - Fixed switching between ACNH and ACNL modes causing advanced patterns to copy one quarter to all quarters. Sorry! 😅
