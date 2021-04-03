@@ -328,7 +328,6 @@ export default {
   grid-template-rows: auto;
   grid-template-columns: auto;
   grid-auto-columns: auto;
-  grid-auto-columns: auto;
   row-gap: 25px;
 
   padding: 14px 23px;
@@ -347,9 +346,6 @@ export default {
     @include absolute-center;
     width: auto;
     height: auto;
-    grid-template-rows: unset;
-    grid-template-columns: unset;
-    grid-auto-columns: unset;
     grid-auto-columns: unset;
     grid-template-areas:
       "header header header header header header"
