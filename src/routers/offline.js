@@ -1,7 +1,5 @@
 import Vue from "vue";
-import VueRouter from "vue-router";
 import Editor from '~/pages/Editor';
-Vue.use(VueRouter);
 
 const mode = "history";
 
@@ -9,9 +7,9 @@ const routes = [
   { path: `/`, component: Editor },
 ];
 
-const router = new VueRouter({
+const routerConfig = {
   mode,
-  routes
-});
+  routes,
+};
 
-export default router;
+export default routerConfig;

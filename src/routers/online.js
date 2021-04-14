@@ -1,5 +1,3 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
 import Home from '~/pages/Home.vue';
 import Browse from '~/pages/Browse';
 import Editor from '~/pages/Editor';
@@ -10,7 +8,6 @@ import Missing from '~/pages/Missing.vue';
 import ModeratorIndex from '~/pages/moderator/Index.vue';
 import ModeratorLogin from '~/pages/moderator/Login.vue';
 import ModeratorDashboard from '~/pages/moderator/Dashboard.vue';
-Vue.use(VueRouter);
 
 const mode = "history";
 
@@ -38,9 +35,9 @@ const routes = [
   { path: "*", component: Missing }
 ];
 
-const router = new VueRouter({
+const routerConfig = {
   mode,
-  routes
-});
+  routes,
+};
 
-export default router;
+export default routerConfig;

@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import qs from "qs";
 import origin from "~/libs/origin";
 import {
   ref,
@@ -153,7 +154,7 @@ export default {
     BxRefresh,
   },
   
-  setup() {
+  setup(props, ctx) {
     // search options, replicated from browse
     const currOptions = reactive(createOptions());
     const currResults = ref(new Array());
@@ -180,15 +181,6 @@ export default {
     const pageSize = ref(30);
     const pageNumber = ref(0);
     
-    const currPageResults = computed(() => {
-      const startingIndex = pageNumber.value * pageSize.value;
-      const endingIndex = (pageNumber.value + 1) * pageSize.value;
-      return currResults.value
-        .slice(startingIndex, endingIndex)
-        .filter(result => result != null);
-    });
-
-    
     // last page number available 0 indexed
     const maxPageNumber = computed(() => {
       if (isRandomized.value) {
@@ -202,6 +194,84 @@ export default {
       );
       return maxPageNumber;
     });
+    
+    const currPageResults = computed(() => {
+      const startingIndex = pageNumber.value * pageSize.value;
+      const endingIndex = (pageNumber.value + 1) * pageSize.value;
+      return currResults.value
+        .slice(startingIndex, endingIndex)
+        .filter(result => result != null);
+    });
+
+    const updateCurrResults = async () => {
+        isLoading.value = true;
+        let results;
+        try {
+          results = await updateResults(cloneOptions(currOptions), pageSize.value, pageNumber.value);
+        }
+        catch (error) {
+          isLoading.value = false;
+          return;
+        }
+        currResults.value = results.slice();
+        isLoading.value = false;
+    };
+    
+    
+    // update options from route
+    // partial options accepted
+    const updateOptions = (options, newPageNumber) => {
+      options = cloneOptions(options);
+      newPageNumber = parseInt(newPageNumber);
+      const defaultOptions = createOptions();
+
+      currOptions.titleFilter = (
+        options.titleFilter ||
+        defaultOptions.titleFilter
+      );
+      currOptions.authorFilter = (
+        options.authorFilter ||
+        defaultOptions.authorFilter
+      );
+      currOptions.townFilter = (
+        options.townFilter ||
+        defaultOptions.townFilter
+      );
+      currOptions.styleTagsFilter = (
+        options.styleTagsFilter ||
+        defaultOptions.styleTagsFilter
+      );
+      currOptions.typeTagsFilter = (
+        options.typeTagsFilter ||
+        defaultOptions.typeTagsFilter
+      );
+      
+      pageNumber.value = newPageNumber || 0;
+      updateCurrResults();
+    };
+    
+    // update route with options
+    const updateRoute = (options, newPageNumber) => {
+      newPageNumber = Number.parseInt(newPageNumber);
+      const router = ctx.root.$router;
+      const currentRoute = router.currentRoute;
+      const routeOptions = {
+        path: currentRoute.path,
+        query: {
+          ...cloneOptions(options),
+          pageNumber: newPageNumber,
+        },
+      };
+      
+      const currentQs = qs.stringify(currentRoute.query);
+      const nextQs = qs.stringify(routeOptions.query);
+      const willUpdate = currentQs !== nextQs;
+      if (willUpdate) {
+        router.push(routeOptions);
+      }
+    };
+    
+
     
     
     // page numbers around the current page
@@ -249,11 +319,11 @@ export default {
     };
     
     const onPrevPage = () => {
-      pageNumber.value = Math.max(pageNumber.value - 1, 0);
+      updateRoute(currOptions, Math.max(pageNumber.value - 1, 0));
     };
     
     const onNextPage = () => {
-      pageNumber.value = Math.min(maxPageNumber.value, pageNumber.value + 1);
+      updateRoute(currOptions, Math.min(maxPageNumber.value, pageNumber.value + 1));
     };
     
     const onJumpPage = () => {
@@ -266,44 +336,16 @@ export default {
           throw new Error(errorMessage)
         else if (pn > maxPageNumber.value)
           throw new Error(errorMessage);
-        pageNumber.value = pn;
+        updateRoute(currOptions, pn);
       }
       catch (error) {
         window.alert(error.message);
       }
     };
     
-    
-    const updateCurrResults = async () => {
-        isLoading.value = true;
-        let results;
-        try {
-          results = await updateResults(cloneOptions(currOptions), pageSize.value, pageNumber.value);
-        }
-        catch (error) {
-          isLoading.value = false;
-          return;
-        }
-        currResults.value = results.slice();
-        isLoading.value = false;
-    };
-    
-    
-    // update results every time the page number changes
-    watch(pageNumber, updateCurrResults);
-    onMounted(updateCurrResults);
-    
     const onSearch = () => {
-      currOptions.titleFilter = nextOptions.titleFilter;
-      currOptions.authorFilter = nextOptions.authorFilter;
-      currOptions.townFilter = nextOptions.townFilter;
-      currOptions.styleTagsFilter = nextOptions.styleTagsFilter.slice();
-      currOptions.typeTagsFilter = nextOptions.typeTagsFilter.slice();
-      currOptions.nsfc = nextOptions.nsfc;
-      currOptions.unapproved = nextOptions.unapproved;
-      currOptions.sorting = nextOptions.sorting;
-      pageNumber.value = 0;
-      updateCurrResults();
+      // will trigger updateOptions
+      updateRoute(nextOptions, 0);
     };
     
     const isCurrPageEmpty = computed(() => {
@@ -318,11 +360,13 @@ export default {
         .find(([key, value]) => value === nextOptions.sorting);
       return [selected[0]];
     });
+    
     const onNextSortingInput = (sortingOptions) => {
       nextOptions.sorting = origin.sortingOptions[sortingOptions[0]];
     };
     
     return {
+      currOptions,
       nextOptions,
       isOptionsChanged,
       styleTagOptions: origin.tags_style,
@@ -341,7 +385,62 @@ export default {
       isCurrPageEmpty,
       nextSortingWrapped,
       onNextSortingInput,
+      updateOptions,
+      updateRoute,
     };
+  },
+  beforeRouteEnter (to, from, next) {
+    const defaultOptions = createOptions();
+    const {
+      titleFilter,
+      townFilter,
+      authorFilter,
+      styleTagsFilter,
+      typeTagsFilter,
+      pageNumber,
+    } = to.query;
+    
+    const options = {
+      titleFilter,
+      townFilter,
+      authorFilter,
+      styleTagsFilter,
+      typeTagsFilter,
+    };
+    
+    const normalizedOptions = {
+      titleFilter: titleFilter || defaultOptions.titleFilter,
+      townFilter: townFilter || defaultOptions.townFilter,
+      authorFilter: authorFilter || defaultOptions.authorFilter,
+      styleTagsFilter: styleTagsFilter || defaultOptions.styleTagsFilter,
+      typeTagsFilter: typeTagsFilter || defaultOptions.typeTagsFilter,
+    };
+    
+    next(vm => {
+      vm.updateRoute(normalizedOptions, pageNumber || 0);
+      vm.updateOptions(normalizedOptions, pageNumber || 0);
+    });
+  },
+  beforeRouteUpdate (to, from, next) {
+    let {
+      titleFilter,
+      townFilter,
+      authorFilter,
+      styleTagsFilter,
+      typeTagsFilter,
+      pageNumber,
+    } = to.query;
+    
+    const options = {
+      titleFilter,
+      townFilter,
+      authorFilter,
+      styleTagsFilter,
+      typeTagsFilter,
+    };
+    
+    this.updateOptions(options, pageNumber);
+    next();
   },
 };
 </script>

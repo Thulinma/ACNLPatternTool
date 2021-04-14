@@ -27,7 +27,6 @@ const optionsMap = {
   townFilter: "t",
   styleTagsFilter: "st",
   typeTagsFilter: "tt",
-  unapproved: "letsgetdangerous",
   originPageNumber: "start",
 };
 
@@ -60,8 +59,6 @@ const createOptions = () => ({
   townFilter: "",
   styleTagsFilter: [null, null, null],
   typeTagsFilter: [null, null, null],
-  nsfc: false, // don't ever turn this on
-  unapproved: false,
   sorting: origin.sortingOptions.random,
 });
 

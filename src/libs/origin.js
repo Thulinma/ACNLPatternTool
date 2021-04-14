@@ -98,8 +98,6 @@ const browse = async (options) => {
     st, // style tags
     tt, // type tags
     start,
-    nsfc,
-    letsgetdangerous,
     sorting,
   } = options;
   
@@ -110,8 +108,6 @@ const browse = async (options) => {
     st,
     tt, 
     start,
-    nsfc,
-    letsgetdangerous,
   };
   
   // set the sort option
