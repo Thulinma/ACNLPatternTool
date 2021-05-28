@@ -7,7 +7,7 @@
         @click="downloadPNG"
         elevation="0"
       >
-        Save QR
+        Save {{ drawingTool.compatMode === "ACNL" ? "QR" : "PBL" }}
       </VBtn>
       <VBtn
         v-if="drawingTool.compatMode === 'ACNH'"
@@ -16,6 +16,14 @@
         elevation="0"
       >
         No QR Code?
+      </VBtn>
+      <VBtn
+        v-if="drawingTool.compatMode === 'ACNH'"
+        class="qr-info-btn rounded-lg"
+        @click="copyKeypresses"
+        elevation="0"
+      >
+        Copy Keypress Script
       </VBtn>
     </div>
 
@@ -65,6 +73,7 @@ import ACNLQRGenerator from "@/components/ACNLQRGenerator.vue";
 /* libs */
 import generateACNLQR from "@/libs/ACNLQRGenerator";
 import generateACNHPBL from "@/libs/ACNHPBLGenerator";
+import generateACNHKeypresses from "@/libs/ACNHKeypressGenerator";
 
 import colors from "@/styles/colors.scss";
 
@@ -100,6 +109,15 @@ export default {
     async downloadPNG() {
       if (this.dataURL === "") return;
       saveAs(this.dataURL, this.drawingTool.title + ".png");
+    },
+    async copyKeypresses(){
+      let presses = await generateACNHKeypresses(this.drawingTool);
+      try {
+        await navigator.clipboard.writeText(presses);
+      } catch (err) {
+        alert("Error! Could not copy: "+e);
+      }
+      alert("Commands copied!");
     },
   },
   async mounted() {
