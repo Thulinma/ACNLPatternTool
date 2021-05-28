@@ -18,6 +18,13 @@
           >
             No QR Code?
           </button>
+          <button
+            v-if="drawingTool.compatMode === 'ACNH'"
+            @click="copyKeypresses"
+            class="editor--qr-info-button"
+          >
+            Copy keypress script
+          </button>
         </div>
         <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
         <Info
@@ -46,6 +53,7 @@ import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
 /* libs */
 import generateACNLQR from "~/libs/ACNLQRGenerator";
 import generateACNHPBL from "~/libs/ACNHPBLGenerator";
+import generateACNHKeypresses from "~/libs/ACNHKeypressGenerator";
 
 /* svg icons */
 import IconBase from "~/components/icons/IconBase.vue";
@@ -79,6 +87,11 @@ export default {
     async downloadPNG() {
       if (this.dataURL === "") return;
       saveAs(this.dataURL, this.drawingTool.title + ".png");
+    },
+    async copyKeypresses(){
+      let presses = await generateACNHKeypresses(this.drawingTool);
+      navigator.clipboard.writeText(presses).then(() => {alert("Commands copied!");}).catch(e => {console.log(e); alert("Error! Could not copy: "+e);});
+
     },
   },
   async mounted() {
