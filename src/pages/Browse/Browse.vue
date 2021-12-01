@@ -74,7 +74,7 @@
             }"
             v-for="pageIndicator in pageIndicators"
             :key="pageIndicator"
-            @click="onChangePage(pageIndicator)"
+            @click="() => onChangePage(pageIndicator)"
           >
             {{ pageIndicator }}
           </button>
@@ -94,13 +94,6 @@
 <script>
 import qs from "qs";
 import origin from "~/libs/origin";
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-} from "@vue/composition-api";
 import {
   createOptions,
   cloneOptions,
@@ -154,129 +147,62 @@ export default {
     BxRefresh,
   },
   
-  setup(props, ctx) {
-    // search options, replicated from browse
-    const currOptions = reactive(createOptions());
-    const currResults = ref(new Array());
-    const nextOptions = reactive(createOptions());
-    
-    const isLoading = ref(false);
-    
+  data() {
+    return {
+      // enumerated values from origin
+      styleTagOptions: origin.tags_style,
+      typeTagOptions: origin.tags_type,
+      sortingOptions: Object.keys(origin.sortingOptions).reverse(),
+      // search options replicated from browse
+      currOptions: createOptions(),
+      currResults: new Array(),
+      nextOptions: createOptions(),
+      isLoading: false,
+      // current page number 0 indexed
+      pageSize: 30,
+      pageNumber: 0,
+    };
+  },
+  
+  computed: {
     // lock to first page if results are randomized
-    const isRandomized = computed(() => {
+    isRandomized() {
       return (
-        currOptions.titleFilter === "" &&
-        currOptions.sorting === origin.sortingOptions.random
+        this.currOptions.titleFilter === "" &&
+        this.currOptions.sorting === origin.sortingOptions.random
       );
-    });
+    },
     
-    const isOptionsChanged = computed(() => {
+    isOptionsChanged() {
       return (
-        JSON.stringify(nextOptions) !==
-        JSON.stringify(currOptions)
+        JSON.stringify(this.nextOptions) !==
+        JSON.stringify(this.currOptions)
       );
-    });
-    
-    // current page number 0 indexed
-    const pageSize = ref(30);
-    const pageNumber = ref(0);
+    },
     
     // last page number available 0 indexed
-    const maxPageNumber = computed(() => {
-      if (isRandomized.value) {
+    maxPageNumber() {
+      if (this.isRandomized) {
         return Infinity;
       }
       // get results not good enough
       // calculate results with undefined trailing removed
       const maxPageNumber = Math.floor(
-        currResults.value.length /
-        pageSize.value
+        this.currResults.length /
+        this.pageSize
       );
       return maxPageNumber;
-    });
+    },
     
-    const currPageResults = computed(() => {
-      const startingIndex = pageNumber.value * pageSize.value;
-      const endingIndex = (pageNumber.value + 1) * pageSize.value;
-      return currResults.value
+    currPageResults() {
+      const startingIndex = this.pageNumber * this.pageSize;
+      const endingIndex = (this.pageNumber + 1) * this.pageSize;
+      return this.currResults
         .slice(startingIndex, endingIndex)
         .filter(result => result != null);
-    });
-
-    const updateCurrResults = async () => {
-        isLoading.value = true;
-        let results;
-        try {
-          results = await updateResults(cloneOptions(currOptions), pageSize.value, pageNumber.value);
-        }
-        catch (error) {
-          isLoading.value = false;
-          return;
-        }
-        currResults.value = results.slice();
-        isLoading.value = false;
-    };
+    },
     
-    
-    // update options from route
-    // partial options accepted
-    const updateOptions = (options, newPageNumber) => {
-      options = cloneOptions(options);
-      newPageNumber = parseInt(newPageNumber);
-      const defaultOptions = createOptions();
-
-      currOptions.titleFilter = (
-        options.titleFilter ||
-        defaultOptions.titleFilter
-      );
-      currOptions.authorFilter = (
-        options.authorFilter ||
-        defaultOptions.authorFilter
-      );
-      currOptions.townFilter = (
-        options.townFilter ||
-        defaultOptions.townFilter
-      );
-      currOptions.styleTagsFilter = (
-        options.styleTagsFilter ||
-        defaultOptions.styleTagsFilter
-      );
-      currOptions.typeTagsFilter = (
-        options.typeTagsFilter ||
-        defaultOptions.typeTagsFilter
-      );
-      
-      pageNumber.value = newPageNumber || 0;
-      updateCurrResults();
-    };
-    
-    // update route with options
-    const updateRoute = (options, newPageNumber) => {
-      newPageNumber = Number.parseInt(newPageNumber);
-      const router = ctx.root.$router;
-      const currentRoute = router.currentRoute;
-      const routeOptions = {
-        path: currentRoute.path,
-        query: {
-          ...cloneOptions(options),
-          pageNumber: newPageNumber,
-        },
-      };
-      
-      const currentQs = qs.stringify(currentRoute.query);
-      const nextQs = qs.stringify(routeOptions.query);
-      const willUpdate = currentQs !== nextQs;
-      if (willUpdate) {
-        router.push(routeOptions);
-      }
-    };
-    
-
-    
-    
-    // page numbers around the current page
-    // need to base this off of store results (left off)
-    const pageIndicators = computed(() => {
+    pageIndicators() {
       const pageIndicators = [];
       const inclusiveRange = function*(start, end) {
         for (let i = start; i <= end; ++i) yield i;
@@ -289,44 +215,129 @@ export default {
       // total number of page indicators
       const maxPageIndicators = (padding * 2) + 1;
       // start and end are forward
-      if (pageNumber.value <= padding) {
-        start = Math.max(pageNumber.value - padding, 0);
+      if (this.pageNumber <= padding) {
+        start = Math.max(this.pageNumber - padding, 0);
         end =  Math.min(
-          pageNumber.value + padding + Math.abs(pageNumber.value - padding),
-          maxPageNumber.value,
+          this.pageNumber + padding + Math.abs(this.pageNumber - padding),
+          this.maxPageNumber,
         );
       }
       // start ane end are backward
-      else if (pageNumber.value > maxPageNumber.value - padding) {
+      else if (this.pageNumber > this.maxPageNumber - padding) {
         // start = pageNumber.value - 2;
         // end = pageNumber.value + 2;
       }
       // start and end surround page number
       else {
-        start = pageNumber.value - padding;
-        end = pageNumber.value + padding;
+        start = this.pageNumber - padding;
+        end = this.pageNumber + padding;
       }
       pageIndicators.push(...inclusiveRange(start, end));
       return pageIndicators;
-    })
+    },
     
+    isCurrPageEmpty() {
+      return !this.isLoading && this.currPageResults.length === 0;
+    },
     
-    const onChangePage = (newPageNumber) => {
-      pageNumber.value = Math.min(
-        Math.max(newPageNumber, 0),
-        maxPageNumber.value,
+    // lazy implementation to utilize the shared selector
+    nextSortingWrapped() {
+      // return the key
+      const entries = Object.entries(origin.sortingOptions);
+      const selected = entries
+        .find(([key, value]) => value === this.nextOptions.sorting);
+      return [selected[0]];
+    },
+  },
+  
+  methods: {
+    async updateCurrResults() {
+        this.isLoading = true;
+        let results;
+        try {
+          results = await updateResults(
+            cloneOptions(this.currOptions),
+            this.pageSize,
+            this.pageNumber,
+          );
+        }
+        catch (error) {
+          this.isLoading = false;
+          return;
+        }
+        this.currResults = results.slice();
+        this.isLoading = false;
+    },
+    
+    updateOptions(options, newPageNumber) {
+      options = cloneOptions(options);
+      newPageNumber = parseInt(newPageNumber);
+      const defaultOptions = createOptions();
+
+      this.currOptions.titleFilter = (
+        options.titleFilter ||
+        defaultOptions.titleFilter
       );
-    };
+      this.currOptions.authorFilter = (
+        options.authorFilter ||
+        defaultOptions.authorFilter
+      );
+      this.currOptions.townFilter = (
+        options.townFilter ||
+        defaultOptions.townFilter
+      );
+      this.currOptions.styleTagsFilter = (
+        options.styleTagsFilter ||
+        defaultOptions.styleTagsFilter
+      );
+      this.currOptions.typeTagsFilter = (
+        options.typeTagsFilter ||
+        defaultOptions.typeTagsFilter
+      );
+      
+      this.pageNumber = newPageNumber || 0;
+      this.updateCurrResults();
+    },
     
-    const onPrevPage = () => {
-      updateRoute(currOptions, Math.max(pageNumber.value - 1, 0));
-    };
+    // update route with options
+    updateRoute(options, newPageNumber) {
+      newPageNumber = Number.parseInt(newPageNumber);
+      const currentRoute = this.$router.currentRoute;
+      const routeOptions = {
+        path: currentRoute.path,
+        query: {
+          ...cloneOptions(options),
+          pageNumber: newPageNumber,
+        },
+      };
+      
+      const currentQs = qs.stringify(currentRoute.query);
+      const nextQs = qs.stringify(routeOptions.query);
+      const willUpdate = currentQs !== nextQs;
+      if (willUpdate)
+        this.$router.push(routeOptions);
+    },
     
-    const onNextPage = () => {
-      updateRoute(currOptions, Math.min(maxPageNumber.value, pageNumber.value + 1));
-    };
+    onChangePage(newPageNumber) {
+      this.pageNumber = Math.min(
+        Math.max(newPageNumber, 0),
+        this.maxPageNumber,
+      );
+      this.updateRoute(
+        this.currOptions,
+        Math.min(this.maxPageNumber, Math.max(this.pageNumber, 0)),
+      );
+    },
     
-    const onJumpPage = () => {
+    onPrevPage() {
+      this.updateRoute(this.currOptions, Math.max(this.pageNumber - 1), 0);
+    },
+    
+    onNextPage() {
+      this.updateRoute(this.currOptions, Math.min(this.maxPageNumber, this.pageNumber + 1));
+    },
+    
+    onJumpPage() {
       const response = window.prompt("Page number to jump to:");
       if (response == null || response === "") return;
       try {
@@ -334,60 +345,23 @@ export default {
         const errorMessage = `Page does not exist: ${pn}`;
         if (pn < 0)
           throw new Error(errorMessage)
-        else if (pn > maxPageNumber.value)
+        else if (pn > this.maxPageNumber)
           throw new Error(errorMessage);
-        updateRoute(currOptions, pn);
+        this.updateRoute(this.currOptions, pn);
       }
       catch (error) {
         window.alert(error.message);
       }
-    };
+    },
     
-    const onSearch = () => {
+    onSearch() {
       // will trigger updateOptions
-      updateRoute(nextOptions, 0);
-    };
+      this.updateRoute(this.nextOptions, 0);
+    },
     
-    const isCurrPageEmpty = computed(() => {
-      return !isLoading.value && currPageResults.value.length === 0;
-    });
-    
-    // lazy implementation to utilize the shared selector
-    const nextSortingWrapped = computed(() => {
-      // return the key
-      const entries = Object.entries(origin.sortingOptions);
-      const selected = entries
-        .find(([key, value]) => value === nextOptions.sorting);
-      return [selected[0]];
-    });
-    
-    const onNextSortingInput = (sortingOptions) => {
-      nextOptions.sorting = origin.sortingOptions[sortingOptions[0]];
-    };
-    
-    return {
-      currOptions,
-      nextOptions,
-      isOptionsChanged,
-      styleTagOptions: origin.tags_style,
-      typeTagOptions: origin.tags_type,
-      sortingOptions: Object.keys(origin.sortingOptions).reverse(),
-      maxPageNumber,
-      pageNumber,
-      pageIndicators,
-      onChangePage,
-      onNextPage,
-      onPrevPage,
-      onJumpPage,
-      currPageResults,
-      onSearch,
-      isLoading,
-      isCurrPageEmpty,
-      nextSortingWrapped,
-      onNextSortingInput,
-      updateOptions,
-      updateRoute,
-    };
+    onNextSortingInput(sortingOptions) {
+      this.nextOptions.sorting = origin.sortingOptions[sortingOptions[0]];
+    },
   },
   beforeRouteEnter (to, from, next) {
     const defaultOptions = createOptions();
@@ -417,8 +391,8 @@ export default {
     };
     
     next(vm => {
-      vm.updateRoute(normalizedOptions, pageNumber || 0);
       vm.updateOptions(normalizedOptions, pageNumber || 0);
+      vm.updateRoute(normalizedOptions, pageNumber || 0);
     });
   },
   beforeRouteUpdate (to, from, next) {

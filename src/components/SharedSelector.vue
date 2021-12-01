@@ -19,8 +19,6 @@
 
 
 <script>
-import { computed } from "@vue/composition-api";
-
 export default {
   name: "SharedSelector",
   
@@ -39,41 +37,38 @@ export default {
     },
   },
   
-  setup(props, context) {
-    const slotsCount = computed(() => {
-      return props.value.length;
-    });
-    
-    const computeOptions = (valueIndex) => {
-      const exclusiveOptions = props.exclusiveOptions.slice();
-      for (let i = 0; i < props.value.length; ++i) {
+  data() {
+    return {};
+  },
+  
+  computed: {
+    slotsCount() {
+      return this.value.length;
+    },
+    slotsOptions() {
+      const computed = [];
+      for (let i = 0; i < this.slotsCount; ++i)
+        computed.push(this.computeOptions(i));
+      return computed;
+    },
+  },
+  
+  methods: {
+    computeOptions(valueIndex) {
+      const exclusiveOptions = this.exclusiveOptions.slice();
+      for (let i = 0; i < this.value.length; ++i) {
         if (i === valueIndex) continue; // skip the target
-        const exclusiveOptionIndex = exclusiveOptions.indexOf(props.value[i]);
+        const exclusiveOptionIndex = exclusiveOptions.indexOf(this.value[i]);
         if (exclusiveOptionIndex === -1) continue; // is an inclusive option
         exclusiveOptions.splice(exclusiveOptionIndex, 1);
       }
-      return [...props.inclusiveOptions, ...exclusiveOptions];
-    };
-
-    const slotsOptions = computed(() => {
-      const computed = [];
-      for (let i = 0; i < slotsCount.value; ++i) {
-        computed.push(computeOptions(i));
-      }
-      return computed;
-    });
-    
-    const onValueChange = (valueIndex, selected) => {
-      const newValue = props.value.slice();
+      return [...this.inclusiveOptions, ...exclusiveOptions];
+    },
+    onValueChange(valueIndex, selected) {
+      const newValue = this.value.slice();
       newValue[valueIndex] = selected;
-      context.emit("input", newValue);
-    };
-    
-    return {
-      onValueChange,
-      slotsOptions,
-      slotsCount,
-    };
+      this.$emit("input", newValue);
+    },
   },
 };
 </script>

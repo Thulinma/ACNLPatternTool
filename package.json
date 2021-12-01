@@ -30,7 +30,6 @@
     "@babel/runtime": "^7.8.4",
     "@beyonk/google-fonts-webpack-plugin": "^1.2.3",
     "@juggle/resize-observer": "^3.2.0",
-    "@vue/composition-api": "^1.0.0-beta.20",
     "@vxna/optimize-three-webpack-plugin": "^3.0.1",
     "axios": "^0.19.2",
     "babel-loader": "^8.0.6",

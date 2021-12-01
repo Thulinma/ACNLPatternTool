@@ -1,7 +1,4 @@
-import VueCompositionAPI from '@vue/composition-api';
-import Vue from 'vue';
 import origin from "~/libs/origin";
-Vue.use(VueCompositionAPI);
 
 const ORIGIN_PAGE_SIZE = 300;
 
@@ -199,6 +196,7 @@ const updatePage = async (options, localPageSize, localPageNumber)  => {
 };
 
 
+// TODO: Move browse results caches to store
 export {
   createOptions,
   cloneOptions,

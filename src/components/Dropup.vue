@@ -40,8 +40,6 @@
 </template>
 
 <script>
-import { ref, toRefs } from "@vue/composition-api";
-
 import BxCaretDown from "~/assets/icons/bx-caret-down.svg?inline";
 import BxCaretUp from "~/assets/icons/bx-caret-up.svg?inline";
 
@@ -70,34 +68,27 @@ export default {
       default: () => new Array(),
     },
   },
-  setup(props) {
-    const showMenu = ref(false);
-    
-    const onMouseEnter = () => {
-      showMenu.value = true;
-    };
-    const onMouseLeave = () => {
-      showMenu.value = false;
-    };
-
-    // need to make sure both don't trigger with preventDefault
-    const onButtonClick = (event) => {
-      showMenu.value = !showMenu.value;
-      event.preventDefault();
-    };
-    const onButtonTouchStart = (event) => {
-      showMenu.value = !showMenu.value;
-      event.preventDefault();
-    };
-
+  data() {
     return {
       variants,
-      showMenu,
-      onMouseEnter,
-      onMouseLeave,
-      onButtonClick,
-      onButtonTouchStart,
+      showMenu: false,
     };
+  },
+  methods: {
+    onMouseEnter() {
+      this.showMenu = true;
+    },
+    onMouseLeave() {
+      this.showMenu = false;
+    },
+    onButtonClick(event) {
+      this.showMenu = !showMenu.value;
+      event.preventDefault();
+    },
+    onButtonTouchStart(event) {
+      this.showMenu = !this.showMenu;
+      event.preventDefault();
+    }
   },
 };
 </script>
