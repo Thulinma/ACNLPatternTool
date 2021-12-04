@@ -14,11 +14,8 @@ const {
   pathToPublicIndex,
   pathToFavicon,
   pathToClientSrcIndex,
+  pathToZxingBuild,
 } = require('../etc/paths');
-const {
-  babelDevConfig,
-  babelProdConfig
-} = require('./babel.config');
 
 
 const injection = require('../etc/injection');
@@ -33,22 +30,14 @@ const output = {
   path: pathToBuild,
 };
 
-const babelRuleDev = {
+
+const swcRule = {
   test: /\.m?js$/i,
   exclude: /(node_modules|bower_components)/,
   use: {
-    loader: "babel-loader",
-    options: babelDevConfig,
-  },
-};
-
-const babelRuleProd = {
-  ...babelRuleDev,
-  use: {
-    ...babelRuleDev.use,
-    options: babelProdConfig,
+    loader: 'swc-loader',
   }
-}
+};
 
 const vueRule = {
   test: /\.vue$/i,
@@ -141,10 +130,6 @@ const svgRule = {
       // default
       resourceQuery: /inline/i,
       use: [
-        { // babel loader doesn't really matter here tbh
-          loader: "babel-loader",
-          options: babelDevConfig,
-        },
         {
           loader: "vue-svg-loader",
           options: {
@@ -224,7 +209,7 @@ const fileRules = [
 
 
 const rulesDev = [
-  babelRuleDev,
+  swcRule,
   vueRule,
   scssRuleDev,
   sassRuleDev,
@@ -232,7 +217,7 @@ const rulesDev = [
 ];
 
 const rulesProd = [
-  babelRuleProd,
+  swcRule,
   vueRule,
   scssRuleProd,
   sassRuleProd,
@@ -317,6 +302,7 @@ const resolve = {
   ],
   alias: {
     "~": pathToClientSrc,
+    "@zxing/library": pathToZxingBuild,
   }
 };
 

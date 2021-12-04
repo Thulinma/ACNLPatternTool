@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import NavigationButton from "~/components/positioned/NavigationButton.vue";
-import ModalManager from "~/components/positioned/ModalManager.vue";
-import Banner from "~/components/positioned/Banner.vue";
+import NavigationButton from "./components/positioned/NavigationButton.vue";
+import ModalManager from "./components/positioned/ModalManager.vue";
+import Banner from "./components/positioned/Banner.vue";
 
 export default {
   name: "App",
