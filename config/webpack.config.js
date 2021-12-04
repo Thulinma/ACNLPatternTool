@@ -1,13 +1,11 @@
 const webpack = require('webpack');
 // auto-generate the index.html file
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
 const env = require('../etc/env'); // assume already loaded, checked
 const {
@@ -267,10 +265,8 @@ const pluginsDev = [
   }),
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
-    alwaysWriteToDisk: false,
     filename: "index.html",
   }),
-  new HtmlWebpackHarddiskPlugin(), // ^ allows more options
   new FaviconsWebpackPlugin({
     logo: pathToFavicon,
     inject: true,
@@ -311,7 +307,6 @@ const optimizatonProd = {
       },
       extractComments: true,
     }),
-    new OptimizeCSSAssetsPlugin({}),
   ],
 };
 
@@ -325,7 +320,12 @@ const resolve = {
   }
 };
 
+const webpackBaseConfig = {
+  stats: 'minimal',
+};
+
 const webpackDevConfig = {
+  ...webpackBaseConfig,
   mode: "development",
   devtool: "source-map",
   entry,
@@ -338,6 +338,7 @@ const webpackDevConfig = {
 };
 
 const webpackProdConfig = {
+  ...webpackBaseConfig,
   mode: "production",
   devtool: false,
   entry,

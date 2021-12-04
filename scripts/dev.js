@@ -17,12 +17,17 @@ const {
 const compiler = webpack(webpackDevConfig);
 
 const webpackDevServer = new WebpackDevServer(compiler, {
-  stats: false,
   open: true,
-  contentBase: pathToPublic, // technically nonexistent, exists in memory
-  overlay: {
-    warnings: true,
-    errors: true,
+  static: {
+    directory: pathToPublic, // technically nonexistent, exists in memory
+  },
+  client: {
+    progress: true,
+    reconnect: true,
+    overlay: {
+      errors: true,
+      warnings: true,
+    },
   },
   historyApiFallback: true,
 });

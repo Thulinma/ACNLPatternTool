@@ -8,7 +8,7 @@
 import {
   ColladaLoader
 } from "@three/loaders/ColladaLoader";
-import * as THREE from "@three/core";
+import * as THREE from "three";
 import injected from "~/utils/injected";
 
 const {

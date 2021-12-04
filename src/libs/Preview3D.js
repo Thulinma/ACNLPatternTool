@@ -20,7 +20,7 @@ import {
   TextureLoader,
   MixOperation,
   Vector3,
-} from '@three/core';
+} from "three";
 import {
   GLTFLoader
 } from '@three/loaders/GLTFLoader';

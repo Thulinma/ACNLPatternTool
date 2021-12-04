@@ -30,7 +30,7 @@ import {
   DoubleSide,
   TextureLoader,
   MixOperation,
-} from "@three/core";
+} from "three";
 import { GLTFLoader } from "@three/loaders/GLTFLoader";
 import { OrbitControls } from "@three/controls/OrbitControls";
 import injected from "~/utils/injected";
