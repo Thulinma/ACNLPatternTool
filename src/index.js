@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import PortalVue from "portal-vue";
+import vuetify from './plugins/vuetify';
 import App from '~/App.vue';
 import i18n from '~/i18n'; // use i18n
 import { ifProdExec } from '~/utils/if-env';
@@ -22,5 +23,6 @@ new Vue({
   store,
   router,
   i18n,
+  vuetify,
   render: (h) => h(App),
 }).$mount("#app");

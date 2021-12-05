@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const { VuetifyLoaderPlugin } = require('vuetify-loader');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
@@ -224,7 +225,8 @@ const rulesProd = [
 ];
 
 const fonts = [
-  { family: "Nunito", variants: ["600", "700", "800"] },
+  { family: "Nunito", variants: ["600", "700", "800"], },
+  { family: "Roboto", variants: ["100", "300", "400", "500", "700", "900"],  }
 ];
 
 const htmlWebpackOptions = {
@@ -236,6 +238,7 @@ const htmlWebpackOptions = {
 
 const plugins = [
   new VueLoaderPlugin(),
+  new VuetifyLoaderPlugin(),
   new OptimizeThreePlugin(),
   new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
   new webpack.DefinePlugin({ "process.injected": JSON.stringify(injection) }),
