@@ -82,7 +82,7 @@ export default {
       this.showMenu = false;
     },
     onButtonClick(event) {
-      this.showMenu = !showMenu.value;
+      this.showMenu = !this.showMenu;
       event.preventDefault();
     },
     onButtonTouchStart(event) {
