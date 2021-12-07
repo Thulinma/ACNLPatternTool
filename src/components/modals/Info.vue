@@ -1,37 +1,31 @@
 <template>
   <!-- takes warnings in some markdown elements -->
   <!-- e.g. h1, h2, h3, p, img -->
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="info--window">
-        <CancelButton @click="$emit('close')" />
-        <div class="info--info">
-          <div class="info--content">
-            <slot>No Content Provided.</slot>
-          </div>
-          <slot name="buttons">
-            <div class="info--buttons">
-              <button class="info--button" @click="$emit('close')">Ok</button>
-            </div>
-          </slot>
+  <VCard elevation="0">
+    <div class="info--window">
+      <CancelButton @click="$emit('close')" />
+      <div class="info--info">
+        <div class="info--content">
+          <slot>No Content Provided.</slot>
         </div>
+        <slot name="buttons">
+          <div class="info--buttons">
+            <button class="info--button" @click="$emit('close')">Ok</button>
+          </div>
+        </slot>
       </div>
-    </template>
-  </ModalContainer>
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import { VCard } from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 
 export default {
   name: "Info",
   components: {
-    ModalContainer,
+    VCard,
     CancelButton,
   },
   data: function () {
@@ -49,7 +43,6 @@ export default {
 .info--window {
   box-sizing: border-box;
   @include relative-in-place;
-  position: fixed;
   width: 100%;
   height: 100%;
   overflow: scroll;
@@ -61,11 +54,8 @@ export default {
   justify-content: center;
 
   @include tablet-landscape {
-    @include absolute-center;
-    position: fixed;
     width: auto;
     height: auto;
-    border-radius: 40px;
     overflow: visible;
   }
 }

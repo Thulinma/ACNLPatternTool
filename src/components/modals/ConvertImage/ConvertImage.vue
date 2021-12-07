@@ -1,64 +1,58 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div
-        :class="{
-          'converter--window': true,
-          cropping: state === states.cropping,
-          adjusting: state === states.adjusting,
-          saving: state === states.saving,
-        }"
-      >
-        <CancelButton @click="$emit('close')" />
-        <CroppingStage
-          v-if="state === states.cropping"
-          :dataURL="dataURL"
-          @update:dataURL="dataURL = $event"
-          :rows="rows"
-          @update:filename="filename = $event"
-          @update:rows="rows = $event"
-          :columns="columns"
-          @update:columns="columns = $event"
-          @next="toAdjusting"
-        />
+  <VCard elevation="0">
+    <div
+      :class="{
+        'converter--window': true,
+        cropping: state === states.cropping,
+        adjusting: state === states.adjusting,
+        saving: state === states.saving,
+      }"
+    >
+      <CancelButton @click="$emit('close')" />
+      <CroppingStage
+        v-if="state === states.cropping"
+        :dataURL="dataURL"
+        @update:dataURL="dataURL = $event"
+        :rows="rows"
+        @update:filename="filename = $event"
+        @update:rows="rows = $event"
+        :columns="columns"
+        @update:columns="columns = $event"
+        @next="toAdjusting"
+      />
 
-        <AdjustingStage
-          v-if="state === states.adjusting"
-          :previewDataURL="previewDataURL"
-          :isMural="isMural"
-          :transparency="transparency"
-          @update:transparency="updateTransparency"
-          :saturation="saturation"
-          @update:saturation="updateSaturation"
-          :applySaturation="applySaturation"
-          @update:applySaturation="updateApplySaturation"
-          :conversionQuality="conversionQuality"
-          @update:conversionQuality="updateConversionQuality"
-          :isSplitPalette="isSplitPalette"
-          @update:isSplitPalette="updateIsSplitPalette"
-          :paletteSelectionMethod="paletteSelectionMethod"
-          @update:paletteSelectionMethod="updatePaletteSelectionMethod"
-          @prev="toCropping(false)"
-          @next="toSaving"
-        />
+      <AdjustingStage
+        v-if="state === states.adjusting"
+        :previewDataURL="previewDataURL"
+        :isMural="isMural"
+        :transparency="transparency"
+        @update:transparency="updateTransparency"
+        :saturation="saturation"
+        @update:saturation="updateSaturation"
+        :applySaturation="applySaturation"
+        @update:applySaturation="updateApplySaturation"
+        :conversionQuality="conversionQuality"
+        @update:conversionQuality="updateConversionQuality"
+        :isSplitPalette="isSplitPalette"
+        @update:isSplitPalette="updateIsSplitPalette"
+        :paletteSelectionMethod="paletteSelectionMethod"
+        @update:paletteSelectionMethod="updatePaletteSelectionMethod"
+        @prev="toCropping(false)"
+        @next="toSaving"
+      />
 
-        <SavingStage
-          :isMural="isMural"
-          :previewDataURL="previewDataURL"
-          :outputs="outputs"
-          v-if="state === states.saving"
-        />
-      </div>
-    </template>
-  </ModalContainer>
+      <SavingStage
+        :isMural="isMural"
+        :previewDataURL="previewDataURL"
+        :outputs="outputs"
+        v-if="state === states.saving"
+      />
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import { VCard } from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 
@@ -78,8 +72,8 @@ const states = Object.freeze({
 export default {
   name: "ImageLoader",
   components: {
+    VCard,
     CancelButton,
-    ModalContainer,
     CroppingStage,
     AdjustingStage,
     SavingStage,
@@ -749,8 +743,6 @@ export default {
 .converter--window {
   box-sizing: border-box;
   @include relative-in-place;
-  position: fixed;
-  z-index: 999;
   background-color: $ecru-white;
   width: 100%;
   height: 100%;
@@ -761,7 +753,6 @@ export default {
   @include tablet-landscape {
     overflow: visible;
     padding: 0 0 0 0;
-    @include absolute-center;
     width: auto;
     height: auto;
     border-radius: 40px;

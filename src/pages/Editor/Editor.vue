@@ -11,36 +11,34 @@
       @change-current-color="onChangeCurrentColor"
       @color-picked="onColorPicked"
     />
-    <ModalContainer
-      v-if="colorPicker != null"
-      @modal-close="onChangeColorPicker(null)"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    
+    <VDialog
+      transition="fade-transition"
+      :value="colorPicker != null"
+      @input="onChangeColorPicker(null)"
+      content-class="colorpicker--dialog"
+      hide-overlay
+      width="auto"
+      origin="top center"
     >
-      <template #window>
-        <div class="editor--color-picker-window" style="text-align: center">
-          <ColorTools
-            :drawingTool="drawingTool"
-            :colorPicker="colorPicker"
-            @change-color-picker="onChangeColorPicker"
-            @change-current-color="onChangeCurrentColor"
-            @color-picked="onColorPicked"
-          />
-          <CancelButton
-            class="editor--color-picker-close"
-            @click="onChangeColorPicker(null)"
-          />
-        </div>
-      </template>
-      <!-- transparent overlay -->
-      <template #overlay>
-        <div
+      <div
+        v-if="colorPicker != null"
+        class="editor--color-picker-window"
+        style="text-align: center"
+      >
+        <ColorTools
+          :drawingTool="drawingTool"
+          :colorPicker="colorPicker"
+          @change-color-picker="onChangeColorPicker"
+          @change-current-color="onChangeCurrentColor"
+          @color-picked="onColorPicked"
+        />
+        <CancelButton
+          class="editor--color-picker-close"
           @click="onChangeColorPicker(null)"
-          class="editor--color-picker-overlay"
-        ></div>
-      </template>
-    </ModalContainer>
-    <!-- color picker dropdown -->
+        />
+      </div>
+    </VDialog>
 
     <!-- need this to control canvas ratio -->
     <div class="editor--preview-container">
@@ -94,30 +92,36 @@
     <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
 
     <FileLoaderCollection
-      v-if="fileLoadingCollection"
       @load="load"
       ref="collectionFileLoader"
-      @close="fileLoadingCollection = false"
     />
-
-    <Publish
-      v-if="publishing"
-      :drawingTool="drawingTool"
-      :patternDetails="patternDetails"
-      @update-details="updatePatternDetails"
-      @close="publishing = false"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-    />
-
-    <ConvertImage
-      v-if="convertImage"
-      :sourcetool="drawingTool"
-      @close="convertImage = false"
-      @load="drawingTool.load($event)"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-    />
+    
+    <VDialog
+      v-model="publishing"
+      content-class="publish--dialog"
+      width="auto"
+    >
+      <Publish
+        v-if="publishing"
+        :drawingTool="drawingTool"
+        :patternDetails="patternDetails"
+        @update-details="updatePatternDetails"
+        @close="publishing = false"
+      />
+    </VDialog>
+    
+    <VDialog
+      v-model="convertImage"
+      content-class="convert--dialog"
+      width="auto"
+    >
+      <ConvertImage
+        v-if="convertImage"
+        :sourcetool="drawingTool"
+        @close="convertImage = false"
+        @load="drawingTool.load($event)"
+      />
+    </VDialog>
   </main>
 </template>
 
@@ -139,10 +143,10 @@ import BxsFileImport from "~/assets/icons/bxs-file-import.svg?inline";
 import BxsSave from "~/assets/icons/bxs-save.svg?inline";
 
 // components
+import { VDialog } from "vuetify/lib";
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ConvertImage from "~/components/modals/ConvertImage";
 import Publish from "~/components/modals/Publish.vue";
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import FileLoader from "~/components/FileLoader.vue";
@@ -155,9 +159,9 @@ import BxsFileArchiveSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg?in
 export default {
   name: "Editor",
   components: {
+    VDialog,
     ColorTools,
     ConvertImage,
-    ModalContainer,
     ThreeDRender,
     Toolbar,
     Publish,
@@ -195,7 +199,6 @@ export default {
       // modals
       convertImage: null,
       publishing: false,
-      fileLoadingCollection: false,
 
       // menu states
       forceShowImportMenu: false,
@@ -419,7 +422,6 @@ export default {
       this.$refs.patternFileLoader.open();
     },
     async openCollection() {
-      this.fileLoadingCollection = true;
       await this.$nextTick();
       this.$refs.collectionFileLoader.open();
       console.log("opening collection");
@@ -504,11 +506,9 @@ export default {
 
 .editor--color-picker-window {
   display: inline-block;
-  position: fixed;
+  position: relative;
   top: 0;
-  left: 50%;
-
-  transform: translate(-50%, 0%);
+  left: 0;
   z-index: 999;
   width: 100%;
   height: 100%;
@@ -663,5 +663,18 @@ export default {
   @include desktop {
     right: 30px;
   }
+}
+</style>
+
+<style lang="scss">
+.colorpicker--dialog,
+.publish--dialog,
+.convert--dialog {
+  box-shadow: none;
+}
+
+.colorpicker--dialog {
+  align-self: flex-start;
+  margin: 0;
 }
 </style>

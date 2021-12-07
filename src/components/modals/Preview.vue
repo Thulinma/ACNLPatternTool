@@ -1,43 +1,39 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="editor--qr-preview-window">
-        <img class="editor--qr-preview" :src="dataURL" alt="QR Code" />
-        <div class="editor--qr-buttons-container">
-          <button @click="downloadPNG" class="editor--qr-save-button">
-            Save QR
-          </button>
-          <button
-            v-if="drawingTool.compatMode === 'ACNH'"
-            @click="gameModeInfo = true"
-            class="editor--qr-info-button"
-          >
-            No QR Code?
-          </button>
-        </div>
-        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
-        <Info
-          v-if="gameModeInfo"
-          @modal-close="$emit('close')"
-          @scroll-freeze="$emit('scroll-freeze')"
-          @scroll-unfreeze="$emit('scroll-unfreeze')"
-          @close="gameModeInfo = false"
+  <VCard elevation="0" class="preview--card">
+    <div class="editor--qr-preview-window">
+      <img class="editor--qr-preview" :src="dataURL" alt="QR Code" />
+      <div class="editor--qr-buttons-container">
+        <button @click="downloadPNG" class="editor--qr-save-button">
+          Save QR
+        </button>
+        <button
+          v-if="drawingTool.compatMode === 'ACNH'"
+          @click="gameModeInfo = true"
+          class="editor--qr-info-button"
         >
+          No QR Code?
+        </button>
+      </div>
+      
+      <VDialog
+        v-model="gameModeInfo"
+        content-class="qr-preview--dialog"
+        width="auto"
+      >
+        <Info v-if="gameModeInfo" @close="gameModeInfo = false">
           <ACNLToACNHInfo />
         </Info>
-      </div>
-    </template>
-  </ModalContainer>
+      </VDialog>
+    </div>
+  </VCard>
 </template>
 
 <script>
+import {
+  VDialog,
+  VCard,
+} from "vuetify/lib";
 import DrawingTool from "~/libs/DrawingTool";
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
-import CancelButton from "~/components/modals/CancelButton.vue";
 import Info from "~/components/modals/Info.vue";
 import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 
@@ -54,11 +50,11 @@ import IconQRCode from "~/components/icons/IconQRCode.vue";
 export default {
   name: "Preview",
   components: {
-    ModalContainer,
+    VDialog,
+    VCard,
     IconBase,
     IconQRCode,
     ACNLQRGenerator,
-    CancelButton,
     Info,
     ACNLToACNHInfo,
   },
@@ -97,17 +93,14 @@ export default {
 @import "styles/screens";
 @import "styles/resets";
 
-.editor--qr-preview-window {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  max-width: 100%;
-  transform: translate(-50%, -50%);
-  z-index: 999;
+.preview--card {
+  background-color: transparent;
+  position: relative;
+}
 
-  @include tablet-landscape {
-    @include absolute-center;
-  }
+.editor--qr-preview-window {
+  max-width: 100%;
+  z-index: 999;
 }
 
 .editor--qr-preview {
@@ -160,5 +153,11 @@ export default {
 .cancel-button-adjust {
   top: -5px;
   right: -5px;
+}
+</style>
+
+<style lang="scss">
+.qr-preview--dialog {
+  box-shadow: none;
 }
 </style>

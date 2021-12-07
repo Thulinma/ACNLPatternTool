@@ -1,47 +1,44 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
+  <VCard
+    elevation="0"
+    class="storage--card"
   >
-    <template #window>
-      <div class="storage--window">
-        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
-        <div class="storage--patterns-grid-container">
-          <div class="storage--patterns-grid">
-            <div
-              v-for="(drawingTool, idx) in drawingTools"
-              :key="idx"
-              :class="{
-                'storage--pattern-container': true,
-                selected:
-                  selectedMap.length === drawingTools.length &&
-                  selectedMap[idx],
-              }"
-            >
-              <div class="storage--pattern-wrapper">
-                <PreviewGenerator
-                  class="storage--pattern"
-                  :drawingTool="drawingTool"
-                  @click="$emit('select', drawingTool)"
-                />
-                <div class="storage--pattern-selected-border"></div>
-                <div class="storage--pattern-selected-icon-container">
-                  <IconCheck class="storage--pattern-selected-icon" />
-                </div>
+    <div class="storage--window">
+      <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
+      <div class="storage--patterns-grid-container">
+        <div class="storage--patterns-grid">
+          <div
+            v-for="(drawingTool, idx) in drawingTools"
+            :key="idx"
+            :class="{
+              'storage--pattern-container': true,
+              selected:
+                selectedMap.length === drawingTools.length &&
+                selectedMap[idx],
+            }"
+          >
+            <div class="storage--pattern-wrapper">
+              <PreviewGenerator
+                class="storage--pattern"
+                :drawingTool="drawingTool"
+                @click="$emit('select', drawingTool)"
+              />
+              <div class="storage--pattern-selected-border"></div>
+              <div class="storage--pattern-selected-icon-container">
+                <IconCheck class="storage--pattern-selected-icon" />
               </div>
-              <div class="storage--pattern-text">{{ drawingTool.title }}</div>
             </div>
+            <div class="storage--pattern-text">{{ drawingTool.title }}</div>
           </div>
         </div>
-        <UtilityBar v-if="options.length > 0" :options="options" />
       </div>
-    </template>
-  </ModalContainer>
+      <UtilityBar v-if="options.length > 0" :options="options" />
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import { VCard } from "vuetify/lib";
 import PreviewGenerator from "~/components/PreviewGenerator.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
@@ -52,7 +49,7 @@ import UtilityBar from "~/components/positioned/UtilityBar.vue";
 export default {
   name: "PatternContainer",
   components: {
-    ModalContainer,
+    VCard,
     PreviewGenerator,
     IconCheck,
     IconKebab,
@@ -88,19 +85,16 @@ export default {
 @import "styles/positioning";
 @import "styles/screens";
 
+.storage--card {}
+
 .storage--window {
   box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  left: 0;
   background-color: $ecru-white;
+  position: relative;
 
   z-index: 100;
   width: 100%;
   height: 100%;
-  max-height: 100%;
-  overflow-y: visible;
-  box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
 
   display: grid;
   grid-template-columns: 1fr;
@@ -111,18 +105,11 @@ export default {
   align-content: flex-start;
 
   @include tablet-landscape {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    box-sizing: border-box;
+    box-sizing: content-box;
     width: 970px;
     height: auto;
     min-height: 300px;
-    max-height: unquote("min(#{90%}, 700px)");
     overflow-y: visible;
-    border-radius: 40px;
-    padding: 0px 40px;
   }
   @include desktop {
     width: 1100px;
@@ -136,7 +123,7 @@ export default {
   width: 100%;
   max-height: 100%;
   overflow-y: auto;
-  padding: 50px 20px 80px 20px;
+  padding: 50px 60px 80px 60px;
   display: flex;
   flex-direction: column;
 }

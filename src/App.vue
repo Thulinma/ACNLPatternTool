@@ -1,17 +1,10 @@
 <template>
   <VApp class="app-container">
     <VMain>
-      <div id="app" :class="{ 'scroll-froze': scrollFroze }">
-        <router-view
-          @scroll-freeze="scrollFreeze"
-          @scroll-unfreeze="scrollUnfreeze"
-        ></router-view>
+      <div id="app">
+        <router-view></router-view>
         <Banner />
-        <NavigationButton
-          @scroll-freeze="scrollFreeze"
-          @scroll-unfreeze="scrollUnfreeze"
-        />
-        <ModalManager />
+        <NavigationButton/>
       </div>
     </VMain>
   </VApp>
@@ -24,7 +17,6 @@ import {
 } from "vuetify/lib";
 
 import NavigationButton from "./components/positioned/NavigationButton.vue";
-import ModalManager from "./components/positioned/ModalManager.vue";
 import Banner from "./components/positioned/Banner.vue";
 
 export default {
@@ -32,20 +24,11 @@ export default {
   components: {
     VApp,
     VMain,
-    ModalManager,
     NavigationButton,
     Banner,
   },
   data: function () {
-    return { scrollFroze: false };
-  },
-  methods: {
-    scrollFreeze() {
-      this.scrollFroze = true;
-    },
-    scrollUnfreeze() {
-      this.scrollFroze = false;
-    },
+    return {};
   },
 };
 </script>
@@ -64,9 +47,5 @@ export default {
   height: 100%;
   width: 100%;
   overflow-y: scroll;
-
-  &.scroll-froze {
-    overflow-y: hidden;
-  }
 }
 </style>

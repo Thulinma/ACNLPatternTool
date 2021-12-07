@@ -39,7 +39,6 @@
     "lodash": "^4.17.21",
     "lz-string": "^1.4.4",
     "mini-css-extract-plugin": "^2.4.5",
-    "portal-vue": "^2.1.7",
     "qs": "^6.10.1",
     "reset-css": "^5.0.1",
     "sass": "~1.32",

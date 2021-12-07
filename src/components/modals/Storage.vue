@@ -1,8 +1,6 @@
 <template>
   <PatternContainer
     @close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
     :drawingTools="drawingTools"
     :options="options"
     :selectedMap="selectedMap"

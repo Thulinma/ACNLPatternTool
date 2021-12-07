@@ -194,49 +194,69 @@
         </div>
       </div>
     </div>
-
-    <PatternSettings
-      v-if="settingsOpen"
-      @close="settingsOpen = false"
-      @update-details="$emit('update-details', $event)"
-      :drawingTool="drawingTool"
-      :types="drawingTool.allTypes"
-      :patternDetails="patternDetails"
-    />
-
-    <Preview
-      v-if="previewOpen"
-      @close="previewOpen = false"
-      :drawingTool="drawingTool"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-    />
-
-    <Storage
-      v-if="storageOpen"
-      @close="storageOpen = false"
-      @load="load"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-    />
-
-    <Warning
-      v-if="gameModeWarning"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-      @close="gameModeWarning = false"
-      @dismiss="changeGameModeFromWarning"
-      foreverDismissable
+    
+    <VDialog
+      v-model="settingsOpen"
+      content-class="settings--dialog"
+      width="auto"
     >
-      <template>
-        <ACNHToACNLInfo v-if="gameMode" />
-        <ACNLToACNHInfo v-else />
-      </template>
-    </Warning>
+      <PatternSettings
+        v-if="settingsOpen"
+        @close="settingsOpen = false"
+        @update-details="$emit('update-details', $event)"
+        :drawingTool="drawingTool"
+        :types="drawingTool.allTypes"
+        :patternDetails="patternDetails"
+      />
+    </VDialog>
+    
+    <VDialog
+      v-model="previewOpen"
+      content-class="preview--dialog"
+      width="auto"
+    >
+      <Preview
+        v-if="previewOpen"
+        @close="previewOpen = false"
+        :drawingTool="drawingTool"
+      />
+    </VDialog>
+    
+    <VDialog
+      v-model="storageOpen"
+      content-class="storage--dialog"
+      scrollable
+      width="auto"
+    >
+      <Storage
+        v-if="storageOpen"
+        @close="storageOpen = false"
+        @load="load"
+      />
+    </VDialog>
+    
+    <VDialog
+      v-model="gameModeWarning"
+      content-class="warning--dialog"
+      width="auto"
+    >
+      <Warning
+        v-if="gameModeWarning"
+        @close="gameModeWarning = false"
+        @dismiss="changeGameModeFromWarning"
+        foreverDismissable
+      >
+        <template>
+          <ACNHToACNLInfo v-if="gameMode" />
+          <ACNLToACNHInfo v-else />
+        </template>
+      </Warning>
+    </VDialog>
   </div>
 </template>
 
 <script>
+import { VDialog  } from "vuetify/lib";
 import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
 import Preview from "~/components/modals/Preview.vue";
@@ -335,6 +355,7 @@ const toolMappings = {
 export default {
   name: "ToolBar",
   components: {
+    VDialog,
     PatternSettings,
     Preview,
     Storage,
@@ -725,7 +746,6 @@ $toolbar--options-width: 75px;
   position: relative;
   top: 0;
   left: 0;
-  z-index: 999;
 
   display: grid;
   grid-template-columns: auto;
@@ -1100,5 +1120,14 @@ $toolbar--options-width: 75px;
       transform: translateX(50px);
     }
   }
+}
+</style>
+
+<style lang="scss">
+.settings--dialog,
+.preview--dialog,
+.storage--dialog,
+.warning--dialog {
+  box-shadow: none;
 }
 </style>

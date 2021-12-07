@@ -1,11 +1,7 @@
 <template>
   <!-- takes warnings in some markdown elements -->
   <!-- e.g. h1, h2, h3, p, img -->
-  <Info
-    @close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
+  <Info @close="$emit('close')">
     <template #default>
       <slot></slot>
     </template>

@@ -1,188 +1,182 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="settings--window">
-        <CancelButton @click="$emit('close')" />
-        <label class="settings--input-field">
-          <div class="settings--input-field-name required">
-            Title<span class="asterisk">*</span>
-            <Tooltip class="settings--tooltip">
+  <VCard elevation="0" class="settings--card" width="auto">
+    <div class="settings--window">
+      <CancelButton @click="$emit('close')" />
+      <label class="settings--input-field">
+        <div class="settings--input-field-name required">
+          Title<span class="asterisk">*</span>
+          <Tooltip class="settings--tooltip">
+            <div class="settings--tooltip-content">
               <div class="settings--tooltip-content">
-                <div class="settings--tooltip-content">
-                  <div>Title character limits:</div>
-                  <div>ACNL: 21 chars.</div>
-                  <div>ACNH: 20 chars.</div>
-                </div>
+                <div>Title character limits:</div>
+                <div>ACNL: 21 chars.</div>
+                <div>ACNH: 20 chars.</div>
               </div>
-            </Tooltip>
-          </div>
-          <div class="settings--input-container">
-            <input
-              v-if="drawingTool.compatMode === 'ACNL'"
-              id="pattern-title"
-              class="settings--input"
-              type="text"
-              maxlength="20"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.title"
-              @keydown.stop
-            />
-            <input
-              v-else-if="drawingTool.compatMode === 'ACNH'"
-              id="pattern-title"
-              class="settings--input"
-              type="text"
-              maxlength="21"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.title"
-              @keydown.stop
-            />
-          </div>
-        </label>
-
-        <label class="settings--input-field">
-          <div class="settings--input-field-name required">
-            Author<span class="asterisk">*</span>
-            <Tooltip class="settings--tooltip">
-              <div class="settings--tooltip-content">
-                <div>Author character limit:</div>
-                <div>ACNL: 9 chars.</div>
-                <div>ACNH: 10 chars.</div>
-              </div>
-            </Tooltip>
-          </div>
-          <div class="settings--input-container">
-            <input
-              v-if="drawingTool.compatMode === 'ACNL'"
-              class="settings--input"
-              type="text"
-              maxlength="9"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.creator.name"
-              @keydown.stop
-            />
-            <input
-              v-else-if="drawingTool.compatMode === 'ACNH'"
-              class="settings--input"
-              type="text"
-              maxlength="10"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.creator.name"
-              @keydown.stop
-            />
-          </div>
-        </label>
-
-        <label class="settings--input-field">
-          <div class="settings--input-field-name required">
-            Town<span class="asterisk">*</span>
-            <Tooltip class="settings--tooltip">
-              <div class="settings--tooltip-content">
-                <div>Town character limit:</div>
-                <div>ACNL: 9 chars.</div>
-                <div>ACNH: 10 chars.</div>
-              </div>
-            </Tooltip>
-          </div>
-          <div class="settings--input-container">
-            <input
-              v-if="drawingTool.compatMode === 'ACNL'"
-              class="settings--input"
-              type="text"
-              maxlength="9"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.town.name"
-              @keydown.stop
-            />
-            <input
-              v-else-if="drawingTool.compatMode === 'ACNH'"
-              class="settings--input"
-              type="text"
-              maxlength="10"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.town.name"
-              @keydown.stop
-            />
-          </div>
-        </label>
-
-        <div class="settings--row-4">
-          <select class="settings--type" v-model="details.type">
-            <option
-              v-for="(type, index) in patternTypes"
-              :key="index"
-              :value="index"
-            >
-              {{ type.name }}
-            </option>
-          </select>
-
-          <button
-            class="settings--confirm"
-            @click="
-              update();
-              $emit('close');
-            "
-          >
-            Confirm
-          </button>
+            </div>
+          </Tooltip>
         </div>
+        <div class="settings--input-container">
+          <input
+            v-if="drawingTool.compatMode === 'ACNL'"
+            id="pattern-title"
+            class="settings--input"
+            type="text"
+            maxlength="20"
+            spellcheck="false"
+            autocomplete="off"
+            v-model="details.title"
+            @keydown.stop
+          />
+          <input
+            v-else-if="drawingTool.compatMode === 'ACNH'"
+            id="pattern-title"
+            class="settings--input"
+            type="text"
+            maxlength="21"
+            spellcheck="false"
+            autocomplete="off"
+            v-model="details.title"
+            @keydown.stop
+          />
+        </div>
+      </label>
+
+      <label class="settings--input-field">
+        <div class="settings--input-field-name required">
+          Author<span class="asterisk">*</span>
+          <Tooltip class="settings--tooltip">
+            <div class="settings--tooltip-content">
+              <div>Author character limit:</div>
+              <div>ACNL: 9 chars.</div>
+              <div>ACNH: 10 chars.</div>
+            </div>
+          </Tooltip>
+        </div>
+        <div class="settings--input-container">
+          <input
+            v-if="drawingTool.compatMode === 'ACNL'"
+            class="settings--input"
+            type="text"
+            maxlength="9"
+            spellcheck="false"
+            autocomplete="off"
+            v-model="details.creator.name"
+            @keydown.stop
+          />
+          <input
+            v-else-if="drawingTool.compatMode === 'ACNH'"
+            class="settings--input"
+            type="text"
+            maxlength="10"
+            spellcheck="false"
+            autocomplete="off"
+            v-model="details.creator.name"
+            @keydown.stop
+          />
+        </div>
+      </label>
+
+      <label class="settings--input-field">
+        <div class="settings--input-field-name required">
+          Town<span class="asterisk">*</span>
+          <Tooltip class="settings--tooltip">
+            <div class="settings--tooltip-content">
+              <div>Town character limit:</div>
+              <div>ACNL: 9 chars.</div>
+              <div>ACNH: 10 chars.</div>
+            </div>
+          </Tooltip>
+        </div>
+        <div class="settings--input-container">
+          <input
+            v-if="drawingTool.compatMode === 'ACNL'"
+            class="settings--input"
+            type="text"
+            maxlength="9"
+            spellcheck="false"
+            autocomplete="off"
+            v-model="details.town.name"
+            @keydown.stop
+          />
+          <input
+            v-else-if="drawingTool.compatMode === 'ACNH'"
+            class="settings--input"
+            type="text"
+            maxlength="10"
+            spellcheck="false"
+            autocomplete="off"
+            v-model="details.town.name"
+            @keydown.stop
+          />
+        </div>
+      </label>
+
+      <div class="settings--row-4">
+        <select class="settings--type" v-model="details.type">
+          <option
+            v-for="(type, index) in patternTypes"
+            :key="index"
+            :value="index"
+          >
+            {{ type.name }}
+          </option>
+        </select>
 
         <button
-          class="settings--advanced-button"
-          v-if="!showAdvanced && drawingTool.compatMode === 'ACNL'"
-          @click="showAdvanced = !showAdvanced"
+          class="settings--confirm"
+          @click="
+            update();
+            $emit('close');
+          "
         >
-          Advanced
-          <IconChevronDown class="settings--advanced-expand-icon" />
-        </button>
-        <button
-          class="settings--advanced-button"
-          v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
-          @click="storeMeta"
-        >
-          Store Meta Info
-          <Tooltip class="settings--tooltip">
-            <div class="settings--tooltip-content">
-              Stores current hidden fields to make another pattern editable in
-              ACNL only. The current pattern loaded should be a pattern coming
-              from your ACNL save.
-            </div>
-          </Tooltip>
-        </button>
-        <button
-          class="settings--advanced-button"
-          v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
-          @click="loadMeta"
-        >
-          Load Meta Info
-          <Tooltip class="settings--tooltip">
-            <div class="settings--tooltip-content">
-              Loads hidden fields to make another pattern editable in ACNL only.
-              The current pattern loaded should not be a pattern coming from
-              your ACNL save.
-              <div>{{ metaCreatorStr }}</div>
-              <div>{{ metaTownStr }}</div>
-            </div>
-          </Tooltip>
+          Confirm
         </button>
       </div>
-    </template>
-  </ModalContainer>
+
+      <button
+        class="settings--advanced-button"
+        v-if="!showAdvanced && drawingTool.compatMode === 'ACNL'"
+        @click="showAdvanced = !showAdvanced"
+      >
+        Advanced
+        <IconChevronDown class="settings--advanced-expand-icon" />
+      </button>
+      <button
+        class="settings--advanced-button"
+        v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
+        @click="storeMeta"
+      >
+        Store Meta Info
+        <Tooltip class="settings--tooltip">
+          <div class="settings--tooltip-content">
+            Stores current hidden fields to make another pattern editable in
+            ACNL only. The current pattern loaded should be a pattern coming
+            from your ACNL save.
+          </div>
+        </Tooltip>
+      </button>
+      <button
+        class="settings--advanced-button"
+        v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
+        @click="loadMeta"
+      >
+        Load Meta Info
+        <Tooltip class="settings--tooltip">
+          <div class="settings--tooltip-content">
+            Loads hidden fields to make another pattern editable in ACNL only.
+            The current pattern loaded should not be a pattern coming from
+            your ACNL save.
+            <div>{{ metaCreatorStr }}</div>
+            <div>{{ metaTownStr }}</div>
+          </div>
+        </Tooltip>
+      </button>
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import { VCard } from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import IconChevronUp from "~/components/icons/IconChevronUp.vue";
@@ -192,7 +186,7 @@ import Tooltip from "~/components/Tooltip.vue";
 export default {
   name: "Settings",
   components: {
-    ModalContainer,
+    VCard,
     Tooltip,
     IconChevronDown,
     CancelButton,
@@ -295,10 +289,13 @@ export default {
 @import "styles/positioning";
 @import "styles/resets";
 
+.settings--card {
+  background-color: $ecru-white;
+}
+
 .settings--window {
   box-sizing: border-box;
   @include relative-in-place;
-  position: fixed;
   z-index: 999;
 
   display: grid;
@@ -308,20 +305,15 @@ export default {
   grid-auto-columns: auto;
   row-gap: 19px;
 
-  width: 100%;
-  height: 100%;
   overflow: scroll;
   padding: 28px 46px;
 
-  background-color: $ecru-white;
   color: $jambalaya;
 
   @include tablet-landscape {
-    @include absolute-center;
     min-width: 500px;
     width: auto;
     height: auto;
-    border-radius: 45px;
     overflow: visible; // reset
   }
 }

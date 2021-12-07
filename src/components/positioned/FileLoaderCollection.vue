@@ -1,15 +1,21 @@
 <template>
   <div>
-    <PatternContainer
-      v-if="drawingTools.length > 0"
-      @close="$emit('close')"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-      :drawingTools="drawingTools"
-      :options="options"
-      :selectedMap="selectedMap"
-      @select="toggleSelection"
-    />
+    <VDialog
+      :value="drawingTools.length > 0"
+      @input="$emit('close')"
+      content-class="collection--dialog"
+      scrollable
+      width="auto"
+    >
+      <PatternContainer
+        v-if="drawingTools.length > 0"
+        @close="$emit('close')"
+        :drawingTools="drawingTools"
+        :options="options"
+        :selectedMap="selectedMap"
+        @select="toggleSelection"
+      />
+    </VDialog>
     <FileLoader
       ref="collectionFileLoader"
       fileType="collection"
@@ -19,6 +25,7 @@
 </template>
 
 <script>
+import { VDialog } from "vuetify/lib";
 import PatternContainer from "~/components/positioned/PatternContainer.vue";
 import FileLoader from "~/components/FileLoader.vue";
 import saver from "~/libs/saver";
@@ -33,6 +40,7 @@ import downloadAsBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
 export default {
   name: "FileLoaderCollection",
   components: {
+    VDialog,
     PatternContainer,
     FileLoader,
   },
@@ -177,3 +185,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.collection--dialog {
+  box-shadow: none;
+}
+</style>

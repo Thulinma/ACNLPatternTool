@@ -1,202 +1,196 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="publish--window">
-        <CancelButton @click="$emit('close')" />
-        <div class="publish--header">
-          <div class="publish--icon-cloud-container">
-            <IconCloud class="publish--icon-cloud" />
-          </div>
-          <div class="publish--header-text">Publish Your Design!</div>
+  <VCard elevation="0">
+    <div class="publish--window">
+      <CancelButton @click="$emit('close')" />
+      <div class="publish--header">
+        <div class="publish--icon-cloud-container">
+          <IconCloud class="publish--icon-cloud" />
         </div>
+        <div class="publish--header-text">Publish Your Design!</div>
+      </div>
 
-        <IconGenerator
-          class="publish--render"
-          :width="280"
-          :height="280"
-          :pattern="drawingTool"
-        />
+      <IconGenerator
+        class="publish--render"
+        :width="280"
+        :height="280"
+        :pattern="drawingTool"
+      />
 
-        <div class="publish--inputs">
-          <label class="settings--input-field">
-            <div class="settings--input-field-name required">
-              Title<span class="asterisk">*</span>
-              <Tooltip class="settings--tooltip">
+      <div class="publish--inputs">
+        <label class="settings--input-field">
+          <div class="settings--input-field-name required">
+            Title<span class="asterisk">*</span>
+            <Tooltip class="settings--tooltip">
+              <div class="settings--tooltip-content">
                 <div class="settings--tooltip-content">
-                  <div class="settings--tooltip-content">
-                    <div>Title character limits:</div>
-                    <div>ACNL: 21 chars.</div>
-                    <div>ACNH: 20 chars.</div>
-                  </div>
+                  <div>Title character limits:</div>
+                  <div>ACNL: 21 chars.</div>
+                  <div>ACNH: 20 chars.</div>
                 </div>
-              </Tooltip>
-            </div>
-            <div class="settings--input-container">
-              <input
-                v-if="drawingTool.compatMode === 'ACNL'"
-                id="pattern-title"
-                class="settings--input"
-                type="text"
-                maxlength="20"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.title"
-                @keydown.stop
-              />
-              <input
-                v-else-if="drawingTool.compatMode === 'ACNH'"
-                id="pattern-title"
-                class="settings--input"
-                type="text"
-                maxlength="21"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.title"
-                @keydown.stop
-              />
-            </div>
-          </label>
-
-          <label class="settings--input-field">
-            <div class="settings--input-field-name required">
-              Author<span class="asterisk">*</span>
-              <Tooltip class="settings--tooltip">
-                <div class="settings--tooltip-content">
-                  <div>Author character limit:</div>
-                  <div>ACNL: 9 chars.</div>
-                  <div>ACNH: 10 chars.</div>
-                </div>
-              </Tooltip>
-            </div>
-            <div class="settings--input-container">
-              <input
-                v-if="drawingTool.compatMode === 'ACNL'"
-                class="settings--input"
-                type="text"
-                maxlength="9"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.creator.name"
-                @keydown.stop
-              />
-              <input
-                v-else-if="drawingTool.compatMode === 'ACNH'"
-                class="settings--input"
-                type="text"
-                maxlength="10"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.creator.name"
-                @keydown.stop
-              />
-            </div>
-          </label>
-
-          <label class="settings--input-field">
-            <div class="settings--input-field-name required">
-              Town<span class="asterisk">*</span>
-              <Tooltip class="settings--tooltip">
-                <div class="settings--tooltip-content">
-                  <div>Town character limit:</div>
-                  <div>ACNL: 9 chars.</div>
-                  <div>ACNH: 10 chars.</div>
-                </div>
-              </Tooltip>
-            </div>
-            <div class="settings--input-container">
-              <input
-                v-if="drawingTool.compatMode === 'ACNL'"
-                class="settings--input"
-                type="text"
-                maxlength="9"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.town.name"
-                @keydown.stop
-              />
-              <input
-                v-else-if="drawingTool.compatMode === 'ACNH'"
-                class="settings--input"
-                type="text"
-                maxlength="10"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.town.name"
-                @keydown.stop
-              />
-            </div>
-          </label>
-        </div>
-
-        <div class="publish--style-tags">
-          <div class="publish--style-tags-title">Style Tags</div>
-          <div class="publish--style-tag-selectors">
-            <select
-              v-for="(selected, i) in selectedStyles"
-              :key="i"
-              class="publish--style-tags-select"
-              v-model="selectedStyles[i]"
-            >
-              <option value>- - -</option>
-              <option
-                v-for="style in styleOptionSets[i]"
-                :value="style"
-                :key="style"
-              >
-                {{ style }}
-              </option>
-            </select>
+              </div>
+            </Tooltip>
           </div>
-        </div>
-
-        <div class="publish--type-tags">
-          <div class>Type Tags</div>
-          <div class="publish--type-tag-selectors">
-            <select
-              class="publish--type-tags-select"
-              v-for="(selected, i) in selectedTypes"
-              :key="i"
-              v-model="selectedTypes[i]"
-            >
-              <option value>- - -</option>
-              <option
-                v-for="type in typeOptionSets[i]"
-                :value="type"
-                :key="type"
-              >
-                {{ type }}
-              </option>
-            </select>
+          <div class="settings--input-container">
+            <input
+              v-if="drawingTool.compatMode === 'ACNL'"
+              id="pattern-title"
+              class="settings--input"
+              type="text"
+              maxlength="20"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.title"
+              @keydown.stop
+            />
+            <input
+              v-else-if="drawingTool.compatMode === 'ACNH'"
+              id="pattern-title"
+              class="settings--input"
+              type="text"
+              maxlength="21"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.title"
+              @keydown.stop
+            />
           </div>
-        </div>
+        </label>
 
-        <div class="publish--bottom-row">
-          <div class="publish--nsfw">
-            <input type="checkbox" id="nsfw" v-model="isNSFW" />
-            <label for="nsfw">NSFW</label>
+        <label class="settings--input-field">
+          <div class="settings--input-field-name required">
+            Author<span class="asterisk">*</span>
+            <Tooltip class="settings--tooltip">
+              <div class="settings--tooltip-content">
+                <div>Author character limit:</div>
+                <div>ACNL: 9 chars.</div>
+                <div>ACNH: 10 chars.</div>
+              </div>
+            </Tooltip>
           </div>
+          <div class="settings--input-container">
+            <input
+              v-if="drawingTool.compatMode === 'ACNL'"
+              class="settings--input"
+              type="text"
+              maxlength="9"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.creator.name"
+              @keydown.stop
+            />
+            <input
+              v-else-if="drawingTool.compatMode === 'ACNH'"
+              class="settings--input"
+              type="text"
+              maxlength="10"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.creator.name"
+              @keydown.stop
+            />
+          </div>
+        </label>
 
-          <button
-            :class="{
-              'publish--publish-button': true,
-              active: isUploading,
-            }"
-            @click="publish"
+        <label class="settings--input-field">
+          <div class="settings--input-field-name required">
+            Town<span class="asterisk">*</span>
+            <Tooltip class="settings--tooltip">
+              <div class="settings--tooltip-content">
+                <div>Town character limit:</div>
+                <div>ACNL: 9 chars.</div>
+                <div>ACNH: 10 chars.</div>
+              </div>
+            </Tooltip>
+          </div>
+          <div class="settings--input-container">
+            <input
+              v-if="drawingTool.compatMode === 'ACNL'"
+              class="settings--input"
+              type="text"
+              maxlength="9"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.town.name"
+              @keydown.stop
+            />
+            <input
+              v-else-if="drawingTool.compatMode === 'ACNH'"
+              class="settings--input"
+              type="text"
+              maxlength="10"
+              spellcheck="false"
+              autocomplete="off"
+              v-model="details.town.name"
+              @keydown.stop
+            />
+          </div>
+        </label>
+      </div>
+
+      <div class="publish--style-tags">
+        <div class="publish--style-tags-title">Style Tags</div>
+        <div class="publish--style-tag-selectors">
+          <select
+            v-for="(selected, i) in selectedStyles"
+            :key="i"
+            class="publish--style-tags-select"
+            v-model="selectedStyles[i]"
           >
-            Publish
-          </button>
+            <option value>- - -</option>
+            <option
+              v-for="style in styleOptionSets[i]"
+              :value="style"
+              :key="style"
+            >
+              {{ style }}
+            </option>
+          </select>
         </div>
       </div>
-    </template>
-  </ModalContainer>
+
+      <div class="publish--type-tags">
+        <div class>Type Tags</div>
+        <div class="publish--type-tag-selectors">
+          <select
+            class="publish--type-tags-select"
+            v-for="(selected, i) in selectedTypes"
+            :key="i"
+            v-model="selectedTypes[i]"
+          >
+            <option value>- - -</option>
+            <option
+              v-for="type in typeOptionSets[i]"
+              :value="type"
+              :key="type"
+            >
+              {{ type }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="publish--bottom-row">
+        <div class="publish--nsfw">
+          <input type="checkbox" id="nsfw" v-model="isNSFW" />
+          <label for="nsfw">NSFW</label>
+        </div>
+
+        <button
+          :class="{
+            'publish--publish-button': true,
+            active: isUploading,
+          }"
+          @click="publish"
+        >
+          Publish
+        </button>
+      </div>
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import { VCard } from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import IconCloud from "~/components/icons/IconCloud.vue";
 import IconGenerator from "~/components/IconGenerator.vue";
@@ -207,7 +201,7 @@ import origin from "~/libs/origin";
 export default {
   name: "Publish",
   components: {
-    ModalContainer,
+    VCard,
     CancelButton,
     IconGenerator,
     IconCloud,
@@ -321,8 +315,6 @@ export default {
 .publish--window {
   box-sizing: border-box;
   @include relative-in-place;
-  position: fixed;
-  z-index: 999;
 
   display: grid;
   grid-template-rows: auto;
@@ -343,7 +335,6 @@ export default {
     padding: 28px 46px;
   }
   @include tablet-landscape {
-    @include absolute-center;
     width: auto;
     height: auto;
     grid-auto-columns: unset;
@@ -355,7 +346,6 @@ export default {
     padding: 30px 40px;
     column-gap: 20px;
     box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
-    border-radius: 45px;
     overflow: visible;
   }
 }
