@@ -97,6 +97,7 @@
 import { Cropper } from "vue-advanced-cropper";
 import DrawingTool from "~/libs/DrawingTool";
 import IconChevronDown from "~/components/icons/IconChevronDown.vue";
+import 'vue-advanced-cropper/dist/style.css';
 
 export default {
   name: "Cropping",

@@ -711,7 +711,7 @@ $toolbar--options-width: 75px;
     width: 100%;
     height: 100%;
 
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
 
     cursor: pointer;
@@ -1080,20 +1080,22 @@ $toolbar--options-width: 75px;
     width: 100px;
 
     &:before {
+      vertical-align: top;
       display: block;
       border-radius: 100%;
       transition: 0.3s ease;
       border: 3px solid $azalea;
       width: 30px;
       height: 30px;
-      top: 4px;
+      top: 6px;
       left: 4px;
       background: $azalea;
       z-index: 20;
     }
     &:after {
+      vertical-align: top;
       content: "NL";
-      top: 15px;
+      top: 10px;
       left: 2px;
       transform: translateX(50px);
     }

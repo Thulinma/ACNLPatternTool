@@ -162,6 +162,7 @@ export default {
   min-height: 100%;
 
   background-image: url("../assets/images/Leaf_Brush_Pattern_Tile.svg");
+  background-repeat: repeat;
   background-size: 500px 500px;
   opacity: 0.15;
 }

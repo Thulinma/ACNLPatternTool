@@ -23,7 +23,7 @@ export default {
   position: absolute;
   top: 10px;
   right: 5px;
-  border-radius: 999px;
+  border-radius: 999px !important;
 
   box-sizing: border-box;
   width: 25px;
