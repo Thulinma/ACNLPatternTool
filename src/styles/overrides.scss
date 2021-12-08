@@ -1,0 +1,75 @@
+@use "styles/colors";
+
+@mixin v-btn(
+  $text-color: colors.$ecru-white,
+  $background-color: colors.$olive-haze,
+) {
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: normal;
+  color: $text-color;
+  background-color: $background-color !important;
+  @content;
+}
+
+@mixin v-text-field(
+  $text-color: colors.$jambalaya,
+  $background-color: colors.$cinderella,
+  $border-color: colors.$olive-haze,
+  ) {
+  &::v-deep {
+    input {
+      color: $text-color;
+      font-weight: 600;
+    }
+    .v-input__slot { background-color: $background-color; }
+    &:not(.v-input--is-focused) { fieldset { border-color: $border-color; }}
+    &.v-input--is-focused {
+      fieldset { border-color: $border-color; }
+      .v-label--active { color: $text-color !important; }
+    }
+    button[aria-label="clear icon"] { color: $text-color !important; }
+    @content;
+  }
+}
+
+@mixin v-select(
+  $text-color: colors.$jambalaya,
+  $background-color: colors.$cinderella,
+  $border-color: colors.$olive-haze 
+) {
+  &::v-deep {
+    .v-input__icon .v-icon { color: $text-color !important; }
+    .v-select__selections { color: $text-color; }
+    .v-input__slot { background-color: $background-color; }
+    &:not(.v-input--is-focused) { fieldset { border-color: $border-color; }}
+    &.v-input--is-focused {
+      fieldset { border-color: $border-color; }
+      .v-label--active { color: $text-color !important; }
+    }
+    @content;
+  }
+}
+
+@mixin v-menu(
+  $text-color: colors.$jambalaya,
+  $background-color: colors.$cinderella,
+  $hover-color: colors.$salmon,
+) {
+  box-shadow: none;
+  .v-list { @include v-list($text-color, $background-color); }
+  @content;
+}
+
+@mixin v-list(
+  $text-color: colors.$jambalaya,
+  $background-color: colors.$cinderella,
+  $hover-color: rgba(0, 0, 0, 0),
+) {
+  background-color: $background-color;
+  .v-list-item:hover { background-color: $hover-color !important }
+  .v-list-item__content { color: $text-color !important; }
+  .v-list-item__title { color: $text-color !important; }
+  .v-list-item--active { color: black !important; }
+  @content;
+}
