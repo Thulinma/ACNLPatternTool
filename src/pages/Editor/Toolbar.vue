@@ -199,6 +199,7 @@
       v-model="settingsOpen"
       content-class="settings--dialog"
       width="auto"
+      scrollable
     >
       <PatternSettings
         v-if="settingsOpen"
