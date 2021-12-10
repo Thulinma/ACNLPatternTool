@@ -157,7 +157,7 @@
     
     <VDialog
       v-model="publishing"
-      content-class="publish--dialog"
+      content-class="publish--dialog rounded-xl"
       width="auto"
     >
       <Publish
