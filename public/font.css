@@ -1,0 +1,98 @@
+/* === Nunito - 600 */
+@font-face {
+	font-family: 'Nunito';
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	
+	src: local('Nunito'),
+		url("./fonts//Nunito-SemiBold.woff") format("woff");
+}
+
+/* === Nunito - 700 */
+@font-face {
+	font-family: 'Nunito';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	
+	src: local('Nunito'),
+		url("./fonts//Nunito-Bold.woff") format("woff");
+}
+
+/* === Nunito - 800 */
+@font-face {
+	font-family: 'Nunito';
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	
+	src: local('Nunito'),
+		url("./fonts//Nunito-ExtraBold.woff") format("woff");
+}
+
+/* === Roboto - 100 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 100;
+	font-display: swap;
+	
+	src: local('Roboto'),
+		url("./fonts//Roboto-Thin.woff") format("woff");
+}
+
+/* === Roboto - 300 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	
+	src: local('Roboto'),
+		url("./fonts//Roboto-Light.woff") format("woff");
+}
+
+/* === Roboto - regular */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	
+	src: local('Roboto'),
+		url("./fonts//Roboto-Regular.woff") format("woff");
+}
+
+/* === Roboto - 500 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	
+	src: local('Roboto'),
+		url("./fonts//Roboto-Medium.woff") format("woff");
+}
+
+/* === Roboto - 700 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	
+	src: local('Roboto'),
+		url("./fonts//Roboto-Bold.woff") format("woff");
+}
+
+/* === Roboto - 900 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	
+	src: local('Roboto'),
+		url("./fonts//Roboto-Black.woff") format("woff");
+}

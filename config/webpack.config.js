@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
 const env = require('../etc/env'); // assume already loaded, checked
@@ -244,10 +243,6 @@ const plugins = [
 
 const pluginsDev = [
   ...plugins,
-  new GoogleFontsPlugin({
-    local: false,
-    fonts,
-  }),
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
     filename: "index.html",
@@ -263,13 +258,6 @@ const pluginsProd = [
   ...plugins,
   new MiniCssExtractPlugin({
     filename: "styles/style.css",
-  }),
-  new GoogleFontsPlugin({
-    local: true,
-    filename: "styles/font.css",
-    path: "../fonts/",
-    fonts,
-    formats: ["ttf"],
   }),
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,

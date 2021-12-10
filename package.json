@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/Thulinma/ACNLPatternTool#readme",
   "dependencies": {
-    "@beyonk/google-fonts-webpack-plugin": "^1.7.0",
     "@juggle/resize-observer": "^3.2.0",
     "@swc/core": "^1.2.117",
     "@vxna/optimize-three-webpack-plugin": "^5.1.3",
