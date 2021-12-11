@@ -22,12 +22,16 @@
       color: $text-color;
       font-weight: 600;
     }
-    .v-input__slot { background-color: $background-color; }
+    .v-input__slot {
+      background-color: $background-color;
+      label { color: $text-color !important; }
+    }
     &:not(.v-input--is-focused) { fieldset { border-color: $border-color; }}
     &.v-input--is-focused {
       fieldset { border-color: $border-color; }
       .v-label--active { color: $text-color !important; }
     }
+    .v-messages__message { color: $text-color !important }
     button[aria-label="clear icon"] { color: $text-color !important; }
     @content;
   }
@@ -41,7 +45,10 @@
   &::v-deep {
     .v-input__icon .v-icon { color: $text-color !important; }
     .v-select__selections { color: $text-color; }
-    .v-input__slot { background-color: $background-color; }
+    .v-input__slot {
+      background-color: $background-color; 
+      label { color: $text-color !important; }
+    }
     &:not(.v-input--is-focused) { fieldset { border-color: $border-color; }}
     &.v-input--is-focused {
       fieldset { border-color: $border-color; }
@@ -72,4 +79,15 @@
   .v-list-item__title { color: $text-color !important; }
   .v-list-item--active { color: black !important; }
   @content;
+}
+
+@mixin v-stepper-step($text-color) {
+  &::v-deep {
+    .v-stepper__step--active,
+    .v-stepper__step--complete {
+      .v-stepper__label {
+        color: $text-color,
+      }
+    }
+  }
 }

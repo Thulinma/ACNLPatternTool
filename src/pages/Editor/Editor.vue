@@ -171,7 +171,7 @@
     
     <VDialog
       v-model="convertImage"
-      content-class="convert--dialog"
+      content-class="convert--dialog rounded-xl"
       width="auto"
     >
       <ConvertImage

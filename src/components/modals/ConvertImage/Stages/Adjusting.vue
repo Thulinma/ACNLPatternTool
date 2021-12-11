@@ -1,126 +1,126 @@
 <template>
-  <div class="container">
+  <div class="stage">
     <div class="left-side">
       <div class="preview-container">
         <img class="preview" :src="previewDataURL" />
       </div>
-      <button class="crop-button" @click="$emit('prev', {})">Edit Crop</button>
-      <button class="convert-button" @click="$emit('next', {})">Convert</button>
+
+      <VBtn
+        class="crop-btn rounded-lg"
+        elevation="0"
+        @click="$emit('prev', {})"
+      >
+        Edit Crop
+      </VBtn>
+      <VBtn
+        class="convert-btn rounded-lg"
+        elevation="0"
+        @click="$emit('next', {})"
+      >
+        Convert
+      </VBtn>
     </div>
 
     <div class="right-side">
-      <div class="slider-option">
-        <div class="slider-option-title">Transparency Retention</div>
-        <div class="slider-option-indicator"></div>
-        <input
-          type="range"
-          min="0"
-          max="100"
+      <div>
+        <div class="text-h6">Transparency Retention</div>
+        <VSlider
+          class="slider"
+          :min="0"
+          :max="100"
           :value="transparency"
-          @change="$emit('update:transparency', Number($event.target.value))"
+          @input="$emit('update:transparency', Number($event))"
+          :color="colors.oliveHaze"
+          :track-color="colors.oliveHaze"
+          thumb-label
+          :thumb-color="colors.jambalaya"
+          hide-details
+          dense
         />
       </div>
-
-      <div class="slider-option">
-        <div class="slider-option-title">Saturation</div>
-
-        <div class="slider-option-indicator"></div>
-        <input
-          type="range"
-          min="0"
-          max="100"
+      <div>
+        <div class="text-h6">Saturation</div>
+        <VSlider
+          class="slider"
+          :min="0"
+          :max="100"
           :value="saturation"
-          @change="$emit('update:saturation', Number($event.target.value))"
+          @input="$emit('update:saturation', Number($event))"
+          :color="colors.oliveHaze"
+          :track-color="colors.oliveHaze"
+          thumb-label
+          :thumb-color="colors.jambalaya"
+          hide-details
+          dense
         />
-
-        <div class="checkbox-option" :class="{ active: applySaturation }">
-          <input
-            type="checkbox"
-            id="saturation-effect"
-            name="saturation-effect"
-            :checked="applySaturation"
-            :value="applySaturation"
-            @change="$emit('update:applySaturation', Boolean($event.target.checked))"
-          />
-          <label class="checkbox-option-title" for="saturation-effect">Apply Saturation Effect</label>
-        </div>
+        <VCheckbox
+          class="checkbox"
+          label="Apply Saturation"
+          :color="colors.jambalaya"
+          :value="applySaturation"
+          @change="$emit('update:applySaturation', Boolean($event))"
+          hint="test"
+          hide-details
+          dense
+        />
       </div>
 
-      <div class="radio-options">
-        <div class="radio-options-title">Conversion Method</div>
-        <label
-          v-for="option in conversionQualityOptions"
-          :key="option.conversionQuality"
-          :class="{
-          'radio-option': true,
-          'active': option.conversionQuality === conversionQuality
-        }"
+      <div>
+        <div class="text-h6">Conversion Method</div>
+        <VRadioGroup
+          :value="conversionQuality"
+          @change="$emit('update:conversionQuality', $event)"
         >
-          <span class="radio-option-indicator"></span>
-          <span>{{ option.name }}</span>
-          <input
-            v-show="false"
-            name="conversionQuality"
-            type="radio"
-            :checked="option.conversionQuality === conversionQuality"
+          <VRadio
+            v-for="option in conversionQualityOptions"
+            :key="option.conversionQuality"
+            :label="option.name"
             :value="option.conversionQuality"
-            @change="$emit('update:conversionQuality', option.conversionQuality)"
+            :color="colors.jambalaya"
           />
-        </label>
+        </VRadioGroup>
       </div>
 
-      <!-- palette option -->
-      <div class="radio-options" v-if="isMural">
-        <div class="radio-options-title">Palette Between Patterns</div>
-        <label
-          v-for="(option, index) in isSplitPaletteOptions"
-          :key="index"
-          :class="{
-          'radio-option': true,
-          'active': option.isSplitPalette === isSplitPalette
-        }"
+      <div v-if="isMural">
+        <div class="text-h6">Palette Between Patterns</div>
+        <VRadioGroup
+          :value="isSplitPalette"
+          @change="$emit('update:isSplitPalette', $event)"
         >
-          <span class="radio-option-indicator"></span>
-          <span>{{ option.name }}</span>
-          <input
-            v-show="false"
-            name="paletteSelectionMethod"
-            type="radio"
-            :checked="option.isSplitPalette === isSplitPalette"
+          <VRadio
+            v-for="option in isSplitPaletteOptions"
+            :key="option.isSplitPalette"
+            :label="option.name"
             :value="option.isSplitPalette"
-            @change="$emit('update:isSplitPalette', option.isSplitPalette)"
+            :color="colors.jambalaya"
           />
-        </label>
+        </VRadioGroup>
       </div>
 
-      <div class="radio-options">
-        <div class="radio-options-title">Palette Selection Method</div>
-        <label
-          v-for="option in paletteSelectionMethodOptions"
-          :key="option.paletteSelectionMethod"
-          :class="{
-          'radio-option': true,
-          'active': option.paletteSelectionMethod === paletteSelectionMethod
-        }"
+      <div>
+        <div class="text-h6">Palette Selection</div>
+        <VRadioGroup
+          :value="paletteSelectionMethod"
+          @change="$emit('update:paletteSelectionMethod', $event)"
         >
-          <span class="radio-option-indicator"></span>
-          <span>{{ option.name }}</span>
-          <input
-            v-show="false"
-            name="paletteSelectionMethod"
-            type="radio"
-            :checked="option.paletteSelectionMethod === paletteSelectionMethod"
+          <VRadio
+            v-for="option in paletteSelectionMethodOptions"
+            :key="option.name"
+            :label="option.name"
             :value="option.paletteSelectionMethod"
-            @change="$emit('update:paletteSelectionMethod', option.paletteSelectionMethod)"
+            :color="colors.jambalaya"
           />
-        </label>
+        </VRadioGroup>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { VBtn, VCheckbox, VRadio, VRadioGroup, VSlider } from "vuetify/lib";
 import { paletteSelectionMethods, conversionQualities } from "./enums";
+
+import colors from "~/styles/colors.scss";
 
 const paletteSelectionMethodOptions = [
   {
@@ -211,9 +211,16 @@ export default {
       required: false,
     },
   },
-  components: {},
+  components: {
+    VBtn,
+    VCheckbox,
+    VRadio,
+    VRadioGroup,
+    VSlider,
+  },
   data: function () {
     return {
+      colors,
       conversionQualityOptions,
       isSplitPaletteOptions,
       paletteSelectionMethodOptions,
@@ -224,12 +231,51 @@ export default {
 
 
 <style lang="scss" scoped>
+@use "styles/overrides" as overrides;
 @import "styles/colors";
 @import "styles/positioning";
 @import "styles/resets";
 @import "styles/screens";
 
-@import "./shared";
+.stage {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  justify-content: center;
+  column-gap: 50px;
+  row-gap: 30px;
+  padding: 24px 24px 0px 24px;
+
+  @include tablet-landscape {
+    grid-template-columns: auto auto;
+    overflow-y: scroll;
+    max-height: 425px;
+  }
+}
+
+.left-side {
+  justify-self: center;
+  align-self: flex-start;
+
+  position: relative;
+  top: 0;
+  left: 0;
+
+  display: grid;
+  grid-template-areas: "preview preview";
+  row-gap: 30px;
+  grid-template-rows: auto;
+  grid-template-columns: auto;
+
+  justify-content: center;
+  justify-items: center;
+  align-content: space-between;
+  align-items: auto;
+
+  @include tablet-landscape {
+    position: sticky;
+  }
+}
 
 .left-side {
   grid-template-areas:
@@ -237,29 +283,84 @@ export default {
     "crop convert";
 }
 
-.crop-button {
-  grid-area: crop;
-}
-.convert-button {
-  grid-area: convert;
-}
+.preview-container {
+  @include relative-in-place;
+  grid-area: preview;
 
-.crop-button,
-.convert-button {
-  cursor: pointer;
-  @include reset-button;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
+  overflow: hidden;
 
-  padding: 8px 30px;
-
+  @include polkadots($olive-haze, $donkey-brown);
+  @include moving-polkadots(2s);
+  min-width: 200px;
+  height: 300px;
+  padding: 20px;
   border-radius: 8px;
-  color: $white;
-  background-color: $robin-egg-blue;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 600;
 
-  @include phone-landscape {
-    padding: 10px 45px;
+  &::before {
+    // overlay
+    content: "";
+    display: block;
+    @include absolute-center;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.5;
   }
+  @include phone-landscape {
+    width: 350px;
+  }
+}
+
+.preview {
+  @include relative-in-place;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  // need this or its blurry
+  image-rendering: pixelated;
+}
+
+.crop-btn {
+  grid-area: crop;
+  padding: 0px 20px !important;
+  @include overrides.v-btn($ecru-white, $olive-haze);
+  &:hover {
+    @include polkadots($olive-haze, $donkey-brown);
+    @include moving-polkadots;
+  }
+}
+
+.convert-btn {
+  grid-area: convert;
+  padding: 0px 20px !important;
+  @include overrides.v-btn($white, $robin-egg-blue);
+  border: 4px solid $robin-egg-blue;
+  &:hover {
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
+  }
+}
+
+.right-side {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  justify-content: stretch;
+  justify-items: stretch;
+  row-gap: 15px;
+
+  padding-bottom: 30px;
+}
+
+.slider-title,
+.text-h6 {
+  color: $jambalaya;
 }
 </style>

@@ -1,87 +1,98 @@
 <template>
-  <div class="cropping--container">
-    <div
-      :class="{
-        'cropping--cropper': true,
-        loaded: dataURL != null,
-      }"
-    >
-      <Cropper
-        v-if="dataURL != null"
-        class="cropping--cropper"
-        backgroundClassname="cropping--cropper-background"
-        ref="cropper"
-        :src="dataURL"
-        :stencilProps="{ aspectRatio: aspectRatio }"
-      />
-    </div>
-
-    <div class="cropping--buttons">
-      <button
-        v-if="dataURL != null"
-        class="cropping--button cropping--button--advanced"
+  <div class="stage">
+    <Cropper
+      v-if="dataURL != null"
+      class="cropping--cropper"
+      backgroundClass="cropping--cropper-background"
+      ref="cropper"
+      :src="dataURL"
+      :stencilProps="{ aspectRatio: aspectRatio }"
+    />
+    <div class="btns">
+      <VBtn
+        v-if="dataURL"
+        class="tile-btn rounded-lg"
+        elevation="0"
         @click="showAdvanced = !showAdvanced"
       >
-        <span>Tiling Mode</span>
-        <IconChevronDown
-          :class="{
-            'cropping--advanced-expand-icon': true,
-            active: showAdvanced,
-          }"
-        />
-      </button>
-      <button
-        class="cropping--button cropping--button--upload"
+        <VIcon v-if="!showAdvanced" left>mdi-eye-off</VIcon>
+        <VIcon v-else left>mdi-eye</VIcon>
+        <span>Tiling Options</span>
+      </VBtn>
+
+      <VBtn
+        class="upload-btn rounded-lg"
+        elevation="0"
         @click="$refs.inputFiles.click()"
       >
         Upload Image
-      </button>
-      <button
+      </VBtn>
+
+      <VBtn
         v-if="dataURL != null"
-        class="cropping--button cropping--button--next"
+        class="next-btn rounded-lg"
+        elevation="0"
         @click="onNext"
       >
         Next
-      </button>
+      </VBtn>
     </div>
 
-    <div v-show="showAdvanced && dataURL != null" class="cropping--size-inputs">
-      <div class="cropping--size-input">
-        <input
-          :value="rows"
-          type="range"
-          min="1"
-          max="9"
-          step="1"
-          @input="onRowsInput"
-        />
-        <div class="cropping--manual-size-input">
-          <span>Rows:</span>
-          <input :value="rows" type="number" min="1" @input="onRowsInput" />
-        </div>
-      </div>
-      <div class="cropping--size-input">
-        <input
-          :value="columns"
-          type="range"
-          min="1"
-          max="9"
-          step="1"
-          @input="onColumnsInput"
-        />
-        <div class="cropping--manual-size-input">
-          <div>Columns:</div>
-          <input
-            :value="columns"
-            type="number"
-            min="1"
-            @input="onColumnsInput"
-          />
-        </div>
-      </div>
+    <div v-if="showAdvanced && dataURL != null" class="tiling-controls">
+      <VSlider
+        class="slider"
+        :min="1"
+        :max="12"
+        :value="rows"
+        @input="onRowsInput"
+        :color="colors.oliveHaze"
+        :track-color="colors.oliveHaze"
+        :thumb-color="colors.oliveHaze"
+        :thumb-label="false"
+        ticks="always"
+        :tick-size="4"
+        dense
+      />
+      <VTextField
+        class="text-field"
+        label="Rows"
+        type="number"
+        style="test"
+        min="1"
+        :value="rows"
+        @input="onRowsInput"
+        hint="The number of pattern rows to split the image into."
+        outlined
+        persistent-hint
+      />
+      <VSlider
+        class="slider"
+        :min="1"
+        :max="12"
+        :value="columns"
+        @input="onColumnsInput"
+        :color="colors.oliveHaze"
+        :track-color="colors.oliveHaze"
+        :thumb-color="colors.oliveHaze"
+        :thumb-label="false"
+        ticks="always"
+        :tick-size="4"
+        dense
+      />
+      <VTextField
+        class="text-field"
+        label="Columns"
+        type="number"
+        style="test"
+        min="1"
+        :value="columns"
+        @input="onColumnsInput"
+        hint="The number of pattern columns to split the image into."
+        outlined
+        persistent-hint
+      />
     </div>
 
-    <!-- to trigger file dialog -->
     <input
       class="cropping--image-select"
       type="file"
@@ -94,16 +105,20 @@
 
 
 <script>
+import { VIcon, VBtn, VSlider, VTextField } from "vuetify/lib";
 import { Cropper } from "vue-advanced-cropper";
-import DrawingTool from "~/libs/DrawingTool";
-import IconChevronDown from "~/components/icons/IconChevronDown.vue";
-import 'vue-advanced-cropper/dist/style.css';
+import "vue-advanced-cropper/dist/style.css";
+
+import colors from "~/styles/colors.scss";
 
 export default {
   name: "Cropping",
   components: {
+    VIcon,
+    VBtn,
+    VSlider,
+    VTextField,
     Cropper,
-    IconChevronDown,
   },
   props: {
     dataURL: {
@@ -121,7 +136,7 @@ export default {
   },
   data: function () {
     return {
-      // new stuff
+      colors,
       showAdvanced: false,
     };
   },
@@ -131,16 +146,16 @@ export default {
     },
   },
   methods: {
-    onRowsInput(event) {
-      let rows = Number(event.target.value);
+    onRowsInput(value) {
+      const rows = Number(value);
       this.$forceUpdate();
       if (Number.isNaN(rows)) return;
       if (!Number.isInteger(rows)) return;
       if (rows <= 0) return;
       this.$emit("update:rows", rows);
     },
-    onColumnsInput(event) {
-      let columns = Number(event.target.value);
+    onColumnsInput(value) {
+      const columns = Number(value);
       this.$forceUpdate();
       if (Number.isNaN(columns)) return;
       if (!Number.isInteger(columns)) return;
@@ -174,29 +189,26 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 // can't scope style here or everything breaks lmao
+@use "styles/overrides" as overrides;
 @import "styles/colors";
 @import "styles/resets";
 @import "styles/screens";
 
-.cropping--container {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto;
-  justify-content: center;
-  justify-items: stretch;
-
+.stage {
+  max-width: 250px;
   @include phone-landscape {
+    max-width: 350px;
   }
   @include tablet-portrait {
-  }
-  @include tablet-landscape {
-    padding: 35px 35px 30px 35px;
+    max-width: 500px;
   }
   @include desktop {
+    max-width: 600px;
   }
   @include desktop-hd {
+    max-width: 695px;
   }
 }
 
@@ -204,10 +216,10 @@ export default {
   @include polkadots($olive-haze, $donkey-brown);
   @include moving-polkadots(2s);
   border-radius: 5px;
-  min-width: 250px;
+  max-width: 100%;
   min-height: 250px;
   justify-self: stretch;
-  overflow: hidden;
+  overflow: visible;
 
   max-height: 300px;
 
@@ -243,20 +255,16 @@ export default {
   }
 }
 
-.cropping--cropper-background {
-  background-color: transparent;
-}
-
 .cropping--image-select {
   display: none;
 }
 
-.cropping--buttons {
+.btns {
   display: grid;
   grid-template-areas:
     "upload"
     "next"
-    "advanced";
+    "tile";
   grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-auto-columns: auto;
@@ -274,7 +282,7 @@ export default {
   @include phone-landscape {
   }
   @include tablet-portrait {
-    grid-template-areas: "advanced upload next";
+    grid-template-areas: "tile upload next";
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: auto;
     column-gap: 20px;
@@ -287,119 +295,62 @@ export default {
   }
 }
 
-.cropping--buttons {
-  .cropping--button {
-    @include reset-button;
+.tile-btn {
+  grid-area: tile;
+  @include overrides.v-btn($ecru-white, $olive-haze);
+  &:hover {
+    @include polkadots($olive-haze, $donkey-brown);
+    @include moving-polkadots;
+  }
+}
+.upload-btn {
+  grid-area: upload;
+  @include overrides.v-btn($ecru-white, $olive-haze);
+  &:hover {
+    @include polkadots($olive-haze, $donkey-brown);
+    @include moving-polkadots;
+  }
+}
+.next-btn {
+  grid-area: next;
+  @include overrides.v-btn($white, $robin-egg-blue);
+  &:hover {
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
+  }
+}
 
-    display: inline-flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
+.tiling-controls {
+  margin-top: 10px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 0px;
+  column-gap: 15px;
+}
 
-    color: white;
-    background-color: $olive-haze;
-    font-size: 0.9rem;
-    font-weight: 600;
-
-    text-align: center;
-
-    padding: 10px 0px;
-
-    border-radius: 10px;
-    &:hover {
-      cursor: pointer;
-    }
-
-    &.cropping--button--upload {
-      grid-area: upload;
-    }
-
-    &.cropping--button--next {
-      background-color: $robin-egg-blue;
-    }
-
-    @include phone-landscape {
-    }
-    @include tablet-portrait {
-      min-width: 150px;
-    }
-    @include tablet-landscape {
-    }
-    @include desktop {
-    }
-    @include desktop-hd {
+.slider::v-deep {
+  .v-slider__thumb-container--active {
+    .v-slider__thumb:before {
+      transform: scale(1.2) !important;
     }
   }
 }
 
-.cropping--advanced-expand-icon {
-  display: inline-block;
-  vertical-align: center;
-  margin-left: 10px;
-  fill: white;
-  width: 16px;
+.text-field {
+  @include overrides.v-text-field($jambalaya, $ecru-white, $olive-haze);
+}
+</style>
 
-  &.active {
-    transform: rotate(180deg);
+<style lang="scss">
+.cropping--cropper {
+  .vue-simple-handler {
+    border: 1px solid black;
   }
-}
-
-.cropping--size-inputs {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-columns: auto;
-  grid-template-rows: auto;
-  grid-auto-rows: auto;
-  column-gap: 20px;
-  row-gap: 30px;
-
-  margin-top: 30px;
-
-  @include tablet-portrait {
-    grid-template-columns: 1fr;
-  }
-}
-
-.cropping--size-input {
-  display: grid;
-  grid-template-columns: auto;
-  grid-auto-columns: auto;
-  grid-template-rows: auto;
-  grid-auto-rows: auto;
-
-  row-gap: 15px;
-}
-
-.cropping--manual-size-input {
-  background-color: $albescent-white;
-  color: $jambalaya;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-size: 1rem;
-  line-height: normal;
-  font-weight: 600;
-
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-auto-columns: auto;
-  grid-template-rows: auto;
-  grid-auto-rows: auto;
-  justify-content: space-between;
-  align-self: center;
-  align-content: center;
-  column-gap: 20px;
-
-  & > input {
-    @include reset-input;
-    font-size: 1rem;
-    color: $jambalaya;
-    text-align: center;
-    background-color: $ecru-white;
-
-    border-radius: 5px;
-    font-weight: 600;
+  .cropping--cropper-background {
+    background-color: transparent;
   }
 }
 </style>
