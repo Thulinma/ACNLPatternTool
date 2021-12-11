@@ -1,58 +1,78 @@
 <template>
-  <VCard
-    elevation="0"
-    class="storage--card"
-  >
-    <div class="storage--window">
-      <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
-      <div class="storage--patterns-grid-container">
-        <div class="storage--patterns-grid">
-          <div
-            v-for="(drawingTool, idx) in drawingTools"
-            :key="idx"
+  <VCard elevation="0" class="card rounded-xl" :color="colors.ecruWhite">
+    <VCardText class="card-text">
+      <div class="grid">
+        <VBadge
+          v-for="(drawingTool, idx) in drawingTools"
+          :key="idx"
+          class="storage-item-ctn"
+          :color="colors.robinEggBlue"
+          icon="mdi-check"
+          :value="isSelected(drawingTool)"
+          :offset-x="10"
+          :offset-y="10"
+        >
+          <VCard
             :class="{
-              'storage--pattern-container': true,
-              selected:
-                selectedMap.length === drawingTools.length &&
-                selectedMap[idx],
+              'storage-item': true,
+              'storage-item--active': isSelected(drawingTool),
+              'rounded-lg': true,
             }"
+            outlined
+            @click="$emit('select', drawingTool)"
           >
-            <div class="storage--pattern-wrapper">
-              <PreviewGenerator
-                class="storage--pattern"
-                :drawingTool="drawingTool"
-                @click="$emit('select', drawingTool)"
-              />
-              <div class="storage--pattern-selected-border"></div>
-              <div class="storage--pattern-selected-icon-container">
-                <IconCheck class="storage--pattern-selected-icon" />
-              </div>
-            </div>
-            <div class="storage--pattern-text">{{ drawingTool.title }}</div>
-          </div>
-        </div>
+            <PreviewGenerator
+              class="pattern"
+              :drawingTool="drawingTool"
+            />
+            <VCardTitle class="pattern-title text-subtitle-2 text-center text-truncate">
+              {{ drawingTool.title }}
+            </VCardTitle>
+          </VCard>
+        </VBadge>
       </div>
-      <UtilityBar v-if="options.length > 0" :options="options" />
-    </div>
+    </VCardText>
+    <!-- <CancelButton class="cancel-button-adjust" @click="$emit('close')" /> -->
+    <UtilityBar v-if="options.length > 0" :options="options" />
   </VCard>
 </template>
 
 <script>
-import { VCard } from "vuetify/lib";
+import {
+  VToolbar,
+  VToolbarTitle,
+  VToolbarItems,
+  VBtn,
+  VIcon,
+  VCard,
+  VCardTitle,
+  VCardText,
+  VBadge,
+  VAutocomplete,
+  VScaleTransition,
+} from "vuetify/lib";
 import PreviewGenerator from "~/components/PreviewGenerator.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
-import IconCheck from "~/components/icons/IconCheck.vue";
-import IconKebab from "~/components/icons/IconKebab.vue";
 import UtilityBar from "~/components/positioned/UtilityBar.vue";
+
+import colors from "~/styles/colors.scss";
 
 export default {
   name: "PatternContainer",
   components: {
+    VToolbar,
+    VToolbarTitle,
+    VToolbarItems,
+    VBtn,
+    VIcon,
     VCard,
+    VCardTitle,
+    VCardText,
+    VBadge,
+    VAutocomplete,
+    VScaleTransition,
     PreviewGenerator,
-    IconCheck,
-    IconKebab,
     CancelButton,
     UtilityBar,
   },
@@ -74,9 +94,15 @@ export default {
   },
   data: function () {
     return {
+      colors,
       isOptionsOpen: false,
     };
   },
+  methods: {
+    isSelected(drawingTool) {
+      return this.selectedMap[this.drawingTools.indexOf(drawingTool)];
+    }
+  }
 };
 </script>
 
@@ -85,206 +111,76 @@ export default {
 @import "styles/positioning";
 @import "styles/screens";
 
-.storage--card {}
-
-.storage--window {
-  box-sizing: border-box;
-  background-color: $ecru-white;
-  position: relative;
-
-  z-index: 100;
-  width: 100%;
-  height: 100%;
-
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  justify-content: center;
-  justify-items: center;
-  align-items: flex-start;
-  align-content: flex-start;
-
-  @include tablet-landscape {
-    box-sizing: content-box;
-    width: 970px;
-    height: auto;
-    min-height: 300px;
-    overflow-y: visible;
-  }
-  @include desktop {
-    width: 1100px;
-  }
+.card {
+  overflow: hidden;
+}
+.card-text {
+  padding: 24px !important;
 }
 
-.storage--patterns-grid-container {
-  @include relative-in-place;
-  z-index: 0;
-  box-sizing: border-box;
-  width: 100%;
-  max-height: 100%;
-  overflow-y: auto;
-  padding: 50px 60px 80px 60px;
-  display: flex;
-  flex-direction: column;
-}
-
-.storage--patterns-grid {
+.grid {
   @include relative-in-place;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(1, 200px);
+  grid-template-columns: repeat(1, 225px);
   justify-content: center;
   justify-items: center;
+  padding-bottom: 50px;
   row-gap: 20px;
   column-gap: 10px;
 
   @include phone-landscape {
-    grid-template-columns: repeat(2, 200px);
+    grid-template-columns: repeat(2, 175px);
     justify-content: space-around;
   }
   @include tablet-portrait {
-    grid-template-columns: repeat(4, 150px);
+    grid-template-columns: repeat(4, 175px);
   }
   @include tablet-landscape {
-    grid-template-columns: repeat(5, 150px);
+    grid-template-columns: repeat(5, 175px);
     column-gap: 30px;
+    row-gap: 40px;
     justify-content: space-between;
   }
   @include desktop {
+    grid-template-columns: repeat(5, 175px);
+    column-gap: 40px;
+    row-gap: 40px;
   }
 }
 
-.storage--pattern-container {
+.storage-item-ctn {
+  justify-self: stretch;
+}
+
+.storage-item {
+  cursor: pointer;
   @include relative-in-place;
   display: grid;
-  grid-template-rows: auto;
   justify-content: center;
   justify-items: center;
-
-  .storage--pattern {
-    @include relative-in-place;
-    z-index: 10;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 10px;
+  background-color: transparent;
+  
+  .pattern {
+    border-radius: inherit;
   }
-
-  .storage--pattern-wrapper {
-    @include relative-in-place;
+  
+  .pattern-title {
+    font-family: Nunito !important;
+    color: $jambalaya !important;
+    user-select: none;
   }
-
-  .storage--pattern-selected-border {
-    @include absolute-center;
-    display: none;
-    width: 100%;
-    height: 100%;
-    background-color: $robin-egg-blue;
-    border-radius: 10px;
-    padding: 8px;
-  }
-
-  .storage--pattern-selected-icon-container {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 100%;
-    z-index: 11;
-    transform: translate(calc(-50% + 4px), calc(-50% - 4px));
-    background-color: $robin-egg-blue;
-    border-radius: 999px;
-    padding: 3px;
-  }
-  .storage--pattern-selected-icon {
-    height: 15px;
-    width: 15px;
-    display: block;
-    fill: white;
-  }
-
-  .storage--pattern-text {
-    margin-top: 20px;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  &.selected {
-    .storage--pattern-selected-border {
-      display: block;
-    }
-    .storage--pattern-selected-icon-container {
-      display: block;
-    }
+  
+  &.storage-item--active {
+    background-color: rgba($persian-green, 0.25);
   }
 }
 
-.storage--options-container {
-  position: absolute;
-  top: 45px;
-  right: 20px;
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-
-  .storage--options-icon {
-    @include absolute-center;
-    width: 24px;
-    height: 24px;
-  }
-
-  &:hover {
-    background-color: rgba(#bababa, 0.5);
-    cursor: pointer;
-  }
+.v-card--link:before {
+  background-color: transparent !important;
 }
 
-.storage--options-menu {
-  position: absolute;
-  top: 100px;
-  right: 20px;
-  padding: 20px;
-  border-radius: 20px;
-  z-index: 10;
-  background-color: $robin-egg-blue;
-
-  display: grid;
-  grid-auto-columns: auto;
-  grid-auto-rows: auto;
-  justify-content: flex-start;
-  justify-items: flex-start;
-  grid-auto-flow: row;
-  row-gap: 15px;
-}
-
-.storage--option {
-  @include relative-in-place;
-  color: white;
-  font-weight: 600;
-  font-size: 1.1rem;
-  z-index: initial;
-  cursor: pointer;
-
-  &:after {
-    content: "";
-    position: absolute;
-    bottom: -3px;
-    left: 50%;
-    z-index: -1;
-    transform: translate(-50%, 0px);
-
-    display: none;
-    width: calc(100% + 10px);
-    height: 70%;
-
-    border-radius: 3px;
-    background-color: $persian-green;
-  }
-  &:hover {
-    &:after {
-      display: block;
-    }
-  }
-}
 
 .cancel-button-adjust {
   z-index: 3;

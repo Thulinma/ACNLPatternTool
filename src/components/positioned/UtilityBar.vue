@@ -1,27 +1,33 @@
 <template>
-  <div class="container">
-    <button
+  <VBottomNavigation
+    class="bottom-nav"
+    elevation1
+    :input-value="true"
+    :background-color="colors.salmon"
+    :value="''"
+    dark
+  >
+    <VBtn
       v-for="(option, i) in options"
       :key="i"
-      class="item"
+      class="btn"
+      value="''"
       @click="option.callback()"
     >
-      <img
-        v-if="option.imgSrc != null"
-        class="item-icon"
-        :src="option.imgSrc"
-      /><span class="item-label">{{ option.label }}</span>
-    </button>
-  </div>
+      <span class="label">{{ option.label }}</span>
+      <VIcon>{{ option.icon }}</VIcon>
+    </VBtn>
+  </VBottomNavigation>
 </template>
 
 
 <script>
-import openSvg from "~/assets/icons/utilitybar/bxs-envelope-open.svg";
-import deleteSvg from "~/assets/icons/utilitybar/bxs-trash.svg";
-import downloadAsPatternSvg from "~/assets/icons/utilitybar/bxs-file-blank.svg";
-import downloadAsPngSvg from "~/assets/icons/utilitybar/bxs-image-alt.svg";
-import downloadBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
+import {
+  VBottomNavigation,
+  VBtn,
+  VIcon,
+} from "vuetify/lib";
+import colors from "~/styles/colors.scss";
 
 /**
  * INTERFACE FOR OPTIONS
@@ -33,79 +39,47 @@ import downloadBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
  */
 export default {
   name: "UtilityBar",
+  components: {
+    VBottomNavigation,
+    VBtn,
+    VIcon,
+  },
   props: {
     options: {
       type: Array,
       required: true,
     },
   },
+  data() {
+    return {
+      colors,
+    };
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/resets";
-@import "styles/screens";
+@use "styles/screens" as screens;
 
-.container {
-  justify-self: auto;
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translate(-50%, 0px);
-  background-color: $pink-lace;
-  padding: 10px 15px 6px 15px;
-  border-color: $light-pink;
-  border-width: 2px 2px 0px 2px;
-  border-style: solid;
-  border-radius: 15px 15px 0px 0px;
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  align-items: center;
+.bottom-nav {
+  box-shadow: none;
 }
 
-.item {
-  @include reset-button;
-  padding: 5px 8px;
-  background-color: $light-pink;
-  border-radius: 8px 8px;
-  white-space: nowrap;
-
-  &:hover {
-    cursor: pointer;
-    background-color: $salmon;
+.btn {
+  min-width: auto !important;
+  padding: 0 3px !important;
+  @include screens.phone-landscape {
+    padding: 0 8px !important;
   }
-
-  &:nth-child(1) ~ & {
-    margin-left: 10px;
+  @include screens.tablet-portrait {
+    padding: 0 16px !important;
   }
+}
 
-  .item-icon {
-    height: 26px;
-    vertical-align: middle;
-    user-select: none;
-  }
-
-  .item-label {
-    display: none;
-    margin-left: 5px;
-    color: $white;
-    font-weight: 600;
-    font-size: 1rem;
-    vertical-align: middle;
-  }
-
-  @include phone-landscape {
-    padding: 5px 10px;
-  }
-  @include tablet-portrait {
-    .item-label {
-      display: inline;
-    }
+.label {
+  display: none;
+  @include screens.tablet-portrait {
+    display: inline;
   }
 }
 </style>

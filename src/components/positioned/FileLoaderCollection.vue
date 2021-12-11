@@ -60,7 +60,7 @@ export default {
       if (drawingTools.length === 0) return options;
 
       const open = {
-        imgSrc: openSvg,
+        icon: 'mdi-application-edit',
         label: `Open`,
         callback: async () => {
           const drawingTool = selected[0];
@@ -71,7 +71,7 @@ export default {
       };
 
       const remove = {
-        imgSrc: removeSvg,
+        icon: 'mdi-trash-can',
         label: `Remove`,
         callback: async () => {
           for (const drawingTool of selected) {
@@ -83,7 +83,7 @@ export default {
       };
 
       const saveToStorage = {
-        imgSrc: saveToStorageSvg,
+        icon: 'mdi-file-cabinet',
         label: `Storage`,
         callback: async () => {
           let source;
@@ -101,8 +101,8 @@ export default {
       };
 
       const downloadAsPattern = {
-        imgSrc: downloadAsPatternSvg,
-        label: `.ACNL / .ACNH`,
+        icon: 'mdi-file',
+        label: `.ACNL/.ACNH`,
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
@@ -117,8 +117,8 @@ export default {
       };
 
       const downloadAsPng = {
-        imgSrc: downloadAsPngSvg,
-        label: `QR / PBL`,
+        icon: 'mdi-image',
+        label: `QR/PBL`,
         callback: async () => {
           if (selected.length === 1) {
             const drawingTool = selected[0];
@@ -133,7 +133,7 @@ export default {
       };
 
       const downloadAsBoth = {
-        imgSrc: downloadAsBothSvg,
+        icon: 'mdi-zip-box',
         label: `Both`,
         callback: async () => {
           if (selected.length === 1) {

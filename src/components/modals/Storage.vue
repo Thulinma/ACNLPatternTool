@@ -11,11 +11,6 @@
 <script>
 import PatternContainer from "~/components/positioned/PatternContainer.vue";
 import saver from "~/libs/saver";
-import openSvg from "~/assets/icons/utilitybar/bxs-envelope-open.svg";
-import deleteSvg from "~/assets/icons/utilitybar/bxs-trash.svg";
-import downloadAsPatternSvg from "~/assets/icons/utilitybar/bxs-file-blank.svg";
-import downloadAsPngSvg from "~/assets/icons/utilitybar/bxs-image-alt.svg";
-import downloadAsBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
 
 export default {
   name: "Storage",
@@ -49,7 +44,7 @@ export default {
       const isMultiple = selected.size > 1;
 
       const open = {
-        imgSrc: openSvg,
+        icon: 'mdi-application-edit',
         label: `Open`,
         callback: async () => {
           const [drawingTool, ..._] = [...selected];
@@ -59,7 +54,7 @@ export default {
       };
 
       const del = {
-        imgSrc: deleteSvg,
+        icon: 'mdi-trash-can',
         label: `Delete`,
         callback: async () => {
           let message;
@@ -83,8 +78,8 @@ export default {
       };
 
       const downloadAsPattern = {
-        imgSrc: downloadAsPatternSvg,
-        label: `.ACNL / .ACNH`,
+        icon: 'mdi-file',
+        label: `.ACNL/.ACNH`,
         callback: async () => {
           if (selected.size === 1) {
             const [drawingTool, ..._] = [...selected];
@@ -99,8 +94,8 @@ export default {
       };
 
       const downloadAsPng = {
-        imgSrc: downloadAsPngSvg,
-        label: `QR / PBL`,
+        icon: 'mdi-image',
+        label: `QR/PBL`,
         callback: async () => {
           if (selected.size === 1) {
             const [drawingTool, ..._] = [...selected];
@@ -115,7 +110,7 @@ export default {
       };
 
       const downloadAsBoth = {
-        imgSrc: downloadAsBothSvg,
+        icon: 'mdi-zip-box',
         label: `Both`,
         callback: async () => {
           if (selected.size === 1) {
