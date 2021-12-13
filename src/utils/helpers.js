@@ -50,3 +50,25 @@
       return [ ...inclOpts, ...unusedExclOpts];
     });
 };
+
+/**
+ * Combines activator event callbacks.
+ * Supports same-type activators.
+ * @param {Array<{ [key: string] : Function }>} ons
+ * @returns { [key: string] : Function }
+ */
+export const combineOns = function (...ons) {
+  /**@type {Map<string, Array<Function>} */
+  const callbacksMap = new Map();
+  for (const on of ons)
+    for (const [eventName, callback] of Object.entries(on))
+      if (callbacksMap.has(eventName))
+        callbacksMap.get(eventName).push(callback);
+      else callbacksMap.set(eventName, [callback]);
+  const combinedOns = {};
+  for (const [eventName, callbacks] of [...callbacksMap.entries()])
+    combinedOns[eventName] = function (...args) {
+      for (const callback of callbacks) callback.call(this, ...args);
+    };
+  return combinedOns;
+};

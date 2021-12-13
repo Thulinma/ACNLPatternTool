@@ -7,9 +7,11 @@
   text-transform: none;
   font-weight: 600;
   letter-spacing: normal;
-  color: $text-color;
+  color: $text-color !important;
   background-color: $background-color !important;
-  @content;
+  &::v-deep > .v-btn__content {
+    @content;
+  }
 }
 
 @mixin v-text-field(

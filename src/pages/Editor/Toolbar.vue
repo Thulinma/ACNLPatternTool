@@ -1,200 +1,331 @@
 <template>
   <div class="toolbar--container">
     <div class="toolbar--options">
-      <div v-show="tool === 'brush'" class="toolbar--options-set brush">
-        <button
+      <div v-if="tool === 'brush'" class="toolbar--options-set brush">
+        <VBtn
+          :class="{
+            'option-btn': true,
+            'option-btn__active': tool == 'brush' && option === 'small',
+          }"
           @click="selectTool('brush', 'small')"
-          @contextmenu.prevent="selectTool('brush', 'small', true)"
-          :class="{
-            'toolbar--option brush-small': true,
-            active: tool === 'brush' && option === 'small',
-          }"
+          elevation="0"
         >
-          <IconBrushSmall class="toolbar--option-icon" />
-        </button>
-        <button
+          <IconBrushSmall/>
+        </VBtn>
+        
+        <VBtn
+          :class="{
+            'option-btn': true,
+            'option-btn__active': tool == 'brush' && option === 'medium',
+          }"
           @click="selectTool('brush', 'medium')"
-          @contextmenu.prevent="selectTool('brush', 'medium', true)"
-          :class="{
-            'toolbar--option brush-medium': true,
-            active: tool === 'brush' && option === 'medium',
-          }"
+          elevation="0"
         >
-          <IconBrushMedium class="toolbar--option-icon" />
-        </button>
-        <button
+          <IconBrushMedium/>
+        </VBtn>
+        
+        <VBtn
+          :class="{
+            'option-btn': true,
+            'option-btn__active': tool == 'brush' && option === 'large',
+          }"
           @click="selectTool('brush', 'large')"
-          @contextmenu.prevent="selectTool('brush', 'large', true)"
-          :class="{
-            'toolbar--option brush-large': true,
-            active: tool === 'brush' && option === 'large',
-          }"
+          elevation="0"
         >
-          <IconBrushLarge class="toolbar--option-icon" />
-        </button>
+          <IconBrushLarge/>
+        </VBtn>
       </div>
-
       <div class="toolbar--options-toggle-hint">
         <button @click="cycleOptions" class="hint">T</button>
       </div>
     </div>
 
     <div class="toolbar--shortcuts">
-      <button class="toolbar--storage-button" @click="storageOpen = true">
-        <div class="toolbar--storage-icon-container">
-          <IconInbox class="toolbar--storage-icon" />
-        </div>
-        <span class="toolbar--storage-button-text">Storage</span>
-      </button>
+      <VBtn
+        class="storage-btn rounded-xl"
+        @click="storageOpen = true"
+        elevation="0"
+      >
+        <VBtn
+          class="storage-btn-icon-ctn rounded-xl"
+          :ripple="false"
+          elevation="0"
+        >
+          <IconInbox class="storage-btn-icon"/>
+        </VBtn>
+        <span>Storage</span>
+      </VBtn>
 
       <div class="toolbar--shortcuts-row colors">
-        <button
-          :class="{
-            'toolbar--shortcut palette': true,
-            active: colorPicker === 'palettes',
-          }"
-        >
-          <div class="toolbar--shortcut-icon-container">
-            <IconPalette class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Change Palette</div>
-        </button>
+        <!-- PALETTES PLACEHOLDER -->
+        <div></div>
 
-        <button
-          :class="{
-            'toolbar--shortcut color-picker': true,
-            active: colorPicker !== null && colorPicker !== 'palettes',
-          }"
-          @click="onChangeColorPicker(prevColorPicker)"
+        <!-- CHANGE COLOR -->
+        <VTooltip
+          content-class="shortcut--tooltip rounded-lg"
+          open-on-hover
+          top
+          :color="colors.robinEggBlue"
         >
-          <div class="toolbar--shortcut-icon-container">
-            <IconPaintTube class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Change Color</div>
-        </button>
+          <template #activator="{ on, attrs }">
+            <VBtn
+              :class="{
+                'shortcut-btn': true,
+                'shortcut-btn__color': true,
+              }"
+              v-bind="attrs"
+              v-on="on"
+              @click="onChangeColorPicker(prevColorPicker)"
+              :ripple="false"
+              elevation="0"
+            >
+              <IconPaintTube class="shortcut-icon" />
+            </VBtn>
+          </template>
+          <div>Change Color</div>
+        </VTooltip>
       </div>
 
-      <div class="toolbar--shortcuts-divider"></div>
+      <VDivider class="toolbar-divider" />
+
       <div class="toolbar--shortcuts-row drawing">
-        <button
-          :class="{
-            'toolbar--shortcut brush': true,
-            active: tool === 'brush',
-          }"
-          @click="selectTool('brush', 'small')"
+        <!-- BRUSH -->
+        <VTooltip
+          content-class="shortcut--tooltip rounded-lg"
+          open-on-hover
+          top
+          :color="colors.robinEggBlue"
         >
-          <div class="toolbar--shortcut-icon-container">
-            <IconBrushLarge
-              v-if="tool === 'brush' && option === 'large'"
-              class="toolbar--shortcut-icon"
-            />
-            <IconBrushMedium
-              v-else-if="tool === 'brush' && option === 'medium'"
-              class="toolbar--shortcut-icon"
-            />
-            <IconBrushSmall v-else class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Brush</div>
-        </button>
-
-        <button
-          :class="{
-            'toolbar--shortcut fill': true,
-            active: tool === 'fill',
-          }"
-          @click="selectTool('fill', null)"
+          <template #activator="{ on, attrs }">
+            <VBtn
+              :class="{
+                'shortcut-btn': true,
+                'shortcut-btn__brush': true,
+                'shortcut-btn--active': tool === 'brush',
+              }"
+              v-bind="attrs"
+              v-on="on"
+              @click="selectTool('brush', 'small')"
+              :ripple="false"
+              elevation="0"
+            >
+              <IconBrushLarge
+                v-if="tool === 'brush' && option === 'large'"
+                class="shortcut-icon"
+              />
+              <IconBrushMedium
+                v-else-if="tool === 'brush' && option === 'medium'"
+                class="shortcut-icon"
+              />
+              <IconBrushSmall v-else class="shortcut-icon" />
+            </VBtn>
+          </template>
+          <div>Brush</div>
+        </VTooltip>
+        
+        <!-- FILL -->
+        <VTooltip
+          content-class="shortcut--tooltip rounded-lg"
+          open-on-hover
+          top
+          :color="colors.robinEggBlue"
         >
-          <div class="toolbar--shortcut-icon-container">
-            <IconColorFill class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Fill</div>
-        </button>
+          <template #activator="{ on, attrs }">
+            <VBtn
+              :class="{
+                'shortcut-btn': true,
+                'shortcut-btn__fill': true,
+                'shortcut-btn--active': tool === 'fill',
+              }"
+              v-bind="attrs"
+              v-on="on"
+              @click="selectTool('fill', null)"
+              :ripple="false"
+              elevation="0"
+            >
+              <IconColorFill class="shortcut-icon" />
+            </VBtn>
+          </template>
+          <div>Fill</div>
+        </VTooltip>
 
-        <button
-          :class="{
-            'toolbar--shortcut eye-dropper': true,
-            active: tool === 'eyeDropper',
-          }"
-          @click="selectTool('eyeDropper', null)"
-          @contextmenu.prevent="selectTool('eyeDropper', null, true)"
+        <!-- EYE DROPPER -->
+        <VTooltip
+          content-class="shortcut--tooltip rounded-lg"
+          open-on-hover
+          top
+          :color="colors.robinEggBlue"
         >
-          <div class="toolbar--shortcut-icon-container">
-            <IconEyeDropper class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Eye Dropper</div>
-        </button>
+          <template #activator="{ on, attrs }">
+            <VBtn
+              :class="{
+                'shortcut-btn': true,
+                'shortcut-btn__eyedropper': true,
+                'shortcut-btn--active': tool === 'eyeDropper',
+              }"
+              v-bind="attrs"
+              v-on="on"
+              @click="selectTool('eyeDropper', null)"
+              :ripple="false"
+              elevation="0"
+            >
+              <IconEyeDropper class="shortcut-icon" />
+            </VBtn>
+          </template>
+          <div>Eye Dropper</div>
+        </VTooltip>
 
-        <button class="toolbar--shortcut placeholder">
-          <div class="toolbar--shortcut-icon-container">
-            <div class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Placeholder</div>
-        </button>
+        <!-- placeholder -->
+        <div></div>
 
-        <button class="toolbar--shortcut" @click="drawingTool.undo()">
-          <div class="toolbar--shortcut-icon-container">
-            <IconUndo class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Undo</div>
-          <div class="toolbar--shortcut-hint">CTRL + Z</div>
-        </button>
+        <!-- UNDO -->
+        <VTooltip
+          content-class="key--tooltip rounded-lg"
+          open-on-hover
+          bottom
+          nudge-right="10"
+          nudge-top="15"
+          :color="colors.oliveHaze"
+        >
+          <template #activator="{ on: key }">
+            <VTooltip
+              content-class="shortcut--tooltip rounded-lg"
+              open-on-hover
+              top
+              :color="colors.robinEggBlue"
+            >
+              <template #activator="{ on: shortcut }">
+                <VBtn
+                  :class="{
+                    'shortcut-btn': true,
+                    'shortcut-btn__undo': true,
+                  }"
+                  v-on="combineOns(key, shortcut)"
+                  @click="drawingTool.undo()"
+                  :ripple="false"
+                  elevation="0"
+                >
+                  <IconUndo class="shortcut-icon" />
+                </VBtn>
+              </template>
+              <div>Undo</div>
+            </VTooltip>
+          </template>
+          <div>Ctrl + Z</div>
+        </VTooltip>
 
-        <button class="toolbar--shortcut" @click="drawingTool.redo()">
-          <div class="toolbar--shortcut-icon-container">
-            <IconRedo class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Redo</div>
-          <div class="toolbar--shortcut-hint">CTRL + SHIFT+ Z</div>
-        </button>
+        <!-- REDO -->
+        <VTooltip
+          content-class="key--tooltip rounded-lg"
+          open-on-hover
+          bottom
+          nudge-right="40"
+          nudge-top="15"
+          :color="colors.oliveHaze"
+        >
+          <template #activator="{ on: key }">
+            <VTooltip
+              content-class="shortcut--tooltip rounded-lg"
+              open-on-hover
+              top
+              :color="colors.robinEggBlue"
+            >
+              <template #activator="{ on: shortcut }">
+                <VBtn
+                  :class="{
+                    'shortcut-btn': true,
+                    'shortcut-btn__redo': true,
+                  }"
+                  v-on="combineOns(key, shortcut)"
+                  @click="drawingTool.redo()"
+                  :ripple="false"
+                  elevation="0"
+                >
+                  <IconRedo class="shortcut-icon" />
+                </VBtn>
+              </template>
+              <div>Redo</div>
+            </VTooltip>
+          </template>
+          <div>Ctrl + Shift + Z</div>
+        </VTooltip>
       </div>
 
-      <div class="toolbar--shortcuts-divider"></div>
+      <VDivider class="toolbar-divider" />
 
       <div class="toolbar--shortcuts-row etc">
-        <button
-          :class="{
-            'toolbar--shortcut settings': true,
-            active: settingsOpen,
-          }"
-          @click="settingsOpen = true"
+        <!-- Pattern Settings -->
+        <VTooltip
+          content-class="shortcut--tooltip rounded-lg"
+          open-on-hover
+          top
+          :color="colors.robinEggBlue"
         >
-          <div class="toolbar--shortcut-icon-container">
-            <IconDetail class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Pattern Settings</div>
-        </button>
+          <template #activator="{ on, attrs }">
+            <VBtn
+              :class="{
+                'shortcut-btn': true,
+              }"
+              v-bind="attrs"
+              v-on="on"
+              @click="settingsOpen = true"
+              :ripple="false"
+              elevation="0"
+            >
+              <IconDetail class="shortcut-icon" />
+            </VBtn>
+          </template>
+          <div>Pattern Settings</div>
+        </VTooltip>
 
-        <button
-          :class="{
-            'toolbar--shortcut preview': true,
-            active: previewOpen,
-          }"
-          @click="previewOpen = true"
+        <!-- PREVIEW -->
+        <VTooltip
+          content-class="key--tooltip rounded-xl"
+          open-on-hover
+          bottom
+          nudge-right="20"
+          nudge-top="25"
+          :color="colors.oliveHaze"
         >
-          <div class="toolbar--shortcut-icon-container">
-            <IconQRCode class="toolbar--shortcut-icon" />
-          </div>
-          <div class="toolbar--shortcut-tooltip">Preview</div>
-          <div class="toolbar--shortcut-hint short">P</div>
-        </button>
+          <template #activator="{ on: key }">
+            <VTooltip
+              content-class="shortcut--tooltip rounded-lg"
+              open-on-hover
+              top
+              :color="colors.robinEggBlue"
+            >
+              <template #activator="{ on: shortcut }">
+                <VBtn
+                  :class="{
+                    'shortcut-btn': true,
+                    'shortcut-btn__preview': true,
+                  }"
+                  v-on="combineOns(key, shortcut)"
+                  @click="previewOpen = true"
+                  :ripple="false"
+                  elevation="0"
+                >
+                  <IconQRCode class="shortcut-icon" />
+                </VBtn>
+              </template>
+              <div>Preview</div>
+            </VTooltip>
+          </template>
+          <div>P</div>
+        </VTooltip>
       </div>
-
-      <div class="toolbar--toggle">
-        <div class="toggle--wrapper">
-          <input
-            @click="changeGameModeWithWarning"
-            :class="{
-              'toggle--input': true,
-              checked: gameMode,
-            }"
-            id="pattern-mode"
-            type="checkbox"
-          />
-          <label class="toggle--label" for="pattern-mode"></label>
-        </div>
-      </div>
+      
+      <VSwitch
+        class="mode-toggle"
+        :label="this.drawingTool.compatMode === 'ACNH' ? 'ACNH' : 'ACNL'"
+        :color="colors.jambalaya"
+        :value="gameMode"
+        readonly
+        @click="changeGameModeWithWarning"
+        inset
+      />
     </div>
-    
+
     <VDialog
       v-model="settingsOpen"
       content-class="settings--dialog"
@@ -210,32 +341,24 @@
         :patternDetails="patternDetails"
       />
     </VDialog>
-    
-    <VDialog
-      v-model="previewOpen"
-      content-class="preview--dialog"
-      width="auto"
-    >
+
+    <VDialog v-model="previewOpen" content-class="preview--dialog" width="auto">
       <Preview
         v-if="previewOpen"
         @close="previewOpen = false"
         :drawingTool="drawingTool"
       />
     </VDialog>
-    
+
     <VDialog
       v-model="storageOpen"
       content-class="storage--dialog"
       scrollable
       width="auto"
     >
-      <Storage
-        v-if="storageOpen"
-        @close="storageOpen = false"
-        @load="load"
-      />
+      <Storage v-if="storageOpen" @close="storageOpen = false" @load="load" />
     </VDialog>
-    
+
     <VDialog
       v-model="gameModeWarning"
       content-class="warning--dialog"
@@ -257,7 +380,15 @@
 </template>
 
 <script>
-import { VDialog  } from "vuetify/lib";
+import {
+  VDialog,
+  VBtn,
+  VBadge,
+  VIcon,
+  VTooltip,
+  VDivider,
+  VSwitch,
+} from "vuetify/lib";
 import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
 import Preview from "~/components/modals/Preview.vue";
@@ -265,6 +396,7 @@ import Storage from "~/components/modals/Storage.vue";
 import Warning from "~/components/modals/Warning.vue";
 import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 import ACNHToACNLInfo from "~/components/partials/ACNHToACNLInfo.vue";
+import { combineOns } from "~/utils/helpers";
 
 // icons
 import IconInbox from "~/components/icons/IconInbox.vue";
@@ -279,6 +411,8 @@ import IconUndo from "~/components/icons/IconUndo.vue";
 import IconRedo from "~/components/icons/IconRedo.vue";
 import IconDetail from "~/components/icons/IconDetail.vue";
 import IconQRCode from "~/components/icons/IconQRCode.vue";
+
+import colors from "~/styles/colors.scss";
 
 // tool functions IIFE
 const brush = (() => {
@@ -357,6 +491,12 @@ export default {
   name: "ToolBar",
   components: {
     VDialog,
+    VBtn,
+    VBadge,
+    VIcon,
+    VTooltip,
+    VDivider,
+    VSwitch,
     PatternSettings,
     Preview,
     Storage,
@@ -396,6 +536,7 @@ export default {
   },
   data() {
     return {
+      colors,
       tool: null,
       option: null,
       settingsOpen: false,
@@ -407,6 +548,7 @@ export default {
     };
   },
   methods: {
+    combineOns,
     load: function (binaryString) {
       this.$emit("load", binaryString);
     },
@@ -460,14 +602,8 @@ export default {
       this.selectTool(tool, nextOption);
     },
     onKey: async function (event) {
-      const {
-        ctrlKey,
-        altKey,
-        metaKey,
-        shiftKey,
-        code,
-        preventDefault,
-      } = event;
+      const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } =
+        event;
       const noMod = !ctrlKey && !altKey && !metaKey && !shiftKey;
       if (noMod) {
         // cycle tool options
@@ -494,8 +630,7 @@ export default {
         }
       }
     },
-    changeGameModeWithWarning(event) {
-      event.preventDefault(); // stop checkbox from automatically checking itself
+    changeGameModeWithWarning() {
       const targetCompatMode =
         this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
       const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
@@ -548,6 +683,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "styles/overrides" as overrides;
 @import "styles/colors";
 @import "styles/positioning";
 @import "styles/transitions";
@@ -564,10 +700,6 @@ $toolbar--options-width: 75px;
   align-self: center;
 
   display: grid;
-
-  // grid-template-areas:
-  //   "options"
-  //   "tools";
   grid-template-columns: auto 1fr 75px;
   grid-template-rows: auto;
   justify-content: space-between;
@@ -575,7 +707,7 @@ $toolbar--options-width: 75px;
   align-content: stretch;
   align-items: flex-start;
 
-  column-gap: 5px;
+  column-gap: 10px;
 
   background-color: $pink-lace;
   overflow: visible;
@@ -591,6 +723,7 @@ $toolbar--options-width: 75px;
     border-radius: 0px 50px 50px 0px;
   }
   @include tablet-landscape {
+    column-gap: 15px;
   }
   @include desktop {
     width: 320px;
@@ -604,17 +737,19 @@ $toolbar--options-width: 75px;
 
 .toolbar--options {
   // grid-area: options;
-
   position: relative;
   top: 0;
   left: 0;
 
   box-sizing: border-box;
   align-self: center;
+  display: grid;
+  grid-template-rows: 1fr;
+  justify-items: stretch;
 
   width: $toolbar--options-width;
   min-height: 225px;
-  padding: 7px 10px 7px 3px;
+  padding: 7px 10px 10px 3px;
 
   background-color: $provincial-pink;
   border-radius: 0px 40px 40px 0px;
@@ -622,90 +757,55 @@ $toolbar--options-width: 75px;
 
 .toolbar--options-set {
   width: 100%;
-
+  height: 100%;
   display: grid;
-  grid-auto-rows: auto;
+  grid-auto-rows: 1fr 1fr 1fr;
   grid-auto-columns: 100%;
+  justify-content: stretch;
+  justify-items: stretch;
   row-gap: 5px;
 }
 
-.toolbar--option {
-  // reset
-  appearance: none;
-  border: 0px;
-  outline: none;
-  font-family: inherit;
-  padding: 0px;
-
-  position: relative;
-  top: 0px;
-  left: 0px;
-
-  box-sizing: border-box;
+.option-btn {
+  @include overrides.v-btn(
+    $bison-hide,
+    transparent
+  ) { z-index: 1; };
+  @include relative-in-place;
   width: 100%;
-
-  cursor: pointer;
-  background-color: transparent;
-
-  &:after {
-    transition: transform 0.15s $energetic;
-    position: relative;
+  height: 100%;
+  min-width: 0 !important;
+  height: auto !important;
+  border-radius: 100%;
+  fill: $bison-hide;
+  
+  &::after {
+    opacity: 0;
+    position: absolute;
     top: 0;
     left: 0;
     display: block;
     content: "";
+    background-color: $bon-jour;
+    transition: transform 0.15s $energetic;
+    display: block;
+    width: 100%;
+    height: 100%;
     transform: scale(0.8);
-    padding-bottom: 100%;
-    border-radius: 999px;
-    background-color: transparent;
+    transform-origin: 50% 50%;
+    border-radius: 100%;
+    z-index: 0;
   }
-
-  &:hover {
-    &:after {
-      transform: scale(1);
-      background-color: $bon-jour;
+  
+  &:hover:not(.option-btn__active) {
+    &::after {
+      opacity: 1;
+      transform: scale(1.0);
     }
   }
-
-  &.active {
-    &:after {
-      transform: scale(1);
-      background-color: $robin-egg-blue;
-    }
-    .toolbar--option-icon {
-      fill: white;
-    }
-  }
-
-  .toolbar--option-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1;
-    transform: translate(-50%, -50%) scale(1.2);
-
-    fill: $bison-hide;
-    width: 30px;
-  }
-
-  &.brush-small .toolbar--option-icon {
-    width: 32%;
-  }
-  &.brush-medium .toolbar--option-icon {
-    width: 37%;
-  }
-  &.brush-large .toolbar--option-icon {
-    width: 44%;
-  }
-
-  // for copy/pasting
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
+  &.option-btn__active {
+    @include overrides.v-btn($white, $robin-egg-blue);
+    fill: $white;
   }
 }
 
@@ -750,100 +850,11 @@ $toolbar--options-width: 75px;
 
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: min-content;
+  grid-template-rows: max-content;
   justify-items: left;
   align-items: start;
   align-content: start;
   height: 100%;
-}
-
-.toolbar--storage-button {
-  // reset
-  appearance: none;
-  border: 0px;
-  outline: none;
-  font-family: inherit;
-  padding: 0px;
-
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-
-  color: $olive-haze;
-  margin-top: 20px;
-  background-color: $ecru-white;
-  padding: 8px 8px;
-  border-radius: 23px;
-  cursor: pointer;
-
-  &:hover {
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots(2s);
-    .toolbar--storage-button-text {
-      color: $ecru-white;
-    }
-    .toolbar--storage-icon-container {
-      background-color: $ecru-white;
-    }
-    .toolbar--storage-icon {
-      fill: $olive-haze;
-    }
-  }
-}
-
-.toolbar--storage-icon-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-
-  width: 20px;
-  height: 20px;
-
-  background-color: $olive-haze;
-  border-radius: 999px;
-
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-    width: 30px;
-    height: 30px;
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-.toolbar--storage-icon {
-  width: 80%;
-  height: 80%;
-  fill: $ecru-white;
-}
-
-.toolbar--storage-button-text {
-  margin-left: 10px;
-  margin-right: 15px;
-  font-size: 1rem;
-  font-weight: 600;
-  vertical-align: middle;
-  letter-spacing: 0.5px;
-
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-    font-size: 1.2rem;
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
-    font-size: 1.7rem;
-  }
 }
 
 .toolbar--shortcuts-row {
@@ -852,7 +863,7 @@ $toolbar--options-width: 75px;
   left: 0;
 
   display: grid;
-  grid-template-columns: max-content max-content;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: max-content;
   column-gap: 10px;
   justify-content: center;
@@ -886,242 +897,118 @@ $toolbar--options-width: 75px;
   }
 }
 
-.toolbar--shortcuts-divider {
+.storage-btn {
   justify-self: center;
-  background-color: $light-pink;
-  width: 90%;
-  height: 4px;
-  border-radius: 999px;
-}
-
-.toolbar--shortcut {
-  display: block;
-  font-family: inherit;
-  appearance: none;
-  outline: none;
-  padding: 0px;
-  border: 0px;
-
-  background: none;
-
-  cursor: pointer;
-  position: relative;
-  top: 0;
-  left: 0;
-
-  .toolbar--shortcut-icon-container {
-    box-sizing: border-box;
-    width: 50px;
-    height: 50px;
-
-    position: relative;
-    top: 0;
-    left: 0;
-    padding: 4px;
-    border-radius: 999px;
-
-    @include phone-landscape {
-    }
-    @include tablet-portrait {
-    }
-    @include tablet-landscape {
-      width: 60px;
-      height: 60px;
-    }
-    @include desktop {
-      width: 65px;
-      height: 65px;
+  @include overrides.v-btn($olive-haze, $ecru-white) {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 5px;
+  };
+  margin-top: 20px;
+  height: auto !important;
+  padding: 8px 16px 8px 8px !important;
+  font-weight: 700;
+  font-size: 1.2rem;
+  fill: $ecru-white;
+  @include tablet-portrait { font-size: 1.2rem; }
+  @include desktop { font-size: 1.7rem; }
+  
+  &:hover {
+    @include overrides.v-btn($ecru-white, $olive-haze);
+    @include polkadots($olive-haze, $donkey-brown);
+    @include moving-polkadots(2s);
+    fill: $olive-haze;
+  }
+  &:hover {
+    .storage-btn-icon-ctn {
+      @include overrides.v-btn($olive-haze, $ecru-white);
     }
   }
+  
+  .storage-btn-icon-ctn {
+    @include overrides.v-btn($ecru-white, $olive-haze) {
+      display: grid;
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
+      align-content: center;
+    };
+    min-width: auto;
+    height: auto;
+    padding: 4px !important;
+  }
+}
 
-  .toolbar--shortcut-icon {
-    position: relative;
-    top: 50%;
-    transform: translate(0%, -50%);
+.shortcut-btn {
+  @include overrides.v-btn($azalea, transparent);
+  @include relative-in-place;
+  display: grid;
+  justify-content: stretch;
+  justify-items: stretch;
+  align-content: stretch;
+  align-items: stretch;
+  border-radius: 999px;
+  min-width: auto !important;
+  width: 60px !important;
+  height: 60px !important;
+  padding: 10px !important;
+  @include tablet-landscape {
+    width: 65px !important;
+    height: 65px !important;
+  }
 
+  &.shortcut-btn__brush {
+    padding: 10px !important;
+  }
+  &.shortcut-btn__preview {
+    padding: 15px !important;
+  }
+  .shortcut-icon {
+    fill: $azalea;
     width: 100%;
     height: 100%;
-    fill: $azalea;
   }
-
-  &.placeholder {
-    opacity: 0;
-    pointer-events: none;
-    cursor: default;
-  }
-
-  &.color-picker .toolbar--shortcut-icon,
-  &.brush .toolbar--shortcut-icon,
-  &.settings .toolbar--shortcut-icon {
-    width: 85%;
-    height: 85%;
-  }
-  &.brush .toolbar--shortcut-icon {
-    width: 80%;
-    height: 80%;
-  }
-  &.eye-dropper .toolbar--shortcut-icon {
-    width: 90%;
-    height: 90%;
-  }
-  &.preview .toolbar--shortcut-icon {
-    width: 70%;
-    height: 70%;
-  }
-
-  .toolbar--shortcut-tooltip {
-    transition: transform 0.15s $energetic;
-    display: inline-block;
-    white-space: nowrap;
-    padding: 10px 20px;
-
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translate(-50%, -10px) scale(0.8);
-    z-index: 999;
-
-    font-size: 1.5rem;
-    font-weight: 600;
-
-    color: white;
-    background-color: rgba($robin-egg-blue, 0.9);
-    border-radius: 10px;
-    pointer-events: none;
-    opacity: 0;
-  }
-
-  &:hover,
-  &.active {
-    .toolbar--shortcut-icon-container {
+  &:hover {
+    &:not(.shortcut-btn--active) {
       @include stripes($robin-egg-blue, $tiffany-blue, 15px);
       @include moving-stripes(3s);
-    }
-
-    .toolbar--shortcut-icon {
-      fill: $frosted-mint;
-    }
-  }
-
-  &:hover .toolbar--shortcut-tooltip {
-    opacity: 1;
-    transform: translate(-50%, -10px) scale(1);
-  }
-
-  /* keymap hint */
-  .toolbar--shortcut-hint {
-    @include invisible;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    transform: translate(50%, 75%);
-
-    display: inline-block;
-    padding: 5px 10px;
-    white-space: nowrap;
-
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 10px;
-    background-color: $olive-haze;
-    color: white;
-
-    &.short {
-      padding: 0px;
-      text-align: center;
-      font-size: 1.25rem;
-
-      $size: 30px;
-      line-height: $size;
-      width: $size;
-      height: $size;
-      border-radius: 999px;
-      transform: translate(0, 0);
-    }
-    &.persistent {
-      @include visible;
-    }
-  }
-  &:hover .toolbar--shortcut-hint {
-    @include visible;
-  }
-}
-
-.toolbar--toggle {
-  overflow: hidden;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-
-  * {
-    box-sizing: border-box;
-    &:before,
-    &:after {
-      content: "";
-      position: absolute;
-    }
-  }
-
-  .toggle--wrapper {
-    position: relative;
-    display: inline-block;
-  }
-
-  .toggle--input {
-    height: 5px;
-    left: 0;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    width: 5px;
-
-    &.checked + label {
-      &:before {
-        transform: translateX(50px);
-        z-index: 20;
-      }
-      &:after {
-        transform: translateX(20px);
-        left: 0px;
-        content: "NH";
+      .shortcut-icon {
+        fill: $frosted-mint;
       }
     }
   }
-
-  .toggle--label {
-    display: inline-block;
-    border-radius: 50px;
-    position: relative;
-    transition: all 0.3s ease;
-    transform-origin: 20% center;
-    cursor: pointer;
-    background: transparent;
-    border: 3px solid $light-pink;
-    height: 50px;
-    width: 100px;
-
-    &:before {
-      vertical-align: top;
-      display: block;
-      border-radius: 100%;
-      transition: 0.3s ease;
-      border: 3px solid $azalea;
-      width: 30px;
-      height: 30px;
-      top: 6px;
-      left: 4px;
-      background: $azalea;
-      z-index: 20;
-    }
-    &:after {
-      vertical-align: top;
-      content: "NL";
-      top: 10px;
-      left: 2px;
-      transform: translateX(50px);
+  &.shortcut-btn--active {
+    .shortcut-icon {
+      fill: $jambalaya;
     }
   }
 }
+
+.toolbar-divider {
+  justify-self: center;
+  width: 90%;
+  border: 2px solid $light-pink;
+  border-radius: 2px;
+}
+
+.mode-toggle {
+  justify-self: center;
+}
+
+.key--tooltip {
+  padding: 5px 10px;
+  text-transform: uppercase;
+  transition-duration: 100ms !important;
+  font-size: 1.1rem;
+}
+.shortcut--tooltip {
+  padding: 15px 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  transition-duration: 100ms !important;
+}
+
+
 </style>
 
 <style lang="scss">

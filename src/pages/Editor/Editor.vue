@@ -744,10 +744,9 @@ export default {
   @include overrides.v-btn(
     $ecru-white,
     $olive-haze,
-  ) {
-    .icon-ctn.v-btn--disabled .icon {
-      color: $olive-haze !important;
-    }
+  );
+  .icon-ctn.v-btn--disabled .icon {
+    color: $olive-haze !important;
   };
 }
 
@@ -763,10 +762,9 @@ export default {
   @include overrides.v-btn(
     $ecru-white,
     $robin-egg-blue,
-  ) {
-    .icon-ctn.v-btn--disabled .icon {
-      color: $robin-egg-blue !important;
-    }
+  );
+  .icon-ctn.v-btn--disabled .icon {
+    color: $robin-egg-blue !important;
   };
 }
 
