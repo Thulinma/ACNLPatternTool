@@ -67,6 +67,8 @@
       @update-details="updatePatternDetails"
       :patternDetails="patternDetails"
       @load="load"
+      :mainGrid="mainGrid"
+      @update-main-grid="updateMainGrid"
     />
 
     <div class="dropups">
@@ -134,9 +136,9 @@ import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
 // icons
-
 import BxsFileImport from "~/assets/icons/bxs-file-import.svg?inline";
 import BxsSave from "~/assets/icons/bxs-save.svg?inline";
+import BxsFileArchiveSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg?inline";
 
 // components
 import ColorTools from "./ColorTools/ColorTools.vue";
@@ -149,8 +151,6 @@ import FileLoader from "~/components/FileLoader.vue";
 import FileLoaderCollection from "~/components/positioned/FileLoaderCollection.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import Dropup, { variants as DropupVariants } from "~/components/Dropup.vue";
-
-import BxsFileArchiveSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg?inline";
 
 export default {
   name: "Editor",
@@ -200,6 +200,9 @@ export default {
       // menu states
       forceShowImportMenu: false,
       forceShowExportMenu: false,
+
+      // main pattern canvas settings
+      mainGrid: true,
     };
   },
   computed: {
@@ -278,8 +281,7 @@ export default {
     },
     onColorPicked: function (color, log = true) {
       if (this.drawingTool.currentColor === 15) {
-        alert("this one has to stay transparent");
-        return;
+        return alert("This one has to stay transparent!");
       }
       const currentColor = this.drawingTool.currentColor;
       if (this.drawingTool.getPalette(currentColor) === color) return;
@@ -314,6 +316,11 @@ export default {
       this.drawingTool.patternType = type;
       this.drawingTool.creator = [creator.name, creator.id];
       this.drawingTool.town = [town.name, town.id];
+    },
+    updateMainGrid: function (newGridStatus) {
+      this.$data.mainGrid = newGridStatus;
+      this.drawingTool.changeCanvasGrid(this.$refs.main, { grid: newGridStatus });
+      this.drawingTool.render();
     },
     // ------------------
     // SAVING FUNCTIONS
@@ -438,7 +445,7 @@ export default {
     this.syncPatternDetails();
 
     // mount canvases and render
-    this.drawingTool.addCanvas(this.$refs.main, { grid: true });
+    this.drawingTool.addCanvas(this.$refs.main, { grid: this.$data.mainGrid });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
 

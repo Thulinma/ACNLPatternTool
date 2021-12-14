@@ -615,6 +615,29 @@ class DrawingTool{
     c.addEventListener("contextmenu", (e) => {this.handleCanvasClick(e); e.preventDefault();});
   }
 
+  // Updates grid option from existing canvas
+  changeCanvasGrid(c, opt = {}){
+    opt.tool = this;
+    let rTarget = new RenderTarget(c, opt);
+    rTarget.calcZoom(this.pattern.width, this.pattern.texWidth);
+
+    // find this canvas in our stored canvases
+    let index;
+    const found = this.renderTargets.some((item, idx) => {
+      if (item.canvas === rTarget.canvas) {
+        index = idx;
+        return true;
+      }
+      return false;
+    });
+
+    if (found && opt.grid !== undefined) {
+      // remove it, then send this data to addCanvas
+      this.renderTargets.splice(index, 1);
+      this.addCanvas(c, opt);
+    }
+  }
+
   renderToTarget(t, palette){
     let pixCount = this.pattern.width == 32 ? 1024 : 4096;
     t.calcZoom(this.pattern.width, this.pattern.texWidth);

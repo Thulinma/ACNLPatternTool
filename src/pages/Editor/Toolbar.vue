@@ -193,6 +193,11 @@
           <label class="toggle--label" for="pattern-mode"></label>
         </div>
       </div>
+
+      <div class="toolbar--grid">
+        <input type="checkbox" name="grid" :checked="mainGrid" @change="$emit('update-main-grid', $event.target.checked)" /> 
+        <label for="grid">Show Grid</label>
+      </div>
     </div>
 
     <PatternSettings
@@ -371,6 +376,10 @@ export default {
       type: Object,
       required: true,
     },
+    mainGrid: {
+      type: Boolean,
+      required: true,
+    }
   },
   data() {
     return {
@@ -1098,5 +1107,11 @@ $toolbar--options-width: 75px;
       transform: translateX(50px);
     }
   }
+}
+
+.toolbar--grid {
+  overflow: hidden;
+  position: relative;
+  margin: 20px auto;
 }
 </style>
