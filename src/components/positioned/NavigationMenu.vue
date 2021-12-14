@@ -3,14 +3,14 @@
     <CancelButton class="nav-menu-cancel" @click="$emit('modal-close')" />
     <div class="menu--header">
       <div class="menu--header-icons-left">
-        <img class="menu--header-img menu--header-bars" :src="barsSvg" />
-        <img class="menu--header-img menu--header-nook" :src="nookSvg" />
+        <IconNookService class="menu--header-img menu--header-bars" />
+        <IconNookHead class="menu--header-img menu--header-nook" />
       </div>
       <div>
         <span class="menu--time">{{ time }}</span>
       </div>
       <div class="menu--header-icons-right">
-        <img class="menu--header-img menu--header-gps" :src="gpsSvg" />
+        <IconNookGPS class="menu--header-img menu--header-gps" />
       </div>
     </div>
     <div class="menu--title">{{ menuTitle }}</div>
@@ -111,9 +111,9 @@
 
 <script>
 // header svgs
-import nookSvg from "~/assets/icons/nookphone/nook-head.svg";
-import gpsSvg from "~/assets/icons/nookphone/nook-gps.svg";
-import barsSvg from "~/assets/icons/nookphone/nook-service.svg";
+import IconNookHead from "~/components/icons/IconNookHead.vue";
+import IconNookGPS from "~/components/icons/IconNookGPS.vue";
+import IconNookService from "~/components/icons/IconNookService.vue";
 
 import IconNavBrowse from "~/components/icons/IconNavBrowse.vue";
 import IconNavEditor from "~/components/icons/IconNavEditor.vue";
@@ -138,20 +138,29 @@ export default {
     IconNavUpdates,
     IconNavDiscord,
     IconNavTwitter,
+    IconNookHead,
+    IconNookGPS,
+    IconNookService,
     CancelButton,
   },
   data: function () {
     return {
-      barsSvg,
-      gpsSvg,
-      nookSvg,
-      dateObj: new Date(),
-      time: new Date().toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        timeZoneName: "short",
-      }),
       menuTitle: "Main Menu",
     };
+  },
+  computed: {
+    dateObj: () =>  new Date(),
+    time: {
+      get: () => {
+      return new Date().toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        timeZoneName: "short",
+      });
+      },
+      set: (value) => {
+        return value;
+      }
+    },
   },
   mounted() {
     const interval = setInterval(
