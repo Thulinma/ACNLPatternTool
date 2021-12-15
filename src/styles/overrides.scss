@@ -93,3 +93,27 @@
     }
   }
 }
+
+@mixin v-pagination(
+  $text-color,
+  $background-color,
+  $hover-background-color,
+) { 
+  &::v-deep {
+    .v-pagination__navigation,
+    .v-pagination__item {
+      box-shadow: unset !important;
+      color: $text-color !important;
+      background-color: $background-color !important;
+      &:not(.v-pagination__navigation--disabled) {
+        .v-icon {
+          color: $text-color !important
+        }
+      }
+      &:hover,
+      &.v-pagination__item--active {
+        background-color: $hover-background-color !important;
+      }
+    }
+  }
+}
