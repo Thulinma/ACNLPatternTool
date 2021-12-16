@@ -1,43 +1,39 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="editor--qr-preview-window">
-        <img class="editor--qr-preview" :src="dataURL" alt="QR Code" />
-        <div class="editor--qr-buttons-container">
-          <button @click="downloadPNG" class="editor--qr-save-button">
-            Save QR
-          </button>
-          <button
-            v-if="drawingTool.compatMode === 'ACNH'"
-            @click="gameModeInfo = true"
-            class="editor--qr-info-button"
-          >
-            No QR Code?
-          </button>
-        </div>
-        <CancelButton class="cancel-button-adjust" @click="$emit('close')" />
-        <Info
-          v-if="gameModeInfo"
-          @modal-close="$emit('close')"
-          @scroll-freeze="$emit('scroll-freeze')"
-          @scroll-unfreeze="$emit('scroll-unfreeze')"
-          @close="gameModeInfo = false"
-        >
-          <ACNLToACNHInfo />
-        </Info>
-      </div>
-    </template>
-  </ModalContainer>
+  <VCard elevation="0" class="card">
+    <img class="preview" :src="dataURL" alt="QR Code" />
+    <div class="editor--qr-buttons-container">
+      <VBtn
+        class="save-btn rounded-lg"
+        @click="downloadPNG"
+        elevation="0"
+      >
+        Save QR
+      </VBtn>
+      <VBtn
+        v-if="drawingTool.compatMode === 'ACNH'"
+        class="qr-info-btn rounded-lg"
+        @click="gameModeInfo = true"
+        elevation="0"
+      >
+        No QR Code?
+      </VBtn>
+    </div>
+
+    <VDialog
+      v-model="gameModeInfo"
+      content-class="qr-preview--dialog"
+      width="auto"
+    >
+      <Info v-if="gameModeInfo" @close="gameModeInfo = false">
+        <ACNLToACNHInfo />
+      </Info>
+    </VDialog>
+  </VCard>
 </template>
 
 <script>
+import { VDialog, VBtn, VCard } from "vuetify/lib";
 import DrawingTool from "~/libs/DrawingTool";
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
-import CancelButton from "~/components/modals/CancelButton.vue";
 import Info from "~/components/modals/Info.vue";
 import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 
@@ -47,18 +43,15 @@ import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
 import generateACNLQR from "~/libs/ACNLQRGenerator";
 import generateACNHPBL from "~/libs/ACNHPBLGenerator";
 
-/* svg icons */
-import IconBase from "~/components/icons/IconBase.vue";
-import IconQRCode from "~/components/icons/IconQRCode.vue";
+import colors from "~/styles/colors.scss";
 
 export default {
   name: "Preview",
   components: {
-    ModalContainer,
-    IconBase,
-    IconQRCode,
+    VDialog,
+    VBtn,
+    VCard,
     ACNLQRGenerator,
-    CancelButton,
     Info,
     ACNLToACNHInfo,
   },
@@ -71,6 +64,7 @@ export default {
   data: function () {
     const dataURL = "";
     return {
+      colors,
       dataURL,
       gameModeInfo: false,
     };
@@ -92,39 +86,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "styles/overrides" as overrides;
 @import "styles/colors";
 @import "styles/positioning";
 @import "styles/screens";
 @import "styles/resets";
 
-.editor--qr-preview-window {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  max-width: 100%;
-  transform: translate(-50%, -50%);
-  z-index: 999;
-
-  @include tablet-landscape {
-    @include absolute-center;
-  }
+.card {
+  background-color: transparent;
+  @include relative-in-place;
 }
 
-.editor--qr-preview {
+.preview {
   display: block;
-  border-width: 5px;
+  border-width: 2px;
   border-style: solid;
   border-color: $cannon-pink;
   background-color: $cannon-pink;
-  border-radius: 30px;
-
-  @include tablet-landscape {
-    width: auto;
+  border-radius: 30px !important;
+  max-width: 100%;
+  max-height: 500px;
+  @include phone-landscape {
+    border-width: 5px;
   }
 }
 
 .editor--qr-buttons-container {
-  pointer-events: none;
   margin-top: 30px;
   display: grid;
   justify-content: center;
@@ -134,31 +121,22 @@ export default {
   row-gap: 10px;
 }
 
-.editor--qr-save-button,
-.editor--qr-info-button {
-  @include reset-button;
-  cursor: pointer;
-
-  border-width: 4px;
-  border-style: solid;
-  border-color: $tiffany-blue;
-  background: $tiffany-blue;
-  pointer-events: auto;
-  border-radius: 8px;
-  font-weight: 600;
+.save-btn,
+.qr-info-btn {
+  @include overrides.v-btn($white, $robin-egg-blue);
   font-size: 1.1rem;
-  padding: 5px 30px;
-  color: white;
-
+  border: 4px solid $robin-egg-blue;
   &:hover {
-    border-color: $turquoise;
-    @include stripes($tiffany-blue, $tiffany-blue-light, 15px);
-    @include moving-stripes(3s);
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
   }
 }
 
-.cancel-button-adjust {
-  top: -5px;
-  right: -5px;
+</style>
+
+<style lang="scss">
+.qr-preview--dialog {
+  box-shadow: none;
 }
 </style>

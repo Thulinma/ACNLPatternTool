@@ -1,202 +1,126 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="publish--window">
-        <CancelButton @click="$emit('close')" />
-        <div class="publish--header">
-          <div class="publish--icon-cloud-container">
-            <IconCloud class="publish--icon-cloud" />
-          </div>
-          <div class="publish--header-text">Publish Your Design!</div>
+  <VCard elevation="0" class="card">
+    <div class="publish--window">
+      <CancelButton @click="$emit('close')" />
+      <div class="publish--header">
+        <div class="publish--icon-cloud-container">
+          <IconCloud class="publish--icon-cloud" />
         </div>
+        <div class="publish--header-text">Publish Your Design!</div>
+      </div>
 
-        <IconGenerator
-          class="publish--render"
-          :width="280"
-          :height="280"
-          :pattern="drawingTool"
+      <IconGenerator
+        class="publish--render"
+        :width="280"
+        :height="280"
+        :pattern="drawingTool"
+      />
+
+      <div class="publish--text-fields">
+        <VTextField
+          v-model="details.title"
+          class="text-field"
+          label="Title"
+          :maxlength="drawingTool.compatMode === 'ACNL' ? 20: 21"
+          :hint="`${drawingTool.compatMode} pattern's name.`"
+          persistent-hint
+          outlined
+          clearable
+          counter
+          @keydown.stop
         />
 
-        <div class="publish--inputs">
-          <label class="settings--input-field">
-            <div class="settings--input-field-name required">
-              Title<span class="asterisk">*</span>
-              <Tooltip class="settings--tooltip">
-                <div class="settings--tooltip-content">
-                  <div class="settings--tooltip-content">
-                    <div>Title character limits:</div>
-                    <div>ACNL: 21 chars.</div>
-                    <div>ACNH: 20 chars.</div>
-                  </div>
-                </div>
-              </Tooltip>
-            </div>
-            <div class="settings--input-container">
-              <input
-                v-if="drawingTool.compatMode === 'ACNL'"
-                id="pattern-title"
-                class="settings--input"
-                type="text"
-                maxlength="20"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.title"
-                @keydown.stop
-              />
-              <input
-                v-else-if="drawingTool.compatMode === 'ACNH'"
-                id="pattern-title"
-                class="settings--input"
-                type="text"
-                maxlength="21"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.title"
-                @keydown.stop
-              />
-            </div>
-          </label>
+        <VTextField
+          v-model="details.creator.name"
+          class="text-field"
+          label="Villager"
+          :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
+          :hint="`${drawingTool.compatMode} villager's name.`"
+          persistent-hint
+          outlined
+          clearable
+          counter
+          @keydown.stop
+        />
 
-          <label class="settings--input-field">
-            <div class="settings--input-field-name required">
-              Author<span class="asterisk">*</span>
-              <Tooltip class="settings--tooltip">
-                <div class="settings--tooltip-content">
-                  <div>Author character limit:</div>
-                  <div>ACNL: 9 chars.</div>
-                  <div>ACNH: 10 chars.</div>
-                </div>
-              </Tooltip>
-            </div>
-            <div class="settings--input-container">
-              <input
-                v-if="drawingTool.compatMode === 'ACNL'"
-                class="settings--input"
-                type="text"
-                maxlength="9"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.creator.name"
-                @keydown.stop
-              />
-              <input
-                v-else-if="drawingTool.compatMode === 'ACNH'"
-                class="settings--input"
-                type="text"
-                maxlength="10"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.creator.name"
-                @keydown.stop
-              />
-            </div>
-          </label>
+        <VTextField
+          v-model="details.town.name"
+          class="text-field"
+          label="Town"
+          :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
+          :hint="`${drawingTool.compatMode} town's name.`"
+          persistent-hint
+          outlined
+          clearable
+          counter
+          @keydown.stop
+        />
+      </div>
 
-          <label class="settings--input-field">
-            <div class="settings--input-field-name required">
-              Town<span class="asterisk">*</span>
-              <Tooltip class="settings--tooltip">
-                <div class="settings--tooltip-content">
-                  <div>Town character limit:</div>
-                  <div>ACNL: 9 chars.</div>
-                  <div>ACNH: 10 chars.</div>
-                </div>
-              </Tooltip>
-            </div>
-            <div class="settings--input-container">
-              <input
-                v-if="drawingTool.compatMode === 'ACNL'"
-                class="settings--input"
-                type="text"
-                maxlength="9"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.town.name"
-                @keydown.stop
-              />
-              <input
-                v-else-if="drawingTool.compatMode === 'ACNH'"
-                class="settings--input"
-                type="text"
-                maxlength="10"
-                spellcheck="false"
-                autocomplete="off"
-                v-model="details.town.name"
-                @keydown.stop
-              />
-            </div>
-          </label>
-        </div>
-
-        <div class="publish--style-tags">
-          <div class="publish--style-tags-title">Style Tags</div>
-          <div class="publish--style-tag-selectors">
-            <select
-              v-for="(selected, i) in selectedStyles"
-              :key="i"
-              class="publish--style-tags-select"
-              v-model="selectedStyles[i]"
-            >
-              <option value>- - -</option>
-              <option
-                v-for="style in styleOptionSets[i]"
-                :value="style"
-                :key="style"
-              >
-                {{ style }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="publish--type-tags">
-          <div class>Type Tags</div>
-          <div class="publish--type-tag-selectors">
-            <select
-              class="publish--type-tags-select"
-              v-for="(selected, i) in selectedTypes"
-              :key="i"
-              v-model="selectedTypes[i]"
-            >
-              <option value>- - -</option>
-              <option
-                v-for="type in typeOptionSets[i]"
-                :value="type"
-                :key="type"
-              >
-                {{ type }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="publish--bottom-row">
-          <div class="publish--nsfw">
-            <input type="checkbox" id="nsfw" v-model="isNSFW" />
-            <label for="nsfw">NSFW</label>
-          </div>
-
-          <button
-            :class="{
-              'publish--publish-button': true,
-              active: isUploading,
+      <div class="style-tags">
+        <div class="tags-title">Style Tags</div>
+        <div class="tag-selects">
+          <VSelect
+            v-for="(style, i) in selectedStyles"
+            :key="i"
+            class="select"
+            v-model="selectedStyles[i]"
+            :items="styleOptsList[i]"
+            outlined
+            hide-details
+            :menu-props="{
+              'content-class': 'settings-type--menu',
             }"
-            @click="publish"
-          >
-            Publish
-          </button>
+          />
         </div>
       </div>
-    </template>
-  </ModalContainer>
+
+      <div class="type-tags">
+        <div class="tags-title">Type Tags</div>
+        <div class="tag-selects">
+          <VSelect
+            v-for="(type, i) in selectedTypes"
+            :key="i"
+            class="select"
+            v-model="selectedTypes[i]"
+            :items="typeOptsList[i]"
+            outlined
+            hide-details
+            :menu-props="{
+              'content-class': 'settings-type--menu',
+            }"
+          />
+        </div>
+      </div>
+
+      <div class="publish--bottom-row">
+        <VSwitch
+          class="nsfw-switch"
+          v-model="isNSFW"
+          label="NSFW"
+          :color="colors.persianGreen"
+          hide-details
+          dense
+        />
+
+        <VBtn
+          class="publish-btn rounded-lg"
+          elevation="0"
+          @click="publish"
+        >
+          Publish
+        </VBtn>
+      </div>
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import {
+  VCard,
+  VBtn,
+  VSwitch,
+} from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import IconCloud from "~/components/icons/IconCloud.vue";
 import IconGenerator from "~/components/IconGenerator.vue";
@@ -204,10 +128,15 @@ import DrawingTool from "~/libs/DrawingTool";
 import Tooltip from "~/components/Tooltip.vue";
 import origin from "~/libs/origin";
 
+import colors from './../../styles/colors.scss';
+import { computeOptsList } from "./../../utils/helpers";
+
 export default {
   name: "Publish",
   components: {
-    ModalContainer,
+    VCard,
+    VBtn,
+    VSwitch,
     CancelButton,
     IconGenerator,
     IconCloud,
@@ -229,6 +158,7 @@ export default {
     const selectedStyles = new Array(3).fill("");
     const selectedTypes = new Array(3).fill("");
     return {
+      colors,
       styles,
       types,
       details: {
@@ -241,28 +171,19 @@ export default {
     };
   },
   computed: {
-    styleOptionSets() {
-      // do not allow duplicate selections
-      return new Array(3).fill(null).map((_, i) => {
-        return this.styles
-          .slice()
-          .filter(
-            (option) =>
-              this.selectedStyles.indexOf(option) <= -1 ||
-              this.selectedStyles.indexOf(option) === i
-          );
-      });
+    styleOptsList() {
+      return computeOptsList(
+        this.selectedStyles,
+        [{ text: '- - -', value: "" }],
+        this.styles.map(style => ({ text: style, value: style })),
+      );
     },
-    typeOptionSets() {
-      return new Array(3).fill(null).map((_, i) => {
-        return this.types
-          .slice()
-          .filter(
-            (option) =>
-              this.selectedTypes.indexOf(option) <= -1 ||
-              this.selectedTypes.indexOf(option) === i
-          );
-      });
+    typeOptsList() {
+      return computeOptsList(
+        this.selectedTypes,
+        [{ text: '- - -', value: "" }],
+        this.types.map(type => ({ text: type, value: type })),
+      );
     },
   },
   methods: {
@@ -313,16 +234,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "styles/overrides";
 @import "styles/colors";
 @import "styles/positioning";
 @import "styles/resets";
 @import "styles/screens";
 
-.publish--window {
-  box-sizing: border-box;
+
+.card {
   @include relative-in-place;
-  position: fixed;
-  z-index: 999;
+  max-width: 945px;
+}
+
+.publish--window {
+  @include relative-in-place;
 
   display: grid;
   grid-template-rows: auto;
@@ -335,28 +260,21 @@ export default {
   background-color: $ecru-white;
   color: $jambalaya;
 
-  width: 100%;
-  height: 100%;
-  overflow: scroll;
-
   @include phone-landscape {
     padding: 28px 46px;
   }
   @include tablet-landscape {
-    @include absolute-center;
     width: auto;
     height: auto;
-    grid-auto-columns: unset;
+    grid-template-columns: repeat(6, 1fr);
     grid-template-areas:
       "header header header header header header"
       "render render inputs inputs inputs inputs"
-      "style-tags style-tags style-tags type-tags type-tags type-tags"
-      "bottom-row bottom-row bottom-row bottom-row bottom-row bottom-row";
+      "style style style type type type"
+      "bottom bottom bottom bottom bottom bottom";
     padding: 30px 40px;
     column-gap: 20px;
     box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
-    border-radius: 45px;
-    overflow: visible;
   }
 }
 
@@ -410,10 +328,11 @@ export default {
   @include tablet-landscape {
     justify-self: flex-start;
     grid-area: render;
+    margin: 0px;
   }
 }
 
-.publish--inputs {
+.publish--text-fields {
   display: grid;
   row-gap: 20px;
   justify-items: stretch;
@@ -426,67 +345,12 @@ export default {
   }
 }
 
-.settings--input-field {
-  display: block;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.settings--input-field-name {
-  display: block;
-  margin-bottom: 10px;
-
-  &.required {
-    .asterisk {
-      color: $tiffany-blue;
-    }
-  }
-}
-
-.settings--input-container {
-  @include relative-in-place;
-  background-color: $cinderella;
-  padding: 13px 25px;
-  border-radius: 10px;
-
-  &:hover {
-    background-color: $salmon;
-  }
-}
-
-.settings--input {
-  @include reset-input;
-
-  display: block;
+.style-tags { @include tablet-landscape { grid-area: style; }}
+.type-tags { @include tablet-landscape { grid-area: type; }}
+.style-tags,
+.type-tags {
+  margin-top: 20px;
   width: 100%;
-  padding-bottom: 10px;
-
-  background-size: 20px 3px;
-  background-position: bottom;
-  background-repeat: repeat-x;
-  background-image: linear-gradient(
-    90deg,
-    $ecru-white,
-    $ecru-white 50%,
-    transparent 50%,
-    transparent 100%
-  );
-}
-
-.publish--style-tags {
-  @include tablet-landscape {
-    grid-area: style-tags;
-  }
-}
-
-.publish--type-tags {
-  @include tablet-landscape {
-    grid-area: type-tags;
-  }
-}
-
-.publish--style-tags,
-.publish--type-tags {
   display: grid;
   row-gap: 10px;
 
@@ -495,8 +359,7 @@ export default {
   color: $jambalaya;
 }
 
-.publish--style-tag-selectors,
-.publish--type-tag-selectors {
+.tag-selects {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
@@ -512,19 +375,6 @@ export default {
   }
 }
 
-select {
-  @include reset-input;
-
-  font-size: 1.1rem;
-
-  background-color: $cinderella;
-  border-radius: 8px;
-  font-weight: 600;
-  color: $jambalaya;
-  padding: 10px 10px;
-  cursor: pointer;
-}
-
 .publish--bottom-row {
   display: flex;
   flex-direction: row;
@@ -532,65 +382,47 @@ select {
   justify-content: center;
   align-content: center;
   align-items: center;
-
-  margin-bottom: 30px;
+  column-gap: 10px;
 
   @include tablet-landscape {
     margin-bottom: 0px;
-    grid-area: bottom-row;
+    grid-area: bottom;
   }
 }
 
-.publish--nsfw {
-  justify-self: right;
-  align-self: center;
-
-  input,
-  label {
-    cursor: pointer;
-  }
+.nsfw-switch {
+  padding-top: 0px;
+  margin-top: 0px;
 }
 
-.publish--publish-button {
-  @include reset-button;
-  justify-self: left;
-  align-self: center;
-
-  border-width: 4px;
-  margin-left: 30px;
-  padding: 6px 45px;
-  font-weight: 600;
-
-  color: white;
-  border-style: solid;
-  border-color: $tiffany-blue;
-  background: $tiffany-blue;
-
-  border-radius: 10px;
-  cursor: pointer;
-
-  &.active,
+.publish-btn {
+  @include overrides.v-btn(
+    $white,
+    $robin-egg-blue,
+  );
+  text-transform: uppercase;
+  border: 4px solid $robin-egg-blue;
+  font-weight: 700;
   &:hover {
-    border-color: $turquoise;
-    @include stripes($tiffany-blue, $tiffany-blue-light, 15px);
-    @include moving-stripes(3s);
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
   }
 }
 
-.settings--tooltip {
-  margin-left: 5px;
+.text-field {
+  @include overrides.v-text-field(
+    $jambalaya,
+    $cinderella,
+    $olive-haze,
+  );
 }
 
-.settings--tooltip-content {
-  width: 150px;
-  font-size: 0.9rem;
-
-  @include phone-landscape {
-    width: 300px;
-  }
-
-  @include tablet-portrait {
-    font-size: 1rem;
-  }
+.select {
+  @include overrides.v-select(
+    $jambalaya,
+    $cinderella,
+    $olive-haze,
+  );
 }
 </style>

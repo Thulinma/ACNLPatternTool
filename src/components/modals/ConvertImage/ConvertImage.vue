@@ -1,64 +1,103 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div
-        :class="{
-          'converter--window': true,
-          cropping: state === states.cropping,
-          adjusting: state === states.adjusting,
-          saving: state === states.saving,
-        }"
-      >
-        <CancelButton @click="$emit('close')" />
-        <CroppingStage
-          v-if="state === states.cropping"
-          :dataURL="dataURL"
-          @update:dataURL="dataURL = $event"
-          :rows="rows"
-          @update:filename="filename = $event"
-          @update:rows="rows = $event"
-          :columns="columns"
-          @update:columns="columns = $event"
-          @next="toAdjusting"
-        />
+  <VCard elevation="0" class="card rounded-xl">
+    <CancelButton @click="$emit('close')" />
+    <VStepper class="stepper rounded-xl" v-model="state" elevation="0">
+      <VStepperItems>
+        <VStepperContent
+          class="stepper-content"
+          :step="1"
+        >
+          <CroppingStage
+            v-if="state === states.cropping"
+            :dataURL="dataURL"
+            @update:dataURL="dataURL = $event"
+            :rows="rows"
+            @update:filename="filename = $event"
+            @update:rows="rows = $event"
+            :columns="columns"
+            @update:columns="columns = $event"
+            @next="toAdjusting"
+          />
+        </VStepperContent>
+        <VStepperContent
+          class="stepper-content internal-padding"
+          :step="2"
+        >
+          <AdjustingStage
+            v-if="state === states.adjusting"
+            :previewDataURL="previewDataURL"
+            :isMural="isMural"
+            :transparency="transparency"
+            @update:transparency="updateTransparency"
+            :saturation="saturation"
+            @update:saturation="updateSaturation"
+            :applySaturation="applySaturation"
+            @update:applySaturation="updateApplySaturation"
+            :conversionQuality="conversionQuality"
+            @update:conversionQuality="updateConversionQuality"
+            :isSplitPalette="isSplitPalette"
+            @update:isSplitPalette="updateIsSplitPalette"
+            :paletteSelectionMethod="paletteSelectionMethod"
+            @update:paletteSelectionMethod="updatePaletteSelectionMethod"
+            @prev="toCropping(false)"
+            @next="toSaving(true)"
+          />
+        </VStepperContent>
+        <VStepperContent
+          v-if="isMural"
+          class="stepper-content internal-padding"
+          :step="3"
+        >
+          <SavingStage
+            :isMural="isMural"
+            :previewDataURL="previewDataURL"
+            :outputs="outputs"
+            v-if="state === states.saving"
+          />
+        </VStepperContent>
+      </VStepperItems>
 
-        <AdjustingStage
-          v-if="state === states.adjusting"
-          :previewDataURL="previewDataURL"
-          :isMural="isMural"
-          :transparency="transparency"
-          @update:transparency="updateTransparency"
-          :saturation="saturation"
-          @update:saturation="updateSaturation"
-          :applySaturation="applySaturation"
-          @update:applySaturation="updateApplySaturation"
-          :conversionQuality="conversionQuality"
-          @update:conversionQuality="updateConversionQuality"
-          :isSplitPalette="isSplitPalette"
-          @update:isSplitPalette="updateIsSplitPalette"
-          :paletteSelectionMethod="paletteSelectionMethod"
-          @update:paletteSelectionMethod="updatePaletteSelectionMethod"
-          @prev="toCropping(false)"
-          @next="toSaving"
-        />
-
-        <SavingStage
-          :isMural="isMural"
-          :previewDataURL="previewDataURL"
-          :outputs="outputs"
-          v-if="state === states.saving"
-        />
-      </div>
-    </template>
-  </ModalContainer>
+      <VStepperHeader class="stepper-header">
+        <VStepperStep
+          :editable="state > states.cropping"
+          :step="1"
+          :complete="state > states.cropping"
+          :color="colors.oliveHaze"
+        >
+          Crop
+        </VStepperStep>
+        <VStepperStep
+          :editable="state > states.adjusting"
+          :step="2"
+          :complete="state > states.adjusting"
+          :color="colors.oliveHaze"
+        >
+          Convert
+        </VStepperStep>
+        <VStepperStep
+          v-if="isMural"
+          :editable="state > states.saving"
+          :step="3"
+          :complete="state > states.saving"
+          :color="colors.oliveHaze"
+        >
+          Save
+        </VStepperStep>
+      </VStepperHeader>
+    </VStepper>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import {
+  VCard,
+  VBtn,
+  VStepper,
+  VStepperHeader,
+  VStepperStep,
+  VStepperItems,
+  VStepperContent,
+} from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 
@@ -67,19 +106,27 @@ import AdjustingStage from "./Stages/Adjusting.vue";
 import SavingStage from "./Stages/Saving.vue";
 import { paletteSelectionMethods, conversionQualities } from "./Stages/enums";
 
+import colors from "./../../../styles/colors.scss";
+
 // FINITE STATE MACHINE PATTERN
 // ENUM STATES
 const states = Object.freeze({
-  cropping: 0,
-  adjusting: 1,
-  saving: 2, // avail only on non 1x1 patterns
+  cropping: 1,
+  adjusting: 2,
+  saving: 3, // avail only on non 1x1 patterns
 });
 
 export default {
   name: "ImageLoader",
   components: {
+    VCard,
+    VBtn,
+    VStepper,
+    VStepperHeader,
+    VStepperStep,
+    VStepperItems,
+    VStepperContent,
     CancelButton,
-    ModalContainer,
     CroppingStage,
     AdjustingStage,
     SavingStage,
@@ -100,6 +147,7 @@ export default {
     const previewContext = previewCanvas.getContext("2d");
 
     return {
+      colors,
       states,
       started: false,
       state: states.cropping,
@@ -166,6 +214,7 @@ export default {
       if (!this.isMural) {
         this.$emit("load", this.outputs[0]);
         this.$emit("close");
+        this.state = states.cropping;
       }
       this.state = states.saving;
     },
@@ -742,29 +791,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/overrides" as overrides;
 
-.converter--window {
-  box-sizing: border-box;
-  @include relative-in-place;
-  position: fixed;
-  z-index: 999;
-  background-color: $ecru-white;
-  width: 100%;
-  height: 100%;
-  overscroll-behavior: contain;
-  padding: 40px 30px 30px 30px;
+.stepper {
+  background-color: colors.$ecru-white;
+  @include overrides.v-stepper-step(colors.$olive-haze);
+}
+
+.stepper-content {
   overflow: scroll;
-
-  @include tablet-landscape {
-    overflow: visible;
-    padding: 0 0 0 0;
-    @include absolute-center;
-    width: auto;
-    height: auto;
-    border-radius: 40px;
+  &.internal-padding {
+    padding: 0;
+  }
+  &::v-deep {
+    .v-stepper__wrapper {
+      overflow: visible;
+    }
   }
 }
 </style>

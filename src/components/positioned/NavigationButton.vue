@@ -4,28 +4,25 @@
       'menu-button--container': true,
       'open': open
     }"
-    @click="open=!open"
+    @click="open = true"
   >
     <div class="menu-button--icon-wrapper">
       <IconCompass class="menu-button--icon" />
     </div>
 
-    <ModalContainer
-      v-if="open"
-      @modal-close="open=false"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    <VDialog
+      v-model="open"
+      content-class="menu--dialog"
+      width="auto"
     >
-      <template #window>
-        <NavigationMenu @modal-close="open = false" />
-      </template>
-    </ModalContainer>
+      <NavigationMenu v-if="open" @modal-close="open = false" />
+    </VDialog>
   </button>
 </template>
 
 <script>
+import { VDialog } from "vuetify/lib";
 import NavigationMenu from "~/components/positioned/NavigationMenu.vue";
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import IconCompass from "~/components/icons/IconCompass.vue";
 
 export default {
@@ -35,7 +32,7 @@ export default {
     };
   },
   components: {
-    ModalContainer,
+    VDialog,
     NavigationMenu,
     IconCompass,
   },
@@ -49,6 +46,10 @@ export default {
 @import "styles/screens";
 @import "styles/resets";
 
+.v-dialog {
+  box-shadow: none;
+}
+
 // desktop
 .menu-button--container {
   @include reset-button;
@@ -57,7 +58,6 @@ export default {
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 999;
 
   width: 40px;
   height: 40px;
@@ -120,5 +120,11 @@ export default {
     top: 20px;
     right: 20px;
   }
+}
+</style>
+
+<style lang="scss">
+.menu--dialog {
+  box-shadow: none;
 }
 </style>

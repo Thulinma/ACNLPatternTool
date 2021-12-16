@@ -1,115 +1,119 @@
 <template>
-  <div class="menu--container">
-    <CancelButton class="nav-menu-cancel" @click="$emit('modal-close')" />
-    <div class="menu--header">
-      <div class="menu--header-icons-left">
-        <IconNookService class="menu--header-img menu--header-bars" />
-        <IconNookHead class="menu--header-img menu--header-nook" />
+  <VCard elevation="0" class="menu--card">
+    <div class="menu--container">
+      <CancelButton class="nav-menu-cancel" @click="$emit('modal-close')" />
+      <div class="menu--header">
+        <div class="menu--header-icons-left">
+          <IconNookService class="menu--header-img menu--header-bars" />
+          <IconNookHead class="menu--header-img menu--header-nook" />
+        </div>
+        <div>
+          <span class="menu--time">{{ time }}</span>
+        </div>
+        <div class="menu--header-icons-right">
+          <IconNookGPS class="menu--header-img menu--header-gps" />
+        </div>
       </div>
-      <div>
-        <span class="menu--time">{{ time }}</span>
-      </div>
-      <div class="menu--header-icons-right">
-        <IconNookGPS class="menu--header-img menu--header-gps" />
+      <div class="menu--title">{{ menuTitle }}</div>
+
+      <div class="menu--nav">
+        <router-link class="home" to="/">
+          <div
+            class="menu--nav-icon-container"
+            @click="$emit('modal-close')"
+            @mouseover="enterNavItem('Home')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavHome class="menu--nav-item" />
+          </div>
+        </router-link>
+
+        <router-link class="browse" to="/browse">
+          <div
+            class="menu--nav-icon-container"
+            @click="$emit('modal-close')"
+            @mouseover="enterNavItem('Browse')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavBrowse class="menu--nav-item" />
+          </div>
+        </router-link>
+
+        <router-link class="editor" to="/editor">
+          <div
+            class="menu--nav-icon-container"
+            @click="$emit('modal-close')"
+            @mouseover="enterNavItem('Editor')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavEditor class="menu--nav-item" />
+          </div>
+        </router-link>
+
+        <router-link class="faq" to="/faq">
+          <div
+            class="menu--nav-icon-container"
+            @click="$emit('modal-close')"
+            @mouseover="enterNavItem('FAQ')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavFaq class="menu--nav-item" />
+          </div>
+        </router-link>
+
+        <router-link class="about" to="/about">
+          <div
+            class="menu--nav-icon-container"
+            @click="$emit('modal-close')"
+            @mouseover="enterNavItem('About Us')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavAbout class="menu--nav-item" />
+          </div>
+        </router-link>
+
+        <router-link class="updates" to="/updates">
+          <div
+            class="menu--nav-icon-container"
+            @click="$emit('modal-close')"
+            @mouseover="enterNavItem('Updates')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavUpdates class="menu--nav-item" />
+          </div>
+        </router-link>
+
+        <a
+          class="discord"
+          href="https://discord.com/invite/9rGkZNk"
+          target="_blank"
+        >
+          <div
+            class="menu--nav-icon-container"
+            @mouseover="enterNavItem('Discord')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavDiscord class="menu--nav-item" />
+          </div>
+        </a>
+
+        <a class="twitter" href="https://twitter.com/acpatterns" target="_blank">
+          <div
+            class="menu--nav-icon-container"
+            @mouseover="enterNavItem('Twitter')"
+            @mouseleave="leaveNavItem()"
+          >
+            <IconNavTwitter class="menu--nav-item" />
+          </div>
+        </a>
       </div>
     </div>
-    <div class="menu--title">{{ menuTitle }}</div>
-
-    <div class="menu--nav">
-      <router-link class="home" to="/">
-        <div
-          class="menu--nav-icon-container"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('Home')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavHome class="menu--nav-item" />
-        </div>
-      </router-link>
-
-      <router-link class="browse" to="/browse">
-        <div
-          class="menu--nav-icon-container"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('Browse')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavBrowse class="menu--nav-item" />
-        </div>
-      </router-link>
-
-      <router-link class="editor" to="/editor">
-        <div
-          class="menu--nav-icon-container"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('Editor')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavEditor class="menu--nav-item" />
-        </div>
-      </router-link>
-
-      <router-link class="faq" to="/faq">
-        <div
-          class="menu--nav-icon-container"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('FAQ')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavFaq class="menu--nav-item" />
-        </div>
-      </router-link>
-
-      <router-link class="about" to="/about">
-        <div
-          class="menu--nav-icon-container"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('About Us')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavAbout class="menu--nav-item" />
-        </div>
-      </router-link>
-
-      <router-link class="updates" to="/updates">
-        <div
-          class="menu--nav-icon-container"
-          @click="$emit('modal-close')"
-          @mouseover="enterNavItem('Updates')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavUpdates class="menu--nav-item" />
-        </div>
-      </router-link>
-
-      <a
-        class="discord"
-        href="https://discord.com/invite/9rGkZNk"
-        target="_blank"
-      >
-        <div
-          class="menu--nav-icon-container"
-          @mouseover="enterNavItem('Discord')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavDiscord class="menu--nav-item" />
-        </div>
-      </a>
-
-      <a class="twitter" href="https://twitter.com/acpatterns" target="_blank">
-        <div
-          class="menu--nav-icon-container"
-          @mouseover="enterNavItem('Twitter')"
-          @mouseleave="leaveNavItem()"
-        >
-          <IconNavTwitter class="menu--nav-item" />
-        </div>
-      </a>
-    </div>
-  </div>
+  </VCard>
 </template>
 
 <script>
+import { VCard } from "vuetify/lib";
+
 // header svgs
 import IconNookHead from "~/components/icons/IconNookHead.vue";
 import IconNookGPS from "~/components/icons/IconNookGPS.vue";
@@ -130,6 +134,7 @@ const menuTitleDefault = "Main Menu";
 export default {
   name: "NookPhoneMenu",
   components: {
+    VCard,
     IconNavHome,
     IconNavEditor,
     IconNavBrowse,
@@ -203,6 +208,12 @@ export default {
   }
 }
 
+.menu--card {
+  @include tablet-portrait {
+    border-radius: 90px;
+  }
+}
+
 .menu--container {
   box-sizing: border-box;
   display: inline-block;
@@ -213,18 +224,12 @@ export default {
   height: 100%;
 
   position: relative;
-  animation: menu-open 0.15s ease-in-out 1 forwards;
   padding: 30px 30px;
   z-index: 999;
 
   @include tablet-portrait {
-    position: fixed;
     width: auto;
     height: auto;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 90px;
   }
 }
 

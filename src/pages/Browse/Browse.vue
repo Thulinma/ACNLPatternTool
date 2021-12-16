@@ -1,47 +1,91 @@
 <template>
   <div class="browse">
     <div class="search-row">
-      <Searchbar class="searchbar" v-model="nextOptions.titleFilter"
-      :isOptionsChanged="isOptionsChanged" @search="onSearch" />
+      <VTextField
+        class="searchbar"
+        v-model="nextOptions.titleFilter"
+        @keyup.enter="onSearch"
+        outlined
+        clearable
+        placeholder="Search..."
+      >
+        <template #prepend-inner>
+          <VIcon v-if="isOptionsChanged" :color="colors.jambalaya">mdi-cached</VIcon>
+          <VIcon v-else :color="colors.jambalaya">mdi-magnify</VIcon>
+        </template>
+      </VTextField>
     </div>
     <div class="filters-row">
-      <div class="filter-container">
+      <div class="filter-container tag-filter">
         <div class="filter-title">Types</div>
-        <SharedSelector
-          v-model="nextOptions.typeTagsFilter"
-          :exclusiveOptions="typeTagOptions"
-          :inclusiveOptions="[null]"
-          @enter="onSearch"
+        <VSelect
+          v-for="(type, i) in nextOptions.typeTagsFilter"
+          :key="i"
+          class="select"
+          v-model="nextOptions.typeTagsFilter[i]"
+          :items="typeOptsList[i]"
+          outlined
+          hide-details
+          @keyup.enter.prevent="onSearch"
+          :menu-props="{
+            'content-class': 'browse-tag--menu',
+          }"
         />
       </div>
-      <div class="filter-container">
+      <div class="filter-container tag-filter">
         <div class="filter-title">Styles</div>
-        <SharedSelector
-          v-model="nextOptions.styleTagsFilter"
-          :exclusiveOptions="styleTagOptions"
-          :inclusiveOptions="[null]"
-          @enter="onSearch"
+        <VSelect
+          v-for="(type, i) in nextOptions.styleTagsFilter"
+          :key="i"
+          class="select"
+          v-model="nextOptions.styleTagsFilter[i]"
+          :items="styleOptsList[i]"
+          outlined
+          hide-details
+          @keyup.enter.prevent="onSearch"
+          :menu-props="{
+            'content-class': 'browse-tag--menu',
+          }"
+
         />
       </div>
-      <div class="filter-container">
+      <div class="filter-container ">
         <div class="filter-title">Author</div>
-        <TextInput
-          v-model="nextOptions.authorFilter"
-          @enter="onSearch" />
+          <VTextField
+            class="text-field"
+            v-model="nextOptions.authorFilter"
+            @keyup.enter="onSearch"
+            outlined
+            clearable
+            hide-details
+            @keydown.stop
+          />
       </div>
       <div class="filter-container">
         <div class="filter-title">Town</div>
-        <TextInput
-          v-model="nextOptions.townFilter"
-          @enter="onSearch" />
+          <VTextField
+            class="text-field"
+            v-model="nextOptions.authorFilter"
+            @keyup.enter="onSearch"
+            outlined
+            clearable
+            hide-details
+            @keydown.stop
+          />
       </div>
       <div class="filter-container sorting">
         <div class="filter-title">Sorting</div>
-        <SharedSelector
-          :value="nextSortingWrapped"
-          @input="onNextSortingInput"
-          :exclusiveOptions="sortingOptions"
-          @enter="onSearch" />
+        <VSelect
+          class="select"
+          v-model="nextOptions.sorting"
+          :items="sortingOpts"
+          outlined
+          hide-details
+          @keyup.enter="onSearch"
+          :menu-props="{
+            'content-class': 'browse-tag--menu',
+          }"
+        />
       </div>
     </div>
     <div class="browse--pattern-grid" v-if="!isCurrPageEmpty">
@@ -60,33 +104,22 @@
     
     <div class="navigation-container">
       <nav class="navigation">
-        <button
-          class="page-button prev"
-          @click="onPrevPage"
+        <VPagination
+          class="pagination"
+          :value="pageNumber + 1"
+          :length="maxPageNumber + 1"
+          elevation="0"
+          @input="onChangePage($event - 1)"
+        />
+        <VBtn
+          class="jump-btn rounded-lg"
+          @click="onJumpPage"
+          elevation="0"
         >
-          <IconLeftArrow />
-        </button>
-        <div class="page-numbers">
-          <button
-            :class="{
-              'page-number': true,
-              'selected': pageIndicator === pageNumber,
-            }"
-            v-for="pageIndicator in pageIndicators"
-            :key="pageIndicator"
-            @click="() => onChangePage(pageIndicator)"
-          >
-            {{ pageIndicator }}
-          </button>
-        </div>
-        <button
-          class="page-button next"
-          @click="onNextPage"
-        >
-          <IconRightArrow />
-        </button>
-        <button class="page-button jump" @click="onJumpPage">Jump</button>
+          Jump
+        </VBtn>
       </nav>
+      
     </div>
   </div>
 </template>
@@ -100,13 +133,21 @@ import {
   updateResults,
 } from "~/store/browse";
 
+import {
+  VPagination,
+  VIcon,
+  VSelect,
+  VTextField,
+} from "vuetify/lib";
 import PatternEntry from "./PatternEntry";
 import Searchbar from "./Searchbar";
 import TextInput from "~/components/TextInput";
-import SharedSelector from "~/components/SharedSelector";
 import IconLeftArrow from "~/assets/icons/bxs-left-arrow-alt.svg?inline";
 import IconRightArrow from "~/assets/icons/bxs-right-arrow-alt.svg?inline";
 import BxRefresh from "~/assets/icons/bx-refresh.svg?inline";
+
+import { computeOptsList } from "~/utils/helpers";
+import colors from "~/styles/colors.scss";
 
 // const colors = {
 //   natural: "#EAC558",
@@ -138,9 +179,12 @@ export default {
   name: "Browse",
   
   components: {
+    VPagination,
+    VIcon,
+    VSelect,
+    VTextField,
     Searchbar,
     TextInput,
-    SharedSelector,
     PatternEntry,
     IconLeftArrow,
     IconRightArrow,
@@ -149,10 +193,10 @@ export default {
   
   data() {
     return {
+      colors,
       // enumerated values from origin
       styleTagOptions: origin.tags_style,
       typeTagOptions: origin.tags_type,
-      sortingOptions: Object.keys(origin.sortingOptions).reverse(),
       // search options replicated from browse
       currOptions: createOptions(),
       currResults: new Array(),
@@ -165,7 +209,41 @@ export default {
   },
   
   computed: {
-    // lock to first page if results are randomized
+    
+    /**
+     * Style tag options lists available at each selected style tag index.
+     */
+    styleOptsList() {
+      return computeOptsList(
+        this.nextOptions.styleTagsFilter,
+        [{ text: '- - -', value: null }],
+        this.styleTagOptions.map(style => ({ text: style, value: style })),
+      );
+    },
+
+    /**
+     * Type tag options lists available at each selected style tag index.
+     */
+    typeOptsList() {
+      return computeOptsList(
+        this.nextOptions.typeTagsFilter,
+        [{ text: '- - -', value: null }],
+        this.typeTagOptions.map(style => ({ text: style, value: style })),
+      );
+    },
+    
+    /**
+     * Sorting options.
+     */
+    sortingOpts() {
+      return Object.entries(origin.sortingOptions)
+        .reverse()
+        .map(([text, value]) => ({
+            text,
+            value,
+          }));
+    },
+    
     isRandomized() {
       return (
         this.currOptions.titleFilter === "" &&
@@ -182,10 +260,6 @@ export default {
     
     // last page number available 0 indexed
     maxPageNumber() {
-      if (this.isRandomized) {
-        return Infinity;
-      }
-      // get results not good enough
       // calculate results with undefined trailing removed
       const maxPageNumber = Math.floor(
         this.currResults.length /
@@ -202,51 +276,8 @@ export default {
         .filter(result => result != null);
     },
     
-    pageIndicators() {
-      const pageIndicators = [];
-      const inclusiveRange = function*(start, end) {
-        for (let i = start; i <= end; ++i) yield i;
-      };
-      let start = 0;
-      let end = 0;
-      
-      // number of page indicators surrounding our current one
-      const padding = 2;
-      // total number of page indicators
-      const maxPageIndicators = (padding * 2) + 1;
-      // start and end are forward
-      if (this.pageNumber <= padding) {
-        start = Math.max(this.pageNumber - padding, 0);
-        end =  Math.min(
-          this.pageNumber + padding + Math.abs(this.pageNumber - padding),
-          this.maxPageNumber,
-        );
-      }
-      // start ane end are backward
-      else if (this.pageNumber > this.maxPageNumber - padding) {
-        // start = pageNumber.value - 2;
-        // end = pageNumber.value + 2;
-      }
-      // start and end surround page number
-      else {
-        start = this.pageNumber - padding;
-        end = this.pageNumber + padding;
-      }
-      pageIndicators.push(...inclusiveRange(start, end));
-      return pageIndicators;
-    },
-    
     isCurrPageEmpty() {
       return !this.isLoading && this.currPageResults.length === 0;
-    },
-    
-    // lazy implementation to utilize the shared selector
-    nextSortingWrapped() {
-      // return the key
-      const entries = Object.entries(origin.sortingOptions);
-      const selected = entries
-        .find(([key, value]) => value === this.nextOptions.sorting);
-      return [selected[0]];
     },
   },
   
@@ -386,8 +417,14 @@ export default {
       titleFilter: titleFilter || defaultOptions.titleFilter,
       townFilter: townFilter || defaultOptions.townFilter,
       authorFilter: authorFilter || defaultOptions.authorFilter,
-      styleTagsFilter: styleTagsFilter || defaultOptions.styleTagsFilter,
-      typeTagsFilter: typeTagsFilter || defaultOptions.typeTagsFilter,
+      styleTagsFilter: (styleTagsFilter || defaultOptions.styleTagsFilter)
+        .filter(stf => stf !== "")
+        .concat(defaultOptions.styleTagsFilter)
+        .slice(0, defaultOptions.styleTagsFilter.length),
+      typeTagsFilter: (typeTagsFilter || defaultOptions.typeTagsFilter)
+        .filter(ttf => ttf !== "")
+        .concat(defaultOptions.typeTagsFilter)
+        .slice(0, defaultOptions.typeTagsFilter.length),
     };
     
     next(vm => {
@@ -421,10 +458,23 @@ export default {
 
 <style lang="sass" scoped>
 @use "styles/colors" as colors
+@use "styles/overrides" as overrides
 @use "styles/screens" as screens
 @use "styles/positioning" as positioning
 @use "styles/resets" as resets
 @use "styles/animations" as animations
+
+.tag-filter
+  display: grid
+  grid-template-areas: "title title title" "filter filter filter"
+  grid-template-columns: 1fr 1fr 1fr
+  column-gap: 10px
+
+.filter-title
+  grid-area: title
+
+.text-field
+  grid-area: filter
 
 .browse
   padding-bottom: 50px
@@ -547,63 +597,44 @@ export default {
   
   .navigation
     display: grid
-    grid-template-areas: "prev numbers next" ". jump ."
-    grid-template-columns: auto 170px auto
+    grid-template-areas: "pagination pagination pagination" ". jump ."
+    grid-template-columns: 170px 170px 170px
     grid-template-rows: auto
     align-items: stretch
     justify-items: stretch
     row-gap: 15px
     column-gap: 15px
     
-    .page-button
-      @include resets.reset-button
+    .pagination
+      grid-area: pagination
+      @include overrides.v-pagination(colors.$ecru-white, colors.$olive-haze, colors.$jambalaya)
+    
+    .jump-btn
+      @include overrides.v-btn(colors.$ecru-white, colors.$olive-haze)
       font-weight: 600
       font-size: 1rem
-      color: colors.$ecru-white
-      background-color: colors.$olive-haze
-      svg
-        fill: colors.$ecru-white
-        display: block
-        height: 20px
-      
-      &.prev,
-      &.next
-        padding: 5px 15px
-      &.prev
-        grid-area: prev
-      &.next
-        grid-area: next
-      &.jump
-        grid-area: jump
-        padding: 5px 5px
-    
-    .page-numbers
-      grid-area: numbers
-      display: grid
-      grid-auto-flow: column
-      column-gap: 5px
-      grid-template-columns: max-content
-      justify-content: space-evenly
-      
-      .page-number
-        @include resets.reset-button
-        font-weight: 600
-        background-color: colors.$olive-haze
-        color: colors.$ecru-white
-        min-width: 30px
-        padding: 5px 5px
-        
-        &.selected
-          background-color: colors.$jambalaya
-        &:hover
-          cursor: pointer
-          background-color: colors.$jambalaya
+      grid-area: jump
 
-    .page-number,
-    .page-button
-      border-radius: 4px
-      &:hover
-        cursor: pointer
-        background-color: colors.$jambalaya
+.searchbar
+  @include overrides.v-text-field(colors.$jambalaya, colors.$soapstone, colors.$olive-haze)
+  justify-self: stretch
 
+.text-field
+  @include overrides.v-text-field(colors.$jambalaya, colors.$soapstone, colors.$olive-haze)
+
+.select
+  @include overrides.v-select(colors.$jambalaya, colors.$soapstone, colors.$olive-haze)
+</style>
+
+
+<style lang="scss">
+@use "styles/colors";
+@use "styles/overrides";
+
+.browse-tag--menu {
+  @include overrides.v-menu(
+    colors.$jambalaya,
+    colors.$soapstone,
+  );
+}
 </style>

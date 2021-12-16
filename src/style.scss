@@ -1,4 +1,3 @@
-@import "reset-css";
 @import "styles/colors";
 
 $main-font: "Nunito";
@@ -22,7 +21,7 @@ body {
   color: $color;
 
   font-family: $main-font;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 a {

@@ -117,10 +117,7 @@ const browse = async (options) => {
   const response = await api.get(`api.php${encodedParams}`);
   
   // result count stored in headers for backwards compatibility with other api users
-  let totalResultsCount;
-  if (response.headers.hasOwnProperty("x-result-count")) {
-    totalResultsCount = Number.parseInt(response.headers["x-result-count"]);
-  }
+  const totalResultsCount = Number.parseInt(response.headers["x-result-count"]);
   const pageResults = response.data;
   return {
     totalResultsCount,

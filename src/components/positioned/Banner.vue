@@ -28,7 +28,6 @@ export default {
   position: absolute;
   top: 10px;
   left: 0px;
-  z-index: 999;
 
   display: flex;
   flex-direction: row;

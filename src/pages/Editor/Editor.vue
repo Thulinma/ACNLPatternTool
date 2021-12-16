@@ -11,36 +11,34 @@
       @change-current-color="onChangeCurrentColor"
       @color-picked="onColorPicked"
     />
-    <ModalContainer
-      v-if="colorPicker != null"
-      @modal-close="onChangeColorPicker(null)"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
+    
+    <VDialog
+      transition="fade-transition"
+      :value="colorPicker != null"
+      @input="onChangeColorPicker(null)"
+      content-class="colorpicker--dialog"
+      hide-overlay
+      width="auto"
+      origin="top center"
     >
-      <template #window>
-        <div class="editor--color-picker-window" style="text-align: center">
-          <ColorTools
-            :drawingTool="drawingTool"
-            :colorPicker="colorPicker"
-            @change-color-picker="onChangeColorPicker"
-            @change-current-color="onChangeCurrentColor"
-            @color-picked="onColorPicked"
-          />
-          <CancelButton
-            class="editor--color-picker-close"
-            @click="onChangeColorPicker(null)"
-          />
-        </div>
-      </template>
-      <!-- transparent overlay -->
-      <template #overlay>
-        <div
+      <div
+        v-if="colorPicker != null"
+        class="editor--color-picker-window"
+        style="text-align: center"
+      >
+        <ColorTools
+          :drawingTool="drawingTool"
+          :colorPicker="colorPicker"
+          @change-color-picker="onChangeColorPicker"
+          @change-current-color="onChangeCurrentColor"
+          @color-picked="onColorPicked"
+        />
+        <CancelButton
+          class="editor--color-picker-close"
           @click="onChangeColorPicker(null)"
-          class="editor--color-picker-overlay"
-        ></div>
-      </template>
-    </ModalContainer>
-    <!-- color picker dropdown -->
+        />
+      </div>
+    </VDialog>
 
     <!-- need this to control canvas ratio -->
     <div class="editor--preview-container">
@@ -71,20 +69,79 @@
       @update-main-grid="updateMainGrid"
     />
 
-    <div class="dropups">
-      <Dropup :items="importMenuItems">
-        <template #icon>
-          <BxsFileImport />
+    <div class="menus">
+      <VMenu
+        open-on-click
+        top
+        offset-y
+        left
+        rounded="xl"
+        :nudge-top="10"
+      >
+        <template #activator="{on, attrs}">
+            <VBtn
+              class="import-btn rounded-xl"
+              elevation="0"
+              v-bind="attrs"
+              v-on="on"
+              large
+            >
+              <VBtn class="icon-ctn" disabled fab x-small left>
+                <VIcon class="icon">mdi-file-import</VIcon>
+              </VBtn>
+              Import
+            </VBtn>
         </template>
-        <template #text>Import</template>
-      </Dropup>
+        <VList class="import-list">
+          <VListItem
+            v-for="item in importMenuItems"
+            :key="item.label"
+            link
+            @click="item.onSelect"
+          >
+            <VListItemTitle
+              v-text="item.label"
+            />
+          </VListItem>
+        </VList>
+      </VMenu>
       
-      <Dropup :items="exportMenuItems" :variant="DropupVariants.action">
-        <template #icon>
-          <BxsSave />
+      <VMenu
+        open-on-click
+        top
+        offset-y
+        left
+        rounded="xl"
+        :nudge-top="10"
+      >
+        <template #activator="{on, attrs}">
+            <VBtn
+              class="export-btn rounded-xl"
+              elevation="0"
+              v-bind="attrs"
+              v-on="on"
+              large
+            >
+              <VBtn class="icon-ctn" disabled fab x-small left>
+                <VIcon class="icon">mdi-content-save</VIcon>
+              </VBtn>
+              Export
+            </VBtn>
         </template>
-        <template #text>Save</template>
-      </Dropup>
+        <VList class="export-list">
+          <VListItem
+            v-for="item in exportMenuItems"
+            :key="item.label"
+            link
+            @click="item.onSelect"
+          >
+            <VListItemTitle
+              v-text="item.label"
+            />
+          </VListItem>
+        </VList>
+      </VMenu>
+      
     </div>
 
     <FileLoader
@@ -96,30 +153,36 @@
     <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
 
     <FileLoaderCollection
-      v-if="fileLoadingCollection"
       @load="load"
       ref="collectionFileLoader"
-      @close="fileLoadingCollection = false"
     />
-
-    <Publish
-      v-if="publishing"
-      :drawingTool="drawingTool"
-      :patternDetails="patternDetails"
-      @update-details="updatePatternDetails"
-      @close="publishing = false"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-    />
-
-    <ConvertImage
-      v-if="convertImage"
-      :sourcetool="drawingTool"
-      @close="convertImage = false"
-      @load="drawingTool.load($event)"
-      @scroll-freeze="$emit('scroll-freeze')"
-      @scroll-unfreeze="$emit('scroll-unfreeze')"
-    />
+    
+    <VDialog
+      v-model="publishing"
+      content-class="publish--dialog rounded-xl"
+      width="auto"
+    >
+      <Publish
+        v-if="publishing"
+        :drawingTool="drawingTool"
+        :patternDetails="patternDetails"
+        @update-details="updatePatternDetails"
+        @close="publishing = false"
+      />
+    </VDialog>
+    
+    <VDialog
+      v-model="convertImage"
+      content-class="convert--dialog rounded-xl"
+      width="auto"
+    >
+      <ConvertImage
+        v-if="convertImage"
+        :sourcetool="drawingTool"
+        @close="convertImage = false"
+        @load="drawingTool.load($event)"
+      />
+    </VDialog>
   </main>
 </template>
 
@@ -135,44 +198,47 @@ import lzString from "lz-string";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
-// icons
-import BxsFileImport from "~/assets/icons/bxs-file-import.svg?inline";
-import BxsSave from "~/assets/icons/bxs-save.svg?inline";
-import BxsFileArchiveSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg?inline";
-
 // components
+import {
+  VDialog,
+  VMenu,
+  VIcon,
+  VBtn,
+  VList,
+  VListItem,
+  VListItemTitle,
+} from "vuetify/lib";
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ConvertImage from "~/components/modals/ConvertImage";
 import Publish from "~/components/modals/Publish.vue";
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
 import ThreeDRender from "~/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import FileLoader from "~/components/FileLoader.vue";
 import FileLoaderCollection from "~/components/positioned/FileLoaderCollection.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
-import Dropup, { variants as DropupVariants } from "~/components/Dropup.vue";
 
 export default {
   name: "Editor",
   components: {
+    VDialog,
+    VMenu,
+    VBtn,
+    VList,
+    VListItem,
+    VListItemTitle,
     ColorTools,
     ConvertImage,
-    ModalContainer,
     ThreeDRender,
     Toolbar,
     Publish,
     FileLoader,
     FileLoaderCollection,
     CancelButton,
-    Dropup,
-    BxsFileImport,
-    BxsSave,
   },
   data() {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
-      DropupVariants,
       drawingTool: new DrawingTool(),
       patternDetails: {
         // redundant mirrored properties, need these to sync
@@ -195,7 +261,6 @@ export default {
       // modals
       convertImage: null,
       publishing: false,
-      fileLoadingCollection: false,
 
       // menu states
       forceShowImportMenu: false,
@@ -426,7 +491,6 @@ export default {
       this.$refs.patternFileLoader.open();
     },
     async openCollection() {
-      this.fileLoadingCollection = true;
       await this.$nextTick();
       this.$refs.collectionFileLoader.open();
       console.log("opening collection");
@@ -457,11 +521,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "styles/overrides";
 @import "styles/colors";
 @import "styles/transitions";
 @import "styles/positioning";
 @import "styles/functions";
 @import "styles/screens";
+
+.v-menu__content {
+  box-shadow: none;
+}
 
 .editor--container {
   transition: background-color 0.5s linear;
@@ -511,11 +580,9 @@ export default {
 
 .editor--color-picker-window {
   display: inline-block;
-  position: fixed;
+  position: relative;
   top: 0;
-  left: 50%;
-
-  transform: translate(-50%, 0%);
+  left: 0;
   z-index: 999;
   width: 100%;
   height: 100%;
@@ -646,11 +713,10 @@ export default {
   }
 }
 
-.dropups {
+.menus {
   position: fixed;
   right: 0px;
   bottom: 15px;
-  z-index: 999;
 
   display: grid;
   grid-template-columns: auto auto;
@@ -670,5 +736,64 @@ export default {
   @include desktop {
     right: 30px;
   }
+}
+
+.import-btn,
+.export-btn {
+  padding-left: 10px !important;
+  @include tablet-landscape { font-size: 1.2rem; }
+  .icon-ctn.v-btn--disabled {
+    background-color: $ecru-white !important;
+    margin-right: 5px;
+  }
+}
+
+.import-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $olive-haze,
+  );
+  .icon-ctn.v-btn--disabled .icon {
+    color: $olive-haze !important;
+  };
+}
+
+.import-list {
+  @include overrides.v-list(
+    $ecru-white,
+    $olive-haze,
+    $jambalaya,
+  ) { font-size: 1.1rem; };
+}
+
+.export-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $robin-egg-blue,
+  );
+  .icon-ctn.v-btn--disabled .icon {
+    color: $robin-egg-blue !important;
+  };
+}
+
+.export-list {
+  @include overrides.v-list(
+    $ecru-white,
+    $robin-egg-blue,
+    $persian-green,
+  ) { font-size: 1.1rem; };
+}
+</style>
+
+<style lang="scss">
+.colorpicker--dialog,
+.publish--dialog,
+.convert--dialog {
+  box-shadow: none;
+}
+
+.colorpicker--dialog {
+  align-self: flex-start;
+  margin: 0;
 }
 </style>

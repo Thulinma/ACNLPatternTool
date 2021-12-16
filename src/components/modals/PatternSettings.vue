@@ -1,200 +1,153 @@
 <template>
-  <ModalContainer
-    @modal-close="$emit('close')"
-    @scroll-freeze="$emit('scroll-freeze')"
-    @scroll-unfreeze="$emit('scroll-unfreeze')"
-  >
-    <template #window>
-      <div class="settings--window">
-        <CancelButton @click="$emit('close')" />
-        <label class="settings--input-field">
-          <div class="settings--input-field-name required">
-            Title<span class="asterisk">*</span>
-            <Tooltip class="settings--tooltip">
-              <div class="settings--tooltip-content">
-                <div class="settings--tooltip-content">
-                  <div>Title character limits:</div>
-                  <div>ACNL: 21 chars.</div>
-                  <div>ACNH: 20 chars.</div>
-                </div>
-              </div>
-            </Tooltip>
-          </div>
-          <div class="settings--input-container">
-            <input
-              v-if="drawingTool.compatMode === 'ACNL'"
-              id="pattern-title"
-              class="settings--input"
-              type="text"
-              maxlength="20"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.title"
-              @keydown.stop
-            />
-            <input
-              v-else-if="drawingTool.compatMode === 'ACNH'"
-              id="pattern-title"
-              class="settings--input"
-              type="text"
-              maxlength="21"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.title"
-              @keydown.stop
-            />
-          </div>
-        </label>
+  <VCard elevation="0" class="settings--card rounded-xl" width="auto">
+    <div class="settings--window">
+      <CancelButton @click="$emit('close')" />
+      <div>
+        <VTextField
+          v-model="details.title"
+          class="text-field"
+          label="Title"
+          :maxlength="drawingTool.compatMode === 'ACNL' ? 20: 21"
+          :hint="`${drawingTool.compatMode} pattern's name.`"
+          persistent-hint
+          outlined
+          clearable
+          counter
+          @keydown.stop
+        />
+      </div>
+      <div>
+        <VTextField
+          v-model="details.creator.name"
+          class="text-field"
+          label="Villager"
+          :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
+          :hint="`${drawingTool.compatMode} villager's name.`"
+          persistent-hint
+          outlined
+          clearable
+          counter
+          @keydown.stop
+        />
+      </div>
+      <div>
+        <VTextField
+          v-model="details.town.name"
+          class="text-field"
+          label="Town"
+          :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
+          :hint="`${drawingTool.compatMode} town's name.`"
+          persistent-hint
+          outlined
+          clearable
+          counter
+          @keydown.stop
+        />
+      </div>
 
-        <label class="settings--input-field">
-          <div class="settings--input-field-name required">
-            Author<span class="asterisk">*</span>
-            <Tooltip class="settings--tooltip">
-              <div class="settings--tooltip-content">
-                <div>Author character limit:</div>
-                <div>ACNL: 9 chars.</div>
-                <div>ACNH: 10 chars.</div>
-              </div>
-            </Tooltip>
-          </div>
-          <div class="settings--input-container">
-            <input
-              v-if="drawingTool.compatMode === 'ACNL'"
-              class="settings--input"
-              type="text"
-              maxlength="9"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.creator.name"
-              @keydown.stop
-            />
-            <input
-              v-else-if="drawingTool.compatMode === 'ACNH'"
-              class="settings--input"
-              type="text"
-              maxlength="10"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.creator.name"
-              @keydown.stop
-            />
-          </div>
-        </label>
-
-        <label class="settings--input-field">
-          <div class="settings--input-field-name required">
-            Town<span class="asterisk">*</span>
-            <Tooltip class="settings--tooltip">
-              <div class="settings--tooltip-content">
-                <div>Town character limit:</div>
-                <div>ACNL: 9 chars.</div>
-                <div>ACNH: 10 chars.</div>
-              </div>
-            </Tooltip>
-          </div>
-          <div class="settings--input-container">
-            <input
-              v-if="drawingTool.compatMode === 'ACNL'"
-              class="settings--input"
-              type="text"
-              maxlength="9"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.town.name"
-              @keydown.stop
-            />
-            <input
-              v-else-if="drawingTool.compatMode === 'ACNH'"
-              class="settings--input"
-              type="text"
-              maxlength="10"
-              spellcheck="false"
-              autocomplete="off"
-              v-model="details.town.name"
-              @keydown.stop
-            />
-          </div>
-        </label>
-
-        <div class="settings--row-4">
-          <select class="settings--type" v-model="details.type">
-            <option
-              v-for="(type, index) in patternTypes"
-              :key="index"
-              :value="index"
-            >
-              {{ type.name }}
-            </option>
-          </select>
-
-          <button
-            class="settings--confirm"
-            @click="
-              update();
-              $emit('close');
-            "
+      <div>
+        <VSelect
+          class="select"
+          v-model="details.type"
+          label="Pattern Type"
+          :items="patternTypes.map((t, i) => ({ text: t.name, value: i })).reverse()"
+          :hint="`${drawingTool.compatMode} pattern type.`"
+          persistent-hint
+          outlined
+          :menu-props="{
+            'content-class': 'settings-type--menu',
+          }"
+        />
+        <div>
+          <VBtn
+            class="settings-save-btn rounded-lg"
+            elevation="0"
+            @click="update(); $emit('close')"
           >
-            Confirm
-          </button>
+            Save
+          </VBtn>
         </div>
+      </div>
 
-        <button
-          class="settings--advanced-button"
-          v-if="!showAdvanced && drawingTool.compatMode === 'ACNL'"
+      <div v-if="!showAdvanced && drawingTool.compatMode === 'ACNL'">
+        <VBtn
+          class="settings-advanced-btn rounded-lg"
+          elevation="0"
           @click="showAdvanced = !showAdvanced"
         >
           Advanced
-          <IconChevronDown class="settings--advanced-expand-icon" />
-        </button>
-        <button
-          class="settings--advanced-button"
-          v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
-          @click="storeMeta"
-        >
-          Store Meta Info
-          <Tooltip class="settings--tooltip">
-            <div class="settings--tooltip-content">
-              Stores current hidden fields to make another pattern editable in
-              ACNL only. The current pattern loaded should be a pattern coming
-              from your ACNL save.
-            </div>
-          </Tooltip>
-        </button>
-        <button
-          class="settings--advanced-button"
-          v-if="showAdvanced && drawingTool.compatMode === 'ACNL'"
-          @click="loadMeta"
-        >
-          Load Meta Info
-          <Tooltip class="settings--tooltip">
-            <div class="settings--tooltip-content">
-              Loads hidden fields to make another pattern editable in ACNL only.
-              The current pattern loaded should not be a pattern coming from
-              your ACNL save.
-              <div>{{ metaCreatorStr }}</div>
-              <div>{{ metaTownStr }}</div>
-            </div>
-          </Tooltip>
-        </button>
+        </VBtn>
       </div>
-    </template>
-  </ModalContainer>
+      
+      <div v-if="showAdvanced && drawingTool.compatMode === 'ACNL'">
+        <VTooltip
+          content-class="settings-tooltip rounded-lg"
+          top
+        >
+          <template #activator="{ on, attrs }">
+            <VBtn
+              class="settings-store-meta-btn rounded-lg"
+              elevation="0"
+              @click="storeMeta"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Store Metadata
+            </VBtn>
+          </template>
+          <div>
+            Stores hidden fields to make current pattern editable <br/> for the current villager in the town. <br/><br/>
+            <strong>Requires a pattern made by the villager in the town.</strong>
+          </div>
+        </VTooltip>
+      </div>
+      
+      <div v-if="showAdvanced && drawingTool.compatMode === 'ACNL'">
+        <VTooltip
+          content-class="settings-tooltip rounded-lg"
+          top
+        >
+          <template #activator="{ on, attrs }">
+            <VBtn
+              class="settings-load-meta-btn rounded-lg"
+              elevation="0"
+              @click="loadMeta"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Load Metadata
+            </VBtn>
+          </template>
+          <div>
+            Overwrites stored hidden fields to make  <br/>
+            current pattern editable in ACNL. <br/><br/>
+            <strong>Requires stored metadata.</strong>
+          </div>
+        </VTooltip>
+      </div>
+    </div>
+  </VCard>
 </template>
 
 <script>
-import ModalContainer from "~/components/positioned/ModalContainer.vue";
+import {
+  VCard,
+  VTextField,
+  VSelect,
+  VTooltip,
+  VIcon,
+} from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
-import IconChevronUp from "~/components/icons/IconChevronUp.vue";
-import IconChevronDown from "~/components/icons/IconChevronDown.vue";
-import Tooltip from "~/components/Tooltip.vue";
 
 export default {
   name: "Settings",
   components: {
-    ModalContainer,
-    Tooltip,
-    IconChevronDown,
+    VCard,
+    VTextField,
+    VSelect,
+    VTooltip,
+    VIcon,
     CancelButton,
   },
   props: {
@@ -290,15 +243,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "styles/overrides";
 @import "styles/colors";
 @import "styles/screens";
 @import "styles/positioning";
 @import "styles/resets";
 
+.settings--card {
+  background-color: $ecru-white;
+}
+
 .settings--window {
   box-sizing: border-box;
   @include relative-in-place;
-  position: fixed;
   z-index: 999;
 
   display: grid;
@@ -308,178 +265,85 @@ export default {
   grid-auto-columns: auto;
   row-gap: 19px;
 
-  width: 100%;
-  height: 100%;
   overflow: scroll;
-  padding: 28px 46px;
+  padding: 28px;
 
-  background-color: $ecru-white;
   color: $jambalaya;
 
   @include tablet-landscape {
-    @include absolute-center;
     min-width: 500px;
     width: auto;
     height: auto;
-    border-radius: 45px;
     overflow: visible; // reset
   }
 }
 
-.settings--input-field {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 600;
+.text-field {
+  @include overrides.v-text-field(
+    $jambalaya,
+    $cinderella,
+    $olive-haze,
+  );
 }
-
-.settings--input-field-name {
-  display: block;
-  margin-bottom: 8px;
-
-  &.required {
-    .asterisk {
-      color: $tiffany-blue;
-    }
-  }
-}
-
-.settings--input-container {
-  @include relative-in-place;
-  background-color: $cinderella;
-  padding: 10px 18px;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: $salmon;
-  }
-
-  @include tablet-landscape {
-    padding: 15px 25px;
-    border-radius: 8px;
-  }
-}
-
-.settings--input {
-  @include reset-input;
-
-  display: block;
-  width: 100%;
-  padding-bottom: 10px;
-
-  background-size: 20px 3px;
-  background-position: bottom;
-  background-repeat: repeat-x;
-  background-image: linear-gradient(
-    90deg,
-    $ecru-white,
-    $ecru-white 50%,
-    transparent 50%,
-    transparent 100%
+.select {
+  @include overrides.v-select(
+    $jambalaya,
+    $cinderella,
+    $olive-haze,
   );
 }
 
-.settings--row-4 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: auto;
-  align-items: stretch;
-  column-gap: 20px;
+
+.settings-save-btn,
+.settings-advanced-btn,
+.settings-load-meta-btn,
+.settings-store-meta-btn {
+  display: flex;
+  width: 100%;
+  font-size: 1.1rem;
 }
 
-.settings--confirm {
-  @include reset-button;
-  width: 100%;
-  background-color: $tiffany-blue;
-  box-sizing: border-box;
-
-  padding: 5px 0px;
-  color: white;
-  border-radius: 8px;
-  border: 5px solid transparent;
-  font-weight: 600;
-  cursor: pointer;
-
+.settings-save-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $robin-egg-blue,
+  );
   &:hover {
     @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(3s);
-    border: 5px solid $turquoise;
-  }
-
-  align-self: flex-start;
-
-  @include tablet-landscape {
-    align-self: stretch;
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
   }
 }
 
-.settings--type {
-  @include reset-input;
-  background-color: $cinderella;
-  border-radius: 8px;
-  font-weight: 600;
-  color: $jambalaya;
-  cursor: pointer;
-  align-self: flex-start;
-  padding: 10px 10px;
-
-  @include tablet-landscape {
-    padding: 0px 10px;
-    align-self: stretch;
-  }
-}
-
-.settings--advanced-button {
-  @include reset-button;
-  @include relative-in-place;
-  display: inline-flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-  align-self: flex-start;
-
-  padding: 10px 0px;
-  background-color: $olive-haze;
-  border-radius: 8px;
-  color: white;
-  font-weight: 600;
-
-  cursor: pointer;
-
+.settings-advanced-btn,
+.settings-load-meta-btn,
+.settings-store-meta-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $olive-haze,
+  );
   &:hover {
     @include polkadots($olive-haze, $donkey-brown);
     @include moving-polkadots;
-    z-index: 1;
-  }
-
-  @include tablet-landscape {
-    padding: 10px 0px;
-    align-self: stretch;
   }
 }
 
-.settings--advanced-expand-icon {
-  display: inline-block;
-  margin-left: 5px;
-  fill: white;
-  width: 16px;
+
+</style>
+
+<style lang="scss">
+@use "styles/colors";
+@use "styles/overrides";
+
+.settings-type--menu {
+  @include overrides.v-menu(
+    colors.$jambalaya,
+    colors.$cinderella,
+  );
 }
 
-.settings--tooltip {
-  margin-left: 5px;
-}
-
-.settings--tooltip-content {
-  width: 150px;
-  font-size: 0.9rem;
-
-  @include phone-landscape {
-    width: 300px;
-  }
-
-  @include tablet-portrait {
-    font-size: 1rem;
-  }
+.settings-tooltip {
+  padding: 10px;
+  background-color: colors.$jambalaya;
 }
 </style>

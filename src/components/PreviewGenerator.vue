@@ -19,8 +19,12 @@ export default {
   },
   watch: {
     //Whenever pattern changes, draw it!
-    drawingTool(newVal, oldVal) {
-      this.draw(newVal);
+    drawingTool(newVal) {
+      const width = this.$refs.canvas.width;
+      const height = this.$refs.canvas.height;
+      const ctx = this.$refs.canvas.getContext("2d");
+      ctx.clearRect(0, 0, width, height);
+      this.draw();
     },
   },
   mounted: async function () {

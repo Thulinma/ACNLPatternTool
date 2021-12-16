@@ -167,8 +167,7 @@ const updateResults = async (options, localPageSize, localPageNumber) => {
     targetFetchedPages.add(originPageNumber);
     
     // if results are random, infinite possible results, don't update length
-    if (!isRandomized) { updatedResults.length = originTotalResultsCount; }
-    if (!isRandomized && (originPageResults.length === 0)) break;
+    updatedResults.length = originTotalResultsCount;
     // merge results
     for (let j = 0; j < originPageResults.length; ++j) {
       updatedResults[(originPageNumber * originPageSize) + j] = originPageResults[j];
