@@ -140,10 +140,6 @@ import {
   VTextField,
 } from "vuetify/lib";
 import PatternEntry from "./PatternEntry";
-import Searchbar from "./Searchbar";
-import TextInput from "~/components/TextInput";
-import IconLeftArrow from "~/assets/icons/bxs-left-arrow-alt.svg?inline";
-import IconRightArrow from "~/assets/icons/bxs-right-arrow-alt.svg?inline";
 import BxRefresh from "~/assets/icons/bx-refresh.svg?inline";
 
 import { computeOptsList } from "~/utils/helpers";
@@ -183,11 +179,7 @@ export default {
     VIcon,
     VSelect,
     VTextField,
-    Searchbar,
-    TextInput,
     PatternEntry,
-    IconLeftArrow,
-    IconRightArrow,
     BxRefresh,
   },
   

@@ -30,13 +30,6 @@ import PatternContainer from "~/components/positioned/PatternContainer.vue";
 import FileLoader from "~/components/FileLoader.vue";
 import saver from "~/libs/saver";
 
-import saveToStorageSvg from "~/assets/icons/utilitybar/bxs-inbox.svg";
-import openSvg from "~/assets/icons/utilitybar/bxs-envelope-open.svg";
-import removeSvg from "~/assets/icons/utilitybar/bxs-trash.svg";
-import downloadAsPatternSvg from "~/assets/icons/utilitybar/bxs-file-blank.svg";
-import downloadAsPngSvg from "~/assets/icons/utilitybar/bxs-image-alt.svg";
-import downloadAsBothSvg from "~/assets/icons/utilitybar/bxs-file-archive.svg";
-
 export default {
   name: "FileLoaderCollection",
   components: {

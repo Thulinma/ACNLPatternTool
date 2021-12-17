@@ -70,9 +70,6 @@ import DrawingTool from "~/libs/DrawingTool";
 import ACNLColorPicker from "./ACNLColorPicker";
 import ACNHColorPicker from "./ACNHColorPicker";
 
-const colorPickerDefault = "acnl";
-const validACNLColorPickers = new Set(["acnl"]);
-const validACNHColorPickers = new Set(["acnl", "acnh"]);
 export default {
   name: "ColorTools",
   components: {

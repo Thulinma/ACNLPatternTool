@@ -150,7 +150,6 @@
 
 <script>
 import { mapGetters, mapState, mapActions } from "vuex";
-import lzString from "lz-string";
 import DrawingTool from "~/libs/DrawingTool";
 import IconGenerator from "~/components/IconGenerator.vue";
 

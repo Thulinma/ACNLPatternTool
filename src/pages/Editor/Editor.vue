@@ -189,14 +189,9 @@
 <script>
 /* libs */
 import DrawingTool from "~/libs/DrawingTool";
-import ACNLFormat from "~/libs/ACNLFormat";
-import ACNHFormat from "~/libs/ACNHFormat";
 import origin from "~/libs/origin";
-import generateACNLQR from "~/libs/ACNLQRGenerator";
 import saver from "~/libs/saver";
 import lzString from "lz-string";
-import { saveAs } from "file-saver";
-import JSZip from "jszip";
 
 // components
 import {
@@ -222,6 +217,7 @@ export default {
   components: {
     VDialog,
     VMenu,
+    VIcon,
     VBtn,
     VList,
     VListItem,

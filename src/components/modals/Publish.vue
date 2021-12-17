@@ -119,13 +119,13 @@
 import {
   VCard,
   VBtn,
+  VSelect,
   VSwitch,
 } from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
 import IconCloud from "~/components/icons/IconCloud.vue";
 import IconGenerator from "~/components/IconGenerator.vue";
 import DrawingTool from "~/libs/DrawingTool";
-import Tooltip from "~/components/Tooltip.vue";
 import origin from "~/libs/origin";
 
 import colors from './../../styles/colors.scss';
@@ -136,11 +136,11 @@ export default {
   components: {
     VCard,
     VBtn,
+    VSelect,
     VSwitch,
     CancelButton,
     IconGenerator,
     IconCloud,
-    Tooltip,
   },
   props: {
     drawingTool: {
