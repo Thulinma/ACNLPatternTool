@@ -813,6 +813,8 @@ $toolbar--options-width: 75px;
   border-radius: 100%;
   fill: $bison-hide;
   
+  svg { width: 30px; }
+  
   &::after {
     opacity: 0;
     position: absolute;
