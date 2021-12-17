@@ -1,42 +1,48 @@
 <template>
-  <button @click="$emit('click')" class="container">X</button>
+  <VBtn
+    class="cancel-btn"
+    @click="$emit('click')"
+    outlined
+    fab
+    x-small
+    :color="colors.jambalaya"
+    elevation="0"
+  >
+    <VIcon>mdi-close</VIcon>
+  </VBtn>
 </template>
 
 <script>
+import {
+  VIcon,
+  VBtn,
+} from "vuetify/lib";
+
+import colors from '~/styles/colors.scss';
+
 export default {
   name: "CancelButton",
+  components: {
+    VIcon,
+    VBtn,
+  },
   data: function () {
-    return {};
+    return {
+      colors,
+    };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/screens";
-@import "styles/resets";
+@use "styles/colors" as colors;
+@use "styles/screens" as screens;
+@use "styles/resets" as resets;
 
-.container {
-  @include reset-button;
 
-  cursor: pointer;
+.cancel-btn {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 5px;
-  border-radius: 999px !important;
-
-  box-sizing: border-box;
-  width: 25px;
-  height: 25px;
-
-  color: white;
-  background-color: $olive-haze;
-
-  @include tablet-landscape {
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
-  }
 }
 </style>
