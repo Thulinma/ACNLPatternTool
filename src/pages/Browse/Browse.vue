@@ -448,174 +448,197 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-@use "styles/colors" as colors
-@use "styles/overrides" as overrides
-@use "styles/screens" as screens
-@use "styles/positioning" as positioning
-@use "styles/resets" as resets
-@use "styles/animations" as animations
+<style lang="scss" scoped>
+@use "styles/colors" as colors;
+@use "styles/overrides" as overrides;
+@use "styles/screens" as screens;
+@use "styles/positioning" as positioning;
+@use "styles/resets" as resets;
+@use "styles/animations" as animations;
 
-.tag-filter
-  display: grid
-  grid-template-areas: "title title title" "filter filter filter"
-  grid-template-columns: 1fr 1fr 1fr
-  column-gap: 10px
+.tag-filter {
+  display: grid;
+  grid-template-areas: "title title title" "filter filter filter";
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 10px;
+}
 
-.filter-title
-  grid-area: title
+.filter-title { grid-area: title; }
 
-.text-field
-  grid-area: filter
+.text-field { grid-area: filter; }
 
-.browse
-  padding-bottom: 50px
+.browse {
+  padding-bottom: 50px;
   
-  @include positioning.relative-in-place
-  .search-row
-    @include positioning.relative-in-place
-    display: grid
-    grid-template-columns: 1fr auto
-    row-gap: 15px
-    column-gap: 15px
-    justify-content: space-between
-    justify-items: stretch
-    align-content: center
-    align-items: stretch
-    margin-top: 55px
-    padding-left: 30px
-    padding-right: 30px
+  @include positioning.relative-in-place;
+  .search-row {
+    @include positioning.relative-in-place;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 15px;
+    column-gap: 15px;
+    justify-content: space-between;
+    justify-items: stretch;
+    align-content: center;
+    align-items: stretch;
+    margin-top: 55px;
+    padding-left: 30px;
+    padding-right: 30px;
     
-    @include screens.phone-landscape
-      margin-top: 25px
-      padding-left: 60px
-      padding-right: 80px
-    @include screens.tablet-portrait
-      margin-top: 40px
-      padding-left: 85px
-      padding-right: 90px
-    @include screens.tablet-landscape
-      padding-left: 124px
-      margin-right: auto
-      margin-left: auto
-    @include screens.desktop
-      padding-left: 250px
-      padding-right: 100px
-      max-width: 900px
-  
-  .filters-row
-    margin-top: 35px
-    padding: 0px 10px
-    display: grid
-    grid-template-columns: repeat(1, 1fr)
-    grid-template-rows: auto
-    justify-content: space-between
-    justify-items: stretch
-    column-gap: 40px
-    row-gap: 15px
+    @include screens.phone-landscape {
+      margin-top: 25px;
+      padding-left: 60px;
+      padding-right: 80px;
+    }
+    @include screens.tablet-portrait {
+      margin-top: 40px;
+      padding-left: 85px;
+      padding-right: 90px;
+    }
+    @include screens.tablet-landscape {
+      padding-left: 124px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+    @include screens.desktop {
+      padding-left: 250px;
+      padding-right: 100px;
+      max-width: 900px;
+    }
+  }
+  .filters-row {
+    margin-top: 35px;
+    padding: 0px 10px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: auto;
+    justify-content: space-between;
+    justify-items: stretch;
+    column-gap: 40px;
+    row-gap: 15px;
 
-    @include screens.phone-landscape
+    @include screens.phone-landscape {
       padding: 0px 20px
-    @include screens.tablet-portrait
-      grid-template-columns: repeat(2, 1fr)
-      padding: 0px 30px
-      .filter-container.sorting
+    }
+    @include screens.tablet-portrait {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 0px 30px;
+      .filter-container.sorting {
         grid-column: auto / span 2
-    @include screens.tablet-landscape
-      padding: 0px 40px
-    @include screens.desktop
-      grid-template-columns: 1fr 1fr 0.5fr 0.5fr 0.5fr
-      padding: 0px 70px
-      .filter-container.sorting
-        grid-column: auto / span 1
-    .filter-title
-      color: colors.$olive-haze
-      margin-bottom: 15px
-      font-weight: 600
+      }
+    }
+    @include screens.tablet-landscape { padding: 0px 40px; }
+    @include screens.desktop {
+      grid-template-columns: 1fr 1fr 0.5fr 0.5fr 0.5fr;
+      padding: 0px 70px;
+      .filter-container.sorting { grid-column: auto / span 1; }
+    }
+    .filter-title {
+      color: colors.$olive-haze;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+  }
+}
 
-.browse--pattern-grid
-  @include positioning.relative-in-place
-  display: grid
-  grid-template-columns: repeat(auto-fill, 215px)
-  justify-content: center
-  justify-items: auto
-  column-gap: 25px
-  row-gap: 35px
-  margin: 30px 0px
-  padding: 20px 20px
-  min-height: 400px
+.browse--pattern-grid {
+  @include positioning.relative-in-place;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 215px);
+  justify-content: center;
+  justify-items: auto;
+  column-gap: 25px;
+  row-gap: 35px;
+  margin: 30px 0px;
+  padding: 20px 20px;
+  min-height: 400px;
   
-  @include screens.phone-landscape
-    justify-content: space-between
-    margin: 30px 10px
-  @include screens.tablet-portrait
-    margin: 30px 10px
-  @include screens.tablet-landscape
-    margin: 30px 30px
-    column-gap: 50px
-    row-gap: 25px
-  @include screens.desktop
-    margin: 30px 60px
+  @include screens.phone-landscape {
+    justify-content: space-between;
+    margin: 30px 10px;
+  }
+  @include screens.tablet-portrait {
+    margin: 30px 10px;
+  }
+  @include screens.tablet-landscape {
+    margin: 30px 30px;
+    column-gap: 50px;
+    row-gap: 25px;
+  }
+  @include screens.desktop {
+    margin: 30px 60px;
+  }
+}
 
-.browse--pattern-grid-overlay
-    position: absolute
-    top: 0
-    left: 0
-    height: 100%
-    width: 100%
-    background-color: rgba(colors.$soapstone, 0.5)
-    z-index: 1
+.browse--pattern-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(colors.$soapstone, 0.5);
+    z-index: 1;
     
-    .browse--pattern-grid-refreshing
-      position: absolute
-      top: 50%
-      left: 50%
-      $transforms: translate(-50%, -50%)
-      transform: $transforms
-      width: 100px
-      height: 100px
-      fill: colors.$jambalaya
-      @include animations.spin(3s, $transforms)
+    .browse--pattern-grid-refreshing {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      $transforms: translate(-50%, -50%);
+      transform: $transforms;
+      width: 100px;
+      height: 100px;
+      fill: colors.$jambalaya;
+      @include animations.spin(3s, $transforms);
+    }
+}
 
-.browse--pattern-grid-message
-  @include positioning.absolute-center
-  font-size: 2rem
+.browse--pattern-grid-message {
+  @include positioning.absolute-center;
+  font-size: 2rem;
+}
 
-.navigation-container
-  display: grid
-  grid-auto-flow: column
-  grid-template-columns: auto
-  justify-content: center
+.navigation-container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto;
+  justify-content: center;
   
-  .navigation
-    display: grid
-    grid-template-areas: "pagination pagination pagination" ". jump ."
-    grid-template-columns: 170px 170px 170px
-    grid-template-rows: auto
-    align-items: stretch
-    justify-items: stretch
-    row-gap: 15px
-    column-gap: 15px
+  .navigation {
+    display: grid;
+    grid-template-areas: "pagination pagination pagination" ". jump .";
+    grid-template-columns: 170px 170px 170px;
+    grid-template-rows: auto;
+    align-items: stretch;
+    justify-items: stretch;
+    row-gap: 15px;
+    column-gap: 15px;
     
-    .pagination
-      grid-area: pagination
-      @include overrides.v-pagination(colors.$ecru-white, colors.$olive-haze, colors.$jambalaya)
+    .pagination {
+      grid-area: pagination;
+      @include overrides.v-pagination(colors.$ecru-white, colors.$olive-haze, colors.$jambalaya);
+    }
     
-    .jump-btn
-      @include overrides.v-btn(colors.$ecru-white, colors.$olive-haze)
-      font-weight: 600
-      font-size: 1rem
-      grid-area: jump
+    .jump-btn {
+      @include overrides.v-btn(colors.$ecru-white, colors.$olive-haze);
+      font-weight: 600;
+      font-size: 1rem;
+      grid-area: jump;
+    }
+  }
+}
 
-.searchbar
-  @include overrides.v-text-field(colors.$jambalaya, colors.$soapstone, colors.$olive-haze)
-  justify-self: stretch
+.searchbar {
+  @include overrides.v-text-field(colors.$jambalaya, colors.$soapstone, colors.$olive-haze);
+  justify-self: stretch;
+}
 
-.text-field
-  @include overrides.v-text-field(colors.$jambalaya, colors.$soapstone, colors.$olive-haze)
+.text-field {
+  @include overrides.v-text-field(colors.$jambalaya, colors.$soapstone, colors.$olive-haze);
+}
 
-.select
-  @include overrides.v-select(colors.$jambalaya, colors.$soapstone, colors.$olive-haze)
+.select {
+  @include overrides.v-select(colors.$jambalaya, colors.$soapstone, colors.$olive-haze);
+}
 </style>
 
 

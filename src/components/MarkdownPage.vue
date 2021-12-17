@@ -13,14 +13,15 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-@use "styles/screens"
+<style lang="scss" scoped>
+@use "styles/screens";
 
-.container::v-deep
-  margin: auto
-  max-width: 800px
-  padding: 2rem
-  @include screens.tablet-portrait
-    h1:first-child
-      margin-top: 4rem
+.container::v-deep {
+  margin: auto;
+  max-width: 800px;
+  padding: 2rem;
+  @include screens.tablet-portrait {
+    h1:first-child { margin-top: 4rem; }
+  }
+}
 </style>
