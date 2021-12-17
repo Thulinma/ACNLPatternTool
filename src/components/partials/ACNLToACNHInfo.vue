@@ -1,7 +1,5 @@
 <template>
   <div> 
-    <h1>Game Mode Information</h1>
-    
     <p>
       Changing to ACNH format will produce the following changes:
     </p>

@@ -1,7 +1,5 @@
 <template>
   <div> 
-    <h1>Game Mode Information</h1>
-    
     <p>
       Changing to ACNL format will produce the following changes:
     </p>
@@ -15,9 +13,3 @@
     
   </div>
 </template>
-
-
-<style lang="scss" scoped>
-
-
-</style>

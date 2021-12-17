@@ -21,20 +21,41 @@
 
     <VDialog
       v-model="gameModeInfo"
-      content-class="qr-preview--dialog"
+      content-class="qr-preview--dialog rounded-xl"
+      max-width="600"
       width="auto"
     >
-      <Info v-if="gameModeInfo" @close="gameModeInfo = false">
-        <ACNLToACNHInfo />
-      </Info>
+      <VCard :color="colors.ecruWhite" >
+        <VCardTitle class="info-title" >Game Mode Info</VCardTitle>
+        <VCardText class="info-content">
+          <ACNLToACNHInfo />
+        </VCardText>
+        <VCardActions>
+          <VSpacer />
+          <VBtn
+            class="cancel-btn rounded-lg"
+            @click="gameModeInfo = false"
+            elevation="0"
+          >
+            Close
+          </VBtn>
+        </VCardActions>
+      </VCard>
     </VDialog>
   </VCard>
 </template>
 
 <script>
-import { VDialog, VBtn, VCard } from "vuetify/lib";
+import {
+  VDialog,
+  VBtn,
+  VCard,
+  VCardTitle,
+  VCardText,
+  VCardActions,
+  VSpacer,
+} from "vuetify/lib";
 import DrawingTool from "~/libs/DrawingTool";
-import Info from "~/components/modals/Info.vue";
 import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 
 import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
@@ -51,8 +72,11 @@ export default {
     VDialog,
     VBtn,
     VCard,
+    VCardTitle,
+    VCardText,
+    VCardActions,
+    VSpacer,  
     ACNLQRGenerator,
-    Info,
     ACNLToACNHInfo,
   },
   props: {
@@ -133,6 +157,34 @@ export default {
   }
 }
 
+.info-title,
+.info-content {
+  color: $jambalaya !important;
+}
+
+.cancel-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $olive-haze,
+  );
+  &:hover {
+    @include polkadots($olive-haze, $donkey-brown);
+    @include moving-polkadots;
+  }
+}
+
+.continue-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $robin-egg-blue,
+  );
+  border: 4px solid $robin-egg-blue;
+  &:hover {
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
+  }
+}
 </style>
 
 <style lang="scss">

@@ -366,20 +366,34 @@
 
     <VDialog
       v-model="gameModeWarning"
-      content-class="warning--dialog"
+      content-class="warning--dialog rounded-xl"
+      max-width="600"
       width="auto"
     >
-      <Warning
-        v-if="gameModeWarning"
-        @close="gameModeWarning = false"
-        @dismiss="changeGameModeFromWarning"
-        foreverDismissable
-      >
-        <template>
+      <VCard :color="colors.ecruWhite" >
+        <VCardTitle class="warning-title" >Game Mode Warning</VCardTitle>
+        <VCardText class="warning-content">
           <ACNHToACNLInfo v-if="gameMode" />
           <ACNLToACNHInfo v-else />
-        </template>
-      </Warning>
+        </VCardText>
+        <VCardActions>
+          <VSpacer />
+          <VBtn
+            class="cancel-btn rounded-lg"
+            @click="gameModeWarning = false"
+            elevation="0"
+          >
+            Cancel
+          </VBtn>
+          <VBtn
+            class="continue-btn rounded-lg"
+            @click="changeGameModeFromWarning(dismissForever)"
+            elevation="0"
+          >
+            Continue
+          </VBtn>
+        </VCardActions>
+      </VCard>
     </VDialog>
   </div>
 </template>
@@ -387,18 +401,23 @@
 <script>
 import {
   VDialog,
+  VCard,
+  VCardTitle,
+  VCardText,
+  VCardActions,
+  VSpacer,
   VBtn,
   VBadge,
   VIcon,
   VTooltip,
   VDivider,
+  VCheckbox,
   VSwitch,
 } from "vuetify/lib";
 import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
 import Preview from "~/components/modals/Preview.vue";
 import Storage from "~/components/modals/Storage.vue";
-import Warning from "~/components/modals/Warning.vue";
 import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 import ACNHToACNLInfo from "~/components/partials/ACNHToACNLInfo.vue";
 import { combineOns } from "~/utils/helpers";
@@ -496,11 +515,17 @@ export default {
   name: "ToolBar",
   components: {
     VDialog,
+    VCard,
+    VCardTitle,
+    VCardText,
+    VCardActions,
+    VSpacer,
     VBtn,
     VBadge,
     VIcon,
     VTooltip,
     VDivider,
+    VCheckbox,
     VSwitch,
     PatternSettings,
     Preview,
@@ -517,7 +542,6 @@ export default {
     IconRedo,
     IconDetail,
     IconQRCode,
-    Warning,
     ACNLToACNHInfo,
     ACNHToACNLInfo,
   },
@@ -554,6 +578,7 @@ export default {
       // isACNH
       gameMode: this.drawingTool.compatMode === "ACNH",
       gameModeWarning: false,
+      dismissForever: false,
     };
   },
   methods: {
@@ -1017,7 +1042,34 @@ $toolbar--options-width: 75px;
   transition-duration: 100ms !important;
 }
 
+.warning-title,
+.warning-content {
+  color: $jambalaya !important;
+}
 
+.cancel-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $olive-haze,
+  );
+  &:hover {
+    @include polkadots($olive-haze, $donkey-brown);
+    @include moving-polkadots;
+  }
+}
+
+.continue-btn {
+  @include overrides.v-btn(
+    $ecru-white,
+    $robin-egg-blue,
+  );
+  border: 4px solid $robin-egg-blue;
+  &:hover {
+    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
+    @include moving-stripes(8s);
+    border: 4px solid $turquoise;
+  }
+}
 </style>
 
 <style lang="scss">
