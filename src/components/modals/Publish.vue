@@ -1,14 +1,7 @@
 <template>
-  <VCard elevation="0" class="card">
-    <div class="publish--window">
-      <CancelButton @click="$emit('close')" />
-      <div class="publish--header">
-        <div class="publish--icon-cloud-container">
-          <IconCloud class="publish--icon-cloud" />
-        </div>
-        <div class="publish--header-text">Publish Your Design!</div>
-      </div>
-
+  <VCard class="card" width="auto">
+    <VCardTitle>Publish</VCardTitle>
+    <VCardText class="publish-grid">
       <IconGenerator
         class="publish--render"
         :width="280"
@@ -111,19 +104,21 @@
           Publish
         </VBtn>
       </div>
-    </div>
+    </VCardText>
+    <CancelButton @click="$emit('close')" />
   </VCard>
 </template>
 
 <script>
 import {
   VCard,
+  VCardTitle,
+  VCardText,
   VBtn,
   VSelect,
   VSwitch,
 } from "vuetify/lib";
 import CancelButton from "~/components/modals/CancelButton.vue";
-import IconCloud from "~/components/icons/IconCloud.vue";
 import IconGenerator from "~/components/IconGenerator.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import origin from "~/libs/origin";
@@ -135,12 +130,13 @@ export default {
   name: "Publish",
   components: {
     VCard,
+    VCardTitle,
+    VCardText,
     VBtn,
     VSelect,
     VSwitch,
     CancelButton,
     IconGenerator,
-    IconCloud,
   },
   props: {
     drawingTool: {
@@ -244,9 +240,11 @@ export default {
 .card {
   @include relative-in-place;
   max-width: 945px;
+  color: $jambalaya !important;
+  background-color: $ecru-white;
 }
 
-.publish--window {
+.publish-grid {
   @include relative-in-place;
 
   display: grid;
@@ -255,58 +253,20 @@ export default {
   grid-auto-columns: auto;
   row-gap: 25px;
 
-  padding: 14px 23px;
-
-  background-color: $ecru-white;
   color: $jambalaya;
 
-  @include phone-landscape {
-    padding: 28px 46px;
-  }
   @include tablet-landscape {
     width: auto;
     height: auto;
     grid-template-columns: repeat(6, 1fr);
     grid-template-areas:
-      "header header header header header header"
       "render render inputs inputs inputs inputs"
       "style style style type type type"
       "bottom bottom bottom bottom bottom bottom";
-    padding: 30px 40px;
     column-gap: 20px;
-    box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.16);
   }
 }
 
-.publish--header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: left;
-  align-content: center;
-  align-items: center;
-  @include tablet-landscape {
-    grid-area: header;
-  }
-}
-
-.publish--icon-cloud-container {
-  margin-right: 15px;
-
-  background-color: $cinderella;
-  border-radius: 5px;
-  padding: 0px 3px;
-}
-
-.publish--icon-cloud {
-  fill: $jambalaya;
-  align-items: str;
-}
-
-.publish--header-text {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
 
 .publish--render {
   justify-self: center;

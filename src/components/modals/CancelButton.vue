@@ -1,6 +1,6 @@
 <template>
   <VBtn
-    class="cancel-btn"
+    class="close-btn"
     @click="$emit('click')"
     outlined
     fab
@@ -40,9 +40,9 @@ export default {
 @use "styles/resets" as resets;
 
 
-.cancel-btn {
+.close-btn {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
 }
 </style>

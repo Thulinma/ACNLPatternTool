@@ -197,6 +197,7 @@ export default {
 @import "styles/screens";
 
 .stage {
+  padding: 0px 24px 24px 24px;
   max-width: 250px;
   @include phone-landscape {
     max-width: 350px;

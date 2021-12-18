@@ -14,7 +14,9 @@
         :options="options"
         :selectedMap="selectedMap"
         @select="toggleSelection"
-      />
+      >
+        <template #title>Files loaded</template>
+      </PatternContainer>
     </VDialog>
     <FileLoader
       ref="collectionFileLoader"

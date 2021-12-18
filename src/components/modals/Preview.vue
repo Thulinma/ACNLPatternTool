@@ -40,6 +40,7 @@
             Close
           </VBtn>
         </VCardActions>
+        <CancelButton @click="gameModeInfo = false"></CancelButton>
       </VCard>
     </VDialog>
   </VCard>
@@ -55,6 +56,7 @@ import {
   VCardActions,
   VSpacer,
 } from "vuetify/lib";
+import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
 
@@ -75,7 +77,8 @@ export default {
     VCardTitle,
     VCardText,
     VCardActions,
-    VSpacer,  
+    VSpacer,
+    CancelButton,
     ACNLQRGenerator,
     ACNLToACNHInfo,
   },

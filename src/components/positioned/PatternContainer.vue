@@ -1,5 +1,6 @@
 <template>
   <VCard elevation="0" class="card rounded-xl" :color="colors.ecruWhite">
+    <VCardTitle class="card-title"><slot name="title"></slot></VCardTitle>
     <VCardText class="card-text">
       <div class="grid">
         <VBadge
@@ -34,6 +35,7 @@
     </VCardText>
     <!-- <CancelButton class="cancel-button-adjust" @click="$emit('close')" /> -->
     <UtilityBar v-if="options.length > 0" :options="options" />
+    <CancelButton @click="$emit('close')" />
   </VCard>
 </template>
 
@@ -53,7 +55,6 @@ import {
 } from "vuetify/lib";
 import PreviewGenerator from "~/components/PreviewGenerator.vue";
 import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from "~/libs/DrawingTool";
 import UtilityBar from "~/components/positioned/UtilityBar.vue";
 
 import colors from "~/styles/colors.scss";
@@ -113,6 +114,9 @@ export default {
 
 .card {
   overflow: hidden;
+}
+.card-title {
+  color: $jambalaya !important;
 }
 .card-text {
   padding: 24px !important;

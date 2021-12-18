@@ -5,7 +5,9 @@
     :options="options"
     :selectedMap="selectedMap"
     @select="toggleSelection"
-  />
+  >
+    <template #title>Storage</template>
+  </PatternContainer>
 </template>
 
 <script>

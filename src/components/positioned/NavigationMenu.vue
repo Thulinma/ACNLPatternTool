@@ -1,7 +1,6 @@
 <template>
   <VCard elevation="0" class="menu--card">
     <div class="menu--container">
-      <CancelButton class="nav-menu-cancel" @click="$emit('modal-close')" />
       <div class="menu--header">
         <div class="menu--header-icons-left">
           <IconNookService class="menu--header-img menu--header-bars" />
@@ -108,6 +107,7 @@
         </a>
       </div>
     </div>
+    <CancelButton class="nav-menu-cancel" @click="$emit('modal-close')" />
   </VCard>
 </template>
 
@@ -202,16 +202,12 @@ export default {
 @import "styles/screens";
 
 .nav-menu-cancel {
-  @include tablet-portrait {
-    top: 20px;
-    right: 12px;
-  }
+  top: 35px;
+  right: 24px;
 }
 
 .menu--card {
-  @include tablet-portrait {
-    border-radius: 90px;
-  }
+  background-color: transparent;
 }
 
 .menu--container {
@@ -219,13 +215,12 @@ export default {
   display: inline-block;
   background-color: $ecru-white;
   user-select: none;
-
+  border-radius: 90px !important;
   width: 100%;
   height: 100%;
 
   position: relative;
   padding: 30px 30px;
-  z-index: 999;
 
   @include tablet-portrait {
     width: auto;

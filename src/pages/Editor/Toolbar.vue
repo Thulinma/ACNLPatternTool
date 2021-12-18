@@ -335,7 +335,6 @@
       v-model="settingsOpen"
       content-class="settings--dialog"
       width="auto"
-      scrollable
     >
       <PatternSettings
         v-if="settingsOpen"
@@ -393,6 +392,7 @@
             Continue
           </VBtn>
         </VCardActions>
+        <CancelButton @click="gameModeWarning = false"></CancelButton>
       </VCard>
     </VDialog>
   </div>
@@ -414,6 +414,7 @@ import {
   VCheckbox,
   VSwitch,
 } from "vuetify/lib";
+import CancelButton from "~/components/modals/CancelButton.vue";
 import DrawingTool from "~/libs/DrawingTool";
 import PatternSettings from "~/components/modals/PatternSettings.vue";
 import Preview from "~/components/modals/Preview.vue";
@@ -527,6 +528,7 @@ export default {
     VDivider,
     VCheckbox,
     VSwitch,
+    CancelButton,
     PatternSettings,
     Preview,
     Storage,

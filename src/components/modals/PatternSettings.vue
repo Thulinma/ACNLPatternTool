@@ -1,49 +1,43 @@
 <template>
   <VCard elevation="0" class="settings--card rounded-xl" width="auto">
-    <div class="settings--window">
-      <CancelButton @click="$emit('close')" />
-      <div>
-        <VTextField
-          v-model="details.title"
-          class="text-field"
-          label="Title"
-          :maxlength="drawingTool.compatMode === 'ACNL' ? 20: 21"
-          :hint="`${drawingTool.compatMode} pattern's name.`"
-          persistent-hint
-          outlined
-          clearable
-          counter
-          @keydown.stop
-        />
-      </div>
-      <div>
-        <VTextField
-          v-model="details.creator.name"
-          class="text-field"
-          label="Villager"
-          :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
-          :hint="`${drawingTool.compatMode} villager's name.`"
-          persistent-hint
-          outlined
-          clearable
-          counter
-          @keydown.stop
-        />
-      </div>
-      <div>
-        <VTextField
-          v-model="details.town.name"
-          class="text-field"
-          label="Town"
-          :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
-          :hint="`${drawingTool.compatMode} town's name.`"
-          persistent-hint
-          outlined
-          clearable
-          counter
-          @keydown.stop
-        />
-      </div>
+    <VCardTitle class="title">Settings</VCardTitle>
+    <VCardText class="settings-grid">
+      <VTextField
+        v-model="details.title"
+        class="text-field"
+        label="Title"
+        :maxlength="drawingTool.compatMode === 'ACNL' ? 20: 21"
+        :hint="`${drawingTool.compatMode} pattern's name.`"
+        persistent-hint
+        outlined
+        clearable
+        counter
+        @keydown.stop
+      />
+      <VTextField
+        v-model="details.creator.name"
+        class="text-field"
+        label="Villager"
+        :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
+        :hint="`${drawingTool.compatMode} villager's name.`"
+        persistent-hint
+        outlined
+        clearable
+        counter
+        @keydown.stop
+      />
+      <VTextField
+        v-model="details.town.name"
+        class="text-field"
+        label="Town"
+        :maxlength="drawingTool.compatMode === 'ACNL' ? 9: 10"
+        :hint="`${drawingTool.compatMode} town's name.`"
+        persistent-hint
+        outlined
+        clearable
+        counter
+        @keydown.stop
+      />
 
       <div>
         <VSelect
@@ -125,13 +119,16 @@
           </div>
         </VTooltip>
       </div>
-    </div>
+    </VCardText>
+    <CancelButton @click="$emit('close')" />
   </VCard>
 </template>
 
 <script>
 import {
   VCard,
+  VCardTitle,
+  VCardText,
   VTextField,
   VSelect,
   VTooltip,
@@ -144,6 +141,8 @@ export default {
   name: "Settings",
   components: {
     VCard,
+    VCardTitle,
+    VCardText,
     VTextField,
     VSelect,
     VTooltip,
@@ -250,10 +249,15 @@ export default {
 @import "styles/resets";
 
 .settings--card {
+  color: $jambalaya !important;
   background-color: $ecru-white;
 }
 
-.settings--window {
+.title {
+  font-family: Nunito !important;
+}
+
+.settings-grid {
   box-sizing: border-box;
   @include relative-in-place;
   z-index: 999;
@@ -265,16 +269,12 @@ export default {
   grid-auto-columns: auto;
   row-gap: 19px;
 
-  overflow: scroll;
-  padding: 28px;
-
   color: $jambalaya;
 
   @include tablet-landscape {
     min-width: 500px;
     width: auto;
     height: auto;
-    overflow: visible; // reset
   }
 }
 

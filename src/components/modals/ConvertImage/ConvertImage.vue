@@ -1,10 +1,11 @@
 <template>
   <VCard elevation="0" class="card rounded-xl">
+    <VCardTitle class="title">Convert Image</VCardTitle>
     <CancelButton @click="$emit('close')" />
     <VStepper class="stepper rounded-xl" v-model="state" elevation="0">
       <VStepperItems>
         <VStepperContent
-          class="stepper-content"
+          class="stepper-content internal-padding"
           :step="1"
         >
           <CroppingStage
@@ -91,6 +92,7 @@
 <script>
 import {
   VCard,
+  VCardTitle,
   VBtn,
   VStepper,
   VStepperHeader,
@@ -120,6 +122,7 @@ export default {
   name: "ImageLoader",
   components: {
     VCard,
+    VCardTitle,
     VBtn,
     VStepper,
     VStepperHeader,
@@ -793,6 +796,13 @@ export default {
 <style lang="scss" scoped>
 @use "styles/colors" as colors;
 @use "styles/overrides" as overrides;
+
+.card { background-color: colors.$ecru-white; }
+
+.title {
+  color: colors.$jambalaya;
+  font-family: Nunito !important;
+}
 
 .stepper {
   background-color: colors.$ecru-white;
