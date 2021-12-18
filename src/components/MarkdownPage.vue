@@ -14,7 +14,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "styles/screens";
+@use "styles/screens" as screens;
 
 .container::v-deep {
   margin: auto;

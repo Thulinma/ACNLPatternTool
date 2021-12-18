@@ -123,9 +123,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 // size dictated by palette
 .color-tools--container {
@@ -136,13 +136,13 @@ export default {
 
   user-select: none;
 
-  background: $pink-lace;
+  background: colors.$pink-lace;
 
   text-align: left;
   padding-top: 5px;
   padding-bottom: 5px;
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     width: auto;
     display: inline-block;
     padding-top: 0px;
@@ -150,7 +150,7 @@ export default {
     padding-left: 10px;
     border-radius: 0px 0px 40px 40px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     padding-top: 0px;
     padding-right: 25px;
     padding-left: 25px;
@@ -158,19 +158,27 @@ export default {
   }
 
   &:hover {
-    @include stripes($pink-lace, $piggy-pink, 20px);
-    @include moving-stripes;
+    @include colors.stripes(
+      colors.$pink-lace,
+      colors.$piggy-pink,
+      20px
+    );
+    @include colors.moving-stripes;
   }
 
   &.picking {
-    @include stripes($pink-lace, $piggy-pink, 20px);
-    @include moving-stripes(20s);
+    @include colors.stripes(
+      colors.$pink-lace,
+      colors.$piggy-pink,
+      20px
+    );
+    @include colors.moving-stripes(20s);
     position: relative;
     height: 100%;
     padding-bottom: 0px;
     border-radius: 0px;
 
-    @include tablet-portrait {
+    @include screens.tablet-portrait {
       height: auto;
       $full-thickness: 25px;
       border-radius: 0px 0px 20px 20px;
@@ -178,7 +186,7 @@ export default {
       padding-bottom: $full-thickness;
       padding-left: $full-thickness;
     }
-    @include tablet-landscape {
+    @include screens.tablet-landscape {
       $full-thickness: 30px;
       padding-right: $full-thickness;
       padding-bottom: $full-thickness;
@@ -191,7 +199,7 @@ export default {
   margin-top: 15px;
   width: 100%;
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     width: auto;
   }
 }
@@ -212,11 +220,11 @@ export default {
   padding-top: 15px;
   padding-bottom: 10px;
 
-  background-color: $piggy-pink;
-  color: $jambalaya;
+  background-color: colors.$piggy-pink;
+  color: colors.$jambalaya;
   text-align: center;
   &.open {
-    background-color: $pink-lace;
+    background-color: colors.$pink-lace;
     cursor: default;
   }
   cursor: pointer;
@@ -231,7 +239,7 @@ export default {
   transform: translate(0%, 100%);
   width: 100%;
   height: 100%;
-  background-color: $pink-lace;
+  background-color: colors.$pink-lace;
 }
 
 .color-tools--color-picker-content {
@@ -239,7 +247,7 @@ export default {
   top: 0;
   left: 0;
 
-  background-color: $pink-lace;
+  background-color: colors.$pink-lace;
   padding: 20px 10px;
   border-radius: 0px 0px 20px 20px;
 
@@ -254,7 +262,7 @@ export default {
   //   border-radius: 0px 0px 20px 20px;
   // }
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     padding: 20px 25px;
   }
 }

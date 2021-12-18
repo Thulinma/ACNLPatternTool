@@ -1,8 +1,8 @@
-@import "styles/colors";
+@use "styles/colors" as colors;
 
 $main-font: "Nunito";
-$bg-color: $ecru-white;
-$color: $olive-haze;
+$bg-color: colors.$ecru-white;
+$color: colors.$olive-haze;
 $font-size: 16px;
 
 html {

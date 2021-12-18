@@ -97,9 +97,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/transitions";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/transitions" as transitions;
+@use "styles/screens" as screens;
 
 .color-picker--container {
   user-select: none;
@@ -124,11 +124,11 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   border-radius: 7px;
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     width: 85px;
     height: 85px;
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     width: 100px;
     height: 100px;
     border-radius: 10px;
@@ -152,7 +152,7 @@ export default {
 
 .color-picker--vibrant-color {
   @include vibrant-color-block-radius(3px);
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     @include vibrant-color-block-radius(6px);
   }
 }
@@ -207,11 +207,11 @@ $mono-color-border-radius: $mono-block-border-radius - 5px;
   left: 0;
 
   cursor: pointer;
-  transition: transform 0.1s $energetic;
+  transition: transform 0.1s transitions.$energetic;
   &.picked {
     border-width: 4px;
     border-style: solid;
-    border-color: $tiffany-blue;
+    border-color: colors.$tiffany-blue;
   }
   &:hover {
     transform: scale(1.2);

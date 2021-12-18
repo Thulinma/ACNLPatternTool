@@ -192,30 +192,29 @@ export default {
 <style lang="scss" scoped>
 // can't scope style here or everything breaks lmao
 @use "styles/overrides" as overrides;
-@import "styles/colors";
-@import "styles/resets";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/screens" as screens;
 
 .stage {
   padding: 0px 24px 24px 24px;
   max-width: 250px;
-  @include phone-landscape {
+  @include screens.phone-landscape {
     max-width: 350px;
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     max-width: 500px;
   }
-  @include desktop {
+  @include screens.desktop {
     max-width: 600px;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     max-width: 695px;
   }
 }
 
 .cropping--cropper {
-  @include polkadots($olive-haze, $donkey-brown);
-  @include moving-polkadots(2s);
+  @include colors.polkadots(colors.$olive-haze, colors.$donkey-brown);
+  @include colors.moving-polkadots(2s);
   border-radius: 5px;
   max-width: 100%;
   min-height: 250px;
@@ -234,23 +233,23 @@ export default {
   }
 
   // for copy/pasting
-  @include phone-landscape {
+  @include screens.phone-landscape {
     max-width: 100%;
     max-height: 300px;
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     max-width: 100%;
     max-height: 300px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     max-width: 100%;
     max-height: 300px;
   }
-  @include desktop {
+  @include screens.desktop {
     max-width: 100%;
     max-height: 380px;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     max-width: 100%;
     max-height: 400px;
   }
@@ -280,45 +279,53 @@ export default {
   justify-items: stretch;
   align-content: center;
 
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     grid-template-areas: "tile upload next";
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: auto;
     column-gap: 20px;
   }
-  @include tablet-landscape {
-  }
-  @include desktop {
-  }
-  @include desktop-hd {
-  }
 }
 
 .tile-btn {
   grid-area: tile;
-  @include overrides.v-btn($ecru-white, $olive-haze);
+  @include overrides.v-btn(
+    colors.$ecru-white,
+    colors.$olive-haze
+  );
   &:hover {
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots;
+    @include colors.polkadots(
+      colors.$olive-haze,
+      colors.$donkey-brown
+    );
+    @include colors.moving-polkadots;
   }
 }
 .upload-btn {
   grid-area: upload;
-  @include overrides.v-btn($ecru-white, $olive-haze);
+  @include overrides.v-btn(
+    colors.$ecru-white,
+    colors.$olive-haze
+  );
   &:hover {
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots;
+    @include colors.polkadots(
+      colors.$olive-haze,
+      colors.$donkey-brown
+    );
+    @include colors.moving-polkadots;
   }
 }
 .next-btn {
   grid-area: next;
-  @include overrides.v-btn($white, $robin-egg-blue);
+  @include overrides.v-btn(colors.$white, colors.$robin-egg-blue);
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(
+      colors.$tiffany-blue,
+      colors.$tiffany-blue-light,
+      20px
+    );
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 
@@ -341,7 +348,11 @@ export default {
 }
 
 .text-field {
-  @include overrides.v-text-field($jambalaya, $ecru-white, $olive-haze);
+  @include overrides.v-text-field(
+    colors.$jambalaya,
+    colors.$ecru-white,
+    colors.$olive-haze
+  );
 }
 </style>
 

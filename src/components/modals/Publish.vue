@@ -230,22 +230,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "styles/overrides";
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/resets";
-@import "styles/screens";
+@use "styles/overrides" as overrides;
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 
 .card {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   max-width: 945px;
-  color: $jambalaya !important;
-  background-color: $ecru-white;
+  color: colors.$jambalaya !important;
+  background-color: colors.$ecru-white;
 }
 
 .publish-grid {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
 
   display: grid;
   grid-template-rows: auto;
@@ -253,9 +252,9 @@ export default {
   grid-auto-columns: auto;
   row-gap: 25px;
 
-  color: $jambalaya;
+  color: colors.$jambalaya;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     width: auto;
     height: auto;
     grid-template-columns: repeat(6, 1fr);
@@ -271,7 +270,7 @@ export default {
 .publish--render {
   justify-self: center;
   align-self: center;
-  background-color: $cinderella;
+  background-color: colors.$cinderella;
   border-radius: 10px;
   border-style: dashed;
   border-color: #707070;
@@ -280,12 +279,12 @@ export default {
   width: 250px;
   height: 250px;
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     width: 300px;
     height: 300px;
   }
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     justify-self: flex-start;
     grid-area: render;
     margin: 0px;
@@ -297,7 +296,7 @@ export default {
   row-gap: 20px;
   justify-items: stretch;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     justify-items: auto;
     min-width: 500px;
     margin-left: 50px;
@@ -305,8 +304,8 @@ export default {
   }
 }
 
-.style-tags { @include tablet-landscape { grid-area: style; }}
-.type-tags { @include tablet-landscape { grid-area: type; }}
+.style-tags { @include screens.tablet-landscape { grid-area: style; }}
+.type-tags { @include screens.tablet-landscape { grid-area: type; }}
 .style-tags,
 .type-tags {
   margin-top: 20px;
@@ -316,7 +315,7 @@ export default {
 
   font-size: 1.1rem;
   font-weight: 600;
-  color: $jambalaya;
+  color: colors.$jambalaya;
 }
 
 .tag-selects {
@@ -328,7 +327,7 @@ export default {
   column-gap: 10px;
   row-gap: 20px;
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     justify-items: auto;
     grid-template-columns: 1fr 1fr 1fr;
     row-gap: 0px;
@@ -344,7 +343,7 @@ export default {
   align-items: center;
   column-gap: 10px;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     margin-bottom: 0px;
     grid-area: bottom;
   }
@@ -357,32 +356,36 @@ export default {
 
 .publish-btn {
   @include overrides.v-btn(
-    $white,
-    $robin-egg-blue,
+    colors.$white,
+    colors.$robin-egg-blue,
   );
   text-transform: uppercase;
-  border: 4px solid $robin-egg-blue;
+  border: 4px solid colors.$robin-egg-blue;
   font-weight: 700;
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(
+      colors.$tiffany-blue,
+      colors.$tiffany-blue-light,
+      20px
+    );
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 
 .text-field {
   @include overrides.v-text-field(
-    $jambalaya,
-    $cinderella,
-    $olive-haze,
+    colors.$jambalaya,
+    colors.$cinderella,
+    colors.$olive-haze,
   );
 }
 
 .select {
   @include overrides.v-select(
-    $jambalaya,
-    $cinderella,
-    $olive-haze,
+    colors.$jambalaya,
+    colors.$cinderella,
+    colors.$olive-haze,
   );
 }
 </style>

@@ -40,11 +40,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/transitions";
-@import "styles/positioning";
-@import "styles/screens";
-@import "styles/resets";
+@use "styles/colors" as colors;
+@use "styles/transitions" as transitions;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
+@use "styles/resets" as resets;
 
 .v-dialog {
   box-shadow: none;
@@ -52,8 +52,8 @@ export default {
 
 // desktop
 .menu-button--container {
-  @include reset-button;
-  transition: transform 0.15s $energetic;
+  @include resets.reset-button;
+  transition: transform 0.15s transitions.$energetic;
 
   position: absolute;
   top: 10px;
@@ -68,7 +68,7 @@ export default {
   align-items: center;
   align-content: center;
 
-  background-color: $van-cleef;
+  background-color: colors.$van-cleef;
   border-radius: 12px;
 
   &:hover {
@@ -76,7 +76,7 @@ export default {
   }
 
   .menu-button--icon-wrapper {
-    @include relative-in-place;
+    @include positioning.relative-in-place;
     width: 78%;
     height: 78%;
 
@@ -85,7 +85,7 @@ export default {
     justify-content: center;
     align-items: center;
 
-    background-color: $ecru-white;
+    background-color: colors.$ecru-white;
     border-radius: 999px;
   }
 
@@ -103,20 +103,20 @@ export default {
     }
   }
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     border-radius: 15px;
     width: 50px;
     height: 50px;
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     border-radius: 15px;
     width: 60px;
     height: 60px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     border-radius: 12px;
   }
-  @include desktop {
+  @include screens.desktop {
     top: 20px;
     right: 20px;
   }

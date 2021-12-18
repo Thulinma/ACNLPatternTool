@@ -92,12 +92,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 .passport {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   justify-self: stretch;
 
   display: grid;
@@ -112,7 +112,7 @@ export default {
   justify-items: flex-start;
 
   border-radius: 8px;
-  background-color: $soapstone;
+  background-color: colors.$soapstone;
 
   & ~ & {
     margin-top: 40px;
@@ -132,7 +132,7 @@ export default {
     background-repeat: repeat;
   }
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-auto-columns: auto 1fr;
@@ -145,14 +145,14 @@ export default {
     padding: 30px 50px 50px 50px;
   }
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     column-gap: 80px;
     padding: 30px 80px 50px 80px;
     max-width: 950px;
     justify-self: center;
   }
 
-  @include desktop {
+  @include screens.desktop {
     max-width: 1150px;
     column-gap: 100px;
     padding: 50px 100px 80px 100px;
@@ -160,23 +160,23 @@ export default {
 }
 
 .passport-photo {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   justify-self: center;
 
   .photo-frame {
     border-radius: 14px;
     padding: 10px;
-    background-color: $ecru-white;
+    background-color: colors.$ecru-white;
 
-    @include desktop {
+    @include screens.desktop {
       border-radius: 18px;
       padding: 13px;
     }
 
     .photo-container {
-      background-color: $chrome-white;
+      background-color: colors.$chrome-white;
       border-radius: 8px;
-      @include desktop {
+      @include screens.desktop {
         border-radius: 12px;
       }
 
@@ -188,12 +188,12 @@ export default {
           visibility: hidden;
         }
 
-        @include phone-landscape {
+        @include screens.phone-landscape {
           height: 200px;
           width: 200px;
         }
 
-        @include desktop {
+        @include screens.desktop {
           height: 250px;
           width: 250px;
         }
@@ -203,7 +203,7 @@ export default {
 }
 
 .passport-info {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   justify-self: stretch;
 
   display: grid;
@@ -213,14 +213,14 @@ export default {
   grid-auto-rows: auto;
   font-size: 1.2rem;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     width: 500px;
   }
 
   .greeting {
-    color: $olive-haze;
+    color: colors.$olive-haze;
     justify-self: flex-start;
-    background-color: $ecru-white;
+    background-color: colors.$ecru-white;
     border-radius: 14px;
     margin: 0 0 10px;
     padding: 12px 20px;
@@ -235,7 +235,7 @@ export default {
 
     li {
       padding: 15px 0 15px 5px;
-      border-bottom: 3px solid $ecru-white;
+      border-bottom: 3px solid colors.$ecru-white;
 
       a,
       span,
@@ -244,24 +244,24 @@ export default {
       }
 
       &:nth-last-child(1) {
-        border-bottom: 0px solid $white;
+        border-bottom: 0px solid colors.$white;
       }
 
       &.island {
         font-size: 0.9em;
-        color: $olive-haze;
+        color: colors.$olive-haze;
       }
       &.title {
         font-size: 0.9em;
-        color: $jambalaya;
+        color: colors.$jambalaya;
       }
       &.name {
         font-size: 0.9em;
-        color: $jambalaya;
+        color: colors.$jambalaya;
       }
       &.urls {
         font-size: 0.85em;
-        color: $olive-haze;
+        color: colors.$olive-haze;
       }
     }
   }

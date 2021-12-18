@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "styles/colors";
+@use "styles/colors" as colors;
 
 /* Global app styles */
 #app {

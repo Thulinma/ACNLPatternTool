@@ -517,12 +517,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "styles/overrides";
-@import "styles/colors";
-@import "styles/transitions";
-@import "styles/positioning";
-@import "styles/functions";
-@import "styles/screens";
+@use "styles/overrides" as overrides;
+@use "styles/colors" as colors;
+@use "styles/transitions" as transitions;
+@use "styles/positioning" as positioning;
+@use "styles/functions" as functions;
+@use "styles/screens" as screens;
 
 .v-menu__content {
   box-shadow: none;
@@ -530,7 +530,7 @@ export default {
 
 .editor--container {
   transition: background-color 0.5s linear;
-  background-color: $ecru-white;
+  background-color: colors.$ecru-white;
   min-height: 100%;
 
   display: grid;
@@ -546,9 +546,9 @@ export default {
   justify-items: center;
   align-items: flex-start;
   padding-bottom: 100px;
-  background-color: $pink-lace;
+  background-color: colors.$pink-lace;
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     grid-template-areas:
       "color-tools color-tools"
       "canvas toolbar"
@@ -561,9 +561,7 @@ export default {
     background-color: transparent;
     row-gap: 20px;
   }
-  @include tablet-landscape {
-  }
-  @include desktop {
+  @include screens.desktop {
     grid-template-areas:
       "color-tools color-tools color-tools"
       "preview canvas toolbar"
@@ -584,7 +582,7 @@ export default {
   height: 100%;
   overflow-y: scroll;
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     width: auto;
     height: auto;
     max-height: 100%;
@@ -609,34 +607,37 @@ export default {
   margin-top: 30px;
   padding: 24px;
 
-  @include polkadots($olive-haze, $donkey-brown);
+  @include colors.polkadots(
+    colors.$olive-haze,
+    colors.$donkey-brown
+  );
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     display: block;
   }
-  @include desktop {
+  @include screens.desktop {
     display: block;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     padding: 32px;
   }
 }
 
 .editor--preview {
-  width: calc-canvas-size(3);
-  height: calc-canvas-size(3);
+  width: functions.calc-canvas-size(3);
+  height: functions.calc-canvas-size(3);
   background-color: white;
 
-  @include tablet-portrait {
-    width: calc-canvas-size(2);
-    height: calc-canvas-size(2);
+  @include screens.tablet-portrait {
+    width: functions.calc-canvas-size(2);
+    height: functions.calc-canvas-size(2);
   }
-  @include desktop-hd {
-    width: calc-canvas-size(3);
-    height: calc-canvas-size(3);
+  @include screens.desktop-hd {
+    width: functions.calc-canvas-size(3);
+    height: functions.calc-canvas-size(3);
   }
 }
 
@@ -645,10 +646,10 @@ export default {
   justify-self: center;
   display: block;
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     display: block;
   }
-  @include desktop {
+  @include screens.desktop {
     display: block;
   }
 }
@@ -658,54 +659,53 @@ export default {
   justify-self: flex-end;
 
   box-sizing: content-box;
-  @include flex-container--center;
+  @include positioning.flex-container--center;
   width: 100%;
   padding: 16px 0px;
 
-  @include polkadots($olive-haze, $donkey-brown);
+  @include colors.polkadots(
+    colors.$olive-haze,
+    colors.$donkey-brown
+  );
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     width: auto;
     padding: 24px 24px;
     border-radius: 5px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     padding: 32px 32px;
   }
-  @include desktop {
+  @include screens.desktop {
     width: auto;
     padding: 72px;
     border-radius: 8px;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     padding: 96px;
   }
 }
 
 .editor--canvas {
-  width: calc-canvas-size(4);
-  height: calc-canvas-size(4);
+  width: functions.calc-canvas-size(4);
+  height: functions.calc-canvas-size(4);
 
-  @include phone-landscape {
-    width: calc-canvas-size(5);
-    height: calc-canvas-size(5);
+  @include screens.phone-landscape {
+    width: functions.calc-canvas-size(5);
+    height: functions.calc-canvas-size(5);
   }
-  @include tablet-portrait {
-    width: calc-canvas-size(6);
-    height: calc-canvas-size(6);
+  @include screens.tablet-portrait {
+    width: functions.calc-canvas-size(6);
+    height: functions.calc-canvas-size(6);
   }
-  @include tablet-landscape {
-    width: calc-canvas-size(8);
-    height: calc-canvas-size(8);
+  @include screens.tablet-landscape {
+    width: functions.calc-canvas-size(8);
+    height: functions.calc-canvas-size(8);
   }
-  @include desktop {
-    // width: 512px;
-    // height: 512px;
-  }
-  @include desktop-hd {
-    width: calc-canvas-size(9);
-    height: calc-canvas-size(9);
+  @include screens.desktop-hd {
+    width: functions.calc-canvas-size(9);
+    height: functions.calc-canvas-size(9);
   }
 }
 
@@ -719,17 +719,17 @@ export default {
   justify-content: flex-end;
   column-gap: 10px;
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     right: 5px;
     transform: translate(0px, 0px);
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     right: 10px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     right: 10px;
   }
-  @include desktop {
+  @include screens.desktop {
     right: 30px;
   }
 }
@@ -737,46 +737,46 @@ export default {
 .import-btn,
 .export-btn {
   padding-left: 10px !important;
-  @include tablet-landscape { font-size: 1.2rem; }
+  @include screens.tablet-landscape { font-size: 1.2rem; }
   .icon-ctn.v-btn--disabled {
-    background-color: $ecru-white !important;
+    background-color: colors.$ecru-white !important;
     margin-right: 5px;
   }
 }
 
 .import-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $olive-haze,
+    colors.$ecru-white,
+    colors.$olive-haze,
   );
   .icon-ctn.v-btn--disabled .icon {
-    color: $olive-haze !important;
+    color: colors.$olive-haze !important;
   };
 }
 
 .import-list {
   @include overrides.v-list(
-    $ecru-white,
-    $olive-haze,
-    $jambalaya,
+    colors.$ecru-white,
+    colors.$olive-haze,
+    colors.$jambalaya,
   ) { font-size: 1.1rem; };
 }
 
 .export-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $robin-egg-blue,
+    colors.$ecru-white,
+    colors.$robin-egg-blue,
   );
   .icon-ctn.v-btn--disabled .icon {
-    color: $robin-egg-blue !important;
+    color: colors.$robin-egg-blue !important;
   };
 }
 
 .export-list {
   @include overrides.v-list(
-    $ecru-white,
-    $robin-egg-blue,
-    $persian-green,
+    colors.$ecru-white,
+    colors.$robin-egg-blue,
+    colors.$persian-green,
   ) { font-size: 1.1rem; };
 }
 </style>

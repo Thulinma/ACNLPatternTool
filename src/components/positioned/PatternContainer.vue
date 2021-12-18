@@ -108,22 +108,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 .card {
   overflow: hidden;
 }
 .card-title {
-  color: $jambalaya !important;
+  color: colors.$jambalaya !important;
 }
 .card-text {
   padding: 24px !important;
 }
 
 .grid {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(1, 225px);
@@ -133,20 +133,20 @@ export default {
   row-gap: 20px;
   column-gap: 10px;
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     grid-template-columns: repeat(2, 175px);
     justify-content: space-around;
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     grid-template-columns: repeat(4, 175px);
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     grid-template-columns: repeat(5, 175px);
     column-gap: 30px;
     row-gap: 40px;
     justify-content: space-between;
   }
-  @include desktop {
+  @include screens.desktop {
     grid-template-columns: repeat(5, 175px);
     column-gap: 40px;
     row-gap: 40px;
@@ -159,7 +159,7 @@ export default {
 
 .storage-item {
   cursor: pointer;
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   display: grid;
   justify-content: center;
   justify-items: center;
@@ -172,12 +172,12 @@ export default {
   
   .pattern-title {
     font-family: Nunito !important;
-    color: $jambalaya !important;
+    color: colors.$jambalaya !important;
     user-select: none;
   }
   
   &.storage-item--active {
-    background-color: rgba($persian-green, 0.25);
+    background-color: rgba(colors.$persian-green, 0.25);
   }
 }
 

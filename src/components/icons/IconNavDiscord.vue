@@ -29,9 +29,9 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "styles/positioning";
+@use "styles/positioning" as positioning;
 .icon--container {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   display: inline-block;
   & svg {
     height: 100%;

@@ -19,9 +19,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/transitions";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/transitions" as transitions;
+@use "styles/screens" as screens;
 
 .banner--container {
   user-select: none;
@@ -37,20 +37,18 @@ export default {
   padding: 8px 10px 8px 13px;
   border-radius: 0px 3px 3px 0px;
 
-  background-color: $salmon;
-  transition: background 0.15s $energetic;
+  background-color: colors.$salmon;
+  transition: background 0.15s transitions.$energetic;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
 
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     top: 20px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     padding: 8px 27px 8px 35px;
     border-radius: 0px 5px 5px 0px;
   }
-  @include desktop {
+  @include screens.desktop {
     padding: 8px 27px 8px 20px;
   }
 }
@@ -59,15 +57,7 @@ export default {
   height: 20px;
   margin-right: 3px;
 
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
-  }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     height: 35px;
     margin-right: 7px;
   }
@@ -78,13 +68,7 @@ export default {
   font-size: 1rem;
   display: none;
 
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
-  }
-  @include tablet-landscape {
-  }
-  @include desktop {
+  @include screens.desktop {
     display: block;
     font-size: 1.65rem;
     transform: translate(0px, 2px);

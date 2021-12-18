@@ -643,8 +643,8 @@ export default {
 
 
 <style lang="scss">
-@use "styles/colors";
-@use "styles/overrides";
+@use "styles/colors" as colors;
+@use "styles/overrides" as overrides;
 
 .browse-tag--menu {
   @include overrides.v-menu(

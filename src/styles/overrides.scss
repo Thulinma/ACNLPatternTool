@@ -1,4 +1,4 @@
-@use "styles/colors";
+@use "styles/colors" as colors;
 
 @mixin v-btn(
   $text-color: colors.$ecru-white,

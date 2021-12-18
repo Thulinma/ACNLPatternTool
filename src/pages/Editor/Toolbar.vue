@@ -720,10 +720,10 @@ export default {
 
 <style lang="scss" scoped>
 @use "styles/overrides" as overrides;
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/transitions";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/transitions" as transitions;
+@use "styles/screens" as screens;
 
 // define most important variables when changing media queries
 $toolbar--options-width: 75px;
@@ -745,12 +745,10 @@ $toolbar--options-width: 75px;
 
   column-gap: 10px;
 
-  background-color: $pink-lace;
+  background-color: colors.$pink-lace;
   overflow: visible;
 
-  @include phone-landscape {
-  }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     grid-template-columns: auto 1fr 1fr;
     justify-self: start;
     align-self: stretch;
@@ -758,15 +756,15 @@ $toolbar--options-width: 75px;
     height: auto;
     border-radius: 0px 50px 50px 0px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     column-gap: 15px;
   }
-  @include desktop {
+  @include screens.desktop {
     width: 320px;
     align-self: center;
     height: 650px;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     height: 700px;
   }
 }
@@ -787,7 +785,7 @@ $toolbar--options-width: 75px;
   min-height: 225px;
   padding: 7px 10px 10px 3px;
 
-  background-color: $provincial-pink;
+  background-color: colors.$provincial-pink;
   border-radius: 0px 40px 40px 0px;
 }
 
@@ -804,16 +802,16 @@ $toolbar--options-width: 75px;
 
 .option-btn {
   @include overrides.v-btn(
-    $bison-hide,
+    colors.$bison-hide,
     transparent
   ) { z-index: 1; };
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   width: 100%;
   height: 100%;
   min-width: 0 !important;
   height: auto !important;
   border-radius: 100%;
-  fill: $bison-hide;
+  fill: colors.$bison-hide;
   
   svg { width: 30px; }
   
@@ -824,8 +822,8 @@ $toolbar--options-width: 75px;
     left: 0;
     display: block;
     content: "";
-    background-color: $bon-jour;
-    transition: transform 0.15s $energetic;
+    background-color: colors.$bon-jour;
+    transition: transform 0.15s transitions.$energetic;
     display: block;
     width: 100%;
     height: 100%;
@@ -842,8 +840,8 @@ $toolbar--options-width: 75px;
     }
   }
   &.option-btn__active {
-    @include overrides.v-btn($white, $robin-egg-blue);
-    fill: $white;
+    @include overrides.v-btn(colors.$white, colors.$robin-egg-blue);
+    fill: colors.$white;
   }
 }
 
@@ -858,7 +856,7 @@ $toolbar--options-width: 75px;
   height: 30px;
 
   border-radius: 999px;
-  background-color: $provincial-pink;
+  background-color: colors.$provincial-pink;
 
   .hint {
     // reset
@@ -877,7 +875,7 @@ $toolbar--options-width: 75px;
     cursor: pointer;
     border-radius: 999px;
     color: white;
-    background-color: $olive-haze;
+    background-color: colors.$olive-haze;
   }
 }
 
@@ -924,7 +922,7 @@ $toolbar--options-width: 75px;
         background: transparent;
       }
       .toolbar--shortcut-icon {
-        fill: $jambalaya;
+        fill: colors.$jambalaya;
       }
     }
   }
@@ -937,7 +935,10 @@ $toolbar--options-width: 75px;
 
 .storage-btn {
   justify-self: center;
-  @include overrides.v-btn($olive-haze, $ecru-white) {
+  @include overrides.v-btn(
+    colors.$olive-haze,
+    colors.$ecru-white
+  ) {
       display: grid;
       grid-template-columns: auto 1fr;
       column-gap: 5px;
@@ -947,24 +948,30 @@ $toolbar--options-width: 75px;
   padding: 8px 16px 8px 8px !important;
   font-weight: 700;
   font-size: 1.2rem;
-  fill: $ecru-white;
-  @include tablet-portrait { font-size: 1.2rem; }
-  @include desktop { font-size: 1.7rem; }
+  fill: colors.$ecru-white;
+  @include screens.tablet-portrait { font-size: 1.2rem; }
+  @include screens.desktop { font-size: 1.7rem; }
   
   &:hover {
-    @include overrides.v-btn($ecru-white, $olive-haze);
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots(2s);
-    fill: $olive-haze;
+    @include overrides.v-btn(colors.$ecru-white, colors.$olive-haze);
+    @include colors.polkadots(colors.$olive-haze, colors.$donkey-brown);
+    @include colors.moving-polkadots(2s);
+    fill: colors.$olive-haze;
   }
   &:hover {
     .storage-btn-icon-ctn {
-      @include overrides.v-btn($olive-haze, $ecru-white);
+      @include overrides.v-btn(
+        colors.$olive-haze,
+        colors.$ecru-white
+      );
     }
   }
   
   .storage-btn-icon-ctn {
-    @include overrides.v-btn($ecru-white, $olive-haze) {
+    @include overrides.v-btn(
+      colors.$ecru-white,
+      colors.$olive-haze
+    ) {
       display: grid;
       justify-content: center;
       justify-items: center;
@@ -978,8 +985,8 @@ $toolbar--options-width: 75px;
 }
 
 .shortcut-btn {
-  @include overrides.v-btn($azalea, transparent);
-  @include relative-in-place;
+  @include overrides.v-btn(colors.$azalea, transparent);
+  @include positioning.relative-in-place;
   display: grid;
   justify-content: stretch;
   justify-items: stretch;
@@ -990,7 +997,7 @@ $toolbar--options-width: 75px;
   width: 60px !important;
   height: 60px !important;
   padding: 10px !important;
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     width: 65px !important;
     height: 65px !important;
   }
@@ -1002,22 +1009,26 @@ $toolbar--options-width: 75px;
     padding: 15px !important;
   }
   .shortcut-icon {
-    fill: $azalea;
+    fill: colors.$azalea;
     width: 100%;
     height: 100%;
   }
   &:hover {
     &:not(.shortcut-btn--active) {
-      @include stripes($robin-egg-blue, $tiffany-blue, 15px);
-      @include moving-stripes(3s);
+      @include colors.stripes(
+        colors.$robin-egg-blue,
+        colors.$tiffany-blue,
+        15px
+      );
+      @include colors.moving-stripes(3s);
       .shortcut-icon {
-        fill: $frosted-mint;
+        fill: colors.$frosted-mint;
       }
     }
   }
   &.shortcut-btn--active {
     .shortcut-icon {
-      fill: $jambalaya;
+      fill: colors.$jambalaya;
     }
   }
 }
@@ -1025,7 +1036,7 @@ $toolbar--options-width: 75px;
 .toolbar-divider {
   justify-self: center;
   width: 90%;
-  border: 2px solid $light-pink;
+  border: 2px solid colors.$light-pink;
   border-radius: 2px;
 }
 
@@ -1048,30 +1059,37 @@ $toolbar--options-width: 75px;
 
 .warning-title,
 .warning-content {
-  color: $jambalaya !important;
+  color: colors.$jambalaya !important;
 }
 
 .cancel-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $olive-haze,
+    colors.$ecru-white,
+    colors.$olive-haze,
   );
   &:hover {
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots;
+    @include colors.polkadots(
+      colors.$olive-haze,
+      colors.$donkey-brown
+    );
+    @include colors.moving-polkadots;
   }
 }
 
 .continue-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $robin-egg-blue,
+    colors.$ecru-white,
+    colors.$robin-egg-blue,
   );
-  border: 4px solid $robin-egg-blue;
+  border: 4px solid colors.$robin-egg-blue;
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(
+      colors.$tiffany-blue,
+      colors.$tiffany-blue-light,
+      20px
+    );
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 </style>

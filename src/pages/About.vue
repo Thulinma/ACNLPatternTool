@@ -101,8 +101,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import "styles/colors";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/screens" as screens;
 
 .passports {
   padding: 50px 30px;
@@ -119,7 +119,7 @@ export default {
 
   h1 {
     justify-self: stretch;
-    color: $donkey-brown;
+    color: colors.$donkey-brown;
     font-size: 1.25rem;
     text-transform: uppercase;
     margin: 0 0 20px;
@@ -135,7 +135,7 @@ export default {
     align-items: center;
     column-gap: 10px;
 
-    @include tablet-portrait {
+    @include screens.tablet-portrait {
       margin: 0 0 40px;
       column-gap: 30px;
       grid-template-columns: auto auto auto;
@@ -150,9 +150,9 @@ export default {
       box-sizing: border-box;
       width: calc(100% - 20px);
       height: 3px;
-      background-color: $bison-hide;
+      background-color: colors.$bison-hide;
 
-      @include tablet-portrait {
+      @include screens.tablet-portrait {
         width: 150px;
         height: 4px;
       }

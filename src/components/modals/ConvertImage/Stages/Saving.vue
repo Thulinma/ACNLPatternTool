@@ -102,10 +102,9 @@ export default {
 
 <style lang="scss" scoped>
 @use "styles/overrides" as overrides;
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/resets";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 .stage {
   display: grid;
@@ -117,7 +116,7 @@ export default {
   overflow-y: auto;
   padding: 24px 24px 24px 24px;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     grid-template-columns: auto auto;
     overflow-y: scroll;
     max-height: 425px;
@@ -143,13 +142,13 @@ export default {
   align-content: space-between;
   align-items: auto;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     position: sticky;
   }
 }
 
 .preview-container {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   grid-area: preview;
 
   display: flex;
@@ -159,8 +158,11 @@ export default {
   align-items: center;
   overflow: hidden;
 
-  @include polkadots($olive-haze, $donkey-brown);
-  @include moving-polkadots(2s);
+  @include colors.polkadots(
+    colors.$olive-haze,
+    colors.$donkey-brown
+  );
+  @include colors.moving-polkadots(2s);
   min-width: 200px;
   height: 300px;
   padding: 20px;
@@ -170,19 +172,19 @@ export default {
     // overlay
     content: "";
     display: block;
-    @include absolute-center;
+    @include positioning.absolute-center;
     width: 100%;
     height: 100%;
     background: black;
     opacity: 0.5;
   }
-  @include phone-landscape {
+  @include screens.phone-landscape {
     width: 350px;
   }
 }
 
 .preview {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   display: block;
   width: 100%;
   height: 100%;
@@ -202,18 +204,28 @@ export default {
 }
 
 .text-h6 {
-  color: $jambalaya;
+  color: colors.$jambalaya;
 }
 
 .save-btn {
-  @include overrides.v-btn($white, $robin-egg-blue);
+  @include overrides.v-btn(
+    colors.$white,
+    colors.$robin-egg-blue
+  );
   padding: 0px 20px !important;
-  @include overrides.v-btn($white, $robin-egg-blue);
-  border: 4px solid $robin-egg-blue;
+  @include overrides.v-btn(
+    colors.$white,
+    colors.$robin-egg-blue
+  );
+  border: 4px solid colors.$robin-egg-blue;
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(
+      colors.$tiffany-blue,
+      colors.$tiffany-blue-light,
+      20px
+    );
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 </style>

@@ -109,10 +109,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/transitions";
-@import "styles/positioning";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/transitions" as transitions;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 .palette--container {
   display: inline-block;
@@ -135,31 +135,31 @@ export default {
   justify-content: center;
   justify-items: center;
 
-  background-color: $pink-lace;
+  background-color: colors.$pink-lace;
   border-radius: 30px;
 
-  @include phone-landscape {
+  @include screens.phone-landscape {
     grid-template-columns: repeat(8, 38px);
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     padding: 15px 30px 15px 30px;
     grid-template-columns: repeat(16, 30px);
     column-gap: 5px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     column-gap: 10px;
     grid-template-columns: repeat(16, 34px);
   }
-  @include desktop {
+  @include screens.desktop {
     column-gap: 15px;
     grid-template-columns: repeat(16, 36px);
   }
 }
 
 .palette--color-container {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
 
-  transition: transform 0.15s $energetic;
+  transition: transform 0.15s transitions.$energetic;
   display: inline-block;
   cursor: pointer;
   transform: scale(1);
@@ -167,7 +167,7 @@ export default {
     transform: scale(1.2);
   }
   &:active {
-    transition: transform 0.05s $energetic;
+    transition: transform 0.05s transitions.$energetic;
     transform: scale(1);
   }
 
@@ -180,8 +180,8 @@ export default {
     bottom: -8px;
     transform: translate(-50%, 0px) scale(0);
 
-    transition: transform 0.1s $energetic;
-    background-color: $persian-green;
+    transition: transform 0.1s transitions.$energetic;
+    background-color: colors.$persian-green;
     border-radius: 4px;
     opacity: 0;
   }
@@ -197,7 +197,7 @@ export default {
 
 .palette--button-hint {
   position: absolute;
-  background-color: $pink-lace;
+  background-color: colors.$pink-lace;
   padding: 5px;
   box-sizing: content-box;
   bottom: 8px;
@@ -232,7 +232,7 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
 
-    background-color: $olive-haze;
+    background-color: colors.$olive-haze;
     border-radius: 999px;
 
     cursor: pointer;

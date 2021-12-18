@@ -114,26 +114,25 @@ export default {
 
 <style lang="scss" scoped>
 @use "styles/overrides" as overrides;
-@import "styles/colors";
-@import "styles/positioning";
-@import "styles/screens";
-@import "styles/resets";
+@use "styles/colors" as colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
 
 .card {
   background-color: transparent;
-  @include relative-in-place;
+  @include positioning.relative-in-place;
 }
 
 .preview {
   display: block;
   border-width: 2px;
   border-style: solid;
-  border-color: $cannon-pink;
-  background-color: $cannon-pink;
+  border-color: colors.$cannon-pink;
+  background-color: colors.$cannon-pink;
   border-radius: 30px !important;
   max-width: 100%;
   max-height: 500px;
-  @include phone-landscape {
+  @include screens.phone-landscape {
     border-width: 5px;
   }
 }
@@ -150,42 +149,42 @@ export default {
 
 .save-btn,
 .qr-info-btn {
-  @include overrides.v-btn($white, $robin-egg-blue);
+  @include overrides.v-btn(colors.$white, colors.$robin-egg-blue);
   font-size: 1.1rem;
-  border: 4px solid $robin-egg-blue;
+  border: 4px solid colors.$robin-egg-blue;
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(colors.$tiffany-blue, colors.$tiffany-blue-light, 20px);
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 
 .info-title,
 .info-content {
-  color: $jambalaya !important;
+  color: colors.$jambalaya !important;
 }
 
 .cancel-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $olive-haze,
+    colors.$ecru-white,
+    colors.$olive-haze,
   );
   &:hover {
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots;
+    @include colors.polkadots(colors.$olive-haze, colors.$donkey-brown);
+    @include colors.moving-polkadots;
   }
 }
 
 .continue-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $robin-egg-blue,
+    colors.$ecru-white,
+    colors.$robin-egg-blue,
   );
-  border: 4px solid $robin-egg-blue;
+  border: 4px solid colors.$robin-egg-blue;
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(colors.$tiffany-blue, colors.$tiffany-blue-light, 20px);
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 </style>

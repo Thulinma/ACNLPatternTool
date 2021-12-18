@@ -139,17 +139,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/icon-colors";
-@import "styles/positioning";
-@import "styles/screens";
-@import "styles/transitions";
+@use "styles/colors" as colors;
+@use "styles/icon-colors" as icon-colors;
+@use "styles/positioning" as positioning;
+@use "styles/screens" as screens;
+@use "styles/transitions" as transitions;
 
 .home--container {
   position: relative;
   top: 0;
   left: 0;
-  background-color: $soapstone;
+  background-color: colors.$soapstone;
 
   min-height: 100%;
 }
@@ -201,22 +201,22 @@ export default {
   & .discord {
     grid-area: discord;
   }
-  @include phone-landscape {
+  @include screens.phone-landscape {
     grid-template-areas:
       "editor browse"
       "updates faq"
       "discord discord";
   }
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     grid-template-areas:
       "editor editor browse browse updates updates"
       "faq faq faq discord discord discord";
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     padding-top: 100px;
     padding-bottom: 0px;
     grid-template-areas: "updates browse editor faq discord";
-    @include screen-medium {
+    @include screens.screen-medium {
       position: fixed;
       width: 100%;
       top: 30%;
@@ -232,51 +232,51 @@ export default {
 .faq,
 .browse {
   outline: none;
-  transition: transform 0.1s $energetic;
+  transition: transform 0.1s transitions.$energetic;
 }
 
 .editor {
   & .home--nav-icon-container {
-    background-color: $salmon;
+    background-color: icon-colors.$salmon;
   }
   & .home--nav--icon-half-circle {
-    background-color: $pink;
+    background-color:icon-colors.$pink;
   }
 }
 .browse {
   & .home--nav-icon-container {
-    background-color: $keppel;
+    background-color: icon-colors.$keppel;
   }
   & .home--nav--icon-half-circle {
-    background-color: $pearl-aqua;
+    background-color: icon-colors.$pearl-aqua;
   }
 }
 .updates {
   & .home--nav-icon-container {
-    background-color: $copper;
+    background-color: icon-colors.$copper;
   }
   & .home--nav--icon-half-circle {
-    background-color: $wax-flower;
+    background-color: icon-colors.$wax-flower;
   }
 }
 .faq {
   & .home--nav-icon-container {
-    background-color: $cream-can;
+    background-color: icon-colors.$cream-can;
   }
   & .home--nav--icon-half-circle {
-    background-color: $cape-honey;
+    background-color: icon-colors.$cape-honey;
   }
 }
 .discord {
   & .home--nav-icon-container {
-    background-color: $portage;
+    background-color: icon-colors.$portage;
   }
   & .home--nav--icon-half-circle {
-    background-color: $perano;
+    background-color: icon-colors.$perano;
   }
 }
 
-@include tablet-landscape {
+@include screens.tablet-landscape {
   .updates {
     transform: scale(1) rotate(-14deg) translateY(80px);
     &:hover {
@@ -321,45 +321,45 @@ export default {
 
   padding: 16px;
 
-  background-color: $ecru-white;
+  background-color: colors.$ecru-white;
   border-radius: 9999px;
-  @include desktop-hd {
+  @include screens.desktop-hd {
     padding: 20px;
   }
 }
 
 .home--nav-icon-container {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   border-radius: 9999px;
   border-width: 14px;
   border-style: solid;
-  border-color: $orange-white;
+  border-color: colors.$orange-white;
   overflow: hidden;
   
-  @include desktop-hd {
+  @include screens.desktop-hd {
     border-width: 15px;
   }
 }
 
 .home--nav-icon {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   z-index: 10;
   width: 140px;
   height: 140px;
   border-radius: 9999px;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     width: 120px;
     height: 120px;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     width: 150px;
     height: 150px;
   }
 }
 
 .home--nav--icon-half-circle {
-  @include absolute-center;
+  @include positioning.absolute-center;
   top: 45%;
   transform: translate(-50%, 0px);
   width: 200%;
@@ -378,8 +378,8 @@ export default {
   text-align: center;
   font-weight: 600;
   border-radius: 999px;
-  background-color: $ecru-white;
-  color: $olive-haze;
+  background-color: colors.$ecru-white;
+  color: colors.$olive-haze;
 }
 
 .home--achievements {
@@ -390,20 +390,20 @@ export default {
   width: 100%;
   height: 130px;
   overflow: hidden;
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     display: none;
     height: 125px;
-    @include screen-small {
+    @include screens.screen-small {
       display: block;
     }
-    @include screen-smallX {
+    @include screens.screen-smallX {
       display: block;
       height: 250px;
     }
-    @include screen-medium {
+    @include screens.screen-medium {
       height: 275px;
     }
-    @include screen-large {
+    @include screens.screen-large {
       height: 325px;
     }
   }
@@ -418,29 +418,29 @@ export default {
 
   height: 3000px;
   width: 3000px;
-  @include phone-landscape {
+  @include screens.phone-landscape {
     height: 6000px;
     width: 6000px;
   }
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     height: 3500px;
     width: 3500px;
   }
-  @include desktop {
+  @include screens.desktop {
     height: 4500px;
     width: 4500px;
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     height: 6000px;
     width: 6000px;
   }
 
   border-radius: 99999px;
-  background-color: $ecru-white;
+  background-color: colors.$ecru-white;
 }
 
 .home--ribbon-row {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
 }
 
 .home--ribbon {
@@ -453,7 +453,7 @@ export default {
 
 .home--ribbon-main {
   display: inline-block;
-  background-color: $pink;
+  background-color: icon-colors.$pink;
   color: white;
   padding: 8px 25px;
   font-size: 1.5rem;
@@ -480,48 +480,48 @@ export default {
 .home--counter-row {
   margin-top: 20px;
   text-align: center;
-  @include desktop {
+  @include screens.desktop {
     margin-top: 30px;
   }
 }
 
 .home--counter {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   display: inline-block;
-  color: $ecru-white;
-  background-color: $olive-haze;
+  color: colors.$ecru-white;
+  background-color: colors.$olive-haze;
   padding: 15px 50px 12px 50px;
   font-size: 1.2rem;
   font-weight: 600;
   border-radius: 8px;
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     border-radius: 100px;
     padding: 10px 20px 8px 20px;
   }
-  @include desktop {
+  @include screens.desktop {
   }
-  @include desktop-hd {
+  @include screens.desktop-hd {
     font-size: 1.3rem;
   }
 }
 
 .home--stamps-row {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   display: none;
 
   margin-top: 20px;
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     display: none;
     justify-content: center;
     align-items: center;
-    @include screen-smallX {
+    @include screens.screen-smallX {
       display: flex;
     }
   }
 }
 
 .home--stamps {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   display: inline-block;
 }
 
@@ -537,7 +537,7 @@ export default {
 }
 
 .home--stamp-location {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   height: 100px;
   width: 100px;
   display: inline-block;
@@ -547,14 +547,14 @@ export default {
     margin-left: 15px;
   }
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     height: 75px;
     width: 75px;
-    @include screen-small {
+    @include screens.screen-small {
       height: 100px;
       width: 100px;
     }
-    @include screen-large {
+    @include screens.screen-large {
       height: 130px;
       width: 130px;
     }

@@ -195,11 +195,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
-@import "styles/icon-colors";
-@import "styles/positioning";
-@import "styles/transitions";
-@import "styles/screens";
+@use "styles/colors" as colors;
+@use "styles/icon-colors" as icon-colors;
+@use "styles/positioning" as positioning;
+@use "styles/transitions" as transitions;
+@use "styles/screens" as screens;
 
 .nav-menu-cancel {
   top: 35px;
@@ -213,7 +213,7 @@ export default {
 .menu--container {
   box-sizing: border-box;
   display: inline-block;
-  background-color: $ecru-white;
+  background-color: colors.$ecru-white;
   user-select: none;
   border-radius: 90px !important;
   width: 100%;
@@ -222,7 +222,7 @@ export default {
   position: relative;
   padding: 30px 30px;
 
-  @include tablet-portrait {
+  @include screens.tablet-portrait {
     width: auto;
     height: auto;
   }
@@ -267,7 +267,7 @@ export default {
 
   font-size: 2rem;
   text-align: center;
-  color: $jambalaya;
+  color: colors.$jambalaya;
 }
 
 .menu--nav {
@@ -285,10 +285,10 @@ export default {
   column-gap: 13px;
 
   .menu--nav-icon-container {
-    @include relative-in-place;
+    @include positioning.relative-in-place;
     width: 100%;
     height: 100%;
-    transition: transform 0.1s $energetic;
+    transition: transform 0.1s transitions.$energetic;
     transform: scale(1);
     &:hover {
       transform: scale(1.15);
@@ -298,32 +298,32 @@ export default {
 }
 
 .editor .menu--nav-icon-container {
-  background-color: $salmon;
+  background-color: icon-colors.$salmon;
 }
 .browse .menu--nav-icon-container {
-  background-color: $pearl-aqua;
+  background-color: icon-colors.$pearl-aqua;
 }
 .faq .menu--nav-icon-container {
-  background-color: $cream-can;
+  background-color: icon-colors.$cream-can;
 }
 .updates .menu--nav-icon-container {
-  background-color: $copper;
+  background-color: icon-colors.$copper;
 }
 .discord .menu--nav-icon-container {
-  background-color: $perano;
+  background-color: icon-colors.$perano;
 }
 .home .menu--nav-icon-container {
-  background-color: $pastel-red;
+  background-color: icon-colors.$pastel-red;
 }
 .about .menu--nav-icon-container {
-  background-color: $de-york;
+  background-color: icon-colors.$de-york;
 }
 .twitter .menu--nav-icon-container {
-  background-color: $portage;
+  background-color: icon-colors.$portage;
 }
 
 .menu--nav-icon-container {
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   width: 100%;
   height: 100%;
   border-radius: 35px;

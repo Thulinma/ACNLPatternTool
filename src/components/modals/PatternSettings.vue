@@ -242,15 +242,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "styles/overrides";
-@import "styles/colors";
-@import "styles/screens";
-@import "styles/positioning";
-@import "styles/resets";
+@use "styles/overrides" as overrides;
+@use "styles/colors" as colors;
+@use "styles/screens" as screens;
+@use "styles/positioning" as positioning;
 
 .settings--card {
-  color: $jambalaya !important;
-  background-color: $ecru-white;
+  color: colors.$jambalaya !important;
+  background-color: colors.$ecru-white;
 }
 
 .title {
@@ -259,7 +258,7 @@ export default {
 
 .settings-grid {
   box-sizing: border-box;
-  @include relative-in-place;
+  @include positioning.relative-in-place;
   z-index: 999;
 
   display: grid;
@@ -269,9 +268,9 @@ export default {
   grid-auto-columns: auto;
   row-gap: 19px;
 
-  color: $jambalaya;
+  color: colors.$jambalaya;
 
-  @include tablet-landscape {
+  @include screens.tablet-landscape {
     min-width: 500px;
     width: auto;
     height: auto;
@@ -280,16 +279,16 @@ export default {
 
 .text-field {
   @include overrides.v-text-field(
-    $jambalaya,
-    $cinderella,
-    $olive-haze,
+    colors.$jambalaya,
+    colors.$cinderella,
+    colors.$olive-haze,
   );
 }
 .select {
   @include overrides.v-select(
-    $jambalaya,
-    $cinderella,
-    $olive-haze,
+    colors.$jambalaya,
+    colors.$cinderella,
+    colors.$olive-haze,
   );
 }
 
@@ -305,13 +304,17 @@ export default {
 
 .settings-save-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $robin-egg-blue,
+    colors.$ecru-white,
+    colors.$robin-egg-blue,
   );
   &:hover {
-    @include stripes($tiffany-blue, $tiffany-blue-light, 20px);
-    @include moving-stripes(8s);
-    border: 4px solid $turquoise;
+    @include colors.stripes(
+      colors.$tiffany-blue,
+      colors.$tiffany-blue-light,
+      20px
+    );
+    @include colors.moving-stripes(8s);
+    border: 4px solid colors.$turquoise;
   }
 }
 
@@ -319,12 +322,12 @@ export default {
 .settings-load-meta-btn,
 .settings-store-meta-btn {
   @include overrides.v-btn(
-    $ecru-white,
-    $olive-haze,
+    colors.$ecru-white,
+    colors.$olive-haze,
   );
   &:hover {
-    @include polkadots($olive-haze, $donkey-brown);
-    @include moving-polkadots;
+    @include colors.polkadots(colors.$olive-haze, colors.$donkey-brown);
+    @include colors.moving-polkadots;
   }
 }
 
@@ -332,8 +335,8 @@ export default {
 </style>
 
 <style lang="scss">
-@use "styles/colors";
-@use "styles/overrides";
+@use "styles/colors" as colors;
+@use "styles/overrides" as overrides;
 
 .settings-type--menu {
   @include overrides.v-menu(

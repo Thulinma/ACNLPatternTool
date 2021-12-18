@@ -274,7 +274,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "styles/colors";
+@use "styles/colors" as colors;
 
 .acnh-sliders {
   padding: 10px 20px 15px;
@@ -333,7 +333,7 @@ export default {
   border: 0px;
   border-radius: 20px;
   background: none;
-  background-color: $salmon;
+  background-color: colors.$salmon;
   cursor: pointer;
   margin: 0 5px;
   padding: 2px;
