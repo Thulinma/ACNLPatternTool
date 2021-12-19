@@ -1,0 +1,13 @@
+{
+  "include": ["src/index.js"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "outDir": "build",
+    "allowJs": true,
+    "strict": true,
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+    "lib": ["DOM"]
+  },
+}

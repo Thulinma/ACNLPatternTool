@@ -32,7 +32,7 @@ const output = {
 
 
 const swcRule = {
-  test: /\.m?js$/i,
+  test: /\.m?(js|ts)$/i,
   exclude: /(node_modules|bower_components)/,
   use: {
     loader: 'swc-loader',
@@ -289,7 +289,8 @@ const optimizatonProd = {
 const resolve = {
   extensions: [
     ".js",
-    ".vue"
+    ".ts",
+    ".vue",
   ],
   alias: {
     "~": pathToClientSrc,

@@ -1,23 +1,16 @@
 {
   "jsc": {
     "parser": {
-      "syntax": "ecmascript",
-      "jsx": false,
-      "dynamicImport": false,
-      "privateMethod": false,
-      "functionBind": false,
-      "exportDefaultFrom": false,
-      "exportNamespaceFrom": false,
+      "syntax": "typescript",
+      "tsx": false,
       "decorators": false,
-      "decoratorsBeforeExport": false,
-      "topLevelAwait": false,
-      "importMeta": false
+      "dynamicImport": false
     },
     "transform": null,
     "target": "es5",
-    "loose": false,
-    "externalHelpers": false,
-    "keepClassNames": false
+    "loose": true,
+    "externalHelpers": true,
+    "keepClassNames": true
   },
   "module": {
     "type": "umd",
