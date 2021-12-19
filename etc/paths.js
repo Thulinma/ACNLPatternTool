@@ -11,7 +11,6 @@ const pathToBuild = path.resolve(pathToRoot, "build");
 const pathToStats = path.resolve(pathToRoot, "stats");
 const pathToInjected = path.resolve(pathToRoot, "injected");
 const pathToNodeModules = path.resolve(pathToRoot, "node_modules");
-const pathToZxingSubmodule = path.resolve(pathToRoot, "zxing-js-library");
 
 // paths to specific files
 const pathToEnv = path.resolve(pathToRoot, ".env");
@@ -22,7 +21,6 @@ const pathToPublicIndex = path.resolve(pathToPublic, "index.ejs");
 const pathToFavicon = path.resolve(pathToPublic, "favicon.svg");
 const pathToClientSrcIndex = path.resolve(pathToClientSrc, "index.js")
 const pathToPathsJs = path.resolve(pathToEtc, "paths.js");
-const pathToZxingBuild = path.resolve(pathToZxingSubmodule, "esm5");
 const pathToBundleStats = path.resolve(pathToStats, "bundle.html");
 
 module.exports = {
@@ -43,6 +41,5 @@ module.exports = {
   pathToFavicon,
   pathToClientSrcIndex,
   pathToPathsJs,
-  pathToZxingBuild,
   pathToBundleStats
 };

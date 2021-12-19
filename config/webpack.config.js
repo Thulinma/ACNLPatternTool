@@ -14,7 +14,6 @@ const {
   pathToPublicIndex,
   pathToFavicon,
   pathToClientSrcIndex,
-  pathToZxingBuild,
 } = require('../etc/paths');
 
 
@@ -294,7 +293,6 @@ const resolve = {
   ],
   alias: {
     "~": pathToClientSrc,
-    "@zxing/library": pathToZxingBuild,
   }
 };
 

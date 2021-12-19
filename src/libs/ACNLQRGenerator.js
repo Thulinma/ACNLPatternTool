@@ -1,6 +1,12 @@
 import DrawingTool from "~/libs/DrawingTool";
 import ACNHFormat from '~/libs/ACNHFormat';
-import { QRCodeEncoder, QRCodeDecoderErrorCorrectionLevel, EncodeHintType } from '@zxing/library';
+import {
+  QRCodeDecoderErrorCorrectionLevel,
+  EncodeHintType
+} from '@zxing/library/esm';
+import {
+  AcEncoder as QRCodeEncoder,
+} from '../libs/acZxing';
 import {drawPreviewFromTool} from "~/libs/Preview3D";
 
 async function generateACNLQR(newData){

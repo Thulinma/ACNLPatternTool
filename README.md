@@ -6,18 +6,7 @@ An application to edit Animal Crossing pattern designs.
 
 At the root of the project directory:
 ```sh
-# submodule setup
-git submodule update --init --recursive
-cd zxing-js-library
-yarn # need this to bypass sharp missing binaries
-# ^ if yarn throws an error, ignore it. it's sharp's maintainer's fault
-cd ..
-
-# main repo setup
 npm install
-npm run build:submodule # build the submodule
-# submodule ALWAYS needs to be rebuilt if it changes
-# e.g. switching branches, making updates to the submodule, etc.
 ```
 
  ## Available Scripts
