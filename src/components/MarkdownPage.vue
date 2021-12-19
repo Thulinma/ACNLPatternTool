@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import MarkdownStyled from "~/components/MarkdownStyled.vue";
+import MarkdownStyled from "@/components/MarkdownStyled.vue";
 
 export default {
   components: { MarkdownStyled },

@@ -134,8 +134,8 @@ import {
   VTooltip,
   VIcon,
 } from "vuetify/lib";
-import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from "~/libs/DrawingTool";
+import CancelButton from "@/components/modals/CancelButton.vue";
+import DrawingTool from "@/libs/DrawingTool";
 
 export default {
   name: "Settings",

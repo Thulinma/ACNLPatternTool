@@ -22,8 +22,8 @@
 
 <script>
 import { VDialog } from "vuetify/lib";
-import NavigationMenu from "~/components/positioned/NavigationMenu.vue";
-import IconCompass from "~/components/icons/IconCompass.vue";
+import NavigationMenu from "@/components/positioned/NavigationMenu.vue";
+import IconCompass from "@/components/icons/IconCompass.vue";
 
 export default {
   data: function () {

@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
-import ACNHFormat from "~/libs/ACNHFormat";
-import { applyFilter } from "~/libs/xbrz";
-import { toolToModelType, toolToModelPath } from "~/libs/Preview3D";
+import DrawingTool from "@/libs/DrawingTool";
+import ACNHFormat from "@/libs/ACNHFormat";
+import { applyFilter } from "@/libs/xbrz";
+import { toolToModelType, toolToModelPath } from "@/libs/Preview3D";
 
 import {
   Scene,
@@ -33,7 +33,7 @@ import {
 } from "three";
 import { GLTFLoader } from "@three/loaders/GLTFLoader";
 import { OrbitControls } from "@three/controls/OrbitControls";
-import injected from "~/utils/injected";
+import injected from "@/utils/injected";
 
 const scale = 50;
 

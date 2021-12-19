@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
-import { drawPreviewFromTool } from "~/libs/Preview3D";
+import DrawingTool from "@/libs/DrawingTool";
+import { drawPreviewFromTool } from "@/libs/Preview3D";
 
 export default {
   name: "IconGenerator",

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import generateACNLQR from "~/libs/ACNLQRGenerator";
+import generateACNLQR from "@/libs/ACNLQRGenerator";
 
 export default {
   name: "ACNLQRGenerator",

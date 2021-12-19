@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
+import DrawingTool from "@/libs/DrawingTool";
 
 export default {
   name: "PreviewGenerator",

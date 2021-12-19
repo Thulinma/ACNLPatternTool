@@ -120,7 +120,7 @@
 import { VBtn, VCheckbox, VRadio, VRadioGroup, VSlider } from "vuetify/lib";
 import { paletteSelectionMethods, conversionQualities } from "./enums";
 
-import colors from "~/styles/colors.scss";
+import colors from "@/styles/colors.scss";
 
 const paletteSelectionMethodOptions = [
   {

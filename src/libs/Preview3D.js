@@ -1,6 +1,6 @@
-import { DrawingTool, RenderTarget } from "~/libs/DrawingTool";
-import ACNHFormat from '~/libs/ACNHFormat';
-import { applyFilter } from '~/libs/xbrz';
+import { DrawingTool, RenderTarget } from "@/libs/DrawingTool";
+import ACNHFormat from '@/libs/ACNHFormat';
+import { applyFilter } from '@/libs/xbrz';
 
 //for 3D renders
 import {
@@ -24,7 +24,7 @@ import {
 import {
   GLTFLoader
 } from '@three/loaders/GLTFLoader';
-import injected from "~/utils/injected";
+import injected from "@/utils/injected";
 
 //Global canvas and renderer
 let threeCanvas = document.createElement("canvas");

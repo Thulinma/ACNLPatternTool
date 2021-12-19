@@ -414,30 +414,30 @@ import {
   VCheckbox,
   VSwitch,
 } from "vuetify/lib";
-import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from "~/libs/DrawingTool";
-import PatternSettings from "~/components/modals/PatternSettings.vue";
-import Preview from "~/components/modals/Preview.vue";
-import Storage from "~/components/modals/Storage.vue";
-import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
-import ACNHToACNLInfo from "~/components/partials/ACNHToACNLInfo.vue";
-import { combineOns } from "~/utils/helpers";
+import CancelButton from "@/components/modals/CancelButton.vue";
+import DrawingTool from "@/libs/DrawingTool";
+import PatternSettings from "@/components/modals/PatternSettings.vue";
+import Preview from "@/components/modals/Preview.vue";
+import Storage from "@/components/modals/Storage.vue";
+import ACNLToACNHInfo from "@/components/partials/ACNLToACNHInfo.vue";
+import ACNHToACNLInfo from "@/components/partials/ACNHToACNLInfo.vue";
+import { combineOns } from "@/utils/helpers";
 
 // icons
-import IconInbox from "~/components/icons/IconInbox.vue";
-import IconPaintTube from "~/components/icons/IconPaintTube.vue";
-import IconPalette from "~/components/icons/IconPalette.vue";
-import IconBrushSmall from "~/components/icons/IconBrushSmall.vue";
-import IconBrushMedium from "~/components/icons/IconBrushMedium.vue";
-import IconBrushLarge from "~/components/icons/IconBrushLarge.vue";
-import IconColorFill from "~/components/icons/IconColorFill.vue";
-import IconEyeDropper from "~/components/icons/IconEyeDropper.vue";
-import IconUndo from "~/components/icons/IconUndo.vue";
-import IconRedo from "~/components/icons/IconRedo.vue";
-import IconDetail from "~/components/icons/IconDetail.vue";
-import IconQRCode from "~/components/icons/IconQRCode.vue";
+import IconInbox from "@/components/icons/IconInbox.vue";
+import IconPaintTube from "@/components/icons/IconPaintTube.vue";
+import IconPalette from "@/components/icons/IconPalette.vue";
+import IconBrushSmall from "@/components/icons/IconBrushSmall.vue";
+import IconBrushMedium from "@/components/icons/IconBrushMedium.vue";
+import IconBrushLarge from "@/components/icons/IconBrushLarge.vue";
+import IconColorFill from "@/components/icons/IconColorFill.vue";
+import IconEyeDropper from "@/components/icons/IconEyeDropper.vue";
+import IconUndo from "@/components/icons/IconUndo.vue";
+import IconRedo from "@/components/icons/IconRedo.vue";
+import IconDetail from "@/components/icons/IconDetail.vue";
+import IconQRCode from "@/components/icons/IconQRCode.vue";
 
-import colors from "~/styles/colors.scss";
+import colors from "@/styles/colors.scss";
 
 // tool functions IIFE
 const brush = (() => {

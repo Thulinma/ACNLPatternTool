@@ -6,7 +6,7 @@
 
 
 <script>
-import MarkdownPage from "~/components/MarkdownPage.vue";
+import MarkdownPage from "@/components/MarkdownPage.vue";
 import UpdatesMarkdown from "./Updates.md";
 
 export default {

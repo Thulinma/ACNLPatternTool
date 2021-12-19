@@ -115,20 +115,20 @@
 import { VCard } from "vuetify/lib";
 
 // header svgs
-import IconNookHead from "~/components/icons/IconNookHead.vue";
-import IconNookGPS from "~/components/icons/IconNookGPS.vue";
-import IconNookService from "~/components/icons/IconNookService.vue";
+import IconNookHead from "@/components/icons/IconNookHead.vue";
+import IconNookGPS from "@/components/icons/IconNookGPS.vue";
+import IconNookService from "@/components/icons/IconNookService.vue";
 
-import IconNavBrowse from "~/components/icons/IconNavBrowse.vue";
-import IconNavEditor from "~/components/icons/IconNavEditor.vue";
-import IconNavFaq from "~/components/icons/IconNavFaq.vue";
-import IconNavUpdates from "~/components/icons/IconNavUpdates.vue";
-import IconNavDiscord from "~/components/icons/IconNavDiscord.vue";
-import IconNavHome from "~/components/icons/IconNavHome.vue";
-import IconNavAbout from "~/components/icons/IconNavAbout.vue";
-import IconNavTwitter from "~/components/icons/IconNavTwitter.vue";
+import IconNavBrowse from "@/components/icons/IconNavBrowse.vue";
+import IconNavEditor from "@/components/icons/IconNavEditor.vue";
+import IconNavFaq from "@/components/icons/IconNavFaq.vue";
+import IconNavUpdates from "@/components/icons/IconNavUpdates.vue";
+import IconNavDiscord from "@/components/icons/IconNavDiscord.vue";
+import IconNavHome from "@/components/icons/IconNavHome.vue";
+import IconNavAbout from "@/components/icons/IconNavAbout.vue";
+import IconNavTwitter from "@/components/icons/IconNavTwitter.vue";
 
-import CancelButton from "~/components/modals/CancelButton.vue";
+import CancelButton from "@/components/modals/CancelButton.vue";
 
 const menuTitleDefault = "Main Menu";
 export default {

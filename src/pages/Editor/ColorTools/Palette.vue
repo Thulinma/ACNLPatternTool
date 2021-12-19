@@ -45,11 +45,11 @@
 </template>
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
+import DrawingTool from "@/libs/DrawingTool";
 
 // svg icons
-import IconColorBlob from "~/components/icons/IconColorBlob.vue";
-import IconTransparentBlob from "~/components/icons/IconTransparentBlob.vue";
+import IconColorBlob from "@/components/icons/IconColorBlob.vue";
+import IconTransparentBlob from "@/components/icons/IconTransparentBlob.vue";
 
 export default {
   name: "Palette",

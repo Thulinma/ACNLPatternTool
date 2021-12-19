@@ -25,7 +25,7 @@
 
 
 <script>
-import IconGenerator from "~/components/IconGenerator.vue";
+import IconGenerator from "@/components/IconGenerator.vue";
 
 export default {
   name: "PatternEntry",

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
+import DrawingTool from "@/libs/DrawingTool";
 import JSZip from "jszip";
 import {
   ResultMetadataType,
@@ -19,7 +19,7 @@ import {
 } from "@zxing/library";
 import {
   AcBrowserQRCodeReader as BrowserQRCodeReader,
-} from "~/libs/acZxing";
+} from "@/libs/acZxing";
 
 export default {
   name: "FileLoader",

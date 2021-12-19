@@ -1,9 +1,9 @@
 import JSZip from "jszip";
-import generateACNLQR from "~/libs/ACNLQRGenerator";
-import generateACNHPBL from "~/libs/ACNHPBLGenerator";
+import generateACNLQR from "@/libs/ACNLQRGenerator";
+import generateACNHPBL from "@/libs/ACNHPBLGenerator";
 import { saveAs } from "file-saver"; 
 import lzString from "lz-string";
-import DrawingTool from "~/libs/DrawingTool";
+import DrawingTool from "@/libs/DrawingTool";
 
 /**
  * Saves a single drawing tool as native file pattern.

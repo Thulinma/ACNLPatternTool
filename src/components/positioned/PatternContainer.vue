@@ -53,11 +53,11 @@ import {
   VAutocomplete,
   VScaleTransition,
 } from "vuetify/lib";
-import PreviewGenerator from "~/components/PreviewGenerator.vue";
-import CancelButton from "~/components/modals/CancelButton.vue";
-import UtilityBar from "~/components/positioned/UtilityBar.vue";
+import PreviewGenerator from "@/components/PreviewGenerator.vue";
+import CancelButton from "@/components/modals/CancelButton.vue";
+import UtilityBar from "@/components/positioned/UtilityBar.vue";
 
-import colors from "~/styles/colors.scss";
+import colors from "@/styles/colors.scss";
 
 export default {
   name: "PatternContainer",

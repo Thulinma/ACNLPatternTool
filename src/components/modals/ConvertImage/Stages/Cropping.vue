@@ -109,7 +109,7 @@ import { VIcon, VBtn, VSlider, VTextField } from "vuetify/lib";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 
-import colors from "~/styles/colors.scss";
+import colors from "@/styles/colors.scss";
 
 export default {
   name: "Cropping",

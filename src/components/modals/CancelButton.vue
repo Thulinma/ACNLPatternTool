@@ -18,7 +18,7 @@ import {
   VBtn,
 } from "vuetify/lib";
 
-import colors from '~/styles/colors.scss';
+import colors from '@/styles/colors.scss';
 
 export default {
   name: "CancelButton",

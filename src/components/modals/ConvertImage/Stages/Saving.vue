@@ -33,10 +33,10 @@
 
 <script>
 import { VBtn, VRadio, VRadioGroup } from "vuetify/lib";
-import saver from "~/libs/saver";
-import DrawingTool from "~/libs/DrawingTool";
+import saver from "@/libs/saver";
+import DrawingTool from "@/libs/DrawingTool";
 
-import colors from "~/styles/colors.scss";
+import colors from "@/styles/colors.scss";
 
 const savingMethodOptions = [
   {

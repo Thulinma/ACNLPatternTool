@@ -66,7 +66,7 @@
 
 <script>
 import Palette from "./Palette";
-import DrawingTool from "~/libs/DrawingTool";
+import DrawingTool from "@/libs/DrawingTool";
 import ACNLColorPicker from "./ACNLColorPicker";
 import ACNHColorPicker from "./ACNHColorPicker";
 

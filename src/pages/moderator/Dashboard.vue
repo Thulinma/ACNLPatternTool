@@ -150,8 +150,8 @@
 
 <script>
 import { mapGetters, mapState, mapActions } from "vuex";
-import DrawingTool from "~/libs/DrawingTool";
-import IconGenerator from "~/components/IconGenerator.vue";
+import DrawingTool from "@/libs/DrawingTool";
+import IconGenerator from "@/components/IconGenerator.vue";
 
 const colors = {
   natural: "#EAC558",

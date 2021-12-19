@@ -99,13 +99,13 @@
 </template>
 
 <script>
-import IconNavBrowse from "~/components/icons/IconNavBrowse.vue";
-import IconNavEditor from "~/components/icons/IconNavEditor.vue";
-import IconNavFaq from "~/components/icons/IconNavFaq.vue";
-import IconNavUpdates from "~/components/icons/IconNavUpdates.vue";
-import IconNavDiscord from "~/components/icons/IconNavDiscord.vue";
-import IconRibbonTailLeft from "~/components/icons/IconRibbonTailLeft.vue";
-import IconStamp from "~/components/icons/IconStamp.vue";
+import IconNavBrowse from "@/components/icons/IconNavBrowse.vue";
+import IconNavEditor from "@/components/icons/IconNavEditor.vue";
+import IconNavFaq from "@/components/icons/IconNavFaq.vue";
+import IconNavUpdates from "@/components/icons/IconNavUpdates.vue";
+import IconNavDiscord from "@/components/icons/IconNavDiscord.vue";
+import IconRibbonTailLeft from "@/components/icons/IconRibbonTailLeft.vue";
+import IconStamp from "@/components/icons/IconStamp.vue";
 
 export default {
   name: "Home",

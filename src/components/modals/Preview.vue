@@ -56,17 +56,17 @@ import {
   VCardActions,
   VSpacer,
 } from "vuetify/lib";
-import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from "~/libs/DrawingTool";
-import ACNLToACNHInfo from "~/components/partials/ACNLToACNHInfo.vue";
+import CancelButton from "@/components/modals/CancelButton.vue";
+import DrawingTool from "@/libs/DrawingTool";
+import ACNLToACNHInfo from "@/components/partials/ACNLToACNHInfo.vue";
 
-import ACNLQRGenerator from "~/components/ACNLQRGenerator.vue";
+import ACNLQRGenerator from "@/components/ACNLQRGenerator.vue";
 
 /* libs */
-import generateACNLQR from "~/libs/ACNLQRGenerator";
-import generateACNHPBL from "~/libs/ACNHPBLGenerator";
+import generateACNLQR from "@/libs/ACNLQRGenerator";
+import generateACNHPBL from "@/libs/ACNHPBLGenerator";
 
-import colors from "~/styles/colors.scss";
+import colors from "@/styles/colors.scss";
 
 export default {
   name: "Preview",

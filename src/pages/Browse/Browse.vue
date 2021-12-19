@@ -126,12 +126,12 @@
 
 <script>
 import qs from "qs";
-import origin from "~/libs/origin";
+import origin from "@/libs/origin";
 import {
   createOptions,
   cloneOptions,
   updateResults,
-} from "~/store/browse";
+} from "@/store/browse";
 
 import {
   VPagination,
@@ -140,10 +140,10 @@ import {
   VTextField,
 } from "vuetify/lib";
 import PatternEntry from "./PatternEntry";
-import BxRefresh from "~/assets/icons/bx-refresh.svg?inline";
+import BxRefresh from "@/assets/icons/bx-refresh.svg?inline";
 
-import { computeOptsList } from "~/utils/helpers";
-import colors from "~/styles/colors.scss";
+import { computeOptsList } from "@/utils/helpers";
+import colors from "@/styles/colors.scss";
 
 // const colors = {
 //   natural: "#EAC558",

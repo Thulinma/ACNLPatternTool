@@ -188,9 +188,9 @@
 
 <script>
 /* libs */
-import DrawingTool from "~/libs/DrawingTool";
-import origin from "~/libs/origin";
-import saver from "~/libs/saver";
+import DrawingTool from "@/libs/DrawingTool";
+import origin from "@/libs/origin";
+import saver from "@/libs/saver";
 import lzString from "lz-string";
 
 // components
@@ -204,13 +204,13 @@ import {
   VListItemTitle,
 } from "vuetify/lib";
 import ColorTools from "./ColorTools/ColorTools.vue";
-import ConvertImage from "~/components/modals/ConvertImage";
-import Publish from "~/components/modals/Publish.vue";
-import ThreeDRender from "~/components/ThreeDRender.vue";
+import ConvertImage from "@/components/modals/ConvertImage";
+import Publish from "@/components/modals/Publish.vue";
+import ThreeDRender from "@/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
-import FileLoader from "~/components/FileLoader.vue";
-import FileLoaderCollection from "~/components/positioned/FileLoaderCollection.vue";
-import CancelButton from "~/components/modals/CancelButton.vue";
+import FileLoader from "@/components/FileLoader.vue";
+import FileLoaderCollection from "@/components/positioned/FileLoaderCollection.vue";
+import CancelButton from "@/components/modals/CancelButton.vue";
 
 export default {
   name: "Editor",

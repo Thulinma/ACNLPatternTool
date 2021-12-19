@@ -1,4 +1,4 @@
-import origin from "~/libs/origin";
+import origin from "@/libs/origin";
 
 const ORIGIN_PAGE_SIZE = 300;
 

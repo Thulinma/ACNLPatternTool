@@ -9,7 +9,7 @@ import {
   ColladaLoader
 } from "@three/loaders/ColladaLoader";
 import * as THREE from "three";
-import injected from "~/utils/injected";
+import injected from "@/utils/injected";
 
 const {
   easel_folder

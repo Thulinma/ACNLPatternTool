@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import IconBase from "~/components/icons/IconBase.vue";
-import IconHouse from "~/components/icons/IconHouse.vue";
-import IconContactCard from "~/components/icons/IconContactCard.vue";
+import IconBase from "@/components/icons/IconBase.vue";
+import IconHouse from "@/components/icons/IconHouse.vue";
+import IconContactCard from "@/components/icons/IconContactCard.vue";
 
 export default {
   props: {

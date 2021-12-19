@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import vuetify from './plugins/vuetify';
-import App from '~/App.vue';
-import i18n from '~/i18n'; // use i18n
-import { ifProdExec } from '~/utils/if-env';
-import router from '~/routers'; // use router
-import store from '~/store'; // use vuex
-import "~/style.scss"; // top-level styles
+import App from '@/App.vue';
+import i18n from '@/i18n'; // use i18n
+import { ifProdExec } from '@/utils/if-env';
+import router from '@/routers'; // use router
+import store from '@/store'; // use vuex
+import "@/style.scss"; // top-level styles
 
 // vue global config
 Vue.config.productionTip = false;

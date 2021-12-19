@@ -100,8 +100,8 @@ import {
   VStepperItems,
   VStepperContent,
 } from "vuetify/lib";
-import CancelButton from "~/components/modals/CancelButton.vue";
-import DrawingTool from "~/libs/DrawingTool";
+import CancelButton from "@/components/modals/CancelButton.vue";
+import DrawingTool from "@/libs/DrawingTool";
 
 import CroppingStage from "./Stages/Cropping.vue";
 import AdjustingStage from "./Stages/Adjusting.vue";

@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import DrawingTool from "~/libs/DrawingTool";
-import ACNLFormat from "~/libs/ACNLFormat";
+import DrawingTool from "@/libs/DrawingTool";
+import ACNLFormat from "@/libs/ACNLFormat";
 
 export default {
   name: "ACNLColorPicker",

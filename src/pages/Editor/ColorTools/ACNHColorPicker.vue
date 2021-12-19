@@ -145,10 +145,10 @@
 </template>
 
 <script>
-import colorMaker from "~/libs/ACNHFormat";
+import colorMaker from "@/libs/ACNHFormat";
 
-import IconLeftArrow from "~/components/icons/IconLeftArrow.vue";
-import IconRightArrow from "~/components/icons/IconRightArrow.vue";
+import IconLeftArrow from "@/components/icons/IconLeftArrow.vue";
+import IconRightArrow from "@/components/icons/IconRightArrow.vue";
 
 export default {
   name: "ACNHColorPicker",

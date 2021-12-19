@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Editor from '~/pages/Editor';
+import Editor from '@/pages/Editor';
 
 const mode = "history";
 

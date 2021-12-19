@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import IconBase from "~/components/icons/IconBase.vue";
-import IconPencil from "~/components/icons/IconPencil.vue";
-import IconFill from "~/components/icons/IconFill.vue";
-import IconPicker from "~/components/icons/IconPicker.vue";
+import IconBase from "@/components/icons/IconBase.vue";
+import IconPencil from "@/components/icons/IconPencil.vue";
+import IconFill from "@/components/icons/IconFill.vue";
+import IconPicker from "@/components/icons/IconPicker.vue";
 
 export default {
   name: "ToolSelector",

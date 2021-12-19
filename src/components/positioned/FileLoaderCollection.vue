@@ -28,9 +28,9 @@
 
 <script>
 import { VDialog } from "vuetify/lib";
-import PatternContainer from "~/components/positioned/PatternContainer.vue";
-import FileLoader from "~/components/FileLoader.vue";
-import saver from "~/libs/saver";
+import PatternContainer from "@/components/positioned/PatternContainer.vue";
+import FileLoader from "@/components/FileLoader.vue";
+import saver from "@/libs/saver";
 
 export default {
   name: "FileLoaderCollection",

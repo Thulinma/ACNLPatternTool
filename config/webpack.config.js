@@ -292,7 +292,7 @@ const resolve = {
     ".vue",
   ],
   alias: {
-    "~": pathToClientSrc,
+    "@": pathToClientSrc,
   }
 };
 

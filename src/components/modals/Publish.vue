@@ -118,10 +118,10 @@ import {
   VSelect,
   VSwitch,
 } from "vuetify/lib";
-import CancelButton from "~/components/modals/CancelButton.vue";
-import IconGenerator from "~/components/IconGenerator.vue";
-import DrawingTool from "~/libs/DrawingTool";
-import origin from "~/libs/origin";
+import CancelButton from "@/components/modals/CancelButton.vue";
+import IconGenerator from "@/components/IconGenerator.vue";
+import DrawingTool from "@/libs/DrawingTool";
+import origin from "@/libs/origin";
 
 import colors from './../../styles/colors.scss';
 import { computeOptsList } from "./../../utils/helpers";

@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import PatternContainer from "~/components/positioned/PatternContainer.vue";
-import saver from "~/libs/saver";
+import PatternContainer from "@/components/positioned/PatternContainer.vue";
+import saver from "@/libs/saver";
 
 export default {
   name: "Storage",

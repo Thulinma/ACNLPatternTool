@@ -1,13 +1,13 @@
-import Home from '~/pages/Home.vue';
-import Browse from '~/pages/Browse';
-import Editor from '~/pages/Editor';
-import FAQ from '~/pages/FAQ.vue';
-import About from '~/pages/About.vue';
-import Updates from '~/pages/Updates.vue';
-import Missing from '~/pages/Missing.vue';
-import ModeratorIndex from '~/pages/moderator/Index.vue';
-import ModeratorLogin from '~/pages/moderator/Login.vue';
-import ModeratorDashboard from '~/pages/moderator/Dashboard.vue';
+import Home from '@/pages/Home.vue';
+import Browse from '@/pages/Browse';
+import Editor from '@/pages/Editor';
+import FAQ from '@/pages/FAQ.vue';
+import About from '@/pages/About.vue';
+import Updates from '@/pages/Updates.vue';
+import Missing from '@/pages/Missing.vue';
+import ModeratorIndex from '@/pages/moderator/Index.vue';
+import ModeratorLogin from '@/pages/moderator/Login.vue';
+import ModeratorDashboard from '@/pages/moderator/Dashboard.vue';
 
 const mode = "history";
 
