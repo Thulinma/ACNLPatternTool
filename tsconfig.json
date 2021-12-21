@@ -1,11 +1,19 @@
 {
   "compilerOptions": {
+    "target": "ES5",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "build",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }  
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "downlevelIteration": true,
+    "lib": [
+      "DOM",
+      "ESNext",
+    ]
   }
 }

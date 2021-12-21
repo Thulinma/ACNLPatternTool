@@ -20,8 +20,8 @@
     </VDialog>
     <FileLoader
       ref="collectionFileLoader"
-      fileType="collection"
-      @multiload="multiload"
+      :exts="zipExts"
+      @load="multiload"
     />
   </div>
 </template>
@@ -31,6 +31,7 @@ import { VDialog } from "vuetify/lib";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
 import FileLoader from "@/components/FileLoader.vue";
 import saver from "@/libs/saver";
+import { zipExts } from "@/libs/reader";
 
 export default {
   name: "FileLoaderCollection",
@@ -41,6 +42,7 @@ export default {
   },
   data() {
     return {
+      zipExts,
       drawingTools: [],
       selectedMap: [],
     };
@@ -59,7 +61,6 @@ export default {
         label: `Open`,
         callback: async () => {
           const drawingTool = selected[0];
-          console.log(drawingTool);
           this.$emit("load", drawingTool.toString());
           this.$emit("close");
         },

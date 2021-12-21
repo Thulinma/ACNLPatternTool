@@ -146,11 +146,11 @@
 
     <FileLoader
       ref="patternFileLoader"
-      fileType="acpattern"
+      :exts="patternExts"
       @load="load"
     />
 
-    <FileLoader ref="imageFileLoader" fileType="image" @load="load" />
+    <FileLoader ref="imageFileLoader" :exts="qrImageExts" @load="load" />
 
     <FileLoaderCollection
       @load="load"
@@ -192,6 +192,10 @@ import DrawingTool from "@/libs/DrawingTool";
 import origin from "@/libs/origin";
 import saver from "@/libs/saver";
 import lzString from "lz-string";
+import {
+  patternExts,
+  qrImageExts,
+} from "@/libs/reader";
 
 // components
 import {
@@ -235,6 +239,9 @@ export default {
     // randomize the gender
     const randomBinary = Math.floor(Math.random());
     return {
+      patternExts,
+      qrImageExts,
+
       drawingTool: new DrawingTool(),
       patternDetails: {
         // redundant mirrored properties, need these to sync
@@ -334,9 +341,8 @@ export default {
     // REACTION FUNCTIONS
     // ------------------
     // data can be binary string or any drawingTool accepted data type
-    load(data) {
-      console.log("debug here");
-      this.drawingTool.load(data);
+    load([drawingTool]) {
+      this.drawingTool.load(drawingTool);
       this.drawingTool.render();
       this.syncPatternDetails();
     },
