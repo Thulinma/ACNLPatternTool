@@ -169,10 +169,21 @@ const mdRule = {
   ]
 };
 
+const csvRule = {
+  test: /\.csv$/,
+  loader: 'csv-loader',
+  options: {
+    dynamicTyping: false,
+    header: true,
+    skipEmptyLines: true
+  },
+};
+
 
 const fileRules = [
   mdRule,
   svgRule,
+  csvRule,
   {
     // file-loader for image assets
     test: /\.(png|jpe?g|gif)$/i,
