@@ -1,20 +1,29 @@
 <template>
-  <VFileInput
-    v-show="false"
-    v-model="files"
-    :accept="accept"
-    :multiple="multiple"
-    @change="onChange"
-  />
+  <Fragment>
+    <VFileInput
+      v-show="false"
+      v-model="files"
+      ref="files"
+      :accept="accept"
+      :multiple="multiple"
+      @change="onChange"
+    />
+    <slot name="activator" :on="{ click: open }">
+    </slot>
+  </Fragment>
 </template>
 
 <script>
+import { Fragment } from "vue-fragment";
 import { VFileInput } from "vuetify/lib";
 import { zipExts, extsToRead } from "@/libs/reader";
 
 export default {
   name: "FileLoader",
-  components: { VFileInput },
+  components: {
+    VFileInput,
+    Fragment,
+  },
   props: {
     exts: {
       type: Array,
@@ -33,7 +42,7 @@ export default {
   },
   methods: {
     open() {
-      this.$el.querySelector("input").click();
+      this.$refs.files.$el.querySelector("input").click();
     },
     async onChange() {
       const drawingTools = await extsToRead.get(this.exts)(

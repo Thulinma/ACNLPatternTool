@@ -76,10 +76,25 @@
   $hover-color: rgba(0, 0, 0, 0),
 ) {
   background-color: $background-color;
-  .v-list-item:hover { background-color: $hover-color !important }
+  .v-list-item {
+    @include v-list-item(
+      $text-color,
+      $background-color, 
+      $hover-color
+    )
+  }
+  @content;
+}
+
+@mixin v-list-item(
+  $text-color: colors.$jambalaya,
+  $background-color: colors.$cinderella,
+  $hover-color: rgba(0, 0, 0, 0),
+) {
+  &:hover { background-color: $hover-color !important }
   .v-list-item__content { color: $text-color !important; }
   .v-list-item__title { color: $text-color !important; }
-  .v-list-item--active { color: black !important; }
+  &.v-list-item--active { color: black !important; }
   @content;
 }
 

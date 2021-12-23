@@ -93,16 +93,11 @@
             </VBtn>
         </template>
         <VList class="import-list">
-          <VListItem
+          <ImportMenuItem
             v-for="item in importMenuItems"
             :key="item.label"
-            link
-            @click="item.onSelect"
-          >
-            <VListItemTitle
-              v-text="item.label"
-            />
-          </VListItem>
+            :item="item"
+          />
         </VList>
       </VMenu>
       
@@ -143,19 +138,6 @@
       </VMenu>
       
     </div>
-
-    <FileLoader
-      ref="patternFileLoader"
-      :exts="patternExts"
-      @load="load"
-    />
-
-    <FileLoader ref="imageFileLoader" :exts="qrImageExts" @load="load" />
-
-    <FileLoaderCollection
-      @load="load"
-      ref="collectionFileLoader"
-    />
     
     <VDialog
       v-model="publishing"
@@ -207,13 +189,12 @@ import {
   VListItem,
   VListItemTitle,
 } from "vuetify/lib";
+import ImportMenuItem from "./ImportMenuItem.vue";
 import ColorTools from "./ColorTools/ColorTools.vue";
 import ConvertImage from "@/components/modals/ConvertImage";
 import Publish from "@/components/modals/Publish.vue";
 import ThreeDRender from "@/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
-import FileLoader from "@/components/FileLoader.vue";
-import FileLoaderCollection from "@/components/positioned/FileLoaderCollection.vue";
 import CancelButton from "@/components/modals/CancelButton.vue";
 
 export default {
@@ -226,13 +207,12 @@ export default {
     VList,
     VListItem,
     VListItemTitle,
+    ImportMenuItem,
     ColorTools,
     ConvertImage,
     ThreeDRender,
     Toolbar,
     Publish,
-    FileLoader,
-    FileLoaderCollection,
     CancelButton,
   },
   data() {
@@ -284,15 +264,17 @@ export default {
         },
         {
           label: "Open QR Code",
-          onSelect: this.readQRCode,
+          exts: qrImageExts,
+          onLoad: this.load,
         },
         {
           label: "Open .ACNL / .ACNH",
-          onSelect: this.openPattern,
+          exts: patternExts,
+          onLoad: this.load,
         },
         {
           label: "Open .ZIP / .DAT",
-          onSelect: this.openCollection,
+          onLoadCollection: this.load,
         }
       ];
       return items;
@@ -485,19 +467,6 @@ export default {
       [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
       [town.name, town.id] = this.drawingTool.town;
     },
-    // IMPORTING / EXPORTING FUNCTIONS
-    readQRCode() {
-      this.$refs.imageFileLoader.open();
-    },
-    openPattern() {
-      this.$refs.patternFileLoader.open();
-    },
-    async openCollection() {
-      await this.$nextTick();
-      this.$refs.collectionFileLoader.open();
-      console.log("opening collection");
-    },
-
     onImportTouchStart() {
       this.forceShowImportMenu = !this.forceShowImportMenu;
     },

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <Fragment>
     <VDialog
       :value="drawingTools.length > 0"
       @input="$emit('close')"
@@ -22,14 +22,20 @@
       ref="collectionFileLoader"
       :exts="zipExts"
       @load="multiload"
-    />
-  </div>
+    >
+      <template #activator="{ on }">
+        <slot name="activator" :on="on">
+        </slot>
+      </template>
+    </FileLoader>
+  </Fragment>
 </template>
 
 <script>
 import { VDialog } from "vuetify/lib";
+import { Fragment } from "vue-fragment";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
-import FileLoader from "@/components/FileLoader.vue";
+import FileLoader from "@/components/wrapper/FileLoader.vue";
 import saver from "@/libs/saver";
 import { zipExts } from "@/libs/reader";
 
@@ -37,6 +43,7 @@ export default {
   name: "FileLoaderCollection",
   components: {
     VDialog,
+    Fragment,
     PatternContainer,
     FileLoader,
   },
