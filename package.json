@@ -49,6 +49,7 @@
     "three": "^0.135.0",
     "vue": "^2.6.14",
     "vue-advanced-cropper": "^1.9.0",
+    "vue-fragment": "^1.5.2",
     "vue-i18n": "^8.26.7",
     "vue-loader": "^15.9.8",
     "vue-markdown-loader": "^2.5.0",
