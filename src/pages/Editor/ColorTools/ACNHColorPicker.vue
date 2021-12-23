@@ -31,16 +31,21 @@
           </button>
         </div>
       </label>
-      <div class="sliders--slider-container">
-        <input
-          class="sliders--slider"
-          type="range"
-          id="hue"
-          min="0"
-          max="29"
+      <div class="sliders--slider-container"
+        :style="hueGradient"
+      >
+        <VSlider
+          class="slider"
+          :min="0"
+          :max="29"
           v-model="hue"
-          :style="hueGradient"
-          @change="setSliderColors"
+          :color="colors.oliveHaze"
+          :track-color="colors.oliveHaze"
+          ticks="always"
+          thumb-label
+          :thumb-color="colors.jambalaya"
+          hide-details
+          dense
         />
       </div>
     </section>
@@ -79,16 +84,21 @@
           </button>
         </div>
       </label>
-      <div class="sliders--slider-container">
-        <input
-          class="sliders--slider"
-          type="range"
-          id="vividness"
-          min="0"
-          max="14"
+      <div class="sliders--slider-container"
+        :style="vividnessGradient"
+      >
+        <VSlider
+          class="slider"
+          :min="0"
+          :max="14"
           v-model="vividness"
-          :style="vividnessGradient"
-          @change="setSliderColors"
+          :color="colors.oliveHaze"
+          :track-color="colors.oliveHaze"
+          ticks="always"
+          thumb-label
+          :thumb-color="colors.jambalaya"
+          hide-details
+          dense
         />
       </div>
     </section>
@@ -127,17 +137,23 @@
           </button>
         </div>
       </label>
-      <div class="sliders--slider-container">
-        <input
-          class="sliders--slider"
-          type="range"
-          id="brightness"
-          min="0"
-          max="14"
+      <div class="sliders--slider-container"
+        :style="brightnessGradient"
+      >
+        <VSlider
+          class="slider"
+          :min="0"
+          :max="14"
           v-model="brightness"
-          :style="brightnessGradient"
-          @change="setSliderColors"
+          :color="colors.oliveHaze"
+          :track-color="colors.oliveHaze"
+          ticks="always"
+          thumb-label
+          :thumb-color="colors.jambalaya"
+          hide-details
+          dense
         />
+        
       </div>
     </section>
     <!-- brightness -->
@@ -145,14 +161,18 @@
 </template>
 
 <script>
-import colorMaker from "@/libs/ACNHFormat";
+import { VSlider } from "vuetify/lib";
+import ACNHFormat from "@/libs/ACNHFormat";
 
 import IconLeftArrow from "@/components/icons/IconLeftArrow.vue";
 import IconRightArrow from "@/components/icons/IconRightArrow.vue";
 
+import colors from "@/styles/colors.scss";
+
 export default {
   name: "ACNHColorPicker",
   components: {
+    VSlider,
     IconLeftArrow,
     IconRightArrow,
   },
@@ -161,6 +181,7 @@ export default {
   },
   data() {
     return {
+      colors,
       hue: 0,
       vividness: 0,
       brightness: 0,
@@ -192,7 +213,7 @@ export default {
       let hueSlider = [];
       for (let i = 0; i <= 29; i++) {
         hueSlider.push(
-          colorMaker.slidersToColor(i, this.vividness, this.brightness)
+          ACNHFormat.slidersToColor(i, this.vividness, this.brightness)
         );
       }
       this.hueSliderColors = [...hueSlider];
@@ -202,38 +223,42 @@ export default {
       let brightnessSlider = [];
       for (let i = 0; i <= 14; i++) {
         vividnessSlider.push(
-          colorMaker.slidersToColor(this.hue, i, this.brightness)
+          ACNHFormat.slidersToColor(this.hue, i, this.brightness)
         );
         brightnessSlider.push(
-          colorMaker.slidersToColor(this.hue, this.vividness, i)
+          ACNHFormat.slidersToColor(this.hue, this.vividness, i)
         );
       }
       this.vividnessSliderColors = [...vividnessSlider];
       this.brightnessSliderColors = [...brightnessSlider];
-
+      
+      const hueStops = this.hueSliderColors.map((color, i) => {
+        return `${color} ${Math.max(i - 1, 0) * 100/30}% ${i * 100/30}%`;
+      });
+      const vividnessStops = this.vividnessSliderColors.map((color, i) => {
+        return `${color} ${Math.max(i - 1, 0) * 100/15}% ${i * 100/15}%`;
+      });
+      const brightnessStops = this.vividnessSliderColors.map((color, i) => {
+        return `${color} ${Math.max(i - 1, 0) * 100/15}% ${i * 100/15}%`;
+      });
       this.hueGradient.background =
-        "linear-gradient(to right, " + [...this.hueSliderColors].join() + ")";
+        `linear-gradient(to right, ${hueStops.join(",")})`;
       this.vividnessGradient.background =
-        "linear-gradient(to right, " +
-        [...this.vividnessSliderColors].join() +
-        ")";
+        `linear-gradient(to right, ${vividnessStops.join(",")})`;
       this.brightnessGradient.background =
-        "linear-gradient(to right, " +
-        [...this.brightnessSliderColors].join() +
-        ")";
-
+        `linear-gradient(to right, ${brightnessStops.join(",")})`;
       if (
         this.currentColor !==
-        colorMaker.slidersToColor(this.hue, this.vividness, this.brightness)
+        ACNHFormat.slidersToColor(this.hue, this.vividness, this.brightness)
       ) {
-        this.currentColor = colorMaker.slidersToColor(
+        this.currentColor = ACNHFormat.slidersToColor(
           this.hue,
           this.vividness,
           this.brightness
         );
         this.$emit(
           "color-picked",
-          colorMaker.slidersToColor(this.hue, this.vividness, this.brightness)
+          ACNHFormat.slidersToColor(this.hue, this.vividness, this.brightness)
         );
       }
     },
@@ -255,7 +280,7 @@ export default {
         b: parseInt(rgb[3], 16),
       };
 
-      const sliderPositions = colorMaker.colorToSliders(rgb.r, rgb.g, rgb.b);
+      const sliderPositions = ACNHFormat.colorToSliders(rgb.r, rgb.g, rgb.b);
 
       this.hue = sliderPositions[0];
       this.vividness = sliderPositions[1];
@@ -270,6 +295,11 @@ export default {
       this.setSliderColors();
     });
   },
+  watch: {
+    hue() { this.setSliderColors(); },
+    vividness() { this.setSliderColors(); },
+    brightness() { this.setSliderColors(); },
+  }
 };
 </script>
 
@@ -285,29 +315,8 @@ export default {
 
 .sliders--slider-container {
   width: 100%;
-  padding: 10px 0;
-
-  .sliders--slider {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 15px;
-    border-radius: 15px;
-
-    &:focus {
-      outline: none;
-    }
-
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      border: none;
-      height: 30px;
-      width: 30px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.8);
-      margin-top: -4px;
-    }
-  }
+  margin: 10px 0;
+  border-radius: 10px;
 }
 
 .sliders--slider-label {
