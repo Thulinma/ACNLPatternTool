@@ -1,78 +1,92 @@
 <template>
   <div
     :class="{
-      'color-tools--container': true,
+      'container': true,
       picking: isPicking,
     }"
   >
     <Palette
-      class="color-tools--palette"
       :drawingTool="drawingTool"
       @change-color-picker="$emit('change-color-picker', prevColorPicker)"
       @change-current-color="$emit('change-current-color', $event)"
     />
 
-    <div v-show="isPicking" class="color-tools--color-pickers">
-      <div class="color-tools--tabs acnl">
-        <div
-          :class="{
-            'color-tools--tab': true,
-            open: isACNL,
-          }"
-          @click="onChangeColorPicker('acnl')"
-        >
-          ACNL
-        </div>
-        <div
-          :class="{
-            'color-tools--tab': true,
-            open: isACNH,
-          }"
-          @click="onChangeColorPicker('acnh')"
-        >
-          ACNH
-        </div>
-        <!-- <div
-          :class="{
-            'color-tools--tab': true,
-            'open': isWheel,
-          }">
-          Wheel
-        </div> -->
-        <div class="color-tools--tab-cover"></div>
-      </div>
+    <div v-show="isPicking" class="color-pickers">
 
-      <div
-        :class="{
-          'color-tools--color-picker-content': true,
-          acnl: isACNL,
-          acnh: isACNH,
-        }"
+      <VTabs
+        grow
+        class="tabs"
+        :value="modeIndex"
+        @change="onModeIndex"
       >
-        <ACNLColorPicker
-          v-show="isACNL"
-          :drawingTool="drawingTool"
-          @color-picked="$emit('color-picked', $event)"
-        />
-        <ACNHColorPicker
-          v-if="isACNH"
-          :drawingTool="drawingTool"
-          @color-picked="$emit('color-picked', $event)"
-        />
-      </div>
+        <VTabsSlider :color="colors.jambalaya"></VTabsSlider>
+        <VTab
+          class="tab"
+          v-for="mode in modes"
+          :key="mode"
+        >
+          {{ mode }}  
+        </VTab>
+      </VTabs>
+      
+      <VTabsItems
+        class="tabs-items"
+        :value="modeIndex"
+        @change="onModeIndex"
+      >
+        <VTabItem>
+          <VCard class="card" flat>
+            <VCardText>
+              <ACNLColorPicker
+                v-if="isACNL"
+                :drawingTool="drawingTool"
+                @color-picked="$emit('color-picked', $event)"
+              />
+            </VCardText>
+          </VCard>
+        </VTabItem>
+        <VTabItem>
+          <VCard class="card" flat>
+            <VCardText>
+              <ACNHColorPicker
+                v-if="isACNH"
+                :drawingTool="drawingTool"
+                @color-picked="$emit('color-picked', $event)"
+              />
+            </VCardText>
+          </VCard>
+        </VTabItem>
+      </VTabsItems>
+      
     </div>
   </div>
 </template>
 
 <script>
+import {
+  VCard,
+  VCardText,
+  VTabs,
+  VTab,
+  VTabsItems,
+  VTabItem,
+} from "vuetify/lib";
 import Palette from "./Palette";
 import DrawingTool from "@/libs/DrawingTool";
 import ACNLColorPicker from "./ACNLColorPicker";
 import ACNHColorPicker from "./ACNHColorPicker";
 
+import colors from "@/styles/colors.scss";
+
 export default {
   name: "ColorTools",
   components: {
+    VCard,
+    VCardText,
+    VTabs,
+    VTab,
+    VTabsItems,
+    VTabItem,
     Palette,
     ACNLColorPicker,
     ACNHColorPicker,
@@ -90,11 +104,12 @@ export default {
       type: String,
       required: false,
     },
-    isNewPattern: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+  },
+  data() {
+    return {
+      colors,
+      modes: ["acnl", "acnh"],
+    };
   },
   computed: {
     isPicking: function () {
@@ -109,8 +124,14 @@ export default {
     isWheel: function () {
       return this.colorPicker === "wheel";
     },
+    modeIndex() {
+      return this.modes.indexOf(this.colorPicker);
+    },
   },
   methods: {
+    onModeIndex(modeIndex) {
+      this.$emit("change-color-picker", this.modes[modeIndex]);
+    },
     // also responsible for closing, send null to close
     onChangeColorPicker: function (colorPickerMode) {
       this.$emit("change-color-picker", colorPickerMode);
@@ -124,11 +145,12 @@ export default {
 
 <style lang="scss" scoped>
 @use "styles/colors" as colors;
+@use "styles/overrides" as overrides;
 @use "styles/positioning" as positioning;
 @use "styles/screens" as screens;
 
 // size dictated by palette
-.color-tools--container {
+.container {
   grid-area: color-tools;
   justify-items: center;
   width: 100%;
@@ -195,7 +217,7 @@ export default {
   }
 }
 
-.color-tools--color-pickers {
+.color-pickers {
   margin-top: 15px;
   width: 100%;
 
@@ -204,66 +226,29 @@ export default {
   }
 }
 
-.color-tools--tabs {
-  position: relative;
-  top: 0;
-  left: 0;
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: stretch;
-}
-
-.color-tools--tab {
-  flex: 1 1 0px;
-  padding-top: 15px;
-  padding-bottom: 10px;
-
-  background-color: colors.$piggy-pink;
-  color: colors.$jambalaya;
-  text-align: center;
-  &.open {
-    background-color: colors.$pink-lace;
-    cursor: default;
+.tabs {
+  @include overrides.v-tabs(
+    colors.$jambalaya,
+    colors.$pink-lace,
+  ) {
+    border-radius: 15px 15px 0px 0px;
   }
-  cursor: pointer;
-  border-radius: 25px 25px 0px 0px;
-  z-index: 1;
 }
 
-.color-tools--tab-cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(0%, 100%);
-  width: 100%;
-  height: 100%;
+.tab {
+  @include overrides.v-tab(colors.$jambalaya) {
+    &::before {
+      border-radius: 15px;
+    }
+  };
+}
+
+.tabs-items {
+  @include overrides.v-tabs-items(colors.$pink-lace);
+  border-radius: 0px 0px 15px 15px;
+}
+
+.card {
   background-color: colors.$pink-lace;
-}
-
-.color-tools--color-picker-content {
-  position: relative;
-  top: 0;
-  left: 0;
-
-  background-color: colors.$pink-lace;
-  padding: 20px 10px;
-  border-radius: 0px 0px 20px 20px;
-
-  &.acnl {
-    border-radius: 0px 20px 20px 20px;
-  }
-  &.acnh {
-    border-radius: 20px 0px 20px 20px;
-  }
-
-  // &.wheel {
-  //   border-radius: 0px 0px 20px 20px;
-  // }
-
-  @include screens.tablet-landscape {
-    padding: 20px 25px;
-  }
 }
 </style>

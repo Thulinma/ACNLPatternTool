@@ -132,3 +132,33 @@
     }
   }
 }
+
+@mixin v-tabs(
+  $text-color,
+  $background-color,
+) {
+  .v-tab { @include v-tab($text-color); }
+  &::v-deep {
+    .v-tabs-bar {
+      background-color: $background-color !important;
+      .v-tab {
+        @include v-tab($text-color);
+      }
+    }
+    @content;
+  }
+}
+
+@mixin v-tab($text-color) {
+  &::v-deep {
+    color: $text-color !important;
+    @content;
+  }
+}
+
+@mixin v-tabs-items($background-color) {
+  &::v-deep {
+    background-color: $background-color !important;
+    @content;
+  }
+}
