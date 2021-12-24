@@ -238,7 +238,7 @@ export default {
       const vividnessStops = this.vividnessSliderColors.map((color, i) => {
         return `${color} ${Math.max(i - 1, 0) * 100/15}% ${i * 100/15}%`;
       });
-      const brightnessStops = this.vividnessSliderColors.map((color, i) => {
+      const brightnessStops = this.brightnessSliderColors.map((color, i) => {
         return `${color} ${Math.max(i - 1, 0) * 100/15}% ${i * 100/15}%`;
       });
       this.hueGradient.background =
