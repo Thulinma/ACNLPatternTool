@@ -233,14 +233,23 @@ export default {
       this.brightnessSliderColors = [...brightnessSlider];
       
       const hueStops = this.hueSliderColors.map((color, i) => {
-        return `${color} ${Math.max(i - 1, 0) * 100/30}% ${i * 100/30}%`;
+        if (i === 0)
+          return `${color} ${i * 100/hueSlider.length}%`;
+        return `${color} ${i * 100/hueSlider.length}% ${(i + 1) * 100/hueSlider.length}%`;
       });
+      
       const vividnessStops = this.vividnessSliderColors.map((color, i) => {
-        return `${color} ${Math.max(i - 1, 0) * 100/15}% ${i * 100/15}%`;
+        if (i === 0)
+          return `${color} ${(i + 1) * 100/vividnessSlider.length}%`;
+        return `${color} ${i * 100/vividnessSlider.length}% ${(i + 1) * 100/vividnessSlider.length}%`;
       });
+      
       const brightnessStops = this.brightnessSliderColors.map((color, i) => {
-        return `${color} ${Math.max(i - 1, 0) * 100/15}% ${i * 100/15}%`;
+        if (i === 0)
+          return `${color} ${(i + 1) * 100/brightnessSlider.length}%`;
+        return `${color} ${i * 100/brightnessSlider.length}% ${(i + 1) * 100/brightnessSlider.length}%`;
       });
+      
       this.hueGradient.background =
         `linear-gradient(to right, ${hueStops.join(",")})`;
       this.vividnessGradient.background =
