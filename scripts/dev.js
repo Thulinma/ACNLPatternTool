@@ -16,7 +16,7 @@ const {
 
 const compiler = webpack(webpackDevConfig);
 
-const webpackDevServer = new WebpackDevServer(compiler, {
+const webpackDevServer = new WebpackDevServer({
   open: true,
   static: {
     directory: pathToPublic, // technically nonexistent, exists in memory
@@ -30,7 +30,7 @@ const webpackDevServer = new WebpackDevServer(compiler, {
     },
   },
   historyApiFallback: true,
-});
+}, compiler);
 
 ["SIGINT", "SIGTERM"].forEach((signal) => {
   process.on(signal, () => {
@@ -40,7 +40,7 @@ const webpackDevServer = new WebpackDevServer(compiler, {
   });
 });
 
-webpackDevServer.listen(DEV_PORT, DEV_HOST, (error) => {
+webpackDevServer.start(DEV_PORT, DEV_HOST, (error) => {
   if (error) return console.log(error);
 })
 

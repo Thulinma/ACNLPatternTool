@@ -26,14 +26,8 @@ const argv = yargs
     describe: "Analyze bundle",
     type: "boolean"
   })
-  .option("test", {
-    alias: "t",
-    describe: "Test uncompressed",
-    type: "boolean"
-  })
   .conflicts("development", "production")
   .conflicts("uncompressed", "compressed")
-  .conflicts("compressed", "test")
   .parse();
 
 // overload NODE_ENV with command line option
@@ -52,7 +46,6 @@ env.check();
 
 const signale = require('signale');
 const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
 const webpackFormatMessages = require('webpack-format-messages');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const {
@@ -65,11 +58,7 @@ const {
   pathToBundleStats,
 } = require('../etc/paths');
 const compress = require('../etc/compress');
-const {
-  NODE_ENV,
-  DEV_HOST,
-  DEV_PORT
-} = process.env;
+const { NODE_ENV } = process.env;
 
 // check process args, allow build with forced settings
 let selectedWebpackConfig;
@@ -130,8 +119,8 @@ compiler.hooks.done.tap('done', (stats) => {
 });
 
 (async () => {
-  await new Promise((resolve, reject) => {
-    compiler.run((error, stats) => {
+  await new Promise((resolve) => {
+    compiler.run((error) => {
       if (error) console.log(error);
       resolve();
     });
@@ -148,22 +137,5 @@ compiler.hooks.done.tap('done', (stats) => {
   if (argv.uncompressed) {
     compress.destroy(pathToBuild, true); // remove compressed
     signale.success('Compressed files removed from build.');
-  }
-
-  // deploy dev server instance on build
-  if (argv.test) {
-    const webpackDevServer = new WebpackDevServer(webpack({}), {
-      stats: false,
-      open: true,
-      noInfo: true,
-      quiet: true,
-      contentBase: pathToBuild,
-      historyApiFallback: true,
-    });
-
-    webpackDevServer.listen(DEV_PORT, DEV_HOST, (error) => {
-      if (error) return console.log(error);
-    });
-    signale.success(`Testing server deployed on build!`);
   }
 })();

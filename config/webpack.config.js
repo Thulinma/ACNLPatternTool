@@ -234,11 +234,6 @@ const rulesProd = [
   ...fileRules
 ];
 
-const fonts = [
-  { family: "Nunito", variants: ["600", "700", "800"], },
-  { family: "Roboto", variants: ["100", "300", "400", "500", "700", "900"],  }
-];
-
 const htmlWebpackOptions = {
   inject: true,
   hash: true,
@@ -263,7 +258,6 @@ const pluginsDev = [
   new FaviconsWebpackPlugin({
     logo: pathToFavicon,
     inject: true,
-    prefix: "favicons",
   }),
 ];
 
@@ -278,7 +272,6 @@ const pluginsProd = [
   new FaviconsWebpackPlugin({
     logo: pathToFavicon,
     inject: true,
-    prefix: "favicons",
   }),
 ];
 
