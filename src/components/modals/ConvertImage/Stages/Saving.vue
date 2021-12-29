@@ -38,25 +38,6 @@ import DrawingTool from "@/libs/DrawingTool";
 
 import colors from "@/styles/colors.scss";
 
-const savingMethodOptions = [
-  {
-    name: "To Storage",
-    value: saver.saveDrawingToolsToStorage,
-  },
-  {
-    name: "QRs as .ZIP",
-    value: saver.saveDrawingToolsAsPng,
-  },
-  {
-    name: "ACNLs/ACNHs as .ZIP",
-    value: saver.saveDrawingToolsAsPattern,
-  },
-  {
-    name: "Both as .ZIP",
-    value: saver.saveDrawingToolsAsBoth,
-  },
-];
-
 export default {
   name: "Saving",
   components: {
@@ -77,14 +58,48 @@ export default {
   data: function () {
     return {
       colors,
-      savingMethodOptions,
-      savingMethod: saver.saveDrawingToolsToStorage,
+      savingMethod: this.outputs.length === 1
+        ? this.load
+        : saver.saveDrawingToolsToStorage,
     };
   },
+  computed: {
+    savingMethodOptions() {
+      return [
+        ...(this.outputs.length === 1
+          ? [{
+            name: "Onto Pattern",
+            value: this.load,
+          }]
+          : []
+          ),
+        {
+          name: "To Storage",
+          value: saver.saveDrawingToolsToStorage,
+        },
+        {
+          name: "QRs as .ZIP",
+          value: saver.saveDrawingToolsAsPng,
+        },
+        {
+          name: "ACNLs/ACNHs as .ZIP",
+          value: saver.saveDrawingToolsAsPattern,
+        },
+        {
+          name: "Both as .ZIP",
+          value: saver.saveDrawingToolsAsBoth,
+        },
+      ]; 
+    },
+  },
   methods: {
+    async load() {
+      this.$emit("load", this.outputs);
+      window.alert("Conversion successfully loaded onto pattern.")
+    },
     async save() {
       const drawingTools = this.outputs.map((output) => {
-        const drawingTool = new DrawingTool(output);
+        const drawingTool = new DrawingTool(output.toString());
         return drawingTool;
       });
       await this.savingMethod(drawingTools);

@@ -44,13 +44,13 @@
           />
         </VStepperContent>
         <VStepperContent
-          v-if="isMosaic"
           class="stepper-content internal-padding"
           :step="3"
         >
           <SavingStage
             :previewDataURL="previewDataURL"
             :outputs="outputs"
+            @load="$emit('load', $event)"
             v-if="state === states.saving"
           />
         </VStepperContent>
@@ -74,7 +74,6 @@
           Convert
         </VStepperStep>
         <VStepperStep
-          v-if="isMosaic"
           :editable="state > states.saving"
           :step="3"
           :complete="state > states.saving"
@@ -183,14 +182,7 @@ export default {
       this.croppedCanvas = croppedCanvas;
       this.updatePreviewDataURL();
     },
-    toSaving() {
-      if (!this.isMosaic) {
-        this.$emit("load", this.outputs[0]);
-        this.$emit("close");
-        this.state = states.cropping;
-      }
-      this.state = states.saving;
-    },
+    toSaving() { this.state = states.saving; },
     prev() {
       if (this.state < 0) this.state = 0;
       else this.state = this.state - 1;
@@ -207,6 +199,11 @@ export default {
         this.isSplitPalette,
         this.paletteSelector,
       );
+      for (const drawingToolGridRow of drawingToolGrid)
+        for (const drawingTool of drawingToolGridRow) {
+          drawingTool.title = this.filename;
+          console.log(drawingTool.title);
+        }
       const preview = drawingToolGridToImage(drawingToolGrid);
       this.previewDataURL = preview.toDataURL("image/png");
       this.outputs = drawingToolGrid.flat(1);

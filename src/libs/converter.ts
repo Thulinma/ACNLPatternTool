@@ -1,4 +1,4 @@
-import {first, flow} from "lodash";
+import { first, flow } from "lodash";
 import {
   ImageSmoothingQuality,
   canvasToCanvasGrid,

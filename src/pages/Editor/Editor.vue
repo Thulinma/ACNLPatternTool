@@ -162,7 +162,7 @@
         v-if="convertImage"
         :sourcetool="drawingTool"
         @close="convertImage = false"
-        @load="drawingTool.load($event)"
+        @load="load"
       />
     </VDialog>
   </main>
@@ -324,7 +324,7 @@ export default {
     // ------------------
     // data can be binary string or any drawingTool accepted data type
     load([drawingTool]) {
-      this.drawingTool.load(drawingTool);
+      this.drawingTool.load(drawingTool.toString());
       this.drawingTool.render();
       this.syncPatternDetails();
     },
