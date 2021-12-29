@@ -200,10 +200,8 @@ export default {
         this.paletteSelector,
       );
       for (const drawingToolGridRow of drawingToolGrid)
-        for (const drawingTool of drawingToolGridRow) {
+        for (const drawingTool of drawingToolGridRow)
           drawingTool.title = this.filename;
-          console.log(drawingTool.title);
-        }
       const preview = drawingToolGridToImage(drawingToolGrid);
       this.previewDataURL = preview.toDataURL("image/png");
       this.outputs = drawingToolGrid.flat(1);
