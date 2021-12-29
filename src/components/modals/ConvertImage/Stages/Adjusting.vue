@@ -22,7 +22,7 @@
     </div>
 
     <div class="right-side">
-      <div>
+      <div v-if="croppedIsTransparent">
         <div class="text-h6">Transparency Retention</div>
         <VSlider
           class="slider"
@@ -43,9 +43,9 @@
         <VSlider
           class="slider"
           :min="0"
-          :max="100"
+          :max="200"
           :value="saturation"
-          @input="$emit('update:saturation', Number($event))"
+          @input="$emit('update:saturation', $event)"
           :color="colors.oliveHaze"
           :track-color="colors.oliveHaze"
           thumb-label
@@ -53,35 +53,25 @@
           hide-details
           dense
         />
-        <VCheckbox
-          class="checkbox"
-          label="Apply Saturation"
-          :color="colors.jambalaya"
-          :value="applySaturation"
-          @change="$emit('update:applySaturation', Boolean($event))"
-          hint="test"
-          hide-details
-          dense
-        />
       </div>
 
       <div>
-        <div class="text-h6">Conversion Method</div>
+        <div class="text-h6">Image Smoothing</div>
         <VRadioGroup
-          :value="conversionQuality"
-          @change="$emit('update:conversionQuality', $event)"
+          :value="imageSmoothingQuality"
+          @change="$emit('update:imageSmoothingQuality', $event)"
         >
           <VRadio
-            v-for="option in conversionQualityOptions"
-            :key="option.conversionQuality"
+            v-for="option in imageSmoothingQualityOptions"
+            :key="option.imageSmoothingQuality"
             :label="option.name"
-            :value="option.conversionQuality"
+            :value="option.imageSmoothingQuality"
             :color="colors.jambalaya"
           />
         </VRadioGroup>
       </div>
 
-      <div v-if="isMural">
+      <div v-if="isMosaic">
         <div class="text-h6">Palette Between Patterns</div>
         <VRadioGroup
           :value="isSplitPalette"
@@ -100,14 +90,15 @@
       <div>
         <div class="text-h6">Palette Selection</div>
         <VRadioGroup
-          :value="paletteSelectionMethod"
-          @change="$emit('update:paletteSelectionMethod', $event)"
+          :value="paletteSelector"
+          :value-comparator="(a, b) => a === b"
+          @change="$emit('update:paletteSelector', $event)"
         >
           <VRadio
-            v-for="option in paletteSelectionMethodOptions"
+            v-for="option in paletteSelectorOptions"
             :key="option.name"
             :label="option.name"
-            :value="option.paletteSelectionMethod"
+            :value="option.paletteSelector"
             :color="colors.jambalaya"
           />
         </VRadioGroup>
@@ -118,49 +109,58 @@
 
 <script>
 import { VBtn, VCheckbox, VRadio, VRadioGroup, VSlider } from "vuetify/lib";
-import { paletteSelectionMethods, conversionQualities } from "./enums";
+import { ImageSmoothingQuality } from "@/libs/canvasHelpers";
+import {
+  selectRGBPaletteFromImgData,
+  selectYUVPaletteFromImgData,
+  selectMedianCutPaletteFromImgData,
+  selectGreyscalePaletteFromImgData,
+  selectSepiaPalettefromImgData,
+  selectLowestDistancePalette,
+} from "@/libs/converter";
+
 
 import colors from "@/styles/colors.scss";
 
-const paletteSelectionMethodOptions = [
+const paletteSelectorOptions = [
   {
     name: "RGB Colors",
-    paletteSelectionMethod: paletteSelectionMethods.rgb,
+    paletteSelector: selectRGBPaletteFromImgData,
   },
   {
     name: "YUV Colors",
-    paletteSelectionMethod: paletteSelectionMethods.yuv,
+    paletteSelector: selectYUVPaletteFromImgData,
   },
   {
     name: "Median Cut",
-    paletteSelectionMethod: paletteSelectionMethods.medianCut,
+    paletteSelector: selectMedianCutPaletteFromImgData,
   },
   {
     name: "Greyscale",
-    paletteSelectionMethod: paletteSelectionMethods.greyscale,
+    paletteSelector: selectGreyscalePaletteFromImgData,
   },
   {
     name: "Sepia",
-    paletteSelectionMethod: paletteSelectionMethods.sepia,
+    paletteSelector: selectSepiaPalettefromImgData,
   },
 ];
 
-const conversionQualityOptions = [
+const imageSmoothingQualityOptions = [
   {
-    name: "High Quality",
-    conversionQuality: conversionQualities.high,
-  },
-  {
-    name: "Medium Quality",
-    conversionQuality: conversionQualities.medium,
+    name: "Sharpened",
+    imageSmoothingQuality: ImageSmoothingQuality.sharp,
   },
   {
     name: "Low Quality",
-    conversionQuality: conversionQualities.low,
+    imageSmoothingQuality: ImageSmoothingQuality.low,
   },
   {
-    name: "Sharpened",
-    conversionQuality: conversionQualities.sharp,
+    name: "Medium Quality",
+    imageSmoothingQuality: ImageSmoothingQuality.medium,
+  },
+  {
+    name: "High Quality",
+    imageSmoothingQuality: ImageSmoothingQuality.high,
   },
 ];
 
@@ -178,9 +178,13 @@ const isSplitPaletteOptions = [
 export default {
   name: "Adjusting",
   props: {
-    isMural: {
+    isMosaic: {
       type: Boolean,
       required: true,
+    },
+    croppedIsTransparent: {
+      type: Boolean,
+      required: false,
     },
     transparency: {
       type: Number,
@@ -190,20 +194,16 @@ export default {
       type: Number,
       required: true,
     },
-    applySaturation: {
-      type: Boolean,
-      required: true,
-    },
-    conversionQuality: {
-      type: Number,
+    imageSmoothingQuality: {
+      type: String,
       required: true,
     },
     isSplitPalette: {
       type: Boolean,
       required: true,
     },
-    paletteSelectionMethod: {
-      type: Number,
+    paletteSelector: {
+      type: Function,
       required: true,
     },
     previewDataURL: {
@@ -221,9 +221,9 @@ export default {
   data: function () {
     return {
       colors,
-      conversionQualityOptions,
+      imageSmoothingQualityOptions,
       isSplitPaletteOptions,
-      paletteSelectionMethodOptions,
+      paletteSelectorOptions,
     };
   },
 };

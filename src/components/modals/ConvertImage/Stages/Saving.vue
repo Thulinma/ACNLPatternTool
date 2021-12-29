@@ -65,10 +65,6 @@ export default {
     VRadioGroup,
   },
   props: {
-    isMural: {
-      type: Boolean,
-      required: true,
-    },
     previewDataURL: {
       type: String,
       required: true,
