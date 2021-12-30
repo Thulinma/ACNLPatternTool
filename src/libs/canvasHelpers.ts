@@ -13,9 +13,9 @@ export const ensureDecoded = async (image) => {
 };
 
 /**
- * Creates an image from a transformedCanvas.
- * @param transformedCanvas The transformedCanvas to imagify.
- * @returns The image representation of the transformedCanvas.
+ * Creates an image from a canvas.
+ * @param canvas The canvas to imagify.
+ * @returns The image representation of the canvas.
  */
 export const canvasToImage = async (
   canvas: HTMLCanvasElement,
@@ -28,10 +28,10 @@ export const canvasToImage = async (
 
 
 /**
- * Creates a saturated copy of the image.
- * @param transformedCanvas The image to filter.
+ * Creates a saturated copy of the canvas.
+ * @param canvas The canvas to filter.
  * @param saturation The degree of saturation.
- * @returns The filtered copy of the image.
+ * @returns The filtered copy of the canvas.
  */
 export const saturationFilteredCanvas = (
   canvas: HTMLCanvasElement,
@@ -50,10 +50,10 @@ export const saturationFilteredCanvas = (
 
 
 /**
- * Creates a sepia filtered copy of the image.
- * @param transformedCanvas The image to filter.
+ * Creates a sepia filtered copy of the canvas.
+ * @param canvas The canvas to filter.
  * @param sepia The degree of sepia.
- * @returns The filtered copy of the image.
+ * @returns The filtered copy of the canvas.
  */
 export const sepiaFilteredCanvas = (
   canvas: HTMLCanvasElement,
@@ -73,10 +73,10 @@ export const sepiaFilteredCanvas = (
 
 
 /**
- * Creates a greyscale filtered copy of the image.
- * @param transformedCanvas The image to filter.
+ * Creates a greyscale filtered copy of the canvas.
+ * @param canvas The canvas to filter.
  * @param grayscale The degree of grayscale.
- * @returns The filtered copy of the image.
+ * @returns The filtered copy of the canvas.
  */
 export const grayscaleFilteredCanvas = (
   canvas: HTMLCanvasElement,
@@ -96,10 +96,10 @@ export const grayscaleFilteredCanvas = (
 
 
 /**
- * Creates an non-partial alpha copy of the image.
- * @param transformedCanvas The image to filter.
+ * Creates an non-partial alpha copy of the canvas.
+ * @param canvas The canvas to filter.
  * @param alphaThreshold The threshold (0-255) to meet before the pixel becomes opaque.
- * @returns The filtered copy of the image.
+ * @returns The filtered copy of the canvas.
  */
 export const alphaFilteredCanvas = (
   canvas: HTMLCanvasElement,
@@ -133,11 +133,11 @@ export const alphaFilteredCanvas = (
 
 
 /**
- * Creates an downscaled copy of the image.
- * @param canvas The image to downscale.
+ * Creates a scaled copy of the canvas.
+ * @param canvas The canvas to downscale.
  * @param width The target width.
  * @param height The target height.
- * @returns The downscaled copy of the image.
+ * @returns The downscaled copy of the canvas.
  */
 export const scaledCanvas = (
   canvas: HTMLCanvasElement,
@@ -169,13 +169,13 @@ export const scaledCanvas = (
 
 
 /**
- * Creates a subsection copy of the image.
+ * Creates a subsection copy of the canvas.
  * @param canvas The image to extract from.
  * @param offsetX The X offset of the subsection.
  * @param offsetY The Y offset of the subsection.
  * @param width The width of the subsection.
  * @param height The height of the subsection.
- * @returns The subsection of the source image.
+ * @returns The subsection of the source canvas.
  */
 export const subCanvas = (
   canvas: HTMLCanvasElement,
@@ -206,11 +206,11 @@ export const subCanvas = (
 
 
 /**
- * Split up into rows and columns
- * @param image The image to split.
+ * Split a single canvas up into rows and columns of canvases.
+ * @param canvas The image to split.
  * @param rows The number of rows.
  * @param cols The number of columns.
- * @returns A grid of images.
+ * @returns A grid of canvases.
  */
 export const canvasToCanvasGrid = (
   canvas: HTMLCanvasElement,
@@ -239,8 +239,8 @@ export const canvasToCanvasGrid = (
 
 
 /**
- * Converts an image to its ImageData.
- * @param image The image to get the data from.
+ * Converts a canvas to its ImageData.
+ * @param canvas The image to get the data from.
  * @returns The ImageData.
  */
 export const canvasToImageData = (
@@ -255,7 +255,7 @@ export const canvasToImageData = (
 };
 
 /**
- * Determines whether image has transparency.
+ * Determines whether canvas has transparency.
  */
 export const canvasIsTransparent = (
   canvas: HTMLCanvasElement,

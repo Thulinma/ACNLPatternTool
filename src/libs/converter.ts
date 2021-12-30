@@ -393,11 +393,16 @@ export const matchImageDataToPalette = (
 }
 
 /**
- * Converts an image section onto DrawingTools.
- * @param canvas The image to project.
- * @param drawingTool The drawing tool to project onto.
+ * Converts a canvas into a grid (mosaic) of DrawingTools.
+ * @param canvas The canvas to convert.
+ * @param sourceDrawingTool The source DrawingTool to base generated DrwaingTools off of.
+ * @param rows The number of rows to compose the mosaic out of.
+ * @param cols The number of columsn to compose the mosaic out of.
  * @param alphaThreshold The alpha threshold to meet before pixel is considered for palette selection.
- * @param ImageSmoothingQuality The smoothing option.
+ * @param saturation The degree of saturation.
+ * @param imageSmoothingQuality The smoothing option.
+ * @param isSplitPalette Whether the palettes are not the same between DrawingTools.
+ * @param paletteSelector The method for selecting the palette from the canvas image data.
  * @returns A grid of DrawingTools.
  */
 export const convertCanvas = (
