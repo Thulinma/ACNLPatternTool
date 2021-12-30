@@ -143,12 +143,10 @@ const svgRule = {
       ]
     },
     {
-      use: {
-        loader: "file-loader",
-        options: {
-          outputPath: "images",
-        }
-      }
+      type: "asset/resource",
+      generator: {
+        filename: "images/[hash][ext][query]",
+      },
     },
   ],
 };
@@ -187,32 +185,18 @@ const fileRules = [
   {
     // file-loader for image assets
     test: /\.(png|jpe?g|gif)$/i,
-    use: {
-      loader: "file-loader",
-      options: {
-        outputPath: "images" // relative to output dir
-      },
+    type: "asset/resource",
+    generator: {
+      filename: "images/[hash][ext][query]",
     },
   },
   // file-loader for models
   {
     test: /\.(gltf)$/i,
-    use: {
-      loader: "file-loader",
-      options: {
-        outputPath: "resources" // relative to output.path
-      }
-    }
-  },
-  // file-loaders for fonts
-  {
-    test: /\.(ttf|woff|)$/i,
-    use: {
-      loader: "file-loader",
-      options: {
-        outputPath: "fonts" // relative to output.path
-      },
-    }
+    type: "asset/resource",
+    generator: {
+      filename: "resources/[hash][ext][query]",
+    },
   },
 ];
 

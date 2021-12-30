@@ -30,7 +30,6 @@
     "csv-loader": "^3.0.3",
     "dotenv": "^10.0.0",
     "favicons-webpack-plugin": "^5.0.2",
-    "file-loader": "^6.2.0",
     "file-saver": "^2.0.5",
     "fs-extra": "^8.1.0",
     "html-webpack-plugin": "^5.5.0",
