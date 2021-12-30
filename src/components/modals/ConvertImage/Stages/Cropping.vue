@@ -21,20 +21,12 @@
       </VBtn>
 
       <VBtn
-        class="upload-btn rounded-lg"
-        elevation="0"
-        @click="$refs.inputFiles.click()"
-      >
-        Upload Image
-      </VBtn>
-
-      <VBtn
         v-if="dataURL != null"
         class="next-btn rounded-lg"
         elevation="0"
         @click="onNext"
       >
-        Next
+        Crop
       </VBtn>
     </div>
 
@@ -92,14 +84,6 @@
         persistent-hint
       />
     </div>
-
-    <input
-      class="cropping--image-select"
-      type="file"
-      ref="inputFiles"
-      accept="image/*"
-      @change="onFileChange"
-    />
   </div>
 </template>
 
@@ -165,24 +149,6 @@ export default {
     onNext(event) {
       const { canvas: croppedCanvas } = this.$refs.cropper.getResult();
       this.$emit("next", croppedCanvas);
-    },
-    async onFileChange(event) {
-      if (event.target.files.length <= 0) return;
-      const fileReader = new FileReader();
-      const dataURL = await new Promise((resolve, reject) => {
-        fileReader.onerror = () => {
-          fileReader.abort();
-          reject(new DOMException("Problem parsing input file."));
-        };
-        fileReader.onload = () => {
-          resolve(fileReader.result);
-        };
-        const file = event.target.files[0];
-        const filename = file.name.split(".")[0];
-        this.$emit("update:filename", filename);
-        fileReader.readAsDataURL(file);
-      });
-      this.$emit("update:dataURL", dataURL);
     },
   },
 };
@@ -262,7 +228,6 @@ export default {
 .btns {
   display: grid;
   grid-template-areas:
-    "upload"
     "next"
     "tile";
   grid-template-columns: 1fr;
@@ -280,8 +245,8 @@ export default {
   align-content: center;
 
   @include screens.tablet-portrait {
-    grid-template-areas: "tile upload next";
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: "tile next";
+    grid-template-columns: 1fr 1fr;
     justify-items: auto;
     column-gap: 20px;
   }

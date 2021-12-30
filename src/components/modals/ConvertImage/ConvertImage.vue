@@ -5,8 +5,19 @@
     <VStepper class="stepper rounded-xl" v-model="state" elevation="0">
       <VStepperItems>
         <VStepperContent
+          class="stepper-content"
+          :step="states.uploading"
+        >
+          <UploadingStage
+            v-if="state === states.uploading"
+            @update:dataURL="dataURL = $event"
+            @update:filename="filename = $event"
+            @next="state = states.cropping"
+          />
+        </VStepperContent>
+        <VStepperContent
           class="stepper-content internal-padding"
-          :step="1"
+          :step="states.cropping"
         >
           <CroppingStage
             v-if="state === states.cropping"
@@ -22,7 +33,7 @@
         </VStepperContent>
         <VStepperContent
           class="stepper-content internal-padding"
-          :step="2"
+          :step="states.adjusting"
         >
           <AdjustingStage
             v-if="state === states.adjusting"
@@ -39,27 +50,35 @@
             @update:isSplitPalette="isSplitPalette = $event"
             :paletteSelector="paletteSelector"
             @update:paletteSelector="paletteSelector = $event"
-            @prev="toCropping(false)"
+            @prev="state = states.cropping"
             @next="toSaving(true)"
           />
         </VStepperContent>
         <VStepperContent
           class="stepper-content internal-padding"
-          :step="3"
+          :step="states.saving"
         >
           <SavingStage
+            v-if="state === states.saving"
             :previewDataURL="previewDataURL"
             :outputs="outputs"
             @load="$emit('load', $event)"
-            v-if="state === states.saving"
           />
         </VStepperContent>
       </VStepperItems>
 
       <VStepperHeader class="stepper-header">
         <VStepperStep
+          :editable="state > states.uploading"
+          :step="states.uploading"
+          :complete="state > states.uploading"
+          :color="colors.oliveHaze"
+        >
+          Upload
+        </VStepperStep>
+        <VStepperStep
           :editable="state > states.cropping"
-          :step="1"
+          :step="states.cropping"
           :complete="state > states.cropping"
           :color="colors.oliveHaze"
         >
@@ -67,7 +86,7 @@
         </VStepperStep>
         <VStepperStep
           :editable="state > states.adjusting"
-          :step="2"
+          :step="states.adjusting"
           :complete="state > states.adjusting"
           :color="colors.oliveHaze"
         >
@@ -75,7 +94,7 @@
         </VStepperStep>
         <VStepperStep
           :editable="state > states.saving"
-          :step="3"
+          :step="states.saving"
           :complete="state > states.saving"
           :color="colors.oliveHaze"
         >
@@ -100,6 +119,7 @@ import {
 import CancelButton from "@/components/modals/CancelButton.vue";
 import DrawingTool from "@/libs/DrawingTool";
 
+import UploadingStage from "./Stages/Uploading.vue";
 import CroppingStage from "./Stages/Cropping.vue";
 import AdjustingStage from "./Stages/Adjusting.vue";
 import SavingStage from "./Stages/Saving.vue";
@@ -117,9 +137,10 @@ import colors from "./../../../styles/colors.scss";
 // FINITE STATE MACHINE PATTERN
 // ENUM STATES
 const states = Object.freeze({
-  cropping: 1,
-  adjusting: 2,
-  saving: 3, // avail only on non 1x1 patterns
+  uploading: 1,
+  cropping: 2,
+  adjusting: 3,
+  saving: 4, // avail only on non 1x1 patterns
 });
 
 export default {
@@ -134,6 +155,7 @@ export default {
     VStepperItems,
     VStepperContent,
     CancelButton,
+    UploadingStage,
     CroppingStage,
     AdjustingStage,
     SavingStage,
@@ -142,7 +164,7 @@ export default {
     return {
       colors,
       states,
-      state: states.cropping,
+      state: states.uploading,
       dataURL: null,
       filename: null,
       rows: 1,
@@ -170,9 +192,6 @@ export default {
     }
   },
   methods: {
-    toCropping(forward = true) {
-      this.state = states.cropping;
-    },
     // state swapping (forward only)
     toAdjusting(croppedCanvas, forward = true) {
       if (croppedCanvas == null) return;
@@ -239,6 +258,7 @@ export default {
 }
 
 .stepper {
+  border-radius: 0px !important;
   background-color: colors.$ecru-white;
   @include overrides.v-stepper-step(colors.$olive-haze);
 }
