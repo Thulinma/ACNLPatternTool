@@ -50,7 +50,7 @@ export default {
         label: `Open`,
         callback: async () => {
           const [drawingTool, ..._] = [...selected];
-          this.$emit("load", drawingTool.toString());
+          this.$emit("load", [drawingTool]);
           this.$emit("close");
         },
       };
