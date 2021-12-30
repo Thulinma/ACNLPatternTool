@@ -17,12 +17,14 @@ const {
 const compiler = webpack(webpackDevConfig);
 
 const webpackDevServer = new WebpackDevServer({
+  host: DEV_HOST,
+  port: DEV_PORT,
   open: true,
   static: {
     directory: pathToPublic, // technically nonexistent, exists in memory
   },
   client: {
-    progress: true,
+    progress: false,
     reconnect: true,
     overlay: {
       errors: true,
@@ -35,13 +37,12 @@ const webpackDevServer = new WebpackDevServer({
 ["SIGINT", "SIGTERM"].forEach((signal) => {
   process.on(signal, () => {
     console.log("");
-    webpackDevServer.close();
+    webpackDevServer.stop();
     process.exit();
   });
 });
 
-webpackDevServer.start(DEV_PORT, DEV_HOST, (error) => {
-  if (error) return console.log(error);
-})
-
-signale.success(`Development server deployed in ${"development"} mode!`);
+(async () => {
+  await webpackDevServer.start();  
+  signale.success(`Development server deployed in ${"development"} mode!`);
+})();
