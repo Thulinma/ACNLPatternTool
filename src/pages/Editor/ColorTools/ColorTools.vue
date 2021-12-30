@@ -125,6 +125,8 @@ export default {
       return this.colorPicker === "wheel";
     },
     modeIndex() {
+      if (this.colorPicker == null)
+        return 0;
       return this.modes.indexOf(this.colorPicker);
     },
   },
