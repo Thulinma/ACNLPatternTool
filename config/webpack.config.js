@@ -249,16 +249,19 @@ const plugins = [
   new webpack.DefinePlugin({ "process.injected": JSON.stringify(injection) }),
 ];
 
+const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
+  logo: pathToFavicon,
+  inject: true,
+  mode: env.ifProdVal("webapp", "light"),
+})
+
 const pluginsDev = [
   ...plugins,
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
     filename: "index.html",
   }),
-  new FaviconsWebpackPlugin({
-    logo: pathToFavicon,
-    inject: true,
-  }),
+  faviconsWebpackPlugin,
 ];
 
 const pluginsProd = [
@@ -269,12 +272,16 @@ const pluginsProd = [
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
   }),
-  new FaviconsWebpackPlugin({
-    logo: pathToFavicon,
-    inject: true,
-  }),
+  faviconsWebpackPlugin,
 ];
 
+
+const optimization = {
+};
+
+const optimizationDev = {
+  ...optimization,
+};
 
 const optimizatonProd = {
   minimizer: [
@@ -314,6 +321,7 @@ const webpackDevConfig = {
     rules: rulesDev
   },
   plugins: pluginsDev,
+  optimization: optimizationDev,
   resolve
 };
 

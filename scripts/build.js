@@ -120,9 +120,16 @@ compiler.hooks.done.tap('done', (stats) => {
 
 (async () => {
   await new Promise((resolve) => {
-    compiler.run((error) => {
-      if (error) console.log(error);
-      resolve();
+    compiler.run((error, stats) => {
+      if (error)
+        console.log(error);
+      else console.log(stats.toString({
+        chunks: true,
+        colors: true,
+      }));
+      compiler.close(_error => {
+        resolve();
+      });
     });
   });
 
