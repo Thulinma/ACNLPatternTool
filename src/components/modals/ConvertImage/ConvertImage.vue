@@ -28,7 +28,7 @@
             @update:rows="rows = $event"
             :columns="columns"
             @update:columns="columns = $event"
-            @next="toAdjusting"
+            @next="croppingToAdjusting"
           />
         </VStepperContent>
         <VStepperContent
@@ -51,7 +51,7 @@
             :paletteSelector="paletteSelector"
             @update:paletteSelector="paletteSelector = $event"
             @prev="state = states.cropping"
-            @next="toSaving(true)"
+            @next="state = states.saving"
           />
         </VStepperContent>
         <VStepperContent
@@ -193,18 +193,12 @@ export default {
   },
   methods: {
     // state swapping (forward only)
-    toAdjusting(croppedCanvas, forward = true) {
-      if (croppedCanvas == null) return;
-      if (this.dataURL == null) return;
+    croppingToAdjusting(croppedCanvas) {
+      if (croppedCanvas == null)
+        return;
       this.state = states.adjusting;
-      if (!forward) return;
       this.croppedCanvas = croppedCanvas;
       this.updatePreviewDataURL();
-    },
-    toSaving() { this.state = states.saving; },
-    prev() {
-      if (this.state < 0) this.state = 0;
-      else this.state = this.state - 1;
     },
     updatePreviewDataURL: debounce(function() {
       const drawingToolGrid = convertCanvas(
