@@ -3,7 +3,7 @@ import DrawingTool from "@/libs/DrawingTool";
 import {
   ResultMetadataType,
   DecodeHintType,
-} from "@zxing/library";
+} from "@zxing/library/esm";
 import {
   AcBrowserQRCodeReader as BrowserQRCodeReader,
 } from "@/libs/acZxing";
