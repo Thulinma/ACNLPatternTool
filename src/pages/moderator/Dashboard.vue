@@ -232,12 +232,15 @@ button {
   cursor: pointer;
 }
 .top {
+  font-family: inherit;
   text-align: center;
 }
 .patterns {
   display: grid;
+  grid-template-rows: auto;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 10px;
+  row-gap: 0px;
+  column-gap: 30px;
   justify-items: center;
 }
 .pattern-container {
@@ -249,9 +252,7 @@ button {
   align-items: center;
   justify-content: center;
   width: 220px;
-  height: 520px;
-  max-width: 220px;
-  max-height: 520px;
+  height: auto;
   margin: 10px;
   box-shadow: 5px 5px 12px -3px rgba(0, 0, 0, 0.2);
   background-image: radial-gradient(#89c3b9 20%, transparent 20%),

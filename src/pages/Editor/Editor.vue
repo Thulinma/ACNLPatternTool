@@ -505,7 +505,6 @@ export default {
 
 .editor--container {
   transition: background-color 0.5s linear;
-  background-color: colors.$ecru-white;
   min-height: 100%;
 
   display: grid;
@@ -533,7 +532,7 @@ export default {
     grid-template-rows: min-content;
     justify-content: center;
     padding-bottom: 0px;
-    background-color: transparent;
+    background-color: colors.$ecru-white;
     row-gap: 20px;
   }
   @include screens.desktop {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="login-container">
     <form class="form" @submit.prevent>
       <div class="form-title">Sign into your moderator account.</div>
       <div class="form-row" v-if="didFail">
@@ -103,7 +103,7 @@ export default {
 
 
 <style lang="scss" scoped>
-.container {
+.login-container {
   position: relative;
   top: 0;
   left: 0;

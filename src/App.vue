@@ -1,11 +1,9 @@
 <template>
   <VApp class="app-container">
     <VMain>
-      <div id="app">
-        <router-view></router-view>
-        <Banner />
-        <NavigationButton/>
-      </div>
+      <router-view></router-view>
+      <Banner />
+      <NavigationButton/>
     </VMain>
   </VApp>
 </template>
@@ -34,18 +32,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "styles/colors" as colors;
-
-/* Global app styles */
-#app {
-  background-color: colors.$ecru-white;
-  font-family: Nunito;
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  width: 100%;
-  overflow-y: scroll;
-}
+.app-container { font-family: Nunito; }
 </style>

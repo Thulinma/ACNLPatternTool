@@ -1,7 +1,9 @@
 <template>
-  <MarkdownStyled class="container">
-    <slot></slot>
-  </MarkdownStyled>
+  <div class="page">
+    <MarkdownStyled class="container">
+      <slot></slot>
+    </MarkdownStyled>
+  </div>
 </template>
 
 <script>
@@ -14,10 +16,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "styles/colors" as colors;
 @use "styles/screens" as screens;
 
+.page {
+  background-color: colors.$ecru-white;
+  color: colors.$jambalaya;
+}
+
 .container::v-deep {
-  margin: auto;
   max-width: 800px;
   padding: 2rem;
   @include screens.tablet-portrait {

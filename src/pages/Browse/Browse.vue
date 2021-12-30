@@ -456,6 +456,10 @@ export default {
 @use "styles/resets" as resets;
 @use "styles/animations" as animations;
 
+a {
+  text-decoration: none;
+}
+
 .tag-filter {
   display: grid;
   grid-template-areas: "title title title" "filter filter filter";
@@ -469,6 +473,8 @@ export default {
 
 .browse {
   padding-bottom: 50px;
+  min-height: 100%;
+  background-color: colors.$ecru-white;
   
   @include positioning.relative-in-place;
   .search-row {
@@ -481,17 +487,17 @@ export default {
     justify-items: stretch;
     align-content: center;
     align-items: stretch;
-    margin-top: 55px;
+    padding-top: 55px;
     padding-left: 30px;
     padding-right: 30px;
     
     @include screens.phone-landscape {
-      margin-top: 25px;
+      padding-top: 25px;
       padding-left: 60px;
       padding-right: 80px;
     }
     @include screens.tablet-portrait {
-      margin-top: 40px;
+      padding-top: 40px;
       padding-left: 85px;
       padding-right: 90px;
     }

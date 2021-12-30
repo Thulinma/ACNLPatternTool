@@ -145,6 +145,10 @@ export default {
 @use "styles/screens" as screens;
 @use "styles/transitions" as transitions;
 
+a {
+  text-decoration: none;
+}
+
 .home--container {
   position: relative;
   top: 0;
