@@ -112,6 +112,21 @@ const ifProdExec = (prodCallback, defaultCallback) => {
   else if (defaultCallback) defaultCallback();
 };
 
+
+const ifOfflineVal = (offlineVal, defaultVal) => {
+  const { IS_OFFLINE } = process.env;
+  const isOffline = IS_OFFLINE === false;
+  if (isOffline) return offlineVal;
+  else return defaultVal;
+}
+
+const ifOfflineExec = (offlineCallback, defaultCallback) => {
+  const { IS_OFFLINE } = process.env;
+  const isOffline = IS_OFFLINE;
+  if (isOffline) offlineCallback();
+  else if (defaultCallback) defaultCallback();
+}
+
 // process.env variables available to external (inside build process)
 // process.env variables available to internal (inside built process)
 module.exports = {
@@ -122,5 +137,7 @@ module.exports = {
   ifDevVal,
   ifDevExec,
   ifProdVal,
-  ifProdExec
+  ifProdExec,
+  ifOfflineVal,
+  ifOfflineExec,
 }

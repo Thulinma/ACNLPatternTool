@@ -10,9 +10,8 @@
 
 <script>
 import DrawingTool from "@/libs/DrawingTool";
-import ACNHFormat from "@/libs/ACNHFormat";
 import { applyFilter } from "@/libs/xbrz";
-import { toolToModelType, toolToModelPath } from "@/libs/Preview3D";
+import { toolToModelType, toolToModelUrlData } from "@/libs/Preview3D";
 
 import {
   Scene,
@@ -33,7 +32,7 @@ import {
 } from "three";
 import { GLTFLoader } from "@three/loaders/GLTFLoader";
 import { OrbitControls } from "@three/controls/OrbitControls";
-import injected from "@/utils/injected";
+import { clothingStand } from "@/models";
 
 const scale = 50;
 
@@ -49,6 +48,8 @@ export default {
   },
   data: function () {
     return {
+      pixelCanvas: document.createElement("canvas"),
+      renderCanvas: document.createElement("canvas"),
       scene: new Scene(),
       camera: new OrthographicCamera(
         -this.width / scale,
@@ -59,8 +60,6 @@ export default {
         1000
       ),
       renderer: null,
-      pixelCanvas: document.createElement("canvas"),
-      renderCanvas: document.createElement("canvas"),
       texture: null,
       dirLight: false,
       model: false,
@@ -69,9 +68,6 @@ export default {
       rotating: false,
       hasAnimReq: false,
       loading: false,
-      rotx: 0,
-      roty: 0,
-      rotstart: 0,
     };
   },
   methods: {
@@ -93,7 +89,7 @@ export default {
       if (modelType > 2) {
         return;
       }
-      let path = toolToModelPath(d);
+      let modelUrlData = toolToModelUrlData(d);
       let modelOffset = { x: 0, y: -6, z: 0, rough: 1.5 };
       this.controls.maxZoom = 2.0;
       this.controls.minZoom = 0.8;
@@ -135,7 +131,7 @@ export default {
         this.drawingTool.texWidth * 4;
       this.drawingTool.render();
       //The loader has an async callback. This is fine, as we don't run any other code after it.
-      loader.load(injected.getObjectUrl(path["model.gltf"]), (gltf) => {
+      loader.load(modelUrlData.modelUrl, (gltf) => {
         if (this.model) {
           this.scene.remove(this.model);
         }
@@ -149,40 +145,41 @@ export default {
                 this.hasAnimReq = requestAnimationFrame(this.animate);
               }
             };
-            if (path.hasOwnProperty(meshName + "_Nrm.png")) {
+            if (modelUrlData.nrmUrl) {
               child.material.normalMap = texLdr.load(
-                injected.getObjectUrl(path[meshName + "_Nrm.png"]),
+                modelUrlData.nrmUrl,
                 redraw
               );
               child.material.normalMap.flipY = false;
             }
-            if (path.hasOwnProperty(meshName + "_Crv.png")) {
+            if (modelUrlData.crvUrl) {
               child.material.lightMap = texLdr.load(
-                injected.getObjectUrl(path[meshName + "_Crv.png"], redraw)
+                modelUrlData.crvUrl,
+                () => redraw(),
               );
               child.material.lightMap.flipY = false;
             }
-            if (path.hasOwnProperty(meshName + "_OP.png")) {
+            if (modelUrlData.opUrl) {
               child.material.alphaMap = texLdr.load(
-                injected.getObjectUrl(path[meshName + "_OP.png"], redraw)
+                modelUrlData.opUrl,
+                () => redraw(),
               );
               child.material.alphaMap.flipY = false;
               child.material.transparent = true;
               child.material.alphaTest = 0.5;
             }
-            if (path.hasOwnProperty(meshName + "_Mix.png")) {
+            if (modelUrlData.mixUrl) {
               this.mixImg = new Image();
               this.mixImg.onload = () => {
                 this.drawingTool.render();
                 redraw();
               };
-              this.mixImg.src = injected.getObjectUrl(
-                path[meshName + "_Mix.png"]
-              );
+              this.mixImg.src = modelUrlData.mixUrl;
             }
-            if (path.hasOwnProperty(meshName + "_Alb.png")) {
+            if (modelUrlData.albUrl) {
               child.material.map = texLdr.load(
-                injected.getObjectUrl(path[meshName + "_Alb.png"], redraw)
+                modelUrlData.albUrl,
+                redraw,
               );
               child.material.map.flipY = false;
             }
@@ -305,7 +302,7 @@ export default {
     this.loadModel(this.drawingTool);
     this.drawingTool.onLoad(this.loadModel);
 
-    loader.parse(JSON.stringify(injected.clothing_stand), "", (gltf) => {
+    loader.load(clothingStand.modelUrl, (gltf) => {
       this.stand = gltf.scene.children[0];
       this.stand.traverse((child) => {
         if (child instanceof Mesh) {

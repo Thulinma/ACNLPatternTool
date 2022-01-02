@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 // auto-generate the index.html file
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,13 +12,12 @@ const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToClientSrc,
   pathToBuild,
+  pathToInjected,
   pathToPublicIndex,
   pathToFavicon,
   pathToClientSrcIndex,
 } = require('../etc/paths');
 
-
-const injection = require('../etc/injection');
 
 const clientEnv = env.buildClient();
 
@@ -178,26 +178,59 @@ const csvRule = {
 };
 
 
+const imageRule = {
+  test: /\.(png|jpe?g|gif)$/i,
+  type: "asset/resource",
+  generator: {
+    filename: "images/[hash][ext][query]",
+  },
+};
+
+// texture loader
+const textureOfflineRule = {
+  test: /injected\/.*\.(png)$/i,
+  type: "asset/inline",
+};
+const textureOnlineRule = {
+  test: /injected\/.*\.(png)$/i,
+  type: "asset/resource",
+  generator: {
+    filename: "models/[hash][ext][query]",
+  },
+};
+
+// gltf loader
+const gltfOfflineRule = {
+  test: /injected\/.*\.(gltf)$/i,
+  type: "asset/inline",
+};
+const gltfOnlineRule = {
+  test: /injected\/.*\.(gltf)$/i,
+  type: "asset/resource",
+  generator: {
+    filename: "models/[hash][ext][query]",
+  },
+};
+
 const fileRules = [
   mdRule,
   svgRule,
   csvRule,
   {
-    // file-loader for image assets
-    test: /\.(png|jpe?g|gif)$/i,
-    type: "asset/resource",
-    generator: {
-      filename: "images/[hash][ext][query]",
-    },
+    oneOf: [
+      // loader for texture maps
+      env.ifOfflineVal(
+        textureOfflineRule,
+        textureOnlineRule,
+      ),
+      // loader for image files
+      imageRule,
+    ],
   },
-  // file-loader for models
-  {
-    test: /\.(gltf)$/i,
-    type: "asset/resource",
-    generator: {
-      filename: "resources/[hash][ext][query]",
-    },
-  },
+  env.ifOfflineVal(
+    gltfOfflineRule,
+    gltfOnlineRule,
+  ),
 ];
 
 
@@ -230,7 +263,6 @@ const plugins = [
   new VuetifyLoaderPlugin(),
   new OptimizeThreePlugin(),
   new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
-  new webpack.DefinePlugin({ "process.injected": JSON.stringify(injection) }),
 ];
 
 const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
@@ -288,6 +320,8 @@ const resolve = {
   ],
   alias: {
     "@": pathToClientSrc,
+    // online/offline should export the same shapes
+    "Injected": pathToInjected,
   }
 };
 

@@ -1,6 +1,34 @@
-import { DrawingTool, RenderTarget } from "@/libs/DrawingTool";
+import { RenderTarget } from "@/libs/DrawingTool";
 import ACNHFormat from '@/libs/ACNHFormat';
 import { applyFilter } from '@/libs/xbrz';
+import {
+  easel,
+  tankSimp,
+  dressShirtLong,
+  teeShort,
+  tankPro,
+  sweater,
+  hoodie,
+  coat,
+  dressAcnhShort,
+  dressAcnhNone,
+  dressAcnhLong,
+  dressBalloon,
+  dressRound,
+  robe,
+  brimmedCap,
+  knitCap,
+  brimmedHat,
+  dressHalf,
+  dressLong,
+  dressNone,
+  shirtHalf,
+  shirtLong,
+  shirtNone,
+  hat,
+  hornHat,
+  clothingStand,
+} from "@/models";
 
 //for 3D renders
 import {
@@ -21,10 +49,7 @@ import {
   MixOperation,
   Vector3,
 } from "three";
-import {
-  GLTFLoader
-} from '@three/loaders/GLTFLoader';
-import injected from "@/utils/injected";
+import { GLTFLoader } from '@three/loaders/GLTFLoader';
 
 //Global canvas and renderer
 let threeCanvas = document.createElement("canvas");
@@ -95,49 +120,49 @@ export function toolToModelType(tool){
 
 /// Returns the 3D model path for the given DrawingTool instance
 /// Returns false if there is no model available.
-export function toolToModelPath(tool){
+export const toolToModelUrlData = (tool) =>{
   if (tool.pattern instanceof ACNHFormat){
     switch (tool.patternType){
       case 0x00:
-      case 0x01: return injected.easel;
-      case 0x02: return injected.tank_simp;
-      case 0x03: return injected.dressshirt_long;
-      case 0x04: return injected.tee_short;
-      case 0x05: return injected.tank_pro;
-      case 0x06: return injected.sweater;
-      case 0x07: return injected.hoodie;
-      case 0x08: return injected.coat;
-      case 0x09: return injected.dress_acnh_short;
-      case 0x0A: return injected.dress_acnh_none;
-      case 0x0B: return injected.dress_acnh_long;
-      case 0x0C: return injected.dress_balloon;
-      case 0x0D: return injected.dress_round;
-      case 0x0E: return injected.robe;
-      case 0x0f: return injected.brimmed_cap;
-      case 0x10: return injected.knit_cap;
-      case 0x11: return injected.brimmed_hat;
-      case 0x12: return injected.dress_half;
-      case 0x13: return injected.dress_long;
-      case 0x14: return injected.dress_none;
-      case 0x15: return injected.shirt_half;
-      case 0x16: return injected.shirt_long;
-      case 0x17: return injected.shirt_none;
-      case 0x18: return injected.hat;
-      case 0x19: return injected.hornhat;
+      case 0x01: return easel;
+      case 0x02: return tankSimp;
+      case 0x03: return dressShirtLong;
+      case 0x04: return teeShort;
+      case 0x05: return tankPro;
+      case 0x06: return sweater;
+      case 0x07: return hoodie;
+      case 0x08: return coat;
+      case 0x09: return dressAcnhShort;
+      case 0x0A: return dressAcnhNone;
+      case 0x0B: return dressAcnhLong;
+      case 0x0C: return dressBalloon;
+      case 0x0D: return dressRound;
+      case 0x0E: return robe;
+      case 0x0f: return brimmedCap;
+      case 0x10: return knitCap;
+      case 0x11: return brimmedHat;
+      case 0x12: return dressHalf;
+      case 0x13: return dressLong;
+      case 0x14: return dressNone;
+      case 0x15: return shirtHalf;
+      case 0x16: return shirtLong;
+      case 0x17: return shirtNone;
+      case 0x18: return hat;
+      case 0x19: return hornhat;
       default: return false;
     }
   }else{
     switch (tool.patternType){
-      case 0: return injected.dress_long;
-      case 1: return injected.dress_half;
-      case 2: return injected.dress_none;
-      case 3: return injected.shirt_long;
-      case 4: return injected.shirt_half;
-      case 5: return injected.shirt_none;
-      case 6: return injected.hornhat;
-      case 7: return injected.hat;
+      case 0: return dressLong;
+      case 1: return dressHalf;
+      case 2: return dressNone;
+      case 3: return shirtLong;
+      case 4: return shirtHalf;
+      case 5: return shirtNone;
+      case 6: return hornHat;
+      case 7: return hat;
       case 8: return false;
-      case 9: return injected.easel;
+      case 9: return easel;
       default: return false;
     }
   }
@@ -151,7 +176,7 @@ const texLdr = new TextureLoader();
 //Loads the model for a clothing stand
 export async function loadStand(){
   return new Promise(resolve => {
-    mdlLdr.parse(JSON.stringify(injected.clothing_stand), "", (gltf) => {
+    mdlLdr.load(clothingStand.modelUrl, (gltf) => {
       let ret = gltf.scene.children[0];
       ret.traverse((child) => {
         if (child instanceof Mesh){
@@ -167,9 +192,9 @@ export async function loadStand(){
 }
 
 /// Helper function that loads a texture with some basic error handling
-function loadTexture(tex,name){
+function loadTexture(url,name){
   return new Promise(r=>{
-    texLdr.load(injected.getObjectUrl(tex),(done)=>{
+    texLdr.load(url,(done)=>{
       r(done);
     },undefined,()=>{
       console.log("Failed loading texture "+name);
@@ -182,32 +207,32 @@ function loadTexture(tex,name){
 /// Returns false if there is no available model or there was a load failure.
 /// Note: Will draw to the textureCanvas if a mix image is available for the model!
 export async function loadModelForTool(tool, texture, textureCanvas){
-  const path = toolToModelPath(tool);
-  if (!path){return false;}//No model? Return early.
+  const modelUrlData = toolToModelUrlData(tool);
+  if (!modelUrlData){return false;}//No model? Return early.
   const modelType = toolToModelType(tool);
   return new Promise(resolve => {
-    mdlLdr.load(injected.getObjectUrl(path["model.gltf"]), (gltf) => {
+    mdlLdr.load(modelUrlData.modelUrl, (gltf) => {
       let ret = gltf.scene.children[0];
       let promises = [];
       ret.traverse((child) => {
         if (child instanceof Mesh){
           promises.push(new Promise(async (travResolve) => {
             const meshName = child.name.split("__")[1];
-            if (path.hasOwnProperty(meshName+"_Nrm.png")){
-              child.material.normalMap = await loadTexture(path[meshName+"_Nrm.png"],"normalmap");
+            if (modelUrlData.nrmUrl){
+              child.material.normalMap = await loadTexture(modelUrlData.nrmUrl,"normalmap");
               child.material.normalMap.flipY = false;
             }
-            if (path.hasOwnProperty(meshName+"_Crv.png")){
-              child.material.lightMap = await loadTexture(path[meshName+"_Crv.png"],"lightmap");
+            if (modelUrlData.crvUrl){
+              child.material.lightMap = await loadTexture(modelUrlData.crvUrl,"lightmap");
               child.material.lightMap.flipY = false;
             }
-            if (path.hasOwnProperty(meshName+"_OP.png")){
-              child.material.alphaMap = await loadTexture(path[meshName+"_OP.png"],"alphamap");
+            if (modelUrlData.opUrl){
+              child.material.alphaMap = await loadTexture(modelUrlData.opUrl,"alphamap");
               child.material.alphaMap.flipY = false;
               child.material.transparent = true;
               child.material.alphaTest = 0.5;
             }
-            if (path.hasOwnProperty(meshName+"_Mix.png")){
+            if (modelUrlData.mixUrl){
               await new Promise((d) => {
                 let img = new Image();
                 img.onload = ()=>{
@@ -218,11 +243,11 @@ export async function loadModelForTool(tool, texture, textureCanvas){
                   d();
                 }
                 img.onerror = d;
-                img.src = injected.getObjectUrl(path[meshName+"_Mix.png"]);
+                img.src = modelUrlData.mixUrl;
               });
             }
-            if (path.hasOwnProperty(meshName+"_Alb.png")){
-              child.material.map = await loadTexture(path[meshName+"_Alb.png"],"material");
+            if (modelUrlData.albUrl){
+              child.material.map = await loadTexture(modelUrlData.albUrl,"material");
               child.material.map.flipY = false;
             }
             if (child.skeleton && child.skeleton.bones && child.skeleton.bones.length){

@@ -8,7 +8,10 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "Injected/*": [
+        "./injected/*",
+      ],
     },
     "downlevelIteration": true,
     "lib": [
