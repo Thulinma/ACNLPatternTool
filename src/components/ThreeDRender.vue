@@ -62,16 +62,33 @@ export default {
       renderer: null,
       texture: null,
       dirLight: false,
-      model: false,
-      stand: false,
+      model: null,
+      stand: null,
       adjusting: false,
       rotating: false,
       hasAnimReq: false,
       loading: false,
+      controls: null,
     };
   },
   methods: {
-    loadModel(d) {
+    cleanUp() {
+      if (this.model)
+        this.scene.remove(this.model);
+        this.model = null;
+      if (this.texture)
+        this.texture.dispose();
+        this.texture = null;
+      if (this.stand)
+        this.scene.remove(this.stand);
+    },
+    setupTexture() {
+      this.texture = new Texture(this.renderCanvas);
+      this.texture.needsUpdate = true;
+      this.texture.encoding = sRGBEncoding;
+      this.texture.flipY = false;
+    },
+    async loadModel(d) {
       //This prevents a race condition from happening when changing pattern while a model was still being loaded
       //We simply postpone the event by 100ms repeatedly until the previous load completed.
       if (this.loading) {
@@ -80,15 +97,11 @@ export default {
       }
       this.loading = true;
       //Remove old model from the scene
-      if (this.model) {
-        this.scene.remove(this.model);
-        this.model = false;
-      }
+      this.cleanUp();
       //Get new model properties
       let modelType = toolToModelType(d);
-      if (modelType > 2) {
+      if (modelType > 2)
         return;
-      }
       let modelUrlData = toolToModelUrlData(d);
       let modelOffset = { x: 0, y: -6, z: 0, rough: 1.5 };
       this.controls.maxZoom = 2.0;
@@ -119,10 +132,9 @@ export default {
         new WheelEvent("wheel", { deltaY: 50 })
       );
       //Remove stand and re-add if it should be displayed
-      this.scene.remove(this.stand);
-      if (stand && this.stand) {
+      if (stand && this.stand)
         this.scene.add(this.stand);
-      }
+      this.setupTexture();
       //Wipe the renderCanvas
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       this.mixImg = false;
@@ -131,95 +143,91 @@ export default {
         this.drawingTool.texWidth * 4;
       this.drawingTool.render();
       //The loader has an async callback. This is fine, as we don't run any other code after it.
-      loader.load(modelUrlData.modelUrl, (gltf) => {
-        if (this.model) {
-          this.scene.remove(this.model);
-        }
-        this.model = gltf.scene.children[0];
-        this.model.traverse((child) => {
-          if (child instanceof Mesh) {
-            //child.material = new MeshPhongMaterial();
-            const meshName = child.name.split("__")[1];
-            const redraw = () => {
-              if (!this.hasAnimReq) {
-                this.hasAnimReq = requestAnimationFrame(this.animate);
-              }
-            };
-            if (modelUrlData.nrmUrl) {
-              child.material.normalMap = texLdr.load(
-                modelUrlData.nrmUrl,
-                redraw
-              );
-              child.material.normalMap.flipY = false;
-            }
-            if (modelUrlData.crvUrl) {
-              child.material.lightMap = texLdr.load(
-                modelUrlData.crvUrl,
-                () => redraw(),
-              );
-              child.material.lightMap.flipY = false;
-            }
-            if (modelUrlData.opUrl) {
-              child.material.alphaMap = texLdr.load(
-                modelUrlData.opUrl,
-                () => redraw(),
-              );
-              child.material.alphaMap.flipY = false;
-              child.material.transparent = true;
-              child.material.alphaTest = 0.5;
-            }
-            if (modelUrlData.mixUrl) {
-              this.mixImg = new Image();
-              this.mixImg.onload = () => {
-                this.drawingTool.render();
-                redraw();
-              };
-              this.mixImg.src = modelUrlData.mixUrl;
-            }
-            if (modelUrlData.albUrl) {
-              child.material.map = texLdr.load(
-                modelUrlData.albUrl,
-                redraw,
-              );
-              child.material.map.flipY = false;
-            }
-            if (
-              child.skeleton &&
-              child.skeleton.bones &&
-              child.skeleton.bones.length
-            ) {
-              for (let b in child.skeleton.bones) {
-                if (child.skeleton.bones[b].name == "Arm_1_R") {
-                  child.skeleton.bones[b].rotation.z += 0.75;
-                }
-                if (child.skeleton.bones[b].name == "Arm_1_L") {
-                  child.skeleton.bones[b].rotation.z -= 0.75;
-                }
-              }
-            }
-            if (
-              !child.material.map ||
-              (child.material.map.image &&
-                child.material.map.image.width == 1 &&
-                child.material.map.image.height == 1)
-            ) {
-              child.material.map = this.texture;
-            }
-            child.material.side = DoubleSide;
-            child.material.metalness = 0;
-            child.material.shininess = 9;
-            child.material.roughness = modelOffset.rough;
+      const gltf = await new Promise(resolve => {
+        loader.load(modelUrlData.modelUrl, resolve);
+      });
+      if (this.model)
+        this.scene.remove(this.model);
+      this.model = gltf.scene.children[0];
+      this.model.traverse((child) => {
+        if (child instanceof Mesh) {
+          //child.material = new MeshPhongMaterial();
+          const meshName = child.name.split("__")[1];
+          if (modelUrlData.nrmUrl) {
+            child.material.normalMap = texLdr.load(
+              modelUrlData.nrmUrl,
+              this.redraw
+            );
+            child.material.normalMap.flipY = false;
           }
-        });
-        this.model.position.x = modelOffset.x;
-        this.model.position.y = modelOffset.y;
-        this.model.position.z = modelOffset.z;
-        this.scene.add(this.model);
-        if (!this.hasAnimReq) {
-          this.hasAnimReq = requestAnimationFrame(this.animate);
+          if (modelUrlData.crvUrl) {
+            child.material.lightMap = texLdr.load(
+              modelUrlData.crvUrl,
+              this.redraw,
+            );
+            child.material.lightMap.flipY = false;
+          }
+          if (modelUrlData.opUrl) {
+            child.material.alphaMap = texLdr.load(
+              modelUrlData.opUrl,
+              this.redraw,
+            );
+            child.material.alphaMap.flipY = false;
+            child.material.transparent = true;
+            child.material.alphaTest = 0.5;
+          }
+          if (modelUrlData.mixUrl) {
+            this.mixImg = new Image();
+            this.mixImg.onload = () => {
+              this.drawingTool.render();
+              this.redraw;
+            };
+            this.mixImg.src = modelUrlData.mixUrl;
+          }
+          if (modelUrlData.albUrl) {
+            child.material.map = texLdr.load(
+              modelUrlData.albUrl,
+              this.redraw,
+            );
+            child.material.map.flipY = false;
+          }
+          if (
+            child.skeleton &&
+            child.skeleton.bones &&
+            child.skeleton.bones.length
+          ) {
+            for (let b in child.skeleton.bones) {
+              if (child.skeleton.bones[b].name == "Arm_1_R") {
+                child.skeleton.bones[b].rotation.z += 0.75;
+              }
+              if (child.skeleton.bones[b].name == "Arm_1_L") {
+                child.skeleton.bones[b].rotation.z -= 0.75;
+              }
+            }
+          }
+          if (
+            !child.material.map ||
+            (child.material.map.image &&
+              child.material.map.image.width == 1 &&
+              child.material.map.image.height == 1)
+          )
+            child.material.map = this.texture;
+          child.material.side = DoubleSide;
+          child.material.metalness = 0;
+          child.material.shininess = 9;
+          child.material.roughness = modelOffset.rough;
         }
-        this.loading = false;
-      }); //end of loader callback
+      });
+      this.model.position.x = modelOffset.x;
+      this.model.position.y = modelOffset.y;
+      this.model.position.z = modelOffset.z;
+      this.scene.add(this.model);
+      this.redraw();
+      this.loading = false;
+    },
+    redraw() {
+      if (!this.hasAnimReq)
+        this.hasAnimReq = requestAnimationFrame(this.animate);
     },
     animate() {
       this.controls.update();
@@ -239,11 +247,7 @@ export default {
     },
   },
   mounted: function () {
-    this.texture = new Texture(this.renderCanvas);
-    this.texture.needsUpdate = true;
-    this.texture.encoding = sRGBEncoding;
-    this.texture.flipY = false;
-
+    this.setupTexture();
     this.renderer = new WebGLRenderer({
       alpha: true,
       canvas: this.$refs.canvas3d,
