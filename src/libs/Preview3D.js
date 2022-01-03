@@ -148,7 +148,7 @@ export const toolToModelUrlData = (tool) =>{
       case 0x16: return shirtLong;
       case 0x17: return shirtNone;
       case 0x18: return hat;
-      case 0x19: return hornhat;
+      case 0x19: return hornHat;
       default: return false;
     }
   }else{
