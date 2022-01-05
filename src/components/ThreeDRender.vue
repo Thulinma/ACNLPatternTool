@@ -17,18 +17,13 @@ import {
   Scene,
   Texture,
   sRGBEncoding,
-  NearestFilter,
   OrthographicCamera,
   Mesh,
-  MeshStandardMaterial,
-  MeshPhongMaterial,
   WebGLRenderer,
   DirectionalLight,
-  HemisphereLight,
   AmbientLight,
   DoubleSide,
   TextureLoader,
-  MixOperation,
 } from "three";
 import { GLTFLoader } from "@three/loaders/GLTFLoader";
 import { OrbitControls } from "@three/controls/OrbitControls";
@@ -36,8 +31,8 @@ import { clothingStand } from "@/models";
 
 const scale = 50;
 
-const loader = new GLTFLoader();
-const texLdr = new TextureLoader();
+const gltfLoader = new GLTFLoader();
+const textureLoader = new TextureLoader();
 
 export default {
   name: "ThreeDRender",
@@ -47,9 +42,12 @@ export default {
     height: Number,
   },
   data: function () {
+    const pixelCanvas = document.createElement("canvas");
+    const renderCanvas = document.createElement("canvas");
     return {
-      pixelCanvas: document.createElement("canvas"),
-      renderCanvas: document.createElement("canvas"),
+      
+      pixelCanvas,
+      renderCanvas,
       scene: new Scene(),
       camera: new OrthographicCamera(
         -this.width / scale,
@@ -69,18 +67,16 @@ export default {
       hasAnimReq: false,
       loading: false,
       controls: null,
+      mixImg: null,
     };
   },
   methods: {
     cleanUp() {
-      if (this.model)
-        this.scene.remove(this.model);
+      if (this.model) this.scene.remove(this.model);
         this.model = null;
-      if (this.texture)
-        this.texture.dispose();
+      if (this.texture);
         this.texture = null;
-      if (this.stand)
-        this.scene.remove(this.stand);
+      if (this.stand) this.scene.remove(this.stand);
     },
     setupTexture() {
       this.texture = new Texture(this.renderCanvas);
@@ -88,7 +84,7 @@ export default {
       this.texture.encoding = sRGBEncoding;
       this.texture.flipY = false;
     },
-    async loadModel(d) {
+    async loadModel(d = this.drawingTool) {
       //This prevents a race condition from happening when changing pattern while a model was still being loaded
       //We simply postpone the event by 100ms repeatedly until the previous load completed.
       if (this.loading) {
@@ -99,11 +95,10 @@ export default {
       //Remove old model from the scene
       this.cleanUp();
       //Get new model properties
-      let modelType = toolToModelType(d);
-      if (modelType > 2)
-        return;
-      let modelUrlData = toolToModelUrlData(d);
-      let modelOffset = { x: 0, y: -6, z: 0, rough: 1.5 };
+      const modelType = toolToModelType(d);
+      if (modelType > 2) return;
+      const modelUrlData = toolToModelUrlData(d);
+      const modelOffset = { x: 0, y: -6, z: 0, rough: 1.5 };
       this.controls.maxZoom = 2.0;
       this.controls.minZoom = 0.8;
       this.camera.position.set(0, 20, 100);
@@ -132,91 +127,79 @@ export default {
         new WheelEvent("wheel", { deltaY: 50 })
       );
       //Remove stand and re-add if it should be displayed
-      if (stand && this.stand)
-        this.scene.add(this.stand);
+      if (stand && this.stand) this.scene.add(this.stand);
       this.setupTexture();
       //Wipe the renderCanvas
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       this.mixImg = false;
-      this.pixelCanvas.height = this.pixelCanvas.width = this.drawingTool.texWidth;
+      this.pixelCanvas.height = this.pixelCanvas.width =
+        this.drawingTool.texWidth;
       this.renderCanvas.height = this.renderCanvas.width =
         this.drawingTool.texWidth * 4;
       this.drawingTool.render();
       //The loader has an async callback. This is fine, as we don't run any other code after it.
-      const gltf = await new Promise(resolve => {
-        loader.load(modelUrlData.modelUrl, resolve);
+      const gltf = await new Promise((resolve) => {
+        gltfLoader.load(modelUrlData.modelUrl, resolve);
       });
-      if (this.model)
-        this.scene.remove(this.model);
+      if (this.model) this.scene.remove(this.model);
       this.model = gltf.scene.children[0];
+      // need to start targeting specific meshes
+      //  need to create mappings for specific targets
       this.model.traverse((child) => {
-        if (child instanceof Mesh) {
-          //child.material = new MeshPhongMaterial();
-          const meshName = child.name.split("__")[1];
-          if (modelUrlData.nrmUrl) {
-            child.material.normalMap = texLdr.load(
-              modelUrlData.nrmUrl,
-              this.redraw
-            );
-            child.material.normalMap.flipY = false;
-          }
-          if (modelUrlData.crvUrl) {
-            child.material.lightMap = texLdr.load(
-              modelUrlData.crvUrl,
-              this.redraw,
-            );
-            child.material.lightMap.flipY = false;
-          }
-          if (modelUrlData.opUrl) {
-            child.material.alphaMap = texLdr.load(
-              modelUrlData.opUrl,
-              this.redraw,
-            );
-            child.material.alphaMap.flipY = false;
-            child.material.transparent = true;
-            child.material.alphaTest = 0.5;
-          }
-          if (modelUrlData.mixUrl) {
-            this.mixImg = new Image();
-            this.mixImg.onload = () => {
-              this.drawingTool.render();
-              this.redraw;
-            };
-            this.mixImg.src = modelUrlData.mixUrl;
-          }
-          if (modelUrlData.albUrl) {
-            child.material.map = texLdr.load(
-              modelUrlData.albUrl,
-              this.redraw,
-            );
-            child.material.map.flipY = false;
-          }
-          if (
-            child.skeleton &&
-            child.skeleton.bones &&
-            child.skeleton.bones.length
-          ) {
-            for (let b in child.skeleton.bones) {
-              if (child.skeleton.bones[b].name == "Arm_1_R") {
-                child.skeleton.bones[b].rotation.z += 0.75;
-              }
-              if (child.skeleton.bones[b].name == "Arm_1_L") {
-                child.skeleton.bones[b].rotation.z -= 0.75;
-              }
+        if (!(child instanceof Mesh)) return;
+        //child.material = new MeshPhongMaterial();
+        if (modelUrlData.nrmUrl) {
+          const nrmTexture = textureLoader.load(modelUrlData.nrmUrl, () => this.redraw());
+          child.material.normalMap = nrmTexture;
+          child.material.normalMap.flipY = false;
+        }
+        if (modelUrlData.crvUrl) {
+          const crvTexture = textureLoader.load(modelUrlData.crvUrl, () => this.redraw());
+          child.material.lightMap = crvTexture;
+          child.material.lightMap.flipY = false;
+        }
+        if (modelUrlData.opUrl) {
+          const opTexture = textureLoader.load(modelUrlData.opUrl, () => this.redraw());
+          child.material.alphaMap = opTexture;
+          child.material.alphaMap.flipY = false;
+          child.material.transparent = true;
+          child.material.alphaTest = 0.5;
+        }
+        if (modelUrlData.mixUrl) {
+          this.mixImg = new Image();
+          this.mixImg.onload = () => this.redraw();
+          this.mixImg.src = modelUrlData.mixUrl
+        }
+        if (modelUrlData.albUrl) {
+          const albTexture = textureLoader.load(modelUrlData.albUrl, () => this.redraw());
+          child.material.map = albTexture;
+          child.material.map.flipY = false;
+        }
+        if (
+          child.skeleton &&
+          child.skeleton.bones &&
+          child.skeleton.bones.length
+        ) {
+          for (let b in child.skeleton.bones) {
+            if (child.skeleton.bones[b].name == "Arm_1_R") {
+              child.skeleton.bones[b].rotation.z += 0.75;
+            }
+            if (child.skeleton.bones[b].name == "Arm_1_L") {
+              child.skeleton.bones[b].rotation.z -= 0.75;
             }
           }
-          if (
-            !child.material.map ||
-            (child.material.map.image &&
-              child.material.map.image.width == 1 &&
-              child.material.map.image.height == 1)
-          )
-            child.material.map = this.texture;
-          child.material.side = DoubleSide;
-          child.material.metalness = 0;
-          child.material.shininess = 9;
-          child.material.roughness = modelOffset.rough;
         }
+        if (
+          !child.material.map ||
+          (child.material.map.image &&
+            child.material.map.image.width == 1 &&
+            child.material.map.image.height == 1)
+        )
+          child.material.map = this.texture;
+        child.material.side = DoubleSide;
+        child.material.metalness = 0;
+        child.material.shininess = 9;
+        child.material.roughness = modelOffset.rough;
       });
       this.model.position.x = modelOffset.x;
       this.model.position.y = modelOffset.y;
@@ -245,8 +228,21 @@ export default {
         this.hasAnimReq = requestAnimationFrame(this.animate);
       }
     },
+    async loadClothingStand() {
+      const gltf = await new Promise(resolve => gltfLoader.load(clothingStand.modelUrl, resolve));
+      this.stand = gltf.scene.children[0];
+      this.stand.traverse((child) => {
+        if (child instanceof Mesh) {
+          child.material.side = DoubleSide;
+          child.material.metalness = 0.3;
+          child.material.roughness = 0.3;
+        }
+      });
+      this.stand.position.y = -6;
+    },
   },
-  mounted: function () {
+  mounted: async function () {
+    await this.loadClothingStand();
     this.setupTexture();
     this.renderer = new WebGLRenderer({
       alpha: true,
@@ -281,7 +277,7 @@ export default {
       },
     });
 
-    let renderContext = this.renderCanvas.getContext("2d");
+    const renderContext = this.renderCanvas.getContext("2d");
     renderContext.fillStyle = "rgba(255,255,255,0)";
     renderContext.fillRect(0, 0, 32, 128);
 
@@ -302,21 +298,9 @@ export default {
 
     this.hasAnimReq = requestAnimationFrame(this.animate);
 
-    //If the type of pattern changes, change the model too
-    this.loadModel(this.drawingTool);
-    this.drawingTool.onLoad(this.loadModel);
-
-    loader.load(clothingStand.modelUrl, (gltf) => {
-      this.stand = gltf.scene.children[0];
-      this.stand.traverse((child) => {
-        if (child instanceof Mesh) {
-          child.material.side = DoubleSide;
-          child.material.metalness = 0.3;
-          child.material.roughness = 0.3;
-        }
-      });
-      this.stand.position.y = -6;
-    });
+    // If the type of pattern changes, change the model too
+    this.drawingTool.onLoad(() => this.loadModel());
+    await this.loadModel(this.drawingTool);
   },
 };
 </script>
