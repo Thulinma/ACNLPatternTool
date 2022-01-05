@@ -13,18 +13,13 @@ import {
   Scene,
   Texture,
   sRGBEncoding,
-  NearestFilter,
   OrthographicCamera,
   Mesh,
-  MeshStandardMaterial,
-  MeshPhongMaterial,
   WebGLRenderer,
   DirectionalLight,
-  HemisphereLight,
   AmbientLight,
   DoubleSide,
   TextureLoader,
-  MixOperation,
   Vector3,
 } from "three";
 import { GLTFLoader } from '@three/loaders/GLTFLoader';
@@ -216,7 +211,7 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
     texture.flipY = false;
 
     //Upper body clothing needs a stand to hold to model
-    if (modelType == 1){
+    if (modelType === ModelType.Top){
       let stand = await loadStand();
       scene.add(stand);
     }
@@ -233,11 +228,11 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
     let scale = 45;
     let camUp = 20;
     let camPan = 0;
-    if (modelType == 0){//Easel
+    if (modelType === ModelType.Cloth){//Easel
       camUp = 40;
       camPan = -3.5;
       scale = 25;
-    }else if (modelType == 2){//Hat
+    } else if (modelType === ModelType.Hat){//Hat
       camUp = 80;
       scale = 30;
     }
