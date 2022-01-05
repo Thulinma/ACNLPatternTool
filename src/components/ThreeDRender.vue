@@ -11,7 +11,11 @@
 <script>
 import DrawingTool from "@/libs/DrawingTool";
 import { applyFilter } from "@/libs/xbrz";
-import { toolToModelType, toolToModelUrlData } from "@/libs/Preview3D";
+import {
+  ModelType,
+  typeInfoToModelType,
+  typeInfoToModelUrlData,
+} from "@/libs/typeMappings";
 
 import {
   Scene,
@@ -84,39 +88,38 @@ export default {
       this.texture.encoding = sRGBEncoding;
       this.texture.flipY = false;
     },
-    async loadModel(d = this.drawingTool) {
+    async loadModel() {
       //This prevents a race condition from happening when changing pattern while a model was still being loaded
       //We simply postpone the event by 100ms repeatedly until the previous load completed.
       if (this.loading) {
-        setTimeout(this.loadModel, 100, d);
+        setTimeout(this.loadModel, 100, this.drawingTool);
         return;
       }
       this.loading = true;
       //Remove old model from the scene
       this.cleanUp();
       //Get new model properties
-      const modelType = toolToModelType(d);
-      if (modelType > 2) return;
-      const modelUrlData = toolToModelUrlData(d);
+      const modelType = typeInfoToModelType.get(this.drawingTool.typeInfo);
+      if (modelType === ModelType.Standee)
+        return;
+      const modelUrlData = typeInfoToModelUrlData.get(this.drawingTool.typeInfo);
       const modelOffset = { x: 0, y: -6, z: 0, rough: 1.5 };
       this.controls.maxZoom = 2.0;
       this.controls.minZoom = 0.8;
       this.camera.position.set(0, 20, 100);
-      let stand = false;
       switch (modelType) {
-        case 0: //easel style
+        case ModelType.Cloth: //easel style
           modelOffset.rough = 0.5;
           modelOffset.y = -7;
           this.controls.maxZoom = 2.0;
           this.controls.minZoom = 0.8;
           this.controls.zoom = 1.5;
           break;
-        case 1: //clothing style
+        case ModelType.Top: //clothing style
           this.controls.maxZoom = 4.0;
           this.controls.minZoom = 1.5;
-          stand = true;
           break;
-        case 2: //hat style
+        case ModelType.Hat: //hat style
           modelOffset.y = -1;
           this.controls.maxZoom = 2.0;
           this.controls.minZoom = 0.8;
@@ -127,9 +130,10 @@ export default {
         new WheelEvent("wheel", { deltaY: 50 })
       );
       //Remove stand and re-add if it should be displayed
-      if (stand && this.stand) this.scene.add(this.stand);
+      if (modelType === ModelType.Top && this.stand)
+        this.scene.add(this.stand);
       this.setupTexture();
-      //Wipe the renderCanvas
+      // Wipe the renderCanvas
       this.renderCanvas.getContext("2d").clearRect(0, 0, 128, 1);
       this.mixImg = false;
       this.pixelCanvas.height = this.pixelCanvas.width =

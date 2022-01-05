@@ -2,33 +2,11 @@ import { RenderTarget } from "@/libs/DrawingTool";
 import ACNHFormat from '@/libs/ACNHFormat';
 import { applyFilter } from '@/libs/xbrz';
 import {
-  easel,
-  tankSimp,
-  dressShirtLong,
-  teeShort,
-  tankPro,
-  sweater,
-  hoodie,
-  coat,
-  dressAcnhShort,
-  dressAcnhNone,
-  dressAcnhLong,
-  dressBalloon,
-  dressRound,
-  robe,
-  brimmedCap,
-  knitCap,
-  brimmedHat,
-  dressHalf,
-  dressLong,
-  dressNone,
-  shirtHalf,
-  shirtLong,
-  shirtNone,
-  hat,
-  hornHat,
-  clothingStand,
-} from "@/models";
+  ModelType,
+  typeInfoToModelType,
+  typeInfoToModelUrlData,
+} from "@/libs/typeMappings";
+import { clothingStand } from "@/models";
 
 //for 3D renders
 import {
@@ -88,87 +66,6 @@ export function toolToUpscaledCanvas(tool, transparent = true){
   return renderCanvas;
 }
 
-/// Returns model type for given DrawingTool instance.
-/// 0 = Plain pattern
-/// 1 = Upper body Clothing
-/// 2 = Hat
-/// 3 = Standee
-export function toolToModelType(tool){
-  if (tool.pattern instanceof ACNHFormat){
-    switch (tool.patternType){
-      case 0x00://Pattern
-      case 0x01://Pro pattern
-        return 0;
-      case 0x0f://brimmed cap
-      case 0x10://knit cap
-      case 0x11://brimmed hat
-      case 0x18://hat
-      case 0x19://horned hat
-        return 2;
-      default: return 1;
-    }
-  }else{
-    switch (tool.patternType){
-      case 6:
-      case 7: return 2; //Hats
-      case 8: return 3; //Standee
-      case 9: return 0; //Plain pattern
-      default: return 1;//Everything else
-    }
-  }
-}
-
-/// Returns the 3D model path for the given DrawingTool instance
-/// Returns false if there is no model available.
-export const toolToModelUrlData = (tool) =>{
-  if (tool.pattern instanceof ACNHFormat){
-    switch (tool.patternType){
-      case 0x00:
-      case 0x01: return easel;
-      case 0x02: return tankSimp;
-      case 0x03: return dressShirtLong;
-      case 0x04: return teeShort;
-      case 0x05: return tankPro;
-      case 0x06: return sweater;
-      case 0x07: return hoodie;
-      case 0x08: return coat;
-      case 0x09: return dressAcnhShort;
-      case 0x0A: return dressAcnhNone;
-      case 0x0B: return dressAcnhLong;
-      case 0x0C: return dressBalloon;
-      case 0x0D: return dressRound;
-      case 0x0E: return robe;
-      case 0x0f: return brimmedCap;
-      case 0x10: return knitCap;
-      case 0x11: return brimmedHat;
-      case 0x12: return dressHalf;
-      case 0x13: return dressLong;
-      case 0x14: return dressNone;
-      case 0x15: return shirtHalf;
-      case 0x16: return shirtLong;
-      case 0x17: return shirtNone;
-      case 0x18: return hat;
-      case 0x19: return hornHat;
-      default: return false;
-    }
-  }else{
-    switch (tool.patternType){
-      case 0: return dressLong;
-      case 1: return dressHalf;
-      case 2: return dressNone;
-      case 3: return shirtLong;
-      case 4: return shirtHalf;
-      case 5: return shirtNone;
-      case 6: return hornHat;
-      case 7: return hat;
-      case 8: return false;
-      case 9: return easel;
-      default: return false;
-    }
-  }
-}
-
-
 //Global model and texture loader instances
 const mdlLdr = new GLTFLoader();
 const texLdr = new TextureLoader();
@@ -207,9 +104,9 @@ function loadTexture(url,name){
 /// Returns false if there is no available model or there was a load failure.
 /// Note: Will draw to the textureCanvas if a mix image is available for the model!
 export async function loadModelForTool(tool, texture, textureCanvas){
-  const modelUrlData = toolToModelUrlData(tool);
+  const modelUrlData = typeInfoToModelUrlData.get(tool.typeInfo);
   if (!modelUrlData){return false;}//No model? Return early.
-  const modelType = toolToModelType(tool);
+  const modelType = typeInfoToModelType.get(tool.typeInfo);
   return new Promise(resolve => {
     mdlLdr.load(modelUrlData.modelUrl, (gltf) => {
       let ret = gltf.scene.children[0];
@@ -266,18 +163,18 @@ export async function loadModelForTool(tool, texture, textureCanvas){
             child.material.side = DoubleSide;
             child.material.metalness = 0;
             child.material.shininess = 9;
-            child.material.roughness = ((modelType == 0) ? 0.5 : 1.5);//easel is more shiny
+            child.material.roughness = ((modelType === ModelType.Cloth) ? 0.5 : 1.5);//easel is more shiny
             travResolve();
           }));
         }
       });
       ret.position.z = 0;
       ret.position.x = 0;
-      if (modelType == 0){//easel
+      if (modelType === ModelType.Cloth){//easel
         ret.position.y = -7;
-      }else if (modelType == 2){//hat
+      } else if (modelType === ModelType.Hat){//hat
         ret.position.y = -1;
-      }else{//everything else
+      } else{//everything else
         ret.position.y = -6;
       }
       texture.needsUpdate = true;
@@ -288,8 +185,8 @@ export async function loadModelForTool(tool, texture, textureCanvas){
 
 export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
   //Check if we should 3D render or not
-  let modelType = toolToModelType(tool);
-  if (modelType == 0 || modelType == 3){//Plain patterns and standees
+  let modelType = typeInfoToModelType.get(tool.typeInfo);
+  if (modelType === ModelType.Cloth || modelType === ModelType.Standee){//Plain patterns and standees
 
     //2D mode
     let tInfo = tool.typeInfo;
@@ -360,9 +257,6 @@ export async function drawPreviewFromTool(ctx, tool, x, y, width, height){
 
     //Render the scene
     renderToContext(ctx, scene, camera, x, y, width, height);
-    //Free ThreeJS-related resources
-    scene.dispose();
-    texture.dispose();
   }
 }
 
