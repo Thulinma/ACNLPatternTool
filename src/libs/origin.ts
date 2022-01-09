@@ -2,7 +2,7 @@
 import axios from "axios";
 const { API_URL } = process.env;
 
-interface PatternEntry {
+export interface PatternEntry {
   approved: string,
   author: string,
   bytes: string,
@@ -24,7 +24,7 @@ interface PatternEntry {
   url: string,
 };
 
-interface UploadEntry extends PatternEntry {
+export interface UploadEntry extends PatternEntry {
   is_anime?: boolean,
   is_meme?: boolean,
   is_videogame?: boolean,
