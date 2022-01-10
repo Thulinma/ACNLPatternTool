@@ -421,7 +421,7 @@ import Preview from "@/components/modals/Preview.vue";
 import Storage from "@/components/modals/Storage.vue";
 import ACNLToACNHInfo from "@/components/partials/ACNLToACNHInfo.vue";
 import ACNHToACNLInfo from "@/components/partials/ACNHToACNLInfo.vue";
-import { combineOns } from "@/utils/helpers";
+import { combineOns } from "@/libs/component-helpers";
 
 // icons
 import IconInbox from "@/components/icons/IconInbox.vue";

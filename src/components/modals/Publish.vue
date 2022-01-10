@@ -124,7 +124,7 @@ import DrawingTool from "@/libs/DrawingTool";
 import origin from "@/libs/origin";
 
 import colors from './../../styles/colors.scss';
-import { computeOptsList } from "./../../utils/helpers";
+import { computeOptsList } from "./../../libs/component-helpers";
 
 export default {
   name: "Publish",

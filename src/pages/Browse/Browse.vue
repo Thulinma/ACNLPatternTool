@@ -142,7 +142,7 @@ import {
 import PatternEntry from "./PatternEntry";
 import BxRefresh from "@/assets/icons/bx-refresh.svg?inline";
 
-import { computeOptsList } from "@/utils/helpers";
+import { computeOptsList } from "@/libs/component-helpers";
 import colors from "@/styles/colors.scss";
 
 // const colors = {
