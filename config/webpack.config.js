@@ -262,7 +262,7 @@ const plugins = [
   new VueLoaderPlugin(),
   new VuetifyLoaderPlugin(),
   new OptimizeThreePlugin(),
-  new webpack.DefinePlugin({ "process.env": JSON.stringify(clientEnv) }),
+  new webpack.DefinePlugin({ "env": JSON.stringify(clientEnv) }),
 ];
 
 const faviconsWebpackPlugin = new FaviconsWebpackPlugin({

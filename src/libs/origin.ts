@@ -1,6 +1,6 @@
 // api
 import axios from "axios";
-const { API_URL } = process.env;
+const { API_URL } = env;
 
 export interface PatternEntry {
   approved: string,

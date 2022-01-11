@@ -2,7 +2,7 @@
 const {
   NODE_ENV,
   IS_OFFLINE
-} = process.env;
+} = env;
 
 const isDev = NODE_ENV === "development";
 
