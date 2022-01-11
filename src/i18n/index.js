@@ -1,10 +1,16 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import Papa from "papaparse";
 import { isProd } from '@/utils/if-env';
-import translations from "./translations.csv";
+import translationsCsvString from "./translations.csv";
 
-// needs to be registered before instance
 Vue.use(VueI18n);
+
+const translations = Papa.parse(translationsCsvString, {
+  dynamicTyping: false,
+  header: true,
+  skipEmptyLines: true,
+}).data;
 
 const messages = translations.reduce((messages, row) => {
   /**@type {string} */

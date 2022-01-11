@@ -1,4 +1,3 @@
-const path = require('path');
 const webpack = require('webpack');
 // auto-generate the index.html file
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -169,12 +168,7 @@ const mdRule = {
 
 const csvRule = {
   test: /\.csv$/,
-  loader: 'csv-loader',
-  options: {
-    dynamicTyping: false,
-    header: true,
-    skipEmptyLines: true
-  },
+  type: "asset/source",
 };
 
 
