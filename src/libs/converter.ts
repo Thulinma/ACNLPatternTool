@@ -1,4 +1,9 @@
-import { first, flow } from "lodash";
+import {
+  first,
+  flow,
+  negate,
+  isNil
+} from "lodash";
 import {
   ImageSmoothingQuality,
   canvasToCanvasGrid,
@@ -417,8 +422,15 @@ export const convertCanvas = (
   isSplitPalette: boolean = false,
   paletteSelector: PaletteSelector,
 ): DrawingTool[][] => {
-  const width = sourceDrawingTool.width;
-  const height = sourceDrawingTool.height;
+  const isMosaic = rows !== 1 || cols !== 1;
+  const referenceDrawingTool = new DrawingTool();
+  referenceDrawingTool.compatMode = sourceDrawingTool.compatMode;
+  let width = isMosaic
+    ? referenceDrawingTool.width
+    : sourceDrawingTool.width;
+  let height = isMosaic
+    ? referenceDrawingTool.height
+    : sourceDrawingTool.height;
   const mosaicWidth = width * cols;
   const mosaicHeight = height * rows;
 
@@ -442,9 +454,9 @@ export const convertCanvas = (
     .map(canvasGridRow => canvasGridRow
       .map(_ => {
         const drawingTool = new DrawingTool();
-        drawingTool.compatMode = sourceDrawingTool.compatMode;
+        drawingTool.compatMode = referenceDrawingTool.compatMode;
         // if it's a row 1 col 1, use the source tool's pattern type
-        if (rows === 1 && cols === 1)
+        if (!isMosaic)
           drawingTool.patternType = sourceDrawingTool.patternType;
         return drawingTool;
       })
@@ -482,14 +494,22 @@ export const convertCanvas = (
 /**
  * Creates an image preview of the grid of drawing tools.
  * Assumes all DrawingTools have equivalent width and height.
- * @param drawingToolGrid Grid of DrawingTools.
+ * @param drawingToolGrid Grid of DrawingTools. All columns must be of the same length.
  * @returns An mosaic image of the DrawingTools.
  */
 export const drawingToolGridToImage = (
-  drawingToolGrid: DrawingTool[][],
+  drawingToolGrid: (DrawingTool | undefined)[][],
 ): HTMLCanvasElement => {
-  const width = first(first(drawingToolGrid)).width;
-  const height = first(first(drawingToolGrid)).height;
+  // first drawing tool encountered
+  const availableDrawingTool = first(
+      first(drawingToolGrid
+        .filter(gridRow => gridRow.some(negate(isNil))))
+      .filter(negate(isNil))
+    );
+  if (isNil(availableDrawingTool))
+    throw new Error("No available drawing tools in grid to reference dimensions.");
+  const width = availableDrawingTool.width;
+  const height = availableDrawingTool.height;
   const rows = drawingToolGrid.length;
   const cols = first(drawingToolGrid).length;
   const mosaicWidth = width * cols;
@@ -516,11 +536,12 @@ export const drawingToolGridToImage = (
 
   for (let r = 0; r < rows; ++r)
     for (let c = 0; c < cols; ++c)
-      mosiacContext.drawImage(
-        canvasGrid[r][c],
-        width * c,
-        height * r,
-      );
+      if (!isNil(canvasGrid[r][c]))
+        mosiacContext.drawImage(
+          canvasGrid[r][c],
+          width * c,
+          height * r,
+        );
 
   return mosaicCanvas;
 };
