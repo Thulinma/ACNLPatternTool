@@ -126,7 +126,11 @@
 
 <script>
 import qs from "qs";
-import origin from "@/libs/origin";
+import {
+  Sorting,
+  StyleTag,
+  TypeTag,
+} from "@/libs/origin";
 import {
   createOptions,
   cloneOptions,
@@ -187,8 +191,8 @@ export default {
     return {
       colors,
       // enumerated values from origin
-      styleTagOptions: origin.tags_style,
-      typeTagOptions: origin.tags_type,
+      styleTagOptions: Object.values(StyleTag),
+      typeTagOptions: Object.values(TypeTag),
       // search options replicated from browse
       currOptions: createOptions(),
       currResults: new Array(),
@@ -228,19 +232,12 @@ export default {
      * Sorting options.
      */
     sortingOpts() {
-      return Object.entries(origin.sortingOptions)
+      return Object.entries(Sorting)
         .reverse()
         .map(([text, value]) => ({
             text,
             value,
           }));
-    },
-    
-    isRandomized() {
-      return (
-        this.currOptions.titleFilter === "" &&
-        this.currOptions.sorting === origin.sortingOptions.random
-      );
     },
     
     isOptionsChanged() {
@@ -380,10 +377,6 @@ export default {
     onSearch() {
       // will trigger updateOptions
       this.updateRoute(this.nextOptions, 0);
-    },
-    
-    onNextSortingInput(sortingOptions) {
-      this.nextOptions.sorting = origin.sortingOptions[sortingOptions[0]];
     },
   },
   beforeRouteEnter (to, from, next) {

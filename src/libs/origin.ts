@@ -70,19 +70,18 @@ const api = (() => {
   });
 })();
 
-const sortingOptions = {
-  popular: "popular",
-  recent: "recent",
-  random: null,
-};
-
+export enum Sorting {
+  Popular = "popular",
+  Recent = "recent",
+  Random = "",
+}
 
 /**
  * Retrieves a list of results.
  * @param options The browsing options.
  * @returns The number of results alongside the total count available for the query..
  */
-const browse = async ({
+export const browse = async ({
   q,
   a,
   t,
@@ -97,7 +96,7 @@ const browse = async ({
   st: string,
   tt: string,
   start: string,
-  sorting: string | null,
+  sorting: Sorting,
 }): Promise<{
   totalResultsCount: number,
   pageResults: PatternEntry[],
@@ -113,8 +112,9 @@ const browse = async ({
   };
   
   // set the sort option
-  if (sorting !== sortingOptions.random) params[sorting] = 1;
-  
+  if (sorting !== Sorting.Random)
+    params[sorting] = 1;
+
   const encodedParams = encodeQueryParams(params);
   const response = await api.get(`api.php${encodedParams}`);
   
@@ -133,7 +133,7 @@ const browse = async ({
  * @param hash The hash of an uploaded drawing tool.
  * @returns The byte data of the drawing tool.
  */
-const view = async (
+export const view = async (
   hash: string,
 ): Promise<string> => {
   const response = await api.get(`api.php${encodeQueryParams({view: hash})}`);
@@ -153,7 +153,7 @@ const view = async (
  * @param NSFW Whether pattern is NSFW.
  * @returns Confirmation object.
  */
-const upload = async (
+export const upload = async (
   pattData: string,
   styleA: string,
   styleB: string,
@@ -185,7 +185,7 @@ const upload = async (
  * @param password Moderator password.
  * @returns An authentication token.
  */
-const modLogIn = async (
+export const modLogIn = async (
   username: string,
   password: string,
 ): Promise<string> => {
@@ -212,7 +212,7 @@ const modLogIn = async (
  * @param token Authentication token.
  * @returns A random slice of the pending queue.
  */
-const modPending = async (
+export const modPending = async (
   token: string,
 ): Promise<PatternEntry[]> => {
   const response = await api.get(`api.php${encodeQueryParams({modqueue: 1, token})}`);
@@ -227,7 +227,7 @@ const modPending = async (
  * @param token Authentication token.
  * @returns Confirmation object.
  */
-const modApprove = async (
+export const modApprove = async (
   hash: string,
   options: UploadEntry,
   token: string,
@@ -247,7 +247,7 @@ const modApprove = async (
  * @param token Authentication token.
  * @returns Confirmation object.
  */
-const modDelete = async (
+export const modDelete = async (
   hash: string,
   token: string,
 ): Promise<{ deleted: boolean }> => {
@@ -259,55 +259,52 @@ const modDelete = async (
 };
 
 
-const tags_style = [
-  'Natural',
-  'Cute',
-  'Sporty',
-  'Cool',
-  'Rustic',
-  'Hip',
-  'Harmonious',
-  'Elegant',
-  'Modern',
-  'Historical',
-  'Civic',
-  'Silly',
-  'Spooky',
-  'Sci-Fi',
-  'Aquatic',
-  'Floral',
-  'Animal',
-  'Holiday',
-  'Food',
-  'Brand',
-  'Video Game',
-  'Anime',
-  'Meme'
-];
+export enum StyleTag {
+  Natural = "Natural",
+  Cute = "Cute",
+  Sporty = "Sporty",
+  Cool = "Cool",
+  Rustic = "Rustic",
+  Hip = "Hip",
+  Harmonious = "Harmonious",
+  Elegant = "Elegant",
+  Modern = "Modern",
+  Historical = "Historical",
+  Civic = "Civic",
+  Silly = "Silly",
+  Spooky = "Spooky",
+  SciFi = "Sci-Fi",
+  Aquatic = "Aquatic",
+  Floral = "Floral",
+  Animal = "Animal",
+  Holiday = "Holiday",
+  Food = "Food",
+  Brand = "Brand",
+  VideoGame = "Video Game",
+  Anime = "Anime",
+  Meme = "Meme",
+}
 
-const tags_type = [
-  'Path',
-  'Clothing',
-  'Hat',
-  'Wallpaper',
-  'Carpet',
-  'Furniture',
-  'Flag',
-  'Sign',
-  'Logo',
-  'Poster'
-];
+export enum TypeTag {
+  Path = "Path",
+  Clothing = "Clothing",
+  Hat = "Hat",
+  Wallpaper = "Wallpaper",
+  Carpet = "Carpet",
+  Furniture = "Furniture",
+  Flag = "Flag",
+  Sign = "Sign",
+  Logo = "Logo",
+  Poster = "Poster",
+}
+
 
 export default {
   view,
-  sortingOptions,
   browse,
   upload,
   modLogIn,
   modPending,
   modApprove,
   modDelete,
-  tags_style,
-  tags_type
 };
-
