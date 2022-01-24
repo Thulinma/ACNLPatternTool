@@ -81,48 +81,11 @@ const cloneOptions = (
 };
 
 // Vue2 composition api can't watch new properties b/c not proxy
-const resultsCache = new Map<string, PatternEntry[]>();
-
-/**
- * Gets a full copy of the results.
- */
-const getResults = (
-  options: SearchOptions,
-): PatternEntry[] => {
-  const targetKey = JSON.stringify(options);
-  if (!resultsCache.has(targetKey)) {
-    resultsCache.set(targetKey, []);
-  };
-  return resultsCache.get(targetKey);
-};
-
-/**
- * Sets a full copy of the results.
- */
-const setResults = (
-  options: SearchOptions,
-  results: PatternEntry[],
-): void => {
-  const targetKey = JSON.stringify(options);
-  resultsCache.set(targetKey, results);
-};
-
-// options to set of fetched pages
-const fetchedPagesCache = new Map<string, Set<number>>();
+const resultsCache = {} as Record<string, PatternEntry[]>;
 
 
-/**
- * Gets the set of pages which have been fetched for the options.
- */
-const getFetchedPages = (
-  options: SearchOptions
-): Set<number> => {
-  const targetKey = JSON.stringify(options);
-  if (!fetchedPagesCache.has(targetKey)) {
-    fetchedPagesCache.set(targetKey, new Set());
-  }
-  return fetchedPagesCache.get(targetKey);
-}
+// stringified options to set of fetched pages
+const fetchedPagesCache = {} as Record<string, number[]>;
 
 /**
  * Fetches and returns results for a page (or doesn't if it's been fetched already).
@@ -134,12 +97,22 @@ const updateResults = async (
 ): Promise<PatternEntry[]> => {
   // get early reference to results of options to prevent modifications when results swap  
   const targetOptions = cloneOptions(options);
+  const targetKey = JSON.stringify(options);
   const isRandomized = (
     targetOptions.titleFilter === "" &&
     targetOptions.sorting === Sorting.Random
   );
-  const targetResults = getResults(options);
-  const targetFetchedPages = getFetchedPages(options); // TODO: don't need this function
+  const targetResults = (() => {
+    if (!resultsCache.hasOwnProperty(targetKey))
+      resultsCache[targetKey] = [];
+    return resultsCache[targetKey];
+  })();
+  const targetFetchedPages = (() => {
+    if (!fetchedPagesCache.hasOwnProperty(targetKey))
+      fetchedPagesCache[targetKey] = [];
+    return fetchedPagesCache[targetKey].slice(); // copy
+  })();
+  
 
   // convert local page numbe to result indexes
   const startingResultIndex = localPageNumber * localPageSize;
@@ -162,7 +135,7 @@ const updateResults = async (
     endingOriginPageNumber,
   )];
   const unfetchedOriginPageNumbers = originPageNumbers
-    .filter(originPageNumber => !targetFetchedPages.has(originPageNumber))
+    .filter(originPageNumber => !targetFetchedPages.includes(originPageNumber))
 
   // console.log(startingResultIndex, endingResultIndex, unfetchedOriginPageNumbers);
 
@@ -176,7 +149,6 @@ const updateResults = async (
       ...targetOptions,
       originPageNumber,
     }));
-    targetFetchedPages.add(originPageNumber);
 
     // if results are random, infinite possible results, don't update length
     updatedResults.length = originTotalResultsCount;
@@ -187,7 +159,9 @@ const updateResults = async (
     // last page, we know we can skip all following origin pages
     if (!isRandomized && (originPageResults.length < originPageSize)) break;
   }
-  setResults(targetOptions, updatedResults);
+  fetchedPagesCache[targetKey] = targetFetchedPages
+    .concat(unfetchedOriginPageNumbers);
+  resultsCache[targetKey] = updatedResults;
   return updatedResults.slice();
 };
 
