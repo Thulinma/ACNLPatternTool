@@ -1,7 +1,13 @@
 import { ActionTree } from "vuex";
 import { RootState } from "@/store/types";
 import { State } from "./state";
-import origin, { UploadEntry } from "@/libs/origin";
+import {
+  UploadEntry,
+  modLogIn,
+  modPending,
+  modApprove,
+  modDelete,
+} from "@/libs/origin";
 
 export default {
   async logIn({ commit }, {
@@ -12,7 +18,7 @@ export default {
     password: string,
   }): Promise<void> {
     const { localStorage } = window;
-    const token = await origin.modLogIn(username, password);
+    const token = await modLogIn(username, password);
     if (!token) {
       localStorage.removeItem("username");
       localStorage.removeItem("password");
@@ -38,7 +44,7 @@ export default {
   },
   async getPending({ state, commit }): Promise<void> {
     const { token } = state;
-    const pending = await origin.modPending(token);
+    const pending = await modPending(token);
     commit("setPending", { pending });
   },
   async approve({ state, getters, commit, dispatch }, {
@@ -49,7 +55,7 @@ export default {
     options: UploadEntry
   }) {
     const { token } = state;
-    await origin.modApprove(hash, options, token);
+    await modApprove(hash, options, token);
     
     const index = getters.pendingHashes.indexOf(hash);
     const pending = state.pending.slice();
@@ -59,7 +65,7 @@ export default {
   },
   async reject({ state, getters, commit, dispatch }, hash) {
       const { token } = state;
-      await origin.modDelete(hash, token);
+      await modDelete(hash, token);
       
       const index = getters.pendingHashes.indexOf(hash);
       const pending = state.pending.slice();

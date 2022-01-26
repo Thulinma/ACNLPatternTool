@@ -297,14 +297,3 @@ export enum TypeTag {
   Logo = "Logo",
   Poster = "Poster",
 }
-
-
-export default {
-  view,
-  browse,
-  upload,
-  modLogIn,
-  modPending,
-  modApprove,
-  modDelete,
-};
