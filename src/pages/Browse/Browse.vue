@@ -134,8 +134,8 @@ import {
 import {
   createOptions,
   cloneOptions,
-  updateResults,
-} from "@/store/browse";
+} from "@/store/modules/browse/helpers";
+import { createNamespacedHelpers } from "vuex";
 
 import {
   VPagination,
@@ -271,15 +271,17 @@ export default {
   },
   
   methods: {
+    ...createNamespacedHelpers('browse')
+      .mapActions(['updateResults']),
     async updateCurrResults() {
         this.isLoading = true;
         let results;
         try {
-          results = await updateResults(
-            cloneOptions(this.currOptions),
-            this.pageSize,
-            this.pageNumber,
-          );
+          results = await this.updateResults({
+            options: cloneOptions(this.currOptions),
+            localPageSize: this.pageSize,
+            localPageNumber: this.pageNumber,
+          });
         }
         catch (error) {
           this.isLoading = false;
