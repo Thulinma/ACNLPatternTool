@@ -171,7 +171,7 @@
 <script>
 /* libs */
 import DrawingTool from "@/libs/DrawingTool";
-import origin from "@/libs/origin";
+import { view } from "@/libs/origin";
 import saver from "@/libs/saver";
 import lzString from "lz-string";
 import {
@@ -451,7 +451,7 @@ export default {
       const isHashProtocol = fragment.startsWith("H:");
       if (isHashProtocol) {
         const hash = fragment.substring(2);
-        const bytes = await origin.view(hash);
+        const bytes = await view(hash);
         this.drawingTool.load(bytes);
       } else {
         this.drawingTool.load(lzString.compressToUTF16("TEST"));

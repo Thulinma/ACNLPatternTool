@@ -121,7 +121,11 @@ import {
 import CancelButton from "@/components/modals/CancelButton.vue";
 import IconGenerator from "@/components/IconGenerator.vue";
 import DrawingTool from "@/libs/DrawingTool";
-import origin from "@/libs/origin";
+import {
+  StyleTag,
+  TypeTag,
+  upload,
+} from "@/libs/origin";
 
 import colors from './../../styles/colors.scss';
 import { computeOptsList } from "./../../libs/component-helpers";
@@ -149,8 +153,8 @@ export default {
     },
   },
   data: function () {
-    const styles = [...origin.tags_style];
-    const types = [...origin.tags_type];
+    const styles = Object.values(StyleTag);
+    const types = Object.values(TypeTag);
     const selectedStyles = new Array(3).fill("");
     const selectedTypes = new Array(3).fill("");
     return {
@@ -206,7 +210,7 @@ export default {
       const author = this.details.town.author;
       const isNSFW = this.isNSFW;
       this.isUploading = true;
-      const uplStatus = await origin.upload(
+      const uplStatus = await upload(
         btoa(this.drawingTool.toString()),
         ...this.selectedStyles,
         ...this.selectedTypes,
