@@ -153,6 +153,9 @@ function basicDrawing(x, y, tool){tool.drawPixel(x, y);}
 function toHex(n){return (n<16?"0":"")+n.toString(16);}
 
 class DrawingTool{
+  /**
+   * @param {string | Uint8Array} data 
+   */
   constructor(data = null){
     this.renderTargets = []; //TODO: Should this be a map, perhaps? How do maps work in JS? Can we de-duplicate..?
     this.drawing = false;

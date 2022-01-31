@@ -21,7 +21,7 @@ export const readPatternFiles = async (blobs: Blob[]): Promise<DrawingTool[]> =>
   for (const blob of blobs) {
     const fileReader = new FileReader();
     const arrayBuffer = await new Promise<ArrayBuffer>(resolve => {
-      fileReader.onload = event => resolve(event.target.result as ArrayBuffer);
+      fileReader.onload = event => resolve((event.target as FileReader).result as ArrayBuffer);
       fileReader.readAsArrayBuffer(blob);
     });
     drawingTools.push(ui8ToDt(new Uint8Array(arrayBuffer)));
@@ -41,11 +41,11 @@ export const readQrImageFiles = async (blobs: Blob[]): Promise<DrawingTool[]> =>
   // supports multiload
   const drawingTools: DrawingTool[] = [];
   // parity acts as the id of whole data represented by the qr codes
-  const parityToExtractedResults = new Map<number, Array<ExtractedResult>>();
+  const parityToExtractedResults = new Map<number, ExtractedResult[]>();
   for (const blob of blobs) {
     const fileReader = new FileReader();
     const dataUrl = await new Promise<string>(resolve => {
-      fileReader.onload = event => resolve(event.target.result as string);
+      fileReader.onload = event => resolve((event.target as FileReader).result as string);
       fileReader.readAsDataURL(blob);
     });
     const browserQRCodeReader = new BrowserQRCodeReader();
@@ -59,14 +59,14 @@ export const readQrImageFiles = async (blobs: Blob[]): Promise<DrawingTool[]> =>
     } catch (error) {
       continue;
     }
-    const extractedResults = results.map(result => {
+    const extractedResults: ExtractedResult[] = results.map(result => {
       const resultMetadata = result.getResultMetadata();
-      const bytes = resultMetadata
-        .get(ResultMetadataType.BYTE_SEGMENTS)[0];
-      const sequenceNumber = resultMetadata
-        .get(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE) >> 4;
+        const bytes: Uint8Array = (resultMetadata
+          .get(ResultMetadataType.BYTE_SEGMENTS) as Uint8Array[])[0];
+      const sequenceNumber = (resultMetadata
+        .get(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE) as number) >> 4;
       const parity = resultMetadata.get(
-        ResultMetadataType.STRUCTURED_APPEND_PARITY);
+        ResultMetadataType.STRUCTURED_APPEND_PARITY) as number;
       return {
         bytes,
         sequenceNumber,
@@ -79,15 +79,14 @@ export const readQrImageFiles = async (blobs: Blob[]): Promise<DrawingTool[]> =>
       if (extractedResult.bytes.length === 620)
         drawingTools.push(ui8ToDt(new Uint8Array(extractedResult.bytes)));
       // multi-part pattern
-      let parityExtractedResults: Array<ExtractedResult>;
+      let parityExtractedResults: ExtractedResult[] = [];
       if (extractedResult.bytes.length !== 540) continue;
       if (!parityToExtractedResults.has(extractedResult.parity)) {
-        parityExtractedResults = [];
         parityToExtractedResults.set(extractedResult.parity, parityExtractedResults);
       }
       else
         parityExtractedResults =
-          parityToExtractedResults.get(extractedResult.parity);
+          parityToExtractedResults.get(extractedResult.parity) as ExtractedResult[];
       parityExtractedResults.push(extractedResult);
       const uniqueSequenceNumbers =
         new Set(parityExtractedResults.map((er) => er.sequenceNumber));
@@ -99,8 +98,8 @@ export const readQrImageFiles = async (blobs: Blob[]): Promise<DrawingTool[]> =>
         !uniqueSequenceNumbers.has(3)
       ) continue;
       // if we have all parts, assemble the pattern
-      const acnlExtractedResults: Array<ExtractedResult>
-        = new Array<ExtractedResult>();
+      const acnlExtractedResults: ExtractedResult[]
+        = [];
       for (let i = 0; i < 4; ++i) {
         const index = parityExtractedResults.findIndex((v) => {
           if (v.sequenceNumber === i) return true;
@@ -135,7 +134,7 @@ export const readDatFiles = async (blobs: Blob[]): Promise<DrawingTool[]> => {
   for (const blob of blobs) {
     const fileReader = new FileReader();
     const dat = await new Promise<ArrayBuffer>(resolve => {
-      fileReader.onload = event => resolve(event.target.result as ArrayBuffer);
+      fileReader.onload = event => resolve((event.target as FileReader).result as ArrayBuffer);
       fileReader.readAsArrayBuffer(blob);
     });
     // ACNH .dat (pre-dlc) decrypted save

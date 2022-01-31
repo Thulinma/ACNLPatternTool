@@ -1,6 +1,11 @@
 import Vue from 'vue';
-import VueI18n, { LocaleMessages } from 'vue-i18n';
+import VueI18n, {
+  LocaleMessage,
+  LocaleMessageObject,
+  LocaleMessages,
+} from 'vue-i18n';
 import Papa from "papaparse";
+import { last } from "lodash";
 import { isProd } from '@/utils/if-env';
 import translationsCsvString from "./translations.csv";
 
@@ -32,13 +37,14 @@ const messages = translations.reduce((messages, row) => {
     const message = row[locale];
     if (message.trim().length <= 0) continue;
     const localePathComponents = [locale, ...pathComponents];
-    let messagesNode = messages;
+    let messagesNode: LocaleMessageObject = messages;
     for (const pathComponent of localePathComponents.slice(0, -1)) {
       if (!messagesNode.hasOwnProperty(pathComponent))
         messagesNode[pathComponent] = {};
-      messagesNode = messagesNode[pathComponent];
+      messagesNode = messagesNode[pathComponent] as LocaleMessageObject;
     }
-    messagesNode[localePathComponents.slice(-1).pop()] = message;
+    const lastPathComponent = last(localePathComponents) as string;
+    (messagesNode as LocaleMessageObject)[lastPathComponent] = message;
   }
   return messages;
 }, {}) as LocaleMessages;

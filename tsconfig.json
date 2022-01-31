@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES5",
+    "strict": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "build",

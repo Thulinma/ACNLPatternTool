@@ -123,7 +123,7 @@ export default {
       options,
       localPageSize,
       localPageNumber,
-    }))
+    }) as PatternEntry[])
       .slice(startingResultIndex, endingResultIndex)
       .filter(result => result != null);
   },

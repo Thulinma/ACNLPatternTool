@@ -76,11 +76,11 @@ export const combineOns = function (
   for (const on of ons)
     for (const [eventName, callback] of Object.entries(on))
       if (callbacksMap.has(eventName))
-        callbacksMap.get(eventName).push(callback);
+        (callbacksMap.get(eventName) as Function[]).push(callback);
       else callbacksMap.set(eventName, [callback]);
-  const combinedOns = {};
+  const combinedOns = {} as Record<string, Function>;
   for (const [eventName, callbacks] of [...callbacksMap.entries()])
-    combinedOns[eventName] = function (...args) {
+    combinedOns[eventName] = function(...args: any[]) {
       for (const callback of callbacks) callback.call(this, ...args);
     };
   return combinedOns;

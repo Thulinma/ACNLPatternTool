@@ -1,5 +1,6 @@
 // api
 import axios from "axios";
+import qs from "qs";
 const { API_URL } = env;
 
 export interface PatternEntry {
@@ -33,31 +34,12 @@ export interface UploadEntry extends PatternEntry {
 };
 
 // 'get' api method helper
-const encodeQueryParams = (params: any): string  => {
+// eventually need to replace everything with qs.stringify
+const encodeQueryParams = <T extends object>(params: T): string  => {
   const keys = Object.keys(params);
-  if (keys.length === 0) return "";
-  let paramsString = keys.reduce((accum, curr, index) => {
-      let query = accum;
-      let param = curr;
-      let value = params[curr];
-      if (value instanceof Array) {
-        value = value.filter(v => v != null);
-        if (value.length <= 0) return query;
-        const encodedParam = encodeURIComponent(param) + "[]";
-        const paramVal = value.reduce((accum, curr) => {
-          const encodedValue = encodeURIComponent(curr);
-          return `${accum}&${encodedParam}=${encodedValue}`;
-        }, "");
-        return query + `${paramVal}`;
-      }
-      else {
-        if (index > 0) query += "&";
-        const encodedParam = encodeURIComponent(param);
-        const encodedValue = encodeURIComponent(value);
-        return query + `${encodedParam}=${encodedValue}`;
-      }
-  }, "?");
-  return paramsString;
+  if (keys.length === 0)
+      return "";
+  return `?${qs.stringify(params)}`;
 };
 
 const api = (() => {
@@ -93,8 +75,8 @@ export const browse = async ({
   q: string,
   a: string,
   t: string,
-  st: string,
-  tt: string,
+  st: [(StyleTag | null), (StyleTag | null), (StyleTag | null)],
+  tt: [(TypeTag | null), (TypeTag | null), (TypeTag | null)],
   start: string,
   sorting: Sorting,
 }): Promise<{
@@ -109,6 +91,15 @@ export const browse = async ({
     st,
     tt, 
     start,
+  } as {
+    q: string;
+    a: string;
+    t: string;
+    st: [(StyleTag | null), (StyleTag | null), (StyleTag | null)];
+    tt: [(TypeTag | null), (TypeTag | null), (TypeTag | null)];
+    start: string;
+  } & {
+    [key in Sorting]: number;
   };
   
   // set the sort option
@@ -200,7 +191,7 @@ export const modLogIn = async (
     }
     return response.data.token;
   }
-  catch (error) {
+  catch (error: any) {
     if (error.response.status !== 401) throw error;
     return "";
   }

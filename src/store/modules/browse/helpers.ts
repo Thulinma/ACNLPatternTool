@@ -5,6 +5,7 @@ import {
   browse,
 } from "@/libs/origin";
 
+
 export interface SearchOptions {
   titleFilter: string,
   authorFilter: string,
@@ -18,18 +19,23 @@ export interface ApiSearchOptions extends SearchOptions {
   originPageNumber: number,
 }
 
+export type Copy = {
+  [Property in keyof ApiSearchOptions]: ApiSearchOptions[Property];
+}
+
 export type BrowseSearchOptions = Parameters<typeof browse>[0];
 
 // resolve inconsistencies between api and store
-export const optionsMap: Partial<{
-  [key in keyof ApiSearchOptions]: keyof BrowseSearchOptions;
-}> = {
+export const optionsMap: {
+  [Property in keyof ApiSearchOptions]: keyof BrowseSearchOptions;
+} = {
   titleFilter: "q",
   authorFilter: "a",
   townFilter: "t",
   styleTagsFilter: "st",
   typeTagsFilter: "tt",
   originPageNumber: "start",
+  sorting: "sorting",
 };
 
 
@@ -37,18 +43,13 @@ export const optionsMap: Partial<{
 export const remappedOptions = (
   options: ApiSearchOptions
 ): BrowseSearchOptions => {
-  const copy: BrowseSearchOptions | ApiSearchOptions = Object.assign({}, options);
-  const optionsMapKeys = Object.keys(optionsMap);
-  for (let key of optionsMapKeys) {
-    if (!(key in copy))
-      continue;
-    // key needs to be remapped
-    const source = key;
-    const target = optionsMap[key];
-    copy[target] = copy[source];
-    delete copy[source];
-  }
-  return copy as unknown as BrowseSearchOptions;
+  const remapped = {} as BrowseSearchOptions;
+  for (const [sourceKey, value] of Object.entries(options)) {
+    // @ts-ignore
+    const remappedKey = optionsMap[sourceKey] as (keyof BrowseSearchOptions);
+    remapped[remappedKey] = value;
+  };
+  return remapped;
 };
 
 // maps properties to correct options before api call

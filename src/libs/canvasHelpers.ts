@@ -7,7 +7,7 @@ export enum ImageSmoothingQuality {
 };
 
 
-export const ensureDecoded = async (image) => {
+export const ensureDecoded = async (image: HTMLImageElement) => {
   if (!image.complete)
     await image.decode();
 };
@@ -41,7 +41,7 @@ export const saturationFilteredCanvas = (
   const transformedCanvas = document.createElement("canvas");
   transformedCanvas.width = canvas.width;
   transformedCanvas.height = canvas.height;
-  const transformedContext = transformedCanvas.getContext("2d");
+  const transformedContext = transformedCanvas.getContext("2d") as CanvasRenderingContext2D;
   transformedContext.imageSmoothingEnabled = false;
   transformedContext.filter = `saturate(${saturation}%)`;
   transformedContext.drawImage(canvas, 0, 0);
@@ -64,7 +64,7 @@ export const sepiaFilteredCanvas = (
   const transformedCanvas = document.createElement("canvas");
   transformedCanvas.width = canvas.width;
   transformedCanvas.height = canvas.height;
-  const transformedContext = transformedCanvas.getContext("2d");
+  const transformedContext = transformedCanvas.getContext("2d") as CanvasRenderingContext2D;
   transformedContext.imageSmoothingEnabled = false;
   transformedContext.filter = `sepia(${sepia}%)`
   transformedContext.drawImage(canvas, 0, 0);
@@ -87,7 +87,7 @@ export const grayscaleFilteredCanvas = (
   const transformedCanvas = document.createElement("canvas");
   transformedCanvas.width = canvas.width;
   transformedCanvas.height = canvas.height;
-  const transformedContext = transformedCanvas.getContext("2d");
+  const transformedContext = transformedCanvas.getContext("2d") as CanvasRenderingContext2D;
   transformedContext.imageSmoothingEnabled = false;
   transformedContext.filter = `grayscale(${grayscale}%)`;
   transformedContext.drawImage(canvas, 0, 0);
@@ -112,7 +112,7 @@ export const alphaFilteredCanvas = (
   const transformedCanvas = document.createElement("canvas");
   transformedCanvas.width = canvas.width;
   transformedCanvas.height = canvas.width;
-  const transformedContext = transformedCanvas.getContext("2d");
+  const transformedContext = transformedCanvas.getContext("2d") as CanvasRenderingContext2D;
   transformedContext.imageSmoothingEnabled = false;
   transformedContext.drawImage(canvas, 0, 0);
 
@@ -125,7 +125,7 @@ export const alphaFilteredCanvas = (
   for (let i = 0; i < imgData.data.length; i += 4) {
     const [a] = imgData.data.slice(i + 3, i + 4);
     // no partial transparency
-    imgData[i + 3] = a >= alphaThreshold ? 255 : 0;
+    imgData.data[i + 3] = a >= alphaThreshold ? 255 : 0;
   }
   transformedContext.putImageData(imgData, 0, 0);
   return transformedCanvas;
@@ -150,7 +150,7 @@ export const scaledCanvas = (
   const transformedCanvas = document.createElement("canvas");
   transformedCanvas.width = width;
   transformedCanvas.height = height;
-  const transformedContext = transformedCanvas.getContext("2d");
+  const transformedContext = transformedCanvas.getContext("2d") as CanvasRenderingContext2D;
   if (imageSmoothingQuality == ImageSmoothingQuality.sharp)
     transformedContext.imageSmoothingEnabled = false;
   else
@@ -189,7 +189,7 @@ export const subCanvas = (
   const transformedCanvas = document.createElement("canvas");
   transformedCanvas.width = width;
   transformedCanvas.height = height;
-  const transformedContext = transformedCanvas.getContext("2d");
+  const transformedContext = transformedCanvas.getContext("2d") as CanvasRenderingContext2D;
   transformedContext.imageSmoothingEnabled = false;
   transformedContext.drawImage(
     canvas,
@@ -246,7 +246,7 @@ export const canvasToCanvasGrid = (
 export const canvasToImageData = (
   canvas: HTMLCanvasElement,
 ): ImageData => {
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
   return context.getImageData(
     0, 0,
     canvas.width,
