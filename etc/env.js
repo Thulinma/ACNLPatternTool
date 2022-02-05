@@ -115,14 +115,14 @@ const ifProdExec = (prodCallback, defaultCallback) => {
 
 const ifOfflineVal = (offlineVal, defaultVal) => {
   const { IS_OFFLINE } = process.env;
-  const isOffline = IS_OFFLINE === false;
+  const isOffline = IS_OFFLINE === String(true);
   if (isOffline) return offlineVal;
   else return defaultVal;
 }
 
 const ifOfflineExec = (offlineCallback, defaultCallback) => {
   const { IS_OFFLINE } = process.env;
-  const isOffline = IS_OFFLINE;
+  const isOffline = IS_OFFLINE === String(true);
   if (isOffline) offlineCallback();
   else if (defaultCallback) defaultCallback();
 }

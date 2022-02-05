@@ -26,6 +26,11 @@ const argv = yargs
     describe: "Analyze bundle",
     type: "boolean"
   })
+  .option("offline", {
+    alias: "o",
+    descripe: "Offline (embedded assets)",
+    type: "boolean",
+  })
   .conflicts("development", "production")
   .conflicts("uncompressed", "compressed")
   .parse();
@@ -41,6 +46,8 @@ else {
   else if (argv.production) buildSetting = "production";
   process.env.NODE_ENV = buildSetting
 }
+if (argv.offline)
+  process.env.IS_OFFLINE = true;
 env.correct();
 env.check();
 

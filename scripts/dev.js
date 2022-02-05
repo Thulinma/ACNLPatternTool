@@ -1,6 +1,18 @@
-// preamble before any imports
+// configure cli options
+const yargs = require("yargs");
+const argv = yargs
+  .option("offline", {
+    alias: "o",
+    describe: "Offline (embedded assets)",
+    type: "boolean",
+  })
+  .parse();
+
+// overload NODE_ENV with command line option
 const env = require('../etc/env');
 env.load();
+if (argv.offline)
+  process.env.IS_OFFLINE = true;
 env.correct();
 env.check();
 
