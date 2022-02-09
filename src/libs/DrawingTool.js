@@ -436,8 +436,12 @@ class DrawingTool{
     return bestno;
   }
 
-  /// Finds the closest current palette index we can find to the color c
-  /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a current palette index.
+  /**
+   * Finds the closest current palette index we can find to the color c
+   * Supports #RRGGBB-style, [r,g,b]-style, or simply passing a current palette index.
+   * @param {string | [number, number, number] | number} c
+   * @returns {number}
+   */
   findPalRGB(c){
     if ((typeof c) == "number"){return c;}
     let rgb = [];
@@ -471,8 +475,12 @@ class DrawingTool{
     return bestno;
   }
 
-  /// Finds the closest YUV global palette index we can find to the color c
-  /// Supports [r,g,b]-style only.
+  /**
+   * Finds the closest YUV global palette index we can find to the color.
+   * Supports [r,g,b]-style only.
+   * @param {[number, number, number]} rgb 
+   * @returns {number}
+   */
   findYUV(rgb){
     //ACNH has no palette colors - just plain RGB
     if (this.pattern instanceof ACNHFormat){return "#"+toHex(rgb[0])+toHex(rgb[1])+toHex(rgb[2]);}
@@ -752,8 +760,13 @@ class DrawingTool{
     return this.pixels[offset];
   }
 
-  /// Fills the given pixel with the given color or current drawing color if non-numerical.
-  /// Returns the color actually used to set the pixel, or false if there was no change in color
+  /**
+   * Fills the given pixel with the given color or current drawing color if non-numerical.
+   * @param {number} x
+   * @param {number} y
+   * @param {ReturnType<typeof DrawingTool.findPalRGB>} color 
+   * @returns {number | false} The color actually used to set the pixel, or false if there was no change in color.
+   */
   setPixel(x, y, color = null){
     if ((typeof color) != "number"){
       color = this.findPalRGB(color);

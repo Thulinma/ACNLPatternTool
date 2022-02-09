@@ -2,7 +2,7 @@ import {
   first,
   flow,
   negate,
-  isNil
+  isNil,
 } from "lodash";
 import {
   ImageSmoothingQuality,
@@ -33,6 +33,8 @@ export const selectRGBPaletteFromImgData: PaletteSelector = (
   drawingTools: DrawingTool[],
   alphaThreshold: number,
 ): void => {
+  if (drawingTools.length <= 0)
+    throw new Error('Need at least 1 DrawingTool for palette selection.');
   let palette = [];
   for (let i = 0; i < 256; i++)
     palette.push({ n: i, c: 0 });
@@ -41,7 +43,7 @@ export const selectRGBPaletteFromImgData: PaletteSelector = (
     if (imgData.data[i + 3] < alphaThreshold)
       continue;
     palette[
-      first(drawingTools).findRGB([
+      (first(drawingTools) as DrawingTool).findRGB([
         imgData.data[i],
         imgData.data[i + 1],
         imgData.data[i + 2],
@@ -68,6 +70,9 @@ export const selectYUVPaletteFromImgData: PaletteSelector = (
   drawingTools: DrawingTool[],
   alphaThreshold: number,
 ): void => {
+  const availableDrawingTool = first(drawingTools);
+  if (isNil(availableDrawingTool))
+    throw new Error('Need at least 1 DrawingTool for palette selection.');
   let palette = [];
   for (let i = 0; i < 256; i++)
     palette.push({ n: i, c: 0 });
@@ -76,11 +81,11 @@ export const selectYUVPaletteFromImgData: PaletteSelector = (
     if (imgData.data[i + 3] < alphaThreshold)
       continue;
     palette[
-      first(drawingTools).findYUV([
+      availableDrawingTool.findYUV([
         imgData.data[i],
         imgData.data[i + 1],
         imgData.data[i + 2],
-      ])
+      ]) as number
     ].c++;
   }
   palette.sort(function (a, b) {
@@ -97,6 +102,12 @@ export const selectYUVPaletteFromImgData: PaletteSelector = (
       drawingTool.setPalette(i, palette[i].n);
 };
 
+type ColorObject = {
+  r: number,
+  g: number,
+  b: number,
+};
+type ColorArray = [number, number, number];
 
 export const selectMedianCutPaletteFromImgData: PaletteSelector = (
   imgData: ImageData,
@@ -114,7 +125,7 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
       b: imgData.data[i + 2],
     });
   }
-  const medianCut = (pixels) => {
+  const medianCut = (pixels: ColorObject[]) => {
     let l = Math.floor(pixels.length / 2);
     let r_min = null;
     let r_max = null;
@@ -123,22 +134,22 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
     let b_min = null;
     let b_max = null;
     for (let i in pixels) {
-      if (pixels[i].r < r_min || r_min === null)
+      if (r_min === null || pixels[i].r < r_min)
         r_min = pixels[i].r;
-      if (pixels[i].r > r_max || r_max === null)
+      if (r_max === null || pixels[i].r > r_max)
         r_max = pixels[i].r;
-      if (pixels[i].g < g_min || g_min === null)
+      if (g_min === null || pixels[i].g < g_min)
         g_min = pixels[i].g;
-      if (pixels[i].g > g_max || g_max === null)
+      if (g_max === null || pixels[i].g > g_max)
         g_max = pixels[i].g;
-      if (pixels[i].b < b_min || b_min === null)
+      if (b_min === null || pixels[i].b < b_min)
         b_min = pixels[i].b;
-      if (pixels[i].b > b_max || b_max === null)
+      if (b_max === null || pixels[i].b > b_max)
         b_max = pixels[i].b;
     }
-    let r_dist = r_max - r_min;
-    let g_dist = g_max - g_min;
-    let b_dist = b_max - b_min;
+    let r_dist = (r_max as number) - (r_min as number);
+    let g_dist = (g_max as number) - (g_min as number);
+    let b_dist = (b_max as number) - (b_min as number);
     if (r_dist >= g_dist && r_dist >= b_dist) {
       //Sort on red
       pixels.sort((a, b) => a.r - b.r);
@@ -151,7 +162,7 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
     }
     return [pixels.slice(0, l), pixels.slice(l)];
   };
-  const medianMultiCut = (buckets) => {
+  const medianMultiCut = (buckets: ColorObject[][]) => {
     let res = [];
     for (let i in buckets) {
       const newBuck = medianCut(buckets[i]);
@@ -168,11 +179,11 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
   buckets = medianMultiCut(buckets); //splits into 16
 
   //Now we have 16 buckets.
-  let colors = [];
+  let colors: ColorArray[] = [];
   let uniqCol = new Set();
 
   //Pushes average color of given bucket onto colors.
-  const pushAvg = (b) => {
+  const pushAvg = (b: ColorObject[]) => {
     let r_avg = 0;
     let g_avg = 0;
     let b_avg = 0;
@@ -185,8 +196,8 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
       Math.round(r_avg / b.length),
       Math.round(g_avg / b.length),
       Math.round(b_avg / b.length),
-    ];
-    let idx = first(drawingTools).findRGB(rgb);
+    ] as ColorArray;
+    let idx = (first(drawingTools) as DrawingTool).findRGB(rgb);
     if (!uniqCol.has(idx)) {
       colors.push(rgb);
       uniqCol.add(idx);
@@ -227,11 +238,10 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
     let minDist = 255 * 255 * 3;
     let bucketA = null;
     let bucketB = null;
-    for (let i in colors) {
-      for (let j in colors) {
-        if (i >= j) {
+    for (let i = 0; i < colors.length; ++i) {
+      for (let j = 0; j < colors.length; ++j) {
+        if (i >= j)
           continue;
-        }
         let rD = colors[i][0] - colors[j][0];
         let gD = colors[i][1] - colors[j][1];
         let bD = colors[i][2] - colors[j][2];
@@ -244,9 +254,9 @@ export const selectMedianCutPaletteFromImgData: PaletteSelector = (
       }
     }
     //Merge bucket A and B into C
-    let bucketC = buckets[bucketA].concat(buckets[bucketB]);
-    colors.splice(bucketB); //Must remove B first, since B is guaranteed to be the latter entry
-    colors.splice(bucketA); //Now we can remove A too, since it was before B and thus couldn't have shifted
+    let bucketC = buckets[bucketA as number].concat(buckets[bucketB as number]);
+    colors.splice(bucketB as number); //Must remove B first, since B is guaranteed to be the latter entry
+    colors.splice(bucketA as number); //Now we can remove A too, since it was before B and thus couldn't have shifted
     pushAvg(bucketC);
   }
 
@@ -287,19 +297,20 @@ export const selectSepiaPalettefromImgData: PaletteSelector = (
 };
 
 
+type Score = { n: number, c: number };
 export const selectLowestDistancePalette: PaletteSelector = (
   imgData: ImageData,
   drawingTools: DrawingTool[],
   alphaThreshold: number,
 ) => {
-  var palette = [];
-  var prepixels = [];
+  var palette: Score[] = [];
+  var prepixels: Record<string, Record<string, number>>  = {};
   const pixelCount = imgData.data.length;
   for (let i = 0; i < 256; i++) {
     palette.push({ n: i, c: 0 });
   }
-  function myPal(pixel, r, g, b) {
-    var matches = {};
+  function myPal(pixel: number, r: number, g: number, b: number) {
+    var matches: Record<string, number> = {};
     var best = 16581375; //there's no worse best score
     var bestno = 0;
     for (let i = 0; i < 256; i++) {
@@ -327,13 +338,13 @@ export const selectLowestDistancePalette: PaletteSelector = (
   palette.sort((a, b) => a.c - b.c);
   while (palette.length > 40)
     palette.pop();
-  var best_chosen = [];
+  var best_chosen: number[] = [];
   var scor_chosen = 0x200000; //we can always do better than this
   alert(
     "Optimizing happens after you click ok - please stand by as this might take a while."
   );
   for (var z = 0; z < 4000 && palette.length > 16; z++) {
-    var chosen_ones = [];
+    var chosen_ones: number[] = [];
     //pick random colors out of the top 40
     while (chosen_ones.length < 15 && chosen_ones.length < palette.length) {
       var next = palette[Math.floor(Math.random() * palette.length)].n;
@@ -502,22 +513,26 @@ export const drawingToolGridToImage = (
 ): HTMLCanvasElement => {
   // first drawing tool encountered
   const availableDrawingTool = first(
-      first(drawingToolGrid
-        .filter(gridRow => gridRow.some(negate(isNil))))
-      .filter(negate(isNil))
+      (first(
+        drawingToolGrid
+          .filter(gridRow => gridRow.some(negate(isNil)))
+      ) as DrawingTool[])
+        .filter(negate(isNil))
     );
   if (isNil(availableDrawingTool))
     throw new Error("No available drawing tools in grid to reference dimensions.");
   const width = availableDrawingTool.width;
   const height = availableDrawingTool.height;
   const rows = drawingToolGrid.length;
-  const cols = first(drawingToolGrid).length;
+  const cols = (first(drawingToolGrid) as DrawingTool[]).length;
   const mosaicWidth = width * cols;
   const mosaicHeight = height * rows;
 
-  const canvasGrid: HTMLCanvasElement[][] = drawingToolGrid
+  const canvasGrid: (HTMLCanvasElement | undefined)[][] = drawingToolGrid
     .map(drawingToolGridRow => drawingToolGridRow
       .map(drawingTool => {
+        if (isNil(drawingTool))
+          return undefined;
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
@@ -531,17 +546,19 @@ export const drawingToolGridToImage = (
   const mosaicCanvas = document.createElement("canvas");
   mosaicCanvas.width = mosaicWidth;
   mosaicCanvas.height = mosaicHeight;
-  const mosiacContext = mosaicCanvas.getContext("2d");
+  const mosiacContext = mosaicCanvas.getContext("2d") as CanvasRenderingContext2D;
   mosiacContext.imageSmoothingEnabled = false;
 
   for (let r = 0; r < rows; ++r)
-    for (let c = 0; c < cols; ++c)
-      if (!isNil(canvasGrid[r][c]))
+    for (let c = 0; c < cols; ++c) {
+      const subCanvas = canvasGrid[r][c];
+      if (!isNil(subCanvas))
         mosiacContext.drawImage(
-          canvasGrid[r][c],
+          subCanvas,
           width * c,
           height * r,
         );
+    }
 
   return mosaicCanvas;
 };
