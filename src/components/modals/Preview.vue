@@ -23,8 +23,25 @@
         @click="copyKeypresses"
         elevation="0"
       >
-        Copy Keypress Script
+        <span>Copy Keypress Script</span>
+        <VSpacer/>
+        <VBtn icon @click.stop="showKeypressModal = true">
+          <VIcon :color="colors.white">mdi-information-outline</VIcon>
+        </VBtn>
       </VBtn>
+      <VDialog v-model="showKeypressModal" max-width="800">
+        <VCard class="keypress-instructions" rounded="xl">
+          <MarkdownStyled>
+            <KeypressInstructions />
+          </MarkdownStyled>
+        </VCard>
+      </VDialog>
+      <VSnackbar
+        v-model="showKeypressCopied"
+        :timeout="1000"
+      >
+        Commands copied!
+      </VSnackbar>
     </div>
 
     <VDialog
@@ -58,13 +75,17 @@
 import {
   VDialog,
   VBtn,
+  VIcon,
   VCard,
   VCardTitle,
   VCardText,
   VCardActions,
   VSpacer,
+  VSnackbar,
 } from "vuetify/lib";
 import CancelButton from "@/components/modals/CancelButton.vue";
+import MarkdownStyled from "@/components/MarkdownStyled.vue";
+import KeypressInstructions from "@/pages/Editor/KeypressInstructions.md";
 import DrawingTool from "@/libs/DrawingTool";
 import ACNLToACNHInfo from "@/components/partials/ACNLToACNHInfo.vue";
 
@@ -82,12 +103,16 @@ export default {
   components: {
     VDialog,
     VBtn,
+    VIcon,
     VCard,
     VCardTitle,
     VCardText,
     VCardActions,
     VSpacer,
+    VSnackbar,
     CancelButton,
+    MarkdownStyled,
+    KeypressInstructions,
     ACNLQRGenerator,
     ACNLToACNHInfo,
   },
@@ -103,6 +128,8 @@ export default {
       colors,
       dataURL,
       gameModeInfo: false,
+      showKeypressModal: false,
+      showKeypressCopied: false,
     };
   },
   methods: {
@@ -117,7 +144,7 @@ export default {
       } catch (err) {
         alert("Error! Could not copy: "+e);
       }
-      alert("Commands copied!");
+      this.showKeypressCopied = true;
     },
   },
   async mounted() {
@@ -175,6 +202,12 @@ export default {
     @include colors.moving-stripes(8s);
     border: 4px solid colors.$turquoise;
   }
+}
+
+.keypress-instructions {
+  padding: 25px;
+  color: colors.$jambalaya;
+  background-color: colors.$ecru-white;
 }
 
 .info-title,
