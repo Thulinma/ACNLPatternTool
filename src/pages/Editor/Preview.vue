@@ -87,7 +87,7 @@ import CancelButton from "@/components/modals/CancelButton.vue";
 import MarkdownStyled from "@/components/MarkdownStyled.vue";
 import KeypressInstructions from "@/pages/Editor/KeypressInstructions.md";
 import DrawingTool from "@/libs/DrawingTool";
-import ACNLToACNHInfo from "@/components/partials/ACNLToACNHInfo.vue";
+import ACNLToACNHInfo from "./ACNLToACNHInfo.vue";
 
 import ACNLQRGenerator from "@/components/ACNLQRGenerator.vue";
 

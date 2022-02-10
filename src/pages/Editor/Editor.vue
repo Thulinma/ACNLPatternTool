@@ -191,7 +191,7 @@ import {
 } from "vuetify/lib";
 import ImportMenuItem from "./ImportMenuItem.vue";
 import ColorTools from "./ColorTools/ColorTools.vue";
-import ConvertImage from "@/components/modals/ConvertImage";
+import ConvertImage from "./ConvertImage";
 import Publish from "@/components/modals/Publish.vue";
 import ThreeDRender from "@/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";

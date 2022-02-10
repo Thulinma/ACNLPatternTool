@@ -416,11 +416,11 @@ import {
 } from "vuetify/lib";
 import CancelButton from "@/components/modals/CancelButton.vue";
 import DrawingTool from "@/libs/DrawingTool";
-import PatternSettings from "@/components/modals/PatternSettings.vue";
-import Preview from "@/components/modals/Preview.vue";
-import Storage from "@/components/modals/Storage.vue";
-import ACNLToACNHInfo from "@/components/partials/ACNLToACNHInfo.vue";
-import ACNHToACNLInfo from "@/components/partials/ACNHToACNLInfo.vue";
+import PatternSettings from "./PatternSettings.vue";
+import Preview from "./Preview.vue";
+import Storage from "./Storage.vue";
+import ACNLToACNHInfo from "./ACNLToACNHInfo.vue";
+import ACNHToACNLInfo from "./ACNHToACNLInfo.vue";
 import { combineOns } from "@/libs/component-helpers";
 
 // icons
