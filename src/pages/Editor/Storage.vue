@@ -3,7 +3,7 @@
     @close="$emit('close')"
     :drawingTools="drawingTools"
     :options="options"
-    :selectedMap="selectedMap"
+    :selected="selected"
     @select="toggleSelection"
   >
     <template #title>Storage</template>
@@ -22,22 +22,12 @@ export default {
   data() {
     return {
       drawingTools: [],
-      selectedMap: [],
+      selected: [],
     };
   },
   computed: {
-    selected() {
-      const selectedArr = this.drawingTools.filter(
-        (dt, i) => this.selectedMap[i]
-      );
-      const selected = new Set();
-      for (const selectedItem of selectedArr) {
-        selected.add(selectedItem);
-      }
-      return selected;
-    },
     options() {
-      const { selected, selectedMap, drawingTools } = this;
+      const { selected, drawingTools } = this;
       let options = [];
       if (drawingTools.length === 0) return options;
 
@@ -72,9 +62,8 @@ export default {
           if (!window.confirm(message)) return;
           saver.deleteDrawingToolsFromStorage(source);
           for (const drawingTool of source) {
-            const idx = drawingTools.indexOf(drawingTool);
-            drawingTools.splice(idx, 1);
-            selectedMap.splice(idx, 1);
+            drawingTools.splice(drawingTools.indexOf(drawingTool), 1);
+            selected.splice(selected.indexOf(drawingTool), 1);
           }
         },
       };
@@ -136,9 +125,10 @@ export default {
   },
   methods: {
     toggleSelection(drawingTool) {
-      const idx = this.drawingTools.indexOf(drawingTool);
-      const isSelected = this.selectedMap[idx];
-      this.selectedMap.splice(idx, 1, !isSelected);
+      if (this.selected.includes(drawingTool))
+        this.selected.splice(this.selected.indexOf(drawingTool), 1);
+      else
+        this.selected.push(drawingTool);
     },
   },
   async mounted() {
@@ -148,10 +138,8 @@ export default {
       if (a.title > b.title) return 1;
       return 0;
     });
-    for (const drawingTool of drawingTools) {
-      this.drawingTools.push(drawingTool);
-      this.selectedMap.push(false);
-    }
+    this.drawingTools = drawingTools.slice();
+    this.selected = [];
   },
 };
 </script>

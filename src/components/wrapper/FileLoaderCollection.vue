@@ -12,7 +12,7 @@
         @close="$emit('close')"
         :drawingTools="drawingTools"
         :options="options"
-        :selectedMap="selectedMap"
+        :selected="selected"
         @select="toggleSelection"
       >
         <template #title>Files loaded</template>
@@ -51,15 +51,12 @@ export default {
     return {
       zipExts,
       drawingTools: [],
-      selectedMap: [],
+      selected: [],
     };
   },
   computed: {
-    selected() {
-      return this.drawingTools.filter((dt, i) => this.selectedMap[i]);
-    },
     options() {
-      const { selected, selectedMap, drawingTools } = this;
+      const { selected, drawingTools } = this;
       let options = [];
       if (drawingTools.length === 0) return options;
 
@@ -78,9 +75,8 @@ export default {
         label: `Remove`,
         callback: async () => {
           for (const drawingTool of selected) {
-            const idx = drawingTools.indexOf(drawingTool);
-            drawingTools.splice(idx, 1);
-            selectedMap.splice(idx, 1);
+            drawingTools.splice(drawingTools.indexOf(drawingTool), 1);
+            selected.splice(drawingTools.indexOf(drawingTool), 1);
           }
         },
       };
@@ -168,9 +164,10 @@ export default {
   },
   methods: {
     toggleSelection(drawingTool) {
-      const idx = this.drawingTools.indexOf(drawingTool);
-      const isSelected = this.selectedMap[idx];
-      this.selectedMap.splice(idx, 1, !isSelected);
+      if (this.selected.includes(drawingTool))
+        this.selected.splice(this.selected.indexOf(drawingTool), 1);
+      else
+        this.selected.push(drawingTool);
     },
     open() {
       // clear
@@ -179,11 +176,8 @@ export default {
     },
     multiload(drawingTools) {
       // clear
-      this.drawingTools.splice(0, this.drawingTools.length);
-      for (const drawingTool of drawingTools) {
-        this.drawingTools.push(drawingTool);
-        this.selectedMap.push(false);
-      }
+      this.drawingTools = drawingTools.slice();
+      this.selected = [];
     },
   },
 };

@@ -81,10 +81,11 @@ export default {
     drawingTools: {
       type: Array,
       required: true,
+      default: () => new Array(),
     },
-    selectedMap: {
+    selected: {
       type: Array,
-      required: false,
+      required: true,
       default: () => new Array(),
     },
     options: {
@@ -101,7 +102,7 @@ export default {
   },
   methods: {
     isSelected(drawingTool) {
-      return this.selectedMap[this.drawingTools.indexOf(drawingTool)];
+      return this.selected.includes(drawingTool);
     }
   }
 };
