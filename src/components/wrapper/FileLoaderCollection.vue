@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { first, uniq } from "lodash";
 import { VDialog } from "vuetify/lib";
 import { Fragment } from "vue-fragment";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
@@ -64,7 +65,7 @@ export default {
         icon: 'mdi-application-edit',
         label: `Open`,
         callback: async () => {
-          const drawingTool = selected[0];
+          const drawingTool = first(selected);
           this.$emit("load", drawingTool.toString());
           this.$emit("close");
         },
@@ -85,15 +86,18 @@ export default {
         icon: 'mdi-file-cabinet',
         label: `Storage`,
         callback: async () => {
-          let source;
-          let message;
-          if (selected.length === 0) {
-            source = drawingTools;
-            message = "Saved all patterns to storage.";
-          } else {
-            source = [...selected];
-            message = "Saved selected patterns to storage.";
-          }
+          const [
+            message,
+            source
+          ] = selected.length === 0
+            ? [
+              "Saved all patterns to storage.",
+              drawingTools,
+            ]
+            : [
+              "Saved selected patterns to storage.",
+              selected,
+            ];
           await saver.saveDrawingToolsToStorage(source);
           window.alert(message);
         },
@@ -104,13 +108,13 @@ export default {
         label: `.ACNL/.ACNH`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = selected[0];
+            const drawingTool = first(selected);
             await saver.saveDrawingToolAsPattern(drawingTool);
             return;
           }
-          let source;
-          if (selected.length === 0) source = drawingTools;
-          else source = selected;
+          let source = selected.length
+            ? drawingTools
+            : selected;
           await saver.saveDrawingToolsAsPattern(source);
         },
       };
@@ -120,13 +124,13 @@ export default {
         label: `QR/PBL`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = selected[0];
+            const drawingTool = first(selected);
             await saver.saveDrawingToolAsPng(drawingTool);
             return;
           }
-          let source;
-          if (selected.length === 0) source = drawingTools;
-          else source = selected;
+          let source = selected.length
+            ? drawingTools
+            : selected;
           await saver.saveDrawingToolsAsPng(source);
         },
       };
@@ -136,7 +140,7 @@ export default {
         label: `Both`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = selected[0];
+            const drawingTool = first(selected);
             await saver.saveDrawingToolAsBoth(drawingTool);
             return;
           }
@@ -147,12 +151,10 @@ export default {
         },
       };
 
-      if (selected.length === 1) {
+      if (selected.length === 1)
         options.push(open);
-      }
-      if (selected.length >= 1) {
+      if (selected.length >= 1)
         options.push(remove);
-      }
       options.push(
         saveToStorage,
         downloadAsPattern,

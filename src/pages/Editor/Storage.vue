@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { first, uniq } from "lodash";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
 import saver from "@/libs/saver";
 
@@ -31,15 +32,11 @@ export default {
       let options = [];
       if (drawingTools.length === 0) return options;
 
-      const isNone = selected.size === 0;
-      const isSingle = selected.size === 1;
-      const isMultiple = selected.size > 1;
-
       const open = {
         icon: 'mdi-application-edit',
         label: `Open`,
         callback: async () => {
-          const [drawingTool, ..._] = [...selected];
+          const drawingTool = first(selected);
           this.$emit("load", [drawingTool]);
           this.$emit("close");
         },
@@ -49,16 +46,18 @@ export default {
         icon: 'mdi-trash-can',
         label: `Delete`,
         callback: async () => {
-          let message;
-          let source;
-          if (selected.size !== 0) {
-            message =
-              "Are you sure you want to delete these patterns from storage?";
-            source = [...selected];
-          } else {
-            message = "Are you sure you want to clear the storage?";
-            source = [...drawingTools];
-          }
+          const [
+            message,
+            source
+          ] = selected.length !== 0
+            ? [
+              "Are you sure you want to delete these patterns from storage?",
+              selected,
+            ]
+            : [
+              "Are you sure you want to clear the storage?",
+              drawingTools,
+            ];
           if (!window.confirm(message)) return;
           saver.deleteDrawingToolsFromStorage(source);
           for (const drawingTool of source) {
@@ -72,14 +71,14 @@ export default {
         icon: 'mdi-file',
         label: `.ACNL/.ACNH`,
         callback: async () => {
-          if (selected.size === 1) {
-            const [drawingTool, ..._] = [...selected];
+          if (selected.length === 1) {
+            const drawingTool = first(selected);
             await saver.saveDrawingToolAsPattern(drawingTool);
             return;
           }
-          let source;
-          if (selected.size === 0) source = drawingTools;
-          else source = [...selected];
+          let source = selected.length
+            ? drawingTools
+            : selected;
           saver.saveDrawingToolsAsPattern(source);
         },
       };
@@ -88,14 +87,14 @@ export default {
         icon: 'mdi-image',
         label: `QR/PBL`,
         callback: async () => {
-          if (selected.size === 1) {
-            const [drawingTool, ..._] = [...selected];
+          if (selected.length === 1) {
+            const drawingTool = first(selected);
             await saver.saveDrawingToolAsPng(drawingTool);
             return;
           }
-          let source;
-          if (selected.size === 0) source = drawingTools;
-          else source = [...selected];
+          let source = selected.length
+            ? drawingTools
+            : selected;
           await saver.saveDrawingToolsAsPng(source);
         },
       };
@@ -104,20 +103,20 @@ export default {
         icon: 'mdi-zip-box',
         label: `Both`,
         callback: async () => {
-          if (selected.size === 1) {
-            const [drawingTool, ..._] = [...selected];
+          if (selected.length === 1) {
+            const drawingTool = first(selected);
+            await saver.saveDrawingToolAsBoth(drawingTool);
             return;
           }
-          let source;
-          if (selected.size === 0) source = drawingTools;
-          else source = [...selected];
+          let source = selected.length
+            ? drawingTools
+            : selected;
           await saver.saveDrawingToolsAsBoth(source);
         },
       };
 
-      if (selected.size === 1) {
+      if (selected.length === 1)
         options.push(open);
-      }
       options.push(del);
       options.push(downloadAsPattern, downloadAsPng, downloadAsBoth);
       return options;

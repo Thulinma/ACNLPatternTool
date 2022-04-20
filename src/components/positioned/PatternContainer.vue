@@ -142,9 +142,9 @@ export default {
     grid-template-columns: repeat(4, 175px);
   }
   @include screens.tablet-landscape {
-    grid-template-columns: repeat(5, 175px);
-    column-gap: 30px;
-    row-gap: 40px;
+    grid-template-columns: repeat(4, 175px);
+    column-gap: 20px;
+    row-gap: 30px;
     justify-content: space-between;
   }
   @include screens.desktop {
