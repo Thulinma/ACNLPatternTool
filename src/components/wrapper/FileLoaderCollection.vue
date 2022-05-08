@@ -1,16 +1,15 @@
 <template>
   <Fragment>
     <VDialog
-      :value="drawingTools.length > 0"
-      @input="$emit('close')"
+      :value="showDialog"
+      @input="close"
       content-class="collection--dialog"
       scrollable
       width="auto"
     >
       <PatternContainer
-        v-if="drawingTools.length > 0"
-        @close="$emit('close')"
-        :drawingTools="drawingTools"
+        @close="close"
+        :patternItems="patternItems"
         :options="options"
         :selected="selected"
         @select="toggleSelection"
@@ -32,12 +31,19 @@
 </template>
 
 <script>
-import { first, uniq } from "lodash";
+import { mapActions } from "vuex";
+import { first, intersection } from "lodash";
 import { VDialog } from "vuetify/lib";
 import { Fragment } from "vue-fragment";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
 import FileLoader from "@/components/wrapper/FileLoader.vue";
-import saver from "@/libs/saver";
+import {
+  drawingToolToNamedPatternBlob,
+  drawingToolToNamedImageBlob,
+  namedBlobsToNamedZipBlob,
+  downloadNamedBlob,
+} from "@/libs/downloader";
+import { mockPatternItem } from "@/libs/storage";
 import { zipExts } from "@/libs/reader";
 
 export default {
@@ -50,23 +56,24 @@ export default {
   },
   data() {
     return {
+      showDialog: false,
       zipExts,
-      drawingTools: [],
+      patternItems: [],
       selected: [],
     };
   },
   computed: {
     options() {
-      const { selected, drawingTools } = this;
+      const { selected, patternItems } = this;
       let options = [];
-      if (drawingTools.length === 0) return options;
+      if (patternItems.length === 0) return options;
 
       const open = {
         icon: 'mdi-application-edit',
         label: `Open`,
         callback: async () => {
-          const drawingTool = first(selected);
-          this.$emit("load", drawingTool.toString());
+          const patternItem = first(selected);
+          this.$emit("load", [patternItem.drawingTool]);
           this.$emit("close");
         },
       };
@@ -75,10 +82,8 @@ export default {
         icon: 'mdi-trash-can',
         label: `Remove`,
         callback: async () => {
-          for (const drawingTool of selected) {
-            drawingTools.splice(drawingTools.indexOf(drawingTool), 1);
-            selected.splice(drawingTools.indexOf(drawingTool), 1);
-          }
+          this.patternItems = this.patternItems.filter(pi => !selected.includes(pi));
+          this.selected = this.selected.filter(pi => !selected.includes(pi));
         },
       };
 
@@ -92,13 +97,13 @@ export default {
           ] = selected.length === 0
             ? [
               "Saved all patterns to storage.",
-              drawingTools,
+              patternItems,
             ]
             : [
               "Saved selected patterns to storage.",
               selected,
             ];
-          await saver.saveDrawingToolsToStorage(source);
+          await this.add(source);
           window.alert(message);
         },
       };
@@ -108,14 +113,22 @@ export default {
         label: `.ACNL/.ACNH`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = first(selected);
-            await saver.saveDrawingToolAsPattern(drawingTool);
+            const namedPatternBlob = await drawingToolToNamedPatternBlob(
+              first(selected).drawingTool
+            );
+            await downloadNamedBlob(namedPatternBlob);
             return;
           }
-          let source = selected.length
-            ? drawingTools
-            : selected;
-          await saver.saveDrawingToolsAsPattern(source);
+          const source = selected.length
+            ? selected
+            : patternItems;
+          const namedPatternBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTool)
+              .map(dt => drawingToolToNamedPatternBlob(dt))
+          );
+          const namedZipBlob = await namedBlobsToNamedZipBlob(namedPatternBlobs);
+          await downloadNamedBlob(namedZipBlob);
         },
       };
 
@@ -124,14 +137,22 @@ export default {
         label: `QR/PBL`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = first(selected);
-            await saver.saveDrawingToolAsPng(drawingTool);
+            const namedImageBlob = await drawingToolToNamedImageBlob(
+              first(selected).drawingTool
+            );
+            await downloadNamedBlob(namedImageBlob);
             return;
           }
-          let source = selected.length
-            ? drawingTools
+          const source = selected.length
+            ? patternItems
             : selected;
-          await saver.saveDrawingToolsAsPng(source);
+          const namedImageBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTools)
+              .map(dt => drawingToolToNamedImageBlob(dt))
+          );
+          const namedZipBlob = await namedBlobsToNamedZipBlob(namedImageBlobs);
+          await downloadNamedBlob(namedZipBlob);
         },
       };
 
@@ -140,14 +161,37 @@ export default {
         label: `Both`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = first(selected);
-            await saver.saveDrawingToolAsBoth(drawingTool);
+            const namedPatternBlob = await drawingToolToNamedPatternBlob(
+              first(selected).drawingTool
+            );
+            const namedImageBlob = await drawingToolToNamedImageBlob(
+              first(selected).drawingTool
+            );
+            const namedZipBlob = await namedBlobsToNamedZipBlob([
+              namedPatternBlob,
+              namedImageBlob,
+            ]);
+            await downloadNamedBlob(namedZipBlob);
             return;
           }
-          let source;
-          if (selected.length === 0) source = drawingTools;
-          else source = selected;
-          await saver.saveDrawingToolsAsBoth(source);
+          let source = selected.length
+            ? selected
+            : patternItems;
+          const namedPatternBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTool)
+              .map(dt => drawingToolToNamedPatternBlob(dt))
+          );
+          const namedImageBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTool)
+              .map(dt => drawingToolToNamedImageBlob(dt))
+          );
+          const namedZipBlob = await namedBlobsToNamedZipBlob([
+            ...namedPatternBlobs,
+            ...namedImageBlobs,
+          ]);
+          await downloadNamedBlob(namedZipBlob);
         },
       };
 
@@ -165,21 +209,37 @@ export default {
     },
   },
   methods: {
-    toggleSelection(drawingTool) {
-      if (this.selected.includes(drawingTool))
-        this.selected.splice(this.selected.indexOf(drawingTool), 1);
+    ...mapActions("storage", ["add"]),
+    toggleSelection(patternItem) {
+      if (this.selected.includes(patternItem))
+        this.selected = intersection(
+          this.patternItems,
+          this.selected.filter(pi => pi !== patternItem),
+        );
       else
-        this.selected.push(drawingTool);
+        this.selected = intersection(
+          this.patternItems,
+          this.selected.concat([patternItem]),
+        );
     },
     open() {
-      // clear
-      this.drawingTools.splice(0, this.drawingTools.length);
+      // will trigger multiload which clears
       this.$refs.collectionFileLoader.open();
+    },
+    close() {
+      Object.assign(this, {
+        showDialog: false,
+        patternItem: [],
+        selected: [],
+      });
     },
     multiload(drawingTools) {
       // clear
-      this.drawingTools = drawingTools.slice();
-      this.selected = [];
+      Object.assign(this, {
+        showDialog: true,
+        patternItems: drawingTools.map(dt => mockPatternItem(dt)),
+        selected: [],
+      });
     },
   },
 };

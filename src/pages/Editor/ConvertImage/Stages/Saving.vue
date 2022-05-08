@@ -33,10 +33,48 @@
 
 <script>
 import { VBtn, VRadio, VRadioGroup } from "vuetify/lib";
-import saver from "@/libs/saver";
+import { mapActions } from "vuex";
+import { mockPatternItem } from "@/libs/storage";
+import {
+  drawingToolToNamedPatternBlob,
+  drawingToolToNamedImageBlob,
+  namedBlobsToNamedZipBlob,
+  downloadNamedBlob,
+} from "@/libs/downloader";
 import DrawingTool from "@/libs/DrawingTool";
 
 import colors from "@/styles/colors.scss";
+
+
+const dtToStorage = async function(drawingTools) {
+  const mockedPatternItems = drawingTools.map(dt => mockPatternItem(dt));
+  await this.add(mockedPatternItems);
+};
+
+const dtAsImageZip = async function(drawingTools) {
+  const namedImageBlobs = await Promise.all(drawingTools.map(dt =>
+    drawingToolToNamedImageBlob(dt)
+  ));
+  const namedZipBlob = await namedBlobsToNamedZipBlob(namedImageBlobs);
+  downloadNamedBlob(namedZipBlob);
+};
+
+const dtAsPatternZip =  async function(drawingTools) {
+  const namedPatternBlobs = await Promise.all(drawingTools.map(dt =>
+    drawingToolToNamedPatternBlob(dt)
+  ));
+  const namedZipBlob = await namedBlobsToNamedZipBlob(namedPatternBlobs);
+  downloadNamedBlob(namedZipBlob);
+};
+
+const dtAsBothZip = async function(drawingTools) {
+  const namedBothBlobs = await Promise.all([
+    ...drawingTools.map(drawingToolToNamedPatternBlob),
+    ...drawingTools.map(drawingToolToNamedImageBlob),
+  ]);
+  const namedZipBlob = await namedBlobsToNamedZipBlob(namedBothBlobs);
+  downloadNamedBlob(namedZipBlob);
+};
 
 export default {
   name: "Saving",
@@ -60,7 +98,7 @@ export default {
       colors,
       savingMethod: this.outputs.length === 1
         ? this.load
-        : saver.saveDrawingToolsToStorage,
+        : dtToStorage,
     };
   },
   computed: {
@@ -75,24 +113,25 @@ export default {
           ),
         {
           name: "To Storage",
-          value: saver.saveDrawingToolsToStorage,
+          value: dtToStorage,
         },
         {
           name: "QRs as .ZIP",
-          value: saver.saveDrawingToolsAsPng,
+          value: dtAsImageZip,
         },
         {
           name: "ACNLs/ACNHs as .ZIP",
-          value: saver.saveDrawingToolsAsPattern,
+          value: dtAsPatternZip,
         },
         {
           name: "Both as .ZIP",
-          value: saver.saveDrawingToolsAsBoth,
+          value: dtAsBothZip,
         },
       ]; 
     },
   },
   methods: {
+    ... mapActions("storage", ["add"]),
     async load() {
       this.$emit("load", this.outputs);
       window.alert("Conversion successfully loaded onto pattern.")
@@ -103,7 +142,7 @@ export default {
         return drawingTool;
       });
       await this.savingMethod(drawingTools);
-      if (this.savingMethod === saver.saveDrawingToolsToStorage)
+      if (this.savingMethod === dtToStorage)
         window.alert("Patterns successfully saved to Storage.");
     },
   },

@@ -8,8 +8,8 @@
     dark
   >
     <VBtn
-      v-for="(option, i) in options"
-      :key="i"
+      v-for="(option) in options"
+      :key="option.message"
       class="btn"
       value="''"
       @click="option.callback()"
@@ -32,7 +32,7 @@ import colors from "@/styles/colors.scss";
 /**
  * INTERFACE FOR OPTIONS
  * interface Option {
- *  imgSrc: string,
+ *  icon: string,
  *  label: string,
  *  callback: function,
  * }

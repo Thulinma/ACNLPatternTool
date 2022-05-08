@@ -1,7 +1,7 @@
 <template>
   <PatternContainer
     @close="$emit('close')"
-    :drawingTools="drawingTools"
+    :patternItems="patternItems"
     :options="options"
     :selected="selected"
     @select="toggleSelection"
@@ -11,9 +11,19 @@
 </template>
 
 <script>
-import { first, uniq } from "lodash";
+import {
+  mapGetters,
+  mapMutations,
+  mapActions,
+} from "vuex";
+import { first, intersection } from "lodash";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
-import saver from "@/libs/saver";
+import {
+  drawingToolToNamedPatternBlob,
+  drawingToolToNamedImageBlob,
+  namedBlobsToNamedZipBlob,
+  downloadNamedBlob,
+} from "@/libs/downloader";
 
 export default {
   name: "Storage",
@@ -22,22 +32,25 @@ export default {
   },
   data() {
     return {
-      drawingTools: [],
       selected: [],
     };
   },
   computed: {
+    ...mapGetters("storage", ["patternItems"]),
+    drawingTools() {
+      return this.patternItems.map(pi => pi.drawingTool);
+    },
     options() {
-      const { selected, drawingTools } = this;
+      const { selected, patternItems } = this;
       let options = [];
-      if (drawingTools.length === 0) return options;
+      if (patternItems.length === 0) return options;
 
       const open = {
         icon: 'mdi-application-edit',
         label: `Open`,
         callback: async () => {
-          const drawingTool = first(selected);
-          this.$emit("load", [drawingTool]);
+          const patternItem = first(selected);
+          this.$emit("load", [patternItem.drawingTool]);
           this.$emit("close");
         },
       };
@@ -56,14 +69,11 @@ export default {
             ]
             : [
               "Are you sure you want to clear the storage?",
-              drawingTools,
+              patternItems,
             ];
-          if (!window.confirm(message)) return;
-          saver.deleteDrawingToolsFromStorage(source);
-          for (const drawingTool of source) {
-            drawingTools.splice(drawingTools.indexOf(drawingTool), 1);
-            selected.splice(selected.indexOf(drawingTool), 1);
-          }
+          if (!window.confirm(message))
+            return;
+          await this.remove(source);
         },
       };
 
@@ -72,14 +82,22 @@ export default {
         label: `.ACNL/.ACNH`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = first(selected);
-            await saver.saveDrawingToolAsPattern(drawingTool);
+            const namedPatternBlob = await drawingToolToNamedPatternBlob(
+              first(selected).drawingTool
+            );
+            await downloadNamedBlob(namedPatternBlob);
             return;
           }
-          let source = selected.length
-            ? drawingTools
-            : selected;
-          saver.saveDrawingToolsAsPattern(source);
+          const source = selected.length
+            ? selected
+            : patternItems;
+          const namedPatternBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTool)
+              .map(dt => drawingToolToNamedPatternBlob(dt))
+          );
+          const namedZipBlob = await namedBlobsToNamedZipBlob(namedPatternBlobs);
+          await downloadNamedBlob(namedZipBlob);
         },
       };
 
@@ -88,14 +106,22 @@ export default {
         label: `QR/PBL`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = first(selected);
-            await saver.saveDrawingToolAsPng(drawingTool);
+            const namedImageBlob = await drawingToolToNamedImageBlob(
+              first(selected).drawingTool
+            );
+            await downloadNamedBlob(namedImageBlob);
             return;
           }
-          let source = selected.length
-            ? drawingTools
+          const source = selected.length
+            ? patternItems
             : selected;
-          await saver.saveDrawingToolsAsPng(source);
+          const namedImageBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTools)
+              .map(dt => drawingToolToNamedImageBlob(dt))
+          );
+          const namedZipBlob = await namedBlobsToNamedZipBlob(namedImageBlobs);
+          await downloadNamedBlob(namedZipBlob);
         },
       };
 
@@ -104,42 +130,70 @@ export default {
         label: `Both`,
         callback: async () => {
           if (selected.length === 1) {
-            const drawingTool = first(selected);
-            await saver.saveDrawingToolAsBoth(drawingTool);
+            const namedPatternBlob = await drawingToolToNamedPatternBlob(
+              first(selected).drawingTool
+            );
+            const namedImageBlob = await drawingToolToNamedImageBlob(
+              first(selected).drawingTool
+            );
+            const namedZipBlob = await namedBlobsToNamedZipBlob([
+              namedPatternBlob,
+              namedImageBlob,
+            ]);
+            await downloadNamedBlob(namedZipBlob);
             return;
           }
           let source = selected.length
-            ? drawingTools
-            : selected;
-          await saver.saveDrawingToolsAsBoth(source);
+            ? selected
+            : patternItems;
+          const namedPatternBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTool)
+              .map(dt => drawingToolToNamedPatternBlob(dt))
+          );
+          const namedImageBlobs = await Promise.all(
+            source
+              .map(pi => pi.drawingTool)
+              .map(dt => drawingToolToNamedImageBlob(dt))
+          );
+          const namedZipBlob = await namedBlobsToNamedZipBlob([
+            ...namedPatternBlobs,
+            ...namedImageBlobs,
+          ]);
+          await downloadNamedBlob(namedZipBlob);
         },
       };
 
       if (selected.length === 1)
         options.push(open);
       options.push(del);
-      options.push(downloadAsPattern, downloadAsPng, downloadAsBoth);
+      options.push(
+        downloadAsPattern,
+        downloadAsPng,
+        downloadAsBoth,
+      );
       return options;
     },
   },
   methods: {
-    toggleSelection(drawingTool) {
-      if (this.selected.includes(drawingTool))
-        this.selected.splice(this.selected.indexOf(drawingTool), 1);
+    ...mapMutations("storage", ["init"]),
+    ...mapActions("storage", ["remove"]),
+    toggleSelection(patternItem) {
+      if (this.selected.includes(patternItem))
+        this.selected = intersection(
+          this.patternItems,
+          this.selected.filter(pi => pi !== patternItem),
+        );
       else
-        this.selected.push(drawingTool);
+        this.selected = intersection(
+          this.patternItems,
+          this.selected.concat([patternItem]),
+        );
     },
   },
-  async mounted() {
-    const drawingTools = await saver.getDrawingToolsFromStorage();
-    drawingTools.sort((a, b) => {
-      if (a.title < b.title) return -1;
-      if (a.title > b.title) return 1;
-      return 0;
-    });
-    this.drawingTools = drawingTools.slice();
-    this.selected = [];
-  },
+  mounted() {
+    this.init();
+  }
 };
 </script>
 

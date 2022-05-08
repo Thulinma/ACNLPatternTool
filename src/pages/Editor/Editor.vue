@@ -172,14 +172,19 @@
 /* libs */
 import DrawingTool from "@/libs/DrawingTool";
 import { view } from "@/libs/origin";
-import saver from "@/libs/saver";
+import {
+  drawingToolToNamedPatternBlob,
+  drawingToolToNamedImageBlob,
+  downloadNamedBlob,
+} from "@/libs/downloader";
 import lzString from "lz-string";
 import {
   patternExts,
   qrImageExts,
 } from "@/libs/reader";
-
+import { mockPatternItem } from "@/libs/storage";
 // components
+import { mapActions } from "vuex";
 import {
   VDialog,
   VMenu,
@@ -319,6 +324,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("storage", ["add"]),
     // ------------------
     // REACTION FUNCTIONS
     // ------------------
@@ -375,13 +381,16 @@ export default {
     // SAVING FUNCTIONS
     // ------------------
     async downloadBinary() {
-      saver.saveDrawingToolAsPattern(this.drawingTool);
+      const namedPatternBlob = await drawingToolToNamedPatternBlob(this.drawingTool);
+      await downloadNamedBlob(namedPatternBlob);
     },
     async downloadQR() {
-      await saver.saveDrawingToolAsPng(this.drawingTool);
+      const namedImageBlob = await drawingToolToNamedImageBlob(this.drawingTool);
+      await downloadNamedBlob(namedImageBlob);
     },
     async saveToStorage() {
-      await saver.saveDrawingToolsToStorage([this.drawingTool]);
+      const copy = new DrawingTool(this.drawingTool.toString());
+      await this.add([mockPatternItem(copy)]);
       window.alert("Successfully saved to Storage!");
     },
 

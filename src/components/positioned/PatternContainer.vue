@@ -4,30 +4,30 @@
     <VCardText class="card-text">
       <div class="grid">
         <VBadge
-          v-for="(drawingTool, idx) in drawingTools"
-          :key="idx"
+          v-for="(patternItem) in patternItems"
+          :key="patternItem.mosaicId"
           class="storage-item-ctn"
           :color="colors.robinEggBlue"
           icon="mdi-check"
-          :value="isSelected(drawingTool)"
+          :value="isSelected(patternItem)"
           :offset-x="10"
           :offset-y="10"
         >
           <VCard
             :class="{
               'storage-item': true,
-              'storage-item--active': isSelected(drawingTool),
+              'storage-item--active': isSelected(patternItem),
               'rounded-lg': true,
             }"
             outlined
-            @click="$emit('select', drawingTool)"
+            @click="$emit('select', patternItem)"
           >
             <PreviewGenerator
               class="pattern"
-              :drawingTool="drawingTool"
+              :drawingTool="patternItem.drawingTool"
             />
             <VCardTitle class="pattern-title text-subtitle-2 text-center text-truncate">
-              {{ drawingTool.title }}
+              {{ patternItem.drawingTool.title }}
             </VCardTitle>
           </VCard>
         </VBadge>
@@ -78,7 +78,7 @@ export default {
     UtilityBar,
   },
   props: {
-    drawingTools: {
+    patternItems: {
       type: Array,
       required: true,
       default: () => new Array(),
@@ -101,8 +101,8 @@ export default {
     };
   },
   methods: {
-    isSelected(drawingTool) {
-      return this.selected.includes(drawingTool);
+    isSelected(patternItem) {
+      return this.selected.includes(patternItem);
     }
   }
 };
