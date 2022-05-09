@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES5",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "strict": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

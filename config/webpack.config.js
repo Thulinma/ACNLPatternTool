@@ -23,7 +23,8 @@ const clientEnv = env.buildClient();
 const entry = [pathToClientSrcIndex];
 
 const output = {
-  filename: "scripts/bundle.js",
+  filename: "scripts/[name].bundle.js",
+  chunkFilename: "scripts/[name].[contenthash:8].js",
   publicPath: "/",
   path: pathToBuild,
 };

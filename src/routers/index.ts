@@ -1,43 +1,84 @@
 import qs from "qs";
 import Vue from "vue";
 import VueRouter from 'vue-router';
-import Home from '@/pages/Home.vue';
-import Browse from '@/pages/Browse';
-import Editor from '@/pages/Editor';
-import FAQ from '@/pages/FAQ';
-import About from '@/pages/About';
-import Updates from '@/pages/Updates';
-import Missing from '@/pages/Missing.vue';
-import ModeratorIndex from '@/pages/moderator/Index.vue';
-import ModeratorLogin from '@/pages/moderator/Login.vue';
-import ModeratorDashboard from '@/pages/moderator/Dashboard.vue';
 
 Vue.use(VueRouter);
 
 const mode = "history";
 
 const routes = [
-  { path: "/", component: Home },
-  { path: "/browse", component: Browse },
-  { path: "/editor", component: Editor },
-  { path: "/faq", component: FAQ },
-  { path: "/about", component: About },
-  { path: "/updates", component: Updates },
+  {
+    path: "/",
+    component: () => import(
+      /* webpackChunkName: "Home" */
+      "@/pages/Home.vue"
+    ),
+  },
+  {
+    path: "/browse",
+    component: () => import(
+      /* webpackChunkName: "Browse" */
+      "@/pages/Browse"
+    ),
+  },
+  {
+    path: "/editor",
+    component: () => import(
+      /* webpackChunkName: "Editor" */
+      "@/pages/Editor"
+    ),
+  },
+  {
+    path: "/faq",
+    component: () => import(
+      /* webpackChunkName: "FAQ" */
+      "@/pages/FAQ"
+    ),
+   },
+  {
+    path: "/about",
+    component: () => import(
+      /* webpackChunkName: "About" */
+      "@/pages/About"
+    ),
+   },
+  {
+    path: "/updates",
+    component: () => import(
+      /* webpackChunkName: "Updates" */
+      "@/pages/Updates"
+    ),
+  },
   {
     path: "/moderator",
-    component: ModeratorIndex,
+    component: () => import(
+      /* webpackChunkName: "Moderator" */
+      "@/pages/moderator/Index.vue"
+    ),
     children: [
       {
         path: "login",
-        component: ModeratorLogin
+        component: () => import(
+          /* webpackChunkName: "ModeratorLogin" */
+          "@/pages/moderator/Login.vue"
+        ),
       },
       {
         path: "dashboard",
-        component: ModeratorDashboard
+        component: () => import(
+          /* webpackChunkName: "ModeratorDashboard" */
+          "@/pages/moderator/Dashboard.vue"
+        ),
       },
     ]
   },
-  { path: "*", component: Missing },
+  {
+    path: "*",
+    component: () => import(
+      /* webpackChunkName: "Missing" */
+      "@/pages/Missing.vue"
+    ),
+  },
 ];
 
  export default new VueRouter({

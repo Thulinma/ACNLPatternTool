@@ -4,15 +4,15 @@
       "syntax": "typescript",
       "tsx": false,
       "decorators": false,
-      "dynamicImport": false
+      "dynamicImport": true
     },
     "transform": null,
     "target": "es5",
     "externalHelpers": true
   },
   "module": {
-    "type": "umd",
-    "lazy": false,
+    "type": "es6",
+    "lazy": true,
     "noInterop": false
   }
 }

@@ -2,7 +2,7 @@
 // original: https://github.com/daelsepara/PixelFilterJS/blob/master/js/filters/xbrz.js
 
 // generates image with xbrz filter and applies it to the same canvas
-async function applyFilter(input, output) {
+export async function applyFilter(input, output) {
   const filter = new Filter();
   //Apply filter
   const inData = input.getContext('2d').getImageData(0, 0, input.width, input.height);
@@ -2079,8 +2079,4 @@ class Init {
 
         Common.ScaledImage = this.New(Common.SizeX, Common.SizeY);
     }
-}
-
-module.exports = {
-	applyFilter,
 }
