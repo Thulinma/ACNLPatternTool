@@ -269,21 +269,30 @@ class DrawingTool{
   set color(c){
     this.currentColor = this.findPalRGB(c);
   }
-
+  
+  /** @type {number} */
   get width(){return this.pattern.width;}
+  /** @type {number} */
   get texWidth(){return this.pattern.texWidth;}
+  /** @type {number} */
   get height(){return this.pattern.height;}
+  /** @type {number} */
   get pixelCount(){return this.width*this.height;}
+  /** @type {string} */
   get fullHash(){return this.pattern.fullHash();}
+  /** @type {string} */
   get pixelHash(){return this.pattern.pixelHash();}
-
+  /** @type {number} */
   get title(){return this.pattern.title;}
   set title(n){this.pattern.title = n;}
+  /** @type {string} */
   get creator(){return this.pattern.creator;}
   set creator(n){this.pattern.creator = n;}
+  /** @type {string} */
   get town(){return this.pattern.town;}
   set town(n){this.pattern.town = n;}
   fixIssues(){this.pattern.fixIssues();}
+  /** @type {string} */
   get authorStrict(){
     let copiedCreator = "";
     for (let i = 0; i < 44; ++i){copiedCreator += String.fromCharCode(this.pattern.dataBytes[0x2A + i]);}
