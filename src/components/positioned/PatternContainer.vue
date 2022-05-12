@@ -2,7 +2,9 @@
   <VCard elevation="0" class="card rounded-xl" :color="colors.ecruWhite">
     <VCardTitle class="card-title"><slot name="title"></slot></VCardTitle>
     <VCardText class="card-text">
-      <div class="grid">
+      <div v-if="patternItems.length > 0"
+        class="grid"
+      >
         <VBadge
           v-for="(patternItem) in patternItems"
           :key="patternItem.mosaicId"
@@ -32,6 +34,14 @@
           </VCard>
         </VBadge>
       </div>
+      <div v-else
+        class="empty-ctn"
+      >
+        <BrushIcon class="brush-icon" />
+        <div class="empty-message">
+          <slot name="empty-message">No patterns available</slot>
+        </div>
+      </div>
     </VCardText>
     <!-- <CancelButton class="cancel-button-adjust" @click="$emit('close')" /> -->
     <UtilityBar v-if="options.length > 0" :options="options" />
@@ -53,6 +63,7 @@ import {
   VAutocomplete,
   VScaleTransition,
 } from "vuetify/lib";
+import BrushIcon from "@/assets/icons/brush.svg?inline";
 import PreviewGenerator from "@/components/PreviewGenerator.vue";
 import CancelButton from "@/components/modals/CancelButton.vue";
 import UtilityBar from "@/components/positioned/UtilityBar.vue";
@@ -76,6 +87,7 @@ export default {
     PreviewGenerator,
     CancelButton,
     UtilityBar,
+    BrushIcon,
   },
   props: {
     patternItems: {
@@ -121,6 +133,27 @@ export default {
 }
 .card-text {
   padding: 24px !important;
+}
+
+.empty-ctn {
+  display: grid;
+  justify-items: center;
+}
+
+.brush-icon {
+  padding: 20px 30px;
+  height: 150px;
+  width: 150px;
+}
+.brush-icon path {
+  fill: colors.$donkey-brown !important;
+}
+
+.empty-message {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: colors.$donkey-brown;
 }
 
 .grid {

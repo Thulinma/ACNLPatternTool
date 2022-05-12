@@ -7,6 +7,7 @@
     @select="toggleSelection"
   >
     <template #title>Storage</template>
+    <template #empty-message>Storage Empty</template>
   </PatternContainer>
 </template>
 
