@@ -258,7 +258,7 @@ export default {
 }
 
 .stepper-content {
-  overflow: scroll;
+  // overflow-y: scroll;
   &.internal-padding {
     padding: 0;
   }
