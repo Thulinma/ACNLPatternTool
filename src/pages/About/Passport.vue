@@ -1,92 +1,138 @@
 <template>
-  <div class="passport">
-    <section class="passport-photo">
-      <div class="photo-frame">
-        <div class="photo-container">
-          <img class="photo" src="" alt="" />
+  <div class="passport-wrapper">
+    <h1 class="passport-header">
+      <hr
+        class="passport-header-decor"
+        :style="{ 'background-color': headerTextColor }"
+      />
+      <span
+        class="passport-header-text"
+        :style="{ 'color': headerTextColor }"
+      >
+        PASSPORT
+      </span>
+      <hr
+        class="passport-header-decor"
+        :style="{ 'background-color': headerTextColor }"
+      />
+    </h1>
+    <div class="passport"
+      :style="{ 'background-color': accentColor }"
+    >
+      <section class="passport-photo">
+        <div class="photo-frame">
+          <div class="photo-container"
+            :style="{ 'background-color': accentColor }"
+          >
+            <img class="photo" src="" alt="" />
+          </div>
         </div>
-      </div>
-    </section>
-    <!-- photo and roles -->
-
-    <section class="passport-info">
-      <div class="greeting">{{ normalizedMember.greeting }}</div>
-      <!-- greeting -->
-      <ul>
-        <li class="island">
-          <IconBase
-            class="icon-island"
-            icon-name="island"
-            icon-color="#4D993E"
-            width="20"
-            height="20"
-          >
-            <IconHouse />
-          </IconBase>
-          <span>{{ normalizedMember.island }}</span>
-        </li>
-        <li class="title">
-          <span>{{ normalizedMember.title }}</span>
-        </li>
-        <li class="name">
-          <span>{{ normalizedMember.name }}</span>
-        </li>
-        <li class="urls">
-          <IconBase
-            class="icon-contact-card"
-            icon-name="contact card"
-            icon-color="#E976DD"
-            width="25"
-            height="25"
-          >
-            <IconContactCard />
-          </IconBase>
-          <a
-            v-for="link in normalizedMember.urls"
-            :key="normalizedMember.urls.indexOf(link)"
-            :href="link.url"
-            >{{ link.name }}</a
-          >
-        </li>
-      </ul>
-      <!-- details -->
-    </section>
-    <!-- info -->
+        <div class="character-role-outer-line">
+          <div class="character-role-inner-line">
+            <span class="character-role-icon-container">
+              <VIcon v-if="roleIcon"
+                small
+                :color="colors.ecruWhite"
+              >
+                {{ roleIcon }}
+              </VIcon>
+            </span>
+            <span class="character-role"> {{ role }}</span>
+          </div>
+        </div>
+      </section>
+      <section class="passport-info">
+        <div class="greeting">{{ greeting }}</div>
+        <div>
+          <div class="top-info-items">
+            <ul class="top-info-items-list">
+              <InfoItem
+                v-for="infoItem in topInfoItems"
+                :key="infoItem.label"
+                :infoItem="infoItem"
+              />
+            </ul>
+          </div>
+          <hr class="passport-info-divider"/>
+          <div class="character-title">
+            <span>{{ title }}</span>
+          </div>
+          <hr class="passport-info-divider"/>
+          <div class="character-name">
+            <span>{{ name }}</span>
+          </div>
+          <hr class="passport-info-divider"/>
+          <div class="bottom-info-items">
+            <ul class="bottom-info-items-list">
+              <InfoItem
+                v-for="infoItem in bottomInfoItems"
+                :key="infoItem.label"
+                :infoItem="infoItem"
+              />
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
-  <!-- passport card container -->
 </template>
 
 <script>
-import IconBase from "@/components/icons/IconBase.vue";
-import IconHouse from "@/components/icons/IconHouse.vue";
-import IconContactCard from "@/components/icons/IconContactCard.vue";
+import { VIcon } from "vuetify/lib";
+import InfoItem from "./InfoItem.vue";
+import colors from "@/styles/colors.scss";
 
 export default {
-  props: {
-    member: {
-      type: Object,
-    },
-  },
-  // set defaults if attributes aren't set
-  computed: {
-    normalizedMember() {
-      return Object.assign(
-        {
-          name: "Tom Nook",
-          greeting: "Yes, yes!",
-          title: "Aspiring Millionarie",
-          island: "Nintentown",
-          urls: [],
-          roles: [],
-        },
-        this.member
-      );
-    },
-  },
   components: {
-    IconBase,
-    IconHouse,
-    IconContactCard,
+    VIcon,
+    InfoItem,
+  },
+  props: {
+    headerTextColor: {
+      type: String,
+      default: () => "#91a28a",
+    },
+    accentColor: {
+      type: String,
+      default: () => "#e6eccf",
+    },
+    name: {
+      type: String,
+      default: () => "Tom Nook",
+    },
+    greeting: {
+      type: String,
+      default: () => "...",
+    },
+    title: {
+      type: String,
+      default: () => "Aspiring Millionaire",
+    },
+    role: {
+      type: String,
+      default: () => "Snake oil salesman",
+    },
+    roleIcon: {
+      type: String,
+      default: () => "mdi-wrench",
+    },
+    topInfoItems: {
+      type: Array,
+      default: () => [],
+    },
+    bottomInfoItems: {
+      type: Array,
+      default: () => [],
+    },
+    bottomLeftText: {
+      type: String,
+      default: () => "",
+    },
+  },
+  data() {
+    return {
+      colors,
+    };
   },
 };
 </script>
@@ -95,6 +141,62 @@ export default {
 @use "styles/colors" as colors;
 @use "styles/positioning" as positioning;
 @use "styles/screens" as screens;
+
+.passport-wrapper {
+  min-width: 300px;
+  padding: 8px 10px 100px 10px;
+  border-bottom: #e5dac7 inset 10px;
+  background-color: colors.$ecru-white;
+  border-radius: 50px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  justify-content: center;
+  align-content: flex-start;
+}
+
+.passport-header {
+  justify-self: stretch;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 10px 0 10px 0px;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-auto-columns: 1fr auto 1fr;
+  grid-auto-rows: auto;
+  grid-template-rows: auto;
+  justify-content: center;
+  justify-items: center;
+  align-content: flex-start;
+  align-items: center;
+  column-gap: 10px;
+
+  @include screens.tablet-portrait {
+    font-size: 1.2rem;
+    column-gap: 30px;
+    grid-template-columns: auto auto auto;
+    grid-auto-columns: auto auto auto;
+  }
+}
+
+.passport-header-decor {
+  border: 0px transparent none;
+  display: inline-block;
+  border-radius: 2px;
+
+  box-sizing: border-box;
+  width: 30%;
+  height: 3px;
+
+  @include screens.tablet-portrait {
+    width: 150px;
+    height: 3px;
+  }
+}
+
 
 .passport {
   @include positioning.relative-in-place;
@@ -106,13 +208,12 @@ export default {
   grid-auto-rows: auto;
   grid-template-rows: auto;
   row-gap: 30px;
-  padding: 30px 25px 50px 25px;
+  padding: 20px 25px 20px 25px;
 
   justify-content: center;
   justify-items: flex-start;
 
-  border-radius: 8px;
-  background-color: colors.$soapstone;
+  border-radius: 3px;
 
   & ~ & {
     margin-top: 40px;
@@ -128,7 +229,7 @@ export default {
     height: 100%;
     opacity: 0.15;
     background-image: url("../../assets/images/Four_Leaves_Pattern_BW.svg");
-    background-size: 120px;
+    background-size: 80px;
     background-repeat: repeat;
   }
 
@@ -141,21 +242,20 @@ export default {
     align-content: center;
     align-items: center;
     row-gap: 0px;
-    column-gap: 50px;
-    padding: 30px 50px 50px 50px;
+    column-gap: 40px;
+    padding: 30px 50px 30px 50px;
   }
 
   @include screens.tablet-landscape {
-    column-gap: 80px;
-    padding: 30px 80px 50px 80px;
-    max-width: 950px;
+    column-gap: 50px;
+    padding: 30px 80px 30px 80px;
     justify-self: center;
   }
 
   @include screens.desktop {
-    max-width: 1150px;
-    column-gap: 100px;
-    padding: 50px 100px 80px 100px;
+    width: 100%;
+    column-gap: 70px;
+    padding: 30px 50px 30px 50px;
   }
 }
 
@@ -164,22 +264,17 @@ export default {
   justify-self: center;
 
   .photo-frame {
-    border-radius: 14px;
-    padding: 10px;
+    border-radius: 25% 25% 25% 25% / 22.5% 22.5% 22.5% 22.5%;
+    padding: 12px;
     background-color: colors.$ecru-white;
 
     @include screens.desktop {
-      border-radius: 18px;
-      padding: 13px;
+      padding: 15px;
     }
 
     .photo-container {
       background-color: colors.$chrome-white;
-      border-radius: 8px;
-      @include screens.desktop {
-        border-radius: 12px;
-      }
-
+      border-radius: 25% 25% 25% 25% / 22.5% 22.5% 22.5% 22.5%;
       .photo {
         height: 150px;
         width: 150px;
@@ -194,16 +289,68 @@ export default {
         }
 
         @include screens.desktop {
-          height: 250px;
-          width: 250px;
+          height: 200px;
+          width: 200px;
         }
       }
+    }
+  }
+  
+  .character-role-outer-line,
+  .character-role-inner-line {
+    border-style: solid;
+    border-color: colors.$olive-haze;
+    border-radius: 10px;
+  }
+  
+  .character-role-outer-line {
+    position: absolute;
+    bottom: 0px;
+    transform: translate(0px, 20px) rotate(5deg);
+    border-width: 2px;
+    border-radius: 12px;
+    padding: 2px;
+    @include screens.tablet-portrait {
+     transform: translate(0px, 30px) rotate(5deg);
+    }
+  }
+  .character-role-inner-line {
+    border-width: 0.7px;
+    border-radius: 10px;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 5px;
+    justify-content: center;
+    align-items: center;
+    
+    @include screens.tablet-portrait {
+      padding: 10px;
+    }
+  }
+  
+  .character-role-icon-container {
+    background-color: colors.$olive-haze;
+    border-radius: 3px;
+    width: 25px;
+    height: 25px;
+    display: grid;
+    justify-content: center;
+    align-items: center;;
+  }
+  
+  .character-role {
+    color: colors.$olive-haze;
+    font-size: 0.8rem;
+    @include screens.tablet-portrait {
+      font-size: 1.1rem;
     }
   }
 }
 
 .passport-info {
   @include positioning.relative-in-place;
+  align-self: flex-start;
   justify-self: stretch;
 
   display: grid;
@@ -211,59 +358,104 @@ export default {
   grid-auto-columns: 1fr;
   grid-template-rows: auto;
   grid-auto-rows: auto;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
 
+  color: colors.$jambalaya;
+  @include screens.tablet-portrait {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
   @include screens.tablet-landscape {
     width: 500px;
-  }
-
-  .greeting {
-    color: colors.$olive-haze;
-    justify-self: flex-start;
-    background-color: colors.$ecru-white;
-    border-radius: 14px;
-    margin: 0 0 10px;
-    padding: 12px 20px;
-
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-
-  ul {
-    list-style: none;
-    font-weight: 600;
-
-    li {
-      padding: 15px 0 15px 5px;
-      border-bottom: 3px solid colors.$ecru-white;
-
-      a,
-      span,
-      .icon-contact-card {
-        vertical-align: middle;
-      }
-
-      &:nth-last-child(1) {
-        border-bottom: 0px solid colors.$white;
-      }
-
-      &.island {
-        font-size: 0.9em;
-        color: colors.$olive-haze;
-      }
-      &.title {
-        font-size: 0.9em;
-        color: colors.$jambalaya;
-      }
-      &.name {
-        font-size: 0.9em;
-        color: colors.$jambalaya;
-      }
-      &.urls {
-        font-size: 0.85em;
-        color: colors.$olive-haze;
-      }
-    }
+    font-size: 1.3rem;
+    letter-spacing: 0.2px;
   }
 }
+
+.passport-info-divider {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 2px;
+  border: none;
+  background-color: colors.$ecru-white;
+}
+
+.character-name {
+  @include screens.tablet-portrait {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  @include screens.tablet-landscape {
+    font-size: 1.5rem;
+  }
+}
+
+.greeting {
+  position: relative;
+  color: colors.$olive-haze;
+  justify-self: flex-start;
+  background-color: colors.$ecru-white;
+  border-radius: 14px;
+  margin: 0px 0px 20px -5px;
+  padding: 12px 20px;
+  z-index: 1;
+
+  font-size: 1.1rem;
+  font-weight: 600;
+
+  &:before {
+    display: none;
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    border-left: 20px solid colors.$ecru-white;
+    border-right: 20px solid transparent;
+    border-top: 20px solid colors.$ecru-white;
+    border-bottom: 20px solid transparent;
+    z-index: -1;
+    border-radius: 5px;
+    left: 5px;
+    bottom: -20px;
+    transform: rotate(20deg);
+
+    @include screens.tablet-portrait {
+      display: block;
+    }
+  }
+  
+  @include screens.tablet-portrait {
+    margin: -20px 0px 20px -30px;
+    font-size: 1.3rem;
+  }
+}
+
+.top-info-items ul,
+.bottom-info-items ul {
+  display: flex;
+  list-style: none;
+  padding: 0px;
+}
+
+.top-info-items {
+  margin-bottom: 12px;
+}
+.bottom-info-items {
+  margin-top: 18px;
+}
+
+.character-title {
+  margin-top: 18px;
+  margin-bottom: 14px;
+}
+
+
+
+.top-info-items ul li:nth-child(2) ~ li,
+.bottom-info-items ul {
+  color: colors.$donkey-brown;
+}
+
 </style>

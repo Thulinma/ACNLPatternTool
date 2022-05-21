@@ -1,18 +1,23 @@
 <template>
-  <div class="passports">
-    <!-- todo add banner -->
-    <!-- todo add navigation -->
-    <div
-      class="passport-wrapper"
-      v-for="member in members"
-      :key="members.indexOf(member)"
-    >
-      <h1>
-        <hr />
-        <span>PASSPORT</span>
-        <hr />
-      </h1>
-      <Passport :member="member" />
+  <div class="page">
+    <div class="background"></div>
+    <div class="passports">
+      <!-- todo add banner -->
+      <!-- todo add navigation -->
+      <Passport
+        v-for="member in members"
+        :key="member.name"
+        :headerTextColor="member.headerTextColor"
+        :accentColor="member.accentColor"
+        :name="member.name"
+        :greeting="member.greeting"
+        :title="member.title"
+        :role="member.role"
+        :roleIcon="member.roleIcon"
+        :topInfoItems="member.topInfoItems"
+        :bottomInfoItems="member.bottomInfoItems"
+        :bottomLeftText="member.bottomLeftText"
+      />
     </div>
   </div>
 </template>
@@ -28,68 +33,121 @@ export default {
     return {
       members: [
         {
+          headerTextColor: "#91a28a",
+          accentColor: "#e6eccf",
           name: "Thulinma",
           greeting: "acpatterns.com!",
           title: "Computer Magician",
-          island: "Thulopia",
-          role: "",
-          urls: [
+          role: "Tool Developer",
+          roleIcon: "mdi-wrench",
+          topInfoItems: [
             {
-              name: "Personal Site",
+              icon: "mdi-island",
+              iconFill: "#318746",
+              label: "Thulopia",
+            }
+          ],
+          bottomInfoItems: [
+            {
+              icon: "mdi-account",
+              iconFill: "#66afb8",
+              label: "Portfolio",
               url: "https://thulinma.com",
             },
           ],
         },
         {
+          headerTextColor: "#838486",
+          accentColor: "#d7d7d7",
           name: "DamSenViet",
-          role: "",
+          role: "Tool Developer",
+          roleIcon: "mdi-wrench",
           greeting: "Sleeping atm.",
           title: "Sleeping Human",
-          island: "Norende",
-          urls: [
+          topInfoItems: [
             {
-              name: "Personal Site",
+              icon: "mdi-island",
+              iconFill: "#318746",
+              label: "Norende",
+            }
+          ],
+          bottomInfoItems: [
+            {
+              icon: "mdi-account",
+              iconFill: "#66afb8",
+              label: "Portfolio",
               url: "https://vietdaitran.com",
             },
           ],
-          roles: ["Tool Developer"],
         },
         {
+          headerTextColor: "#9fa8a7",
+          accentColor: "#dfebd5",
           name: "Myumi K.",
-          role: "",
+          role: "Tool Developer",
+          roleIcon: "mdi-wrench",
           greeting: "(๑•̀ㅂ•́)و",
           title: "Aggressive Birthday Girl",
-          island: "Willowtale",
-          urls: [
+          topInfoItems: [
             {
-              name: "GitHub",
+              icon: "mdi-island",
+              iconFill: "#318746",
+              label: "Willowtale",
+            }
+          ],
+          bottomInfoItems: [
+            {
+              icon: "mdi-github",
+              iconFill: "#000000",
+              label: "GitHub",
               url: "https://github.com/myumi",
             },
           ],
-          roles: ["Tool Developer"],
         },
         {
+          headerTextColor: "#a09d7e",
+          accentColor: "#fbeec1",
           name: "Tero",
-          role: "",
+          role: "Icon Designer",
+          roleIcon: "mdi-brush",
           greeting: "Graphic design is my passion",
           title: "Easy-Breezy Designer",
-          island: "Koron",
-          urls: [
+          topInfoItems: [
             {
-              name: "Personal Site",
+              icon: "mdi-island",
+              iconFill: "#318746",
+              label: "Koron",
+            },
+          ],
+          bottomInfoItems: [
+            {
+              icon: "mdi-account",
+              iconFill: "#66afb8",
+              label: "Portfolio",
               url: "https://tero.space",
             },
           ],
         },
         {
+          headerTextColor: "#b59e8e",
+          accentColor: "#f7e7d6",
           name: "MelonSpeedRuns",
-          role: "",
           greeting: "Yahoo!!",
+          role: "Data Miner",
+          roleIcon: "mdi-pickaxe",
           title: "Fruit Person",
-          island: "Fruita",
-          urls: [
+          topInfoItems: [
             {
-              name: "Twitter",
+              icon: "mdi-island",
+              iconFill: "#318746",
+              label: "Fruita",
+            },
+          ],
+          bottomInfoItems: [
+            {
+              icon: "mdi-twitter",
+              iconFill: "#1da1f2",
+              label: "Twitter",
               url: "https://twitter.com/MelonSpeedruns",
             },
           ],
@@ -104,73 +162,39 @@ export default {
 @use "styles/colors" as colors;
 @use "styles/screens" as screens;
 
-.passports {
+.page {
+  position: relative;
+  background-color: colors.$soapstone;
+  height: 100%;
+  width: 100%;
   padding: 50px 30px;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../../assets/images/Leaf_Brush_Pattern_Tile.svg");
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 0.15;
+}
+
+
+.passports {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-columns: 1fr;
-  grid-auto-rows: auto;
-  grid-template-rows: auto;
-  justify-content: center;
-  justify-items: center;
-  align-content: flex-start;
-  align-items: flex-start;
   row-gap: 50px;
-
-  h1 {
-    justify-self: stretch;
-    color: colors.$donkey-brown;
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    margin: 0 0 20px;
-
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    grid-auto-columns: 1fr auto 1fr;
-    grid-auto-rows: auto;
-    grid-template-rows: auto;
+  
+  @include screens.tablet-landscape {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    justify-items: center;
-    align-content: flex-start;
-    align-items: center;
-    column-gap: 10px;
-
-    @include screens.tablet-portrait {
-      margin: 0 0 40px;
-      column-gap: 30px;
-      grid-template-columns: auto auto auto;
-      grid-auto-columns: auto auto auto;
-    }
-
-    hr {
-      justify-self: stretch;
-      display: inline-block;
-      border-radius: 2px;
-
-      box-sizing: border-box;
-      width: calc(100% - 20px);
-      height: 3px;
-      background-color: colors.$bison-hide;
-
-      @include screens.tablet-portrait {
-        width: 150px;
-        height: 4px;
-      }
-    }
+    align-items: flex-start;
+    column-gap: 50px;
   }
 }
 
-.passport-wrapper {
-  justify-self: stretch;
-
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-columns: 1fr;
-  grid-auto-rows: auto;
-  grid-template-rows: auto;
-  justify-content: center;
-  justify-items: center;
-  align-content: flex-start;
-  align-items: flex-start;
-}
 </style>
