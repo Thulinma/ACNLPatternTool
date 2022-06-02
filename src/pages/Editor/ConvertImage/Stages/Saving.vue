@@ -33,6 +33,7 @@
 
 <script>
 import { VBtn, VRadio, VRadioGroup } from "vuetify/lib";
+import { v4 as uuidv4 } from "uuid";
 import { mapActions } from "vuex";
 import { mockPatternItem } from "@/libs/storage";
 import {
@@ -47,7 +48,11 @@ import colors from "@/styles/colors.scss";
 
 
 const dtToStorage = async function(drawingTools) {
-  const mockedPatternItems = drawingTools.map(dt => mockPatternItem(dt));
+  const mosaicId = uuidv4(); // share id so they can be rendered together
+  const mockedPatternItems = drawingTools.map(dt => mockPatternItem(
+    dt,
+    mosaicId,
+  ));
   await this.add(mockedPatternItems);
 };
 
@@ -103,31 +108,37 @@ export default {
   },
   computed: {
     savingMethodOptions() {
-      return [
-        ...(this.outputs.length === 1
-          ? [{
-            name: "Onto Pattern",
-            value: this.load,
-          }]
-          : []
-          ),
-        {
-          name: "To Storage",
-          value: dtToStorage,
-        },
-        {
-          name: "QRs as .ZIP",
-          value: dtAsImageZip,
-        },
-        {
-          name: "ACNLs/ACNHs as .ZIP",
-          value: dtAsPatternZip,
-        },
-        {
-          name: "Both as .ZIP",
-          value: dtAsBothZip,
-        },
-      ]; 
+      const loadIntoEditor = {
+        name: "Onto Pattern",
+        value: this.load,
+      };
+      const saveToStorage = {
+        name: "To Storage",
+        value: dtToStorage,
+      };
+      const saveAsQrs = {
+        name: "QRs as .ZIP",
+        value: dtAsImageZip,
+      };
+      const saveAsPattern = {
+        name: "ACNLs/ACNHs as .ZIP",
+        value: dtAsPatternZip,
+      };
+      const saveAsBoth = {
+        name: "Both as .ZIP",
+        value: dtAsBothZip,
+      };
+      
+      const options = [
+        saveToStorage,
+        saveAsQrs,
+        saveAsPattern,
+        saveAsBoth,
+      ];
+      
+      if (this.outputs.length === 1)
+        options.unshift(loadIntoEditor);
+      return options;
     },
   },
   methods: {
@@ -168,7 +179,7 @@ export default {
 
   @include screens.tablet-landscape {
     grid-template-columns: auto auto;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 425px;
   }
 }

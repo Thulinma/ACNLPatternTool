@@ -209,6 +209,7 @@ export const saveToLocalStorage = (
  */
 export const mockPatternItem = (
   drawingTool: DrawingTool,
+  mosaicId = uuidv4(),
   mockedDate = (() => {
     const mockedDate = new Date();
     mockedDate.setFullYear(2020, 0, 1);
@@ -222,7 +223,7 @@ export const mockPatternItem = (
   return {
     drawingTool,
     createdDate: mockedDate,
-    mosaicId: uuidv4(),
+    mosaicId,
     row: 0,
     col: 0,
     maxRow: 0,
