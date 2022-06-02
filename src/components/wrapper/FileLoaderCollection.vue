@@ -43,7 +43,7 @@ import {
   namedBlobsToNamedZipBlob,
   downloadNamedBlob,
 } from "@/libs/downloader";
-import { mockPatternItem } from "@/libs/storage";
+import { createPatternItem } from "@/libs/storage";
 import { zipExts } from "@/libs/reader";
 
 export default {
@@ -237,7 +237,12 @@ export default {
       // clear
       Object.assign(this, {
         showDialog: true,
-        patternItems: drawingTools.map(dt => mockPatternItem(dt)),
+        patternItems: drawingTools.map(
+          drawingTool => createPatternItem({
+            drawingTool,
+            createdDate: new Date(),
+          })
+        ),
         selected: [],
       });
     },

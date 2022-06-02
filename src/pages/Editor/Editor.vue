@@ -182,7 +182,7 @@ import {
   patternExts,
   qrImageExts,
 } from "@/libs/reader";
-import { mockPatternItem } from "@/libs/storage";
+import { createPatternItem } from "@/libs/storage";
 // components
 import { mapActions } from "vuex";
 import {
@@ -390,7 +390,10 @@ export default {
     },
     async saveToStorage() {
       const copy = new DrawingTool(this.drawingTool.toString());
-      await this.add([mockPatternItem(copy)]);
+      await this.add([createPatternItem({
+        drawingTool: copy,
+        createdDate: new Date(),
+      })]);
       window.alert("Successfully saved to Storage!");
     },
 

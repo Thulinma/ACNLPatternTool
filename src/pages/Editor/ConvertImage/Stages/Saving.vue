@@ -35,7 +35,7 @@
 import { VBtn, VRadio, VRadioGroup } from "vuetify/lib";
 import { v4 as uuidv4 } from "uuid";
 import { mapActions } from "vuex";
-import { mockPatternItem } from "@/libs/storage";
+import { createPatternItem } from "@/libs/storage";
 import {
   drawingToolToNamedPatternBlob,
   drawingToolToNamedImageBlob,
@@ -49,10 +49,11 @@ import colors from "@/styles/colors.scss";
 
 const dtToStorage = async function(drawingTools) {
   const mosaicId = uuidv4(); // share id so they can be rendered together
-  const mockedPatternItems = drawingTools.map(dt => mockPatternItem(
-    dt,
+  const mockedPatternItems = drawingTools.map(drawingTool => createPatternItem({
+    drawingTool,
+    createdDate: new Date(),
     mosaicId,
-  ));
+  }));
   await this.add(mockedPatternItems);
 };
 

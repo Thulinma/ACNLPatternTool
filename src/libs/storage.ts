@@ -32,10 +32,6 @@ export interface CompressedPatternItem {
   row: number,
   /** The column index of the mosaic it belongs to. */
   col: number,
-  /** The DrawingTool row index of the mosaic it belongs to. */
-  maxRow: number,
-  /** The DrawingTool column index of the mosaic it belongs to. */
-  maxCol: number,
 };
 
 
@@ -59,10 +55,6 @@ export interface PatternItem {
   row: number,
   /** The column index of the mosaic it belongs to. */
   col: number,
-  /** The DrawingTool row index of the mosaic it belongs to. */
-  maxRow: number,
-  /** The DrawingTool column index of the mosaic it belongs to. */
-  maxCol: number,
 };
 
 
@@ -78,8 +70,6 @@ export const compressPatternItem = (
     mosaicId,
     row,
     col,
-    maxRow,
-    maxCol,
   }: PatternItem,
 ): CompressedPatternItem => ({
   compressedDrawingTool: lzString
@@ -88,8 +78,6 @@ export const compressPatternItem = (
   mosaicId,
   row,
   col,
-  maxRow,
-  maxCol,
 });
 
 
@@ -105,8 +93,6 @@ export const decompressPatternItem = (
     mosaicId,
     row,
     col,
-    maxRow,
-    maxCol,
   }: CompressedPatternItem,
 ): PatternItem => ({
   drawingTool: new DrawingTool(lzString.decompressFromUTF16(
@@ -116,8 +102,6 @@ export const decompressPatternItem = (
   mosaicId,
   row,
   col,
-  maxRow,
-  maxCol,
 });
 
 
@@ -156,7 +140,7 @@ export const loadFromLocalStorage = (): PatternStorage => {
   // read from old storage
   const drawingTools = loadFromOldStorage();
   const reformattedOldStorage = drawingTools
-    .map((drawingTool) => mockPatternItem(drawingTool))
+    .map((drawingTool) => createPatternItem({ drawingTool }))
     .reduce((patternStorage, patternItem) => {
       patternStorage[patternItem.drawingTool.fullHash] = patternItem;
       return patternStorage;
@@ -200,17 +184,14 @@ export const saveToLocalStorage = (
 };
 
 
-// OPERATIONS FOR OLD STORAGE (DIRECTLY ON LOCALSTORAGE)
-
 /**
- * Given a single drawing tool, mocks a non-generated PatternItem.
- * @param drawingTool The drawingTool to convert to a PatternItem. 
- * @returns A mocked PatternItem.
+ * Given a single drawing tool, generates a PatternItem.
+ * Can be used to mock non-generated pattern items.
+ * @returns A PatternItem.
  */
-export const mockPatternItem = (
-  drawingTool: DrawingTool,
-  mosaicId = uuidv4(),
-  mockedDate = (() => {
+export const createPatternItem = ({
+  drawingTool,
+  createdDate = (() => {
     const mockedDate = new Date();
     mockedDate.setFullYear(2020, 0, 1);
     mockedDate.setMilliseconds(0);
@@ -219,19 +200,18 @@ export const mockPatternItem = (
     mockedDate.setHours(0);
     return mockedDate;
   })(),
-): PatternItem => {
-  return {
-    drawingTool,
-    createdDate: mockedDate,
-    mosaicId,
-    row: 0,
-    col: 0,
-    maxRow: 0,
-    maxCol: 0,
-  };
-};
+  mosaicId = uuidv4(),
+  row = 0,
+  col = 0,
+}: { drawingTool: DrawingTool } & Partial<PatternItem>): PatternItem => ({
+  drawingTool,
+  createdDate,
+  mosaicId,
+  row,
+  col,
+});
 
-
+// OPERATIONS FOR OLD STORAGE (DIRECTLY ON LOCALSTORAGE)
 // Old storage directly stores drawing tool data keyed to a format-based prefix + hash.
 
 interface Class<T> { new(...args: any[]): T; }
