@@ -57,9 +57,10 @@ export const namedBlobsToNamedZipBlob = async (
   const nameUsage = new Map<string, number>();
   const zip = new JSZip();
   for (const { name, blob } of namedBlobs) {
+    const [base, ...exts]  = name.split(".");
     if (nameUsage.has(name)) {
       nameUsage.set(name, nameUsage.get(name) as number + 1);
-      zip.file(`${name} (${nameUsage.get(name)})`, blob);
+      zip.file(`${base} (${nameUsage.get(name)}).${exts.join(".")}`, blob);
     }
     else {
       nameUsage.set(name, 0); // copies start at 1
