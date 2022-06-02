@@ -1,6 +1,6 @@
 <template>
-  <div class="page">
-    <MarkdownStyled class="container">
+  <div class="markdown-page">
+    <MarkdownStyled class="markdown-container">
       <slot></slot>
     </MarkdownStyled>
   </div>
@@ -19,16 +19,22 @@ export default {
 @use "styles/colors" as colors;
 @use "styles/screens" as screens;
 
-.page {
+.markdown-page {
   background-color: colors.$ecru-white;
   color: colors.$jambalaya;
 }
 
-.container::v-deep {
+.markdown-container::v-deep {
   max-width: 800px;
   padding: 2rem;
+  margin: auto;
   @include screens.tablet-portrait {
     h1:first-child { margin-top: 4rem; }
+  }
+  
+  
+  html {
+    overflow-y: auto;
   }
 }
 </style>

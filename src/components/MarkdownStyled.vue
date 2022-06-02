@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="markdown-wrapper">
     <slot></slot>
   </div>
 </template>
@@ -13,7 +13,7 @@ export default {
 <style lang="scss" scoped>
 @use "styles/colors" as colors;
 
-.container::v-deep {
+.markdown-wrapper::v-deep {  
   font-weight: 400;
   
   ul,
