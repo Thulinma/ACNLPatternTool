@@ -6,7 +6,12 @@
       backgroundClass="cropping--cropper-background"
       ref="cropper"
       :src="dataURL"
-      :stencilProps="{ aspectRatio: aspectRatio }"
+      :stencilComponent="GridStencil"
+      :stencilProps="{
+        aspectRatio,
+        rows,
+        columns,
+      }"
     />
     <div class="btns">
       <VBtn
@@ -91,6 +96,7 @@
 <script>
 import { VIcon, VBtn, VSlider, VTextField } from "vuetify/lib";
 import { Cropper } from "vue-advanced-cropper";
+import GridStencil from "./GridStencil.vue";
 import "vue-advanced-cropper/dist/style.css";
 
 import colors from "@/styles/colors.scss";
@@ -122,6 +128,7 @@ export default {
     return {
       colors,
       showAdvanced: false,
+      GridStencil,
     };
   },
   computed: {
