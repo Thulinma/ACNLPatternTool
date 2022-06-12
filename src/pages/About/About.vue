@@ -25,6 +25,7 @@
 
 <script>
 import Passport from "./Passport.vue";
+import photoViet from "@/assets/images/char/photo_viet.jpg";
 
 export default {
   components: {
@@ -60,6 +61,7 @@ export default {
         {
           headerTextColor: "#838486",
           accentColor: "#d7d7d7",
+          photo: photoViet,
           name: "DamSenViet",
           role: "Tool Developer",
           roleIcon: "mdi-wrench",
