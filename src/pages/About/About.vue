@@ -9,6 +9,7 @@
         :key="member.name"
         :headerTextColor="member.headerTextColor"
         :accentColor="member.accentColor"
+        :photo="member.photo"
         :name="member.name"
         :greeting="member.greeting"
         :title="member.title"

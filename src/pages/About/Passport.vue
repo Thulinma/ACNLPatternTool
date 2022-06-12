@@ -1,14 +1,12 @@
 <template>
   <div class="passport-wrapper">
+    <div class="passport-bg"></div>
     <h1 class="passport-header">
       <hr
         class="passport-header-decor"
         :style="{ 'background-color': headerTextColor }"
       />
-      <span
-        class="passport-header-text"
-        :style="{ 'color': headerTextColor }"
-      >
+      <span class="passport-header-text" :style="{ color: headerTextColor }">
         PASSPORT
       </span>
       <hr
@@ -16,24 +14,20 @@
         :style="{ 'background-color': headerTextColor }"
       />
     </h1>
-    <div class="passport"
-      :style="{ 'background-color': accentColor }"
-    >
+    <div class="passport" :style="{ 'background-color': accentColor }">
       <section class="passport-photo">
         <div class="photo-frame">
-          <div class="photo-container"
+          <div
+            class="photo-container"
             :style="{ 'background-color': accentColor }"
           >
-            <img class="photo" src="" alt="" />
+            <img class="photo" :src="photo" />
           </div>
         </div>
         <div class="character-role-outer-line">
           <div class="character-role-inner-line">
             <span class="character-role-icon-container">
-              <VIcon v-if="roleIcon"
-                small
-                :color="colors.ecruWhite"
-              >
+              <VIcon v-if="roleIcon" small :color="colors.ecruWhite">
                 {{ roleIcon }}
               </VIcon>
             </span>
@@ -53,15 +47,15 @@
               />
             </ul>
           </div>
-          <hr class="passport-info-divider"/>
+          <hr class="passport-info-divider" />
           <div class="character-title">
             <span>{{ title }}</span>
           </div>
-          <hr class="passport-info-divider"/>
+          <hr class="passport-info-divider" />
           <div class="character-name">
             <span>{{ name }}</span>
           </div>
-          <hr class="passport-info-divider"/>
+          <hr class="passport-info-divider" />
           <div class="bottom-info-items">
             <ul class="bottom-info-items-list">
               <InfoItem
@@ -73,6 +67,8 @@
           </div>
         </div>
       </section>
+    </div>
+    <div class="passport-footer">
     </div>
   </div>
 </template>
@@ -95,6 +91,10 @@ export default {
     accentColor: {
       type: String,
       default: () => "#e6eccf",
+    },
+    photo: {
+      type: String,
+      default: () => "",
     },
     name: {
       type: String,
@@ -142,13 +142,18 @@ export default {
 @use "styles/positioning" as positioning;
 @use "styles/screens" as screens;
 
+$border-color: #e5dac7;
+
 .passport-wrapper {
+  display: grid;
+  overflow: hidden;
   min-width: 300px;
-  padding: 8px 10px 100px 10px;
+  padding: 8px 10px 0px 10px;
   border-bottom: #e5dac7 inset 10px;
   background-color: colors.$ecru-white;
   border-radius: 50px;
 
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
@@ -157,6 +162,7 @@ export default {
 }
 
 .passport-header {
+  position: relative;
   justify-self: stretch;
   font-size: 1rem;
   font-weight: 700;
@@ -196,7 +202,6 @@ export default {
     height: 3px;
   }
 }
-
 
 .passport {
   @include positioning.relative-in-place;
@@ -267,51 +272,67 @@ export default {
     border-radius: 25% 25% 25% 25% / 22.5% 22.5% 22.5% 22.5%;
     padding: 12px;
     background-color: colors.$ecru-white;
+    width: 150px;
+    height: 150px;
+    box-sizing: content-box;
+
+    @include screens.phone-landscape {
+      height: 200px;
+      width: 200px;
+    }
 
     @include screens.desktop {
-      padding: 15px;
+      height: 200px;
+      width: 200px;
+    }
+    
+    &:before {
+      display: block;
+      content: "";
+      padding-bottom: 100%;
     }
 
     .photo-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      display: block;
+      height: calc(100% - 24px);
+      width: calc(100% - 24px);
+      
+      overflow: hidden;
       background-color: colors.$chrome-white;
-      border-radius: 25% 25% 25% 25% / 22.5% 22.5% 22.5% 22.5%;
+      border-radius: 22.5% 22.5% 22.5% 22.5% / 22.5% 22.5% 22.5% 22.5%;
+      
       .photo {
-        height: 150px;
-        width: 150px;
+        width: 100%;
+        height: 100%;
 
         &[src=""] {
           visibility: hidden;
         }
-
-        @include screens.phone-landscape {
-          height: 200px;
-          width: 200px;
-        }
-
-        @include screens.desktop {
-          height: 200px;
-          width: 200px;
-        }
       }
     }
   }
-  
+
   .character-role-outer-line,
   .character-role-inner-line {
     border-style: solid;
     border-color: colors.$olive-haze;
     border-radius: 10px;
   }
-  
+
   .character-role-outer-line {
     position: absolute;
-    bottom: 0px;
+    bottom: -20px;
     transform: translate(0px, 20px) rotate(5deg);
     border-width: 2px;
     border-radius: 12px;
     padding: 2px;
     @include screens.tablet-portrait {
-     transform: translate(0px, 30px) rotate(5deg);
+      transform: translate(0px, 30px) rotate(5deg);
     }
   }
   .character-role-inner-line {
@@ -323,12 +344,12 @@ export default {
     column-gap: 5px;
     justify-content: center;
     align-items: center;
-    
+
     @include screens.tablet-portrait {
       padding: 10px;
     }
   }
-  
+
   .character-role-icon-container {
     background-color: colors.$olive-haze;
     border-radius: 3px;
@@ -336,9 +357,9 @@ export default {
     height: 25px;
     display: grid;
     justify-content: center;
-    align-items: center;;
+    align-items: center;
   }
-  
+
   .character-role {
     color: colors.$olive-haze;
     font-size: 0.8rem;
@@ -353,6 +374,7 @@ export default {
   align-self: flex-start;
   justify-self: stretch;
 
+  margin-top: 15px;
   display: grid;
   grid-template-columns: 1fr;
   grid-auto-columns: 1fr;
@@ -425,7 +447,7 @@ export default {
       display: block;
     }
   }
-  
+
   @include screens.tablet-portrait {
     margin: -20px 0px 20px -30px;
     font-size: 1.3rem;
@@ -451,11 +473,17 @@ export default {
   margin-bottom: 14px;
 }
 
-
-
 .top-info-items ul li:nth-child(2) ~ li,
 .bottom-info-items ul {
   color: colors.$donkey-brown;
 }
 
+
+.passport-footer {
+  height: 50px;
+  
+  @include screens.tablet-portrait {
+    height: 100px;
+  }
+}
 </style>
