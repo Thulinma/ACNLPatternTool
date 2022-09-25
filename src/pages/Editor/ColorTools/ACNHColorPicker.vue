@@ -164,8 +164,8 @@
 import { VSlider } from "vuetify/lib";
 import ACNHFormat from "@/libs/ACNHFormat";
 
-import IconLeftArrow from "@/components/icons/IconLeftArrow.vue";
-import IconRightArrow from "@/components/icons/IconRightArrow.vue";
+import IconLeftArrow from "@/assets/icons/bxs-left-arrow.svg?inline";
+import IconRightArrow from "@/assets/icons/bxs-right-arrow.svg?inline";
 
 import colors from "@/styles/colors.scss";
 
@@ -349,16 +349,21 @@ export default {
   outline: none;
   padding: 0px;
   border: 0px;
-  border-radius: 20px;
+  border-radius: 5px;
   background: none;
   background-color: colors.$salmon;
   cursor: pointer;
   margin: 0 5px;
-  padding: 2px;
+  padding: 5px;
 }
 
 .slider--label-slot-number {
   width: 20px;
   text-align: center;
+}
+
+.arrow {
+  fill: white;
+  width: 16px;
 }
 </style>

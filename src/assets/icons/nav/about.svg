@@ -1,5 +1,3 @@
-<template>
-  <div class="icon--container">
     <svg
       id="Layer_1"
       data-name="Layer 1"
@@ -19,6 +17,33 @@
             rx="18.97141"
           />
         </clipPath>
+      <style>
+        .cls-1,
+        .cls-7 {
+          fill: none;
+        }
+        .cls-2 {
+          fill: #89c68a;
+        }
+        .cls-3 {
+          fill: #f8cc61;
+        }
+        .cls-4 {
+          fill: #4d3d36;
+        }
+        .cls-5 {
+          fill: #f7f4e5;
+        }
+        .cls-6 {
+          clip-path: url(#clip-path);
+        }
+        .cls-7 {
+          stroke: #4d3d36;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 6.14805px;
+        }
+      </style>
       </defs>
       <path
         class="cls-3"
@@ -85,53 +110,6 @@
       <path
         class="cls-2"
         d="M503.42987,555.90845H503.43l-.00009,112.6737L390.75613,668.582l.0001-112.67358H503.42987m0-28.94159H390.75623a28.9416,28.9416,0,0,0-28.94162,28.94159V668.582a28.94165,28.94165,0,0,0,28.94162,28.94165H503.42987A28.94168,28.94168,0,0,0,532.37152,668.582V555.90845a28.94163,28.94163,0,0,0-28.94165-28.94159Z"
-      />
+      />  
+
     </svg>
-  </div>
-</template>
-
-
-<script>
-export default {
-  name: "IconNavAbout"
-};
-</script>
-
-<style lang="scss" scoped>
-@use "styles/positioning" as positioning;
-.icon--container {
-  @include positioning.relative-in-place;
-  display: inline-block;
-  & svg {
-    height: 100%;
-    width: 100%;
-  }
-}
-
-  .cls-1,
-  .cls-7 {
-    fill: none;
-  }
-  .cls-2 {
-    fill: #89c68a;
-  }
-  .cls-3 {
-    fill: #f8cc61;
-  }
-  .cls-4 {
-    fill: #4d3d36;
-  }
-  .cls-5 {
-    fill: #f7f4e5;
-  }
-  .cls-6 {
-    clip-path: url(#clip-path);
-  }
-  .cls-7 {
-    stroke: #4d3d36;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 6.14805px;
-  }
-
-</style>

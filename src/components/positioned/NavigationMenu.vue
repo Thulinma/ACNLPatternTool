@@ -115,18 +115,18 @@
 import { VCard } from "vuetify/lib";
 
 // header svgs
-import IconNookHead from "@/components/icons/IconNookHead.vue";
-import IconNookGPS from "@/components/icons/IconNookGPS.vue";
-import IconNookService from "@/components/icons/IconNookService.vue";
+import IconNookHead from "@/assets/icons/nookphone/nook-head.svg?inline";
+import IconNookGPS from "@/assets/icons/nookphone/nook-gps.svg?inline";
+import IconNookService from "@/assets/icons/nookphone/nook-service.svg?inline";
 
-import IconNavBrowse from "@/components/icons/IconNavBrowse.vue";
-import IconNavEditor from "@/components/icons/IconNavEditor.vue";
-import IconNavFaq from "@/components/icons/IconNavFaq.vue";
-import IconNavUpdates from "@/components/icons/IconNavUpdates.vue";
-import IconNavDiscord from "@/components/icons/IconNavDiscord.vue";
-import IconNavHome from "@/components/icons/IconNavHome.vue";
-import IconNavAbout from "@/components/icons/IconNavAbout.vue";
-import IconNavTwitter from "@/components/icons/IconNavTwitter.vue";
+import IconNavBrowse from "@/assets/icons/nav/browse.svg?inline";
+import IconNavEditor from "@/assets/icons/nav/editor.svg?inline";
+import IconNavFaq from "@/assets/icons/nav/faq.svg?inline";
+import IconNavUpdates from "@/assets/icons/nav/updates.svg?inline";
+import IconNavDiscord from "@/assets/icons/nav/discord.svg?inline";
+import IconNavHome from "@/assets/icons/nav/home.svg?inline";
+import IconNavAbout from "@/assets/icons/nav/about.svg?inline";
+import IconNavTwitter from "@/assets/icons/nav/twitter.svg?inline";
 
 import CancelButton from "@/components/modals/CancelButton.vue";
 

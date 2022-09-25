@@ -134,6 +134,11 @@ const svgRule = {
           options: {
             svgo: {
               plugins: [
+                {
+                  inlineStyles: {
+                    onlyMatchedOnce: false,
+                  }
+                },
                 { removeDimensions: true },
                 { removeViewBox: false },
               ],

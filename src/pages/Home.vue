@@ -99,11 +99,11 @@
 </template>
 
 <script>
-import IconNavBrowse from "@/components/icons/IconNavBrowse.vue";
-import IconNavEditor from "@/components/icons/IconNavEditor.vue";
-import IconNavFaq from "@/components/icons/IconNavFaq.vue";
-import IconNavUpdates from "@/components/icons/IconNavUpdates.vue";
-import IconNavDiscord from "@/components/icons/IconNavDiscord.vue";
+import IconNavBrowse from "@/assets/icons/nav/browse.svg?inline";
+import IconNavEditor from "@/assets/icons/nav/editor.svg?inline";
+import IconNavFaq from "@/assets/icons/nav/faq.svg?inline";
+import IconNavUpdates from "@/assets/icons/nav/updates.svg?inline";
+import IconNavDiscord from "@/assets/icons/nav/discord.svg?inline";
 import IconRibbonTailLeft from "@/components/icons/IconRibbonTailLeft.vue";
 import IconStamp from "@/components/icons/IconStamp.vue";
 

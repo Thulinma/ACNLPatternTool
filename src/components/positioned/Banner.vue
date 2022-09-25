@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import IconBanner from "@/components/icons/IconBanner.vue";
+import IconBanner from "@/assets/icons/banner.svg?inline";
 
 export default {
   name: "Banner",

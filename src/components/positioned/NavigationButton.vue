@@ -23,7 +23,7 @@
 <script>
 import { VDialog } from "vuetify/lib";
 import NavigationMenu from "@/components/positioned/NavigationMenu.vue";
-import IconCompass from "@/components/icons/IconCompass.vue";
+import IconCompass from "@/assets/icons/nookphone/compass.svg?inline";
 
 export default {
   data: function () {

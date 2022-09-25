@@ -1,5 +1,3 @@
-<template>
-  <div class="icon--container">
     <svg
       id="Search_App_Icon"
       data-name="Search App Icon"
@@ -19,15 +17,35 @@
             d="M790.42,850a59.6,59.6,0,0,1-42.25-17.5L577.87,662.15l84.5-84.5L832.67,748a59.75,59.75,0,0,1-42.25,102Z"
           />
         </clipPath>
+        <style>
+          .cls-1 {
+            fill: #5bbf98;
+          }
+          .cls-2 {
+            fill: #4d3d36;
+          }
+          .cls-3 {
+            fill: #83d8bb;
+          }
+          .cls-4 {
+            clip-path: url(#clip-path);
+          }
+          .cls-5 {
+            fill: #f7f4e5;
+          }
+          .cls-6 {
+            clip-path: url(#clip-path-2);
+          }
+          .cls-7 {
+            fill: #f8cc61;
+          }
+        </style>
       </defs>
       <g id="Inside_Magnifying_Glass" data-name="Inside Magnifying Glass">
         <circle
           id="Background-2"
           data-name="Background"
-          :class="{
-            'cls-1': !flip,
-            'cls-3': flip
-          }"
+          class="cls-3"
           cx="464.16"
           cy="464.16"
           r="180.3"
@@ -37,10 +55,7 @@
             <path
               id="Cat_Head"
               data-name="Cat Head"
-              :class="{
-                'cls-1': flip,
-                'cls-3': !flip
-              }"
+              class="cls-1"
               d="M414.7,381l-18.83,96.54A116.85,116.85,0,0,0,360,482.44l-43.92-88C278,567.58,274.8,566.85,278.25,592.28c6.65,48.84,61.23,71.7,123.57,63.22S510.66,610.43,504,561.58C500.56,536.16,497.72,537.7,414.7,381Z"
               transform="translate(-0.42 -0.21)"
             />
@@ -110,52 +125,3 @@
         />
       </g>
     </svg>
-  </div>
-</template>
-
-
-<script>
-export default {
-  name: "IconNavBrowse",
-  props: {
-    flip: {
-      type: Boolean,
-      default: false
-    }
-  }
-};
-</script>
-
-<style lang="scss" scoped>
-@use "styles/positioning" as positioning;
-.icon--container {
-  @include positioning.relative-in-place;
-  display: inline-block;
-  & svg {
-    height: 100%;
-    width: 100%;
-  }
-}
-
-.cls-1 {
-  fill: #5bbf98;
-}
-.cls-2 {
-  fill: #4d3d36;
-}
-.cls-3 {
-  fill: #83d8bb;
-}
-.cls-4 {
-  clip-path: url(#clip-path);
-}
-.cls-5 {
-  fill: #f7f4e5;
-}
-.cls-6 {
-  clip-path: url(#clip-path-2);
-}
-.cls-7 {
-  fill: #f8cc61;
-}
-</style>
