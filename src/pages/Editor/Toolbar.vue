@@ -315,9 +315,30 @@
         </VTooltip>
       </div>
 
-      <div class="toolbar--grid">
-        <input type="checkbox" name="grid" :checked="mainGrid" @change="$emit('update-main-grid', $event.target.checked)" /> 
-        <label for="grid">Show Grid</label>
+      <div class="toolbar--shortcuts-row grid">
+        <VTooltip
+          content-class="shortcut--tooltip rounded-lg"
+          open-on-hover
+          top
+          :color="colors.robinEggBlue"
+        >
+          <template #activator="{ on, attrs }">
+            <VBtn
+              :class="{
+                'shortcut-btn': true,
+                'shortcut-btn--active': mainGrid,
+              }"
+              v-bind="attrs"
+              v-on="on"
+              @click="$emit('update-main-grid', !mainGrid)"
+              :ripple="false"
+              elevation="0"
+            >
+              <IconGrid class="shortcut-icon" />
+            </VBtn>
+          </template>
+          <div>Turn Grid {{ mainGrid ? 'Off' : 'On' }}</div>
+        </VTooltip>
       </div>
       
       <VSwitch
@@ -399,6 +420,7 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 import {
   VDialog,
   VCard,
@@ -436,6 +458,8 @@ import IconUndo from "@/components/icons/IconUndo.vue";
 import IconRedo from "@/components/icons/IconRedo.vue";
 import IconDetail from "@/components/icons/IconDetail.vue";
 import IconQRCode from "@/components/icons/IconQRCode.vue";
+import IconGrid from "@/components/icons/IconGrid.vue";
+
 
 import colors from "@/styles/colors.scss";
 
@@ -543,6 +567,7 @@ export default {
     IconUndo,
     IconRedo,
     IconDetail,
+    IconGrid,
     IconQRCode,
     ACNLToACNHInfo,
     ACNHToACNLInfo,
@@ -581,6 +606,8 @@ export default {
       gameMode: this.drawingTool.compatMode === "ACNH",
       gameModeWarning: false,
       dismissForever: false,
+      // component metadata
+      gridInputId: uuidv4(),
     };
   },
   methods: {
@@ -931,6 +958,12 @@ $toolbar--options-width: 75px;
     margin-top: 14px;
     margin-bottom: 10px;
   }
+  
+  &.grid {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    direction: rtl;
+  }
 }
 
 .storage-btn {
@@ -1100,11 +1133,5 @@ $toolbar--options-width: 75px;
 .storage--dialog,
 .warning--dialog {
   box-shadow: none;
-}
-
-.toolbar--grid {
-  overflow: hidden;
-  position: relative;
-  margin: 20px auto;
 }
 </style>
