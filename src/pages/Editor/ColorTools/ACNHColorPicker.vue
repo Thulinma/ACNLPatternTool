@@ -9,20 +9,20 @@
             class="slider--label-slot-button"
             @click="
               () => {
-                if (hue > 0) hue--;
+                if (hue - 1 >= 0) hue--;
                 setSliderColors();
               }
             "
           >
             <IconLeftArrow class="arrow" />
           </button>
-          <div class="slider--label-slot-number">{{ parseInt(hue) + 1 }}</div>
+          <div class="slider--label-slot-number">{{ hue + 1 }}</div>
           <button
             v-if="acnh"
             class="slider--label-slot-button"
             @click="
               () => {
-                if (hue < 29) hue++;
+                if (hue + 1 < hues) hue++;
                 setSliderColors();
               }
             "
@@ -36,9 +36,10 @@
       >
         <VSlider
           class="slider"
+          :style="{ 'padding': `0 ${100 / hues / 2}%` }"
           :min="0"
-          :max="29"
-          v-model="hue"
+          :max="hues - 1"
+          v-model.number="hue"
           :color="colors.oliveHaze"
           :track-color="colors.oliveHaze"
           ticks="always"
@@ -46,7 +47,11 @@
           :thumb-color="colors.jambalaya"
           hide-details
           dense
-        />
+        >
+          <template v-slot:thumb-label>
+            {{ hue + 1 }}
+          </template>
+        </VSlider>
       </div>
     </section>
     <!-- hue -->
@@ -60,7 +65,7 @@
             class="slider--label-slot-button"
             @click="
               () => {
-                if (vividness > 0) vividness--;
+                if (vividness - 1 >= 0) vividness--;
                 setSliderColors();
               }
             "
@@ -68,14 +73,14 @@
             <IconLeftArrow class="arrow" />
           </button>
           <div class="slider--label-slot-number">
-            {{ parseInt(vividness) + 1 }}
+            {{ vividness + 1 }}
           </div>
           <button
             v-if="acnh"
             class="slider--label-slot-button"
             @click="
               () => {
-                if (vividness < 14) vividness++;
+                if (vividness + 1 < vividnesses) vividness++;
                 setSliderColors();
               }
             "
@@ -89,9 +94,10 @@
       >
         <VSlider
           class="slider"
+          :style="{ 'padding': `0 ${100 / vividnesses / 2}%` }"
           :min="0"
-          :max="14"
-          v-model="vividness"
+          :max="vividnesses - 1"
+          v-model.number="vividness"
           :color="colors.oliveHaze"
           :track-color="colors.oliveHaze"
           ticks="always"
@@ -99,7 +105,11 @@
           :thumb-color="colors.jambalaya"
           hide-details
           dense
-        />
+        >
+          <template v-slot:thumb-label>
+            {{ vividness + 1 }}
+          </template>
+        </VSlider>
       </div>
     </section>
     <!-- vividness -->
@@ -113,7 +123,7 @@
             class="slider--label-slot-button"
             @click="
               () => {
-                if (brightness > 0) brightness--;
+                if (brightness - 1 >= 0) brightness--;
                 setSliderColors();
               }
             "
@@ -121,14 +131,14 @@
             <IconLeftArrow class="arrow" />
           </button>
           <div class="slider--label-slot-number">
-            {{ parseInt(brightness) + 1 }}
+            {{ brightness + 1 }}
           </div>
           <button
             v-if="acnh"
             class="slider--label-slot-button"
             @click="
               () => {
-                if (brightness < 14) brightness++;
+                if (brightness + 1 < brightnesses) brightness++;
                 setSliderColors();
               }
             "
@@ -142,9 +152,10 @@
       >
         <VSlider
           class="slider"
+          :style="{ 'padding': `0 ${100 / brightnesses / 2}%` }"
           :min="0"
-          :max="14"
-          v-model="brightness"
+          :max="brightnesses - 1"
+          v-model.number="brightness"
           :color="colors.oliveHaze"
           :track-color="colors.oliveHaze"
           ticks="always"
@@ -152,8 +163,11 @@
           :thumb-color="colors.jambalaya"
           hide-details
           dense
-        />
-        
+        >
+          <template v-slot:thumb-label>
+            {{ brightness + 1 }}
+          </template>
+        </VSlider>
       </div>
     </section>
     <!-- brightness -->
@@ -169,6 +183,10 @@ import IconRightArrow from "@/assets/icons/bxs-right-arrow.svg?inline";
 
 import colors from "@/styles/colors.scss";
 
+const hues = 30;
+const vividnesses = 15;
+const brightnesses = 15;
+
 export default {
   name: "ACNHColorPicker",
   components: {
@@ -181,6 +199,10 @@ export default {
   },
   data() {
     return {
+      hues,
+      vividnesses,
+      brightnesses,
+      
       colors,
       hue: 0,
       vividness: 0,
@@ -206,12 +228,12 @@ export default {
       // color of draw tool will be in HSV format
       // increments based on slots in sliders in ACNH
       // H = hue 1 - 30
-      // S = vividness 1 - 16
-      // V = brightness 1 - 16
+      // S = vividness 1 - 15
+      // V = brightness 1 - 15
 
       // hue
       let hueSlider = [];
-      for (let i = 0; i <= 29; i++) {
+      for (let i = 0; i < hues; i++) {
         hueSlider.push(
           ACNHFormat.slidersToColor(i, this.vividness, this.brightness)
         );
@@ -220,15 +242,19 @@ export default {
 
       // vividness & brightness
       let vividnessSlider = [];
-      let brightnessSlider = [];
-      for (let i = 0; i <= 14; i++) {
+      for (let i = 0; i < vividnesses; i++) {
         vividnessSlider.push(
           ACNHFormat.slidersToColor(this.hue, i, this.brightness)
         );
+      }
+      
+      let brightnessSlider = [];
+      for (let i = 0; i < brightnesses; i++) {
         brightnessSlider.push(
           ACNHFormat.slidersToColor(this.hue, this.vividness, i)
         );
       }
+      
       this.vividnessSliderColors = [...vividnessSlider];
       this.brightnessSliderColors = [...brightnessSlider];
       
@@ -290,7 +316,6 @@ export default {
       };
 
       const sliderPositions = ACNHFormat.colorToSliders(rgb.r, rgb.g, rgb.b);
-
       this.hue = sliderPositions[0];
       this.vividness = sliderPositions[1];
       this.brightness = sliderPositions[2];
@@ -317,7 +342,7 @@ export default {
 
 .acnh-sliders {
   padding: 10px 20px 15px;
-  width: 470px;
+  width: 100%;
   user-select: none;
   margin: auto;
 }
@@ -360,6 +385,10 @@ export default {
 .slider--label-slot-number {
   width: 20px;
   text-align: center;
+}
+
+.slider ::v-deep .v-slider{
+  margin: 0;
 }
 
 .arrow {
