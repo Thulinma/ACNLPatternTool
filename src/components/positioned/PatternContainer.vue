@@ -7,7 +7,7 @@
       >
         <VBadge
           v-for="(patternItem) in patternItems"
-          :key="patternItem.drawingTool.fullHash"
+          :key="patternItem.fullHash"
           class="storage-item-ctn"
           :color="colors.robinEggBlue"
           icon="mdi-check"

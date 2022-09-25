@@ -32,6 +32,8 @@ export interface CompressedPatternItem {
   row: number,
   /** The column index of the mosaic it belongs to. */
   col: number,
+  /** The computed fullhash of the drawing tool. */
+  fullHash: string
 };
 
 
@@ -55,6 +57,8 @@ export interface PatternItem {
   row: number,
   /** The column index of the mosaic it belongs to. */
   col: number,
+  /** The computed fullhash of the drawing tool. */
+  fullHash: string,
 };
 
 
@@ -70,6 +74,7 @@ export const compressPatternItem = (
     mosaicId,
     row,
     col,
+    fullHash,
   }: PatternItem,
 ): CompressedPatternItem => ({
   compressedDrawingTool: lzString
@@ -78,6 +83,7 @@ export const compressPatternItem = (
   mosaicId,
   row,
   col,
+  fullHash,
 });
 
 
@@ -94,15 +100,19 @@ export const decompressPatternItem = (
     row,
     col,
   }: CompressedPatternItem,
-): PatternItem => ({
-  drawingTool: new DrawingTool(lzString.decompressFromUTF16(
+): PatternItem => {
+  const drawingTool = new DrawingTool(lzString.decompressFromUTF16(
     compressedDrawingTool,
-  ) as string),
-  createdDate: new Date(created),
-  mosaicId,
-  row,
-  col,
-});
+  ) as string);
+  return {
+    drawingTool,
+    createdDate: new Date(created),
+    mosaicId,
+    row,
+    col,
+    fullHash: drawingTool.fullHash,
+  }
+};
 
 
 /**
@@ -209,6 +219,7 @@ export const createPatternItem = ({
   mosaicId,
   row,
   col,
+  fullHash: drawingTool.fullHash,
 });
 
 // OPERATIONS FOR OLD STORAGE (DIRECTLY ON LOCALSTORAGE)
