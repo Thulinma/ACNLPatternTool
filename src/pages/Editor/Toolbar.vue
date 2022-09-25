@@ -446,19 +446,18 @@ import ACNHToACNLInfo from "./ACNHToACNLInfo.vue";
 import { combineOns } from "@/libs/component-helpers";
 
 // icons
-import IconInbox from "@/components/icons/IconInbox.vue";
-import IconPaintTube from "@/components/icons/IconPaintTube.vue";
-import IconPalette from "@/components/icons/IconPalette.vue";
-import IconBrushSmall from "@/components/icons/IconBrushSmall.vue";
-import IconBrushMedium from "@/components/icons/IconBrushMedium.vue";
-import IconBrushLarge from "@/components/icons/IconBrushLarge.vue";
-import IconColorFill from "@/components/icons/IconColorFill.vue";
-import IconEyeDropper from "@/components/icons/IconEyeDropper.vue";
-import IconUndo from "@/components/icons/IconUndo.vue";
-import IconRedo from "@/components/icons/IconRedo.vue";
-import IconDetail from "@/components/icons/IconDetail.vue";
-import IconQRCode from "@/components/icons/IconQRCode.vue";
-import IconGrid from "@/components/icons/IconGrid.vue";
+import IconInbox from "@/assets/icons/bxs-inbox.svg?inline";
+import IconPaintTube from "@/assets/icons/paint-tube.svg?inline";
+import IconBrushSmall from "@/assets/icons/brush-small.svg?inline";
+import IconBrushMedium from "@/assets/icons/brush-medium.svg?inline";
+import IconBrushLarge from "@/assets/icons/brush-large.svg?inline";
+import IconColorFill from "@/assets/icons/bxs-color-fill.svg?inline";
+import IconEyeDropper from "@/assets/icons/bxs-eyedropper.svg?inline";
+import IconUndo from "@/assets/icons/bx-undo.svg?inline";
+import IconRedo from "@/assets/icons/bx-redo.svg?inline";
+import IconDetail from "@/assets/icons/bxs-detail.svg?inline";
+import IconQRCode from "@/assets/icons/qrcode.svg?inline";
+import IconGrid from "@/assets/icons/bx-grid.svg?inline";
 
 
 import colors from "@/styles/colors.scss";
@@ -558,7 +557,6 @@ export default {
     Storage,
     IconInbox,
     IconPaintTube,
-    IconPalette,
     IconBrushSmall,
     IconBrushMedium,
     IconBrushLarge,
@@ -1014,6 +1012,11 @@ $toolbar--options-width: 75px;
     min-width: auto;
     height: auto;
     padding: 4px !important;
+    
+    .storage-btn-icon {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 

@@ -1,4 +1,3 @@
-<template>
   <svg
     version="1.1"
     id="Layer_1"
@@ -22,10 +21,3 @@
 			l28.869,28.869L253.122,366.622z M447.896,229.876L282.136,64.116l23.68-23.68l165.761,165.759L447.896,229.876z"
     />
   </svg>
-</template>
-
-<script>
-export default {
-  name: "IconPaintTube",
-}
-</script>
