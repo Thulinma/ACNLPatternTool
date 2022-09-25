@@ -153,20 +153,26 @@ export const upload = async (
   typeB: string,
   typeC: string,
   NSFW: boolean,
-): Promise<{ error?: string, upload?: string }> => {
-  const response = await api.post('api.php', {
-    pattern: pattData,
-    styletag_a: styleA,
-    styletag_b: styleB,
-    styletag_c: styleC,
-    typetag_a: typeA,
-    typetag_b: typeB,
-    typetag_c: typeC,
-    nokids: NSFW
-      ? "Y"
-      : "",
-  });
-  return response.data;
+): Promise<{ error?: string, upload?: string } | undefined> => {
+  try {
+    const response = await api.post('api.php', {
+      pattern: pattData,
+      styletag_a: styleA,
+      styletag_b: styleB,
+      styletag_c: styleC,
+      typetag_a: typeA,
+      typetag_b: typeB,
+      typetag_c: typeC,
+      nokids: NSFW
+        ? "Y"
+        : "",
+    });  
+    return response.data;
+  }
+  catch (error: any) {
+    if (error.response.status !== 500) throw error;
+    return undefined;
+  }
 };
 
 

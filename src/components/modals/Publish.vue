@@ -216,12 +216,12 @@ export default {
         ...this.selectedTypes,
         isNSFW
       );
-      if (uplStatus["upload"]) {
+      if (uplStatus && uplStatus["upload"]) {
         this.open = false;
         this.$router.push({ hash: `H:${uplStatus["upload"]}` });
         window.alert("Successfully uploaded to database");
         this.$emit("close");
-      } else if (uplStatus.includes("error")) {
+      } else if (!uplStatus) {
         window.alert(
           "A pattern just like this already exists in the database!"
         );
