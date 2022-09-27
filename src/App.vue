@@ -1,7 +1,9 @@
 <template>
   <VApp class="app-container">
     <VMain>
-      <router-view></router-view>
+      <v-slide-x-transition mode="out-in">
+        <router-view></router-view>
+      </v-slide-x-transition>
       <Banner />
       <NavigationButton/>
     </VMain>
@@ -32,5 +34,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.app-container { font-family: Nunito; }
+@use "styles/colors" as colors;
+
+.app-container {
+  font-family: Nunito;
+  background-color: colors.$ecru-white;
+}
+</style>
+
+<style lang="scss">
+@use "styles/colors" as colors;
+
+// to cover overscroll
+html {
+  background-color: colors.$ecru-white;
+}
 </style>
