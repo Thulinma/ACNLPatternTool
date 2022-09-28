@@ -124,7 +124,7 @@ export const saveToPatternStorage = (
   patternStorage: { [key: string]: PatternItem },
   patternItem: PatternItem,
 ): void => {
-  Vue.set(patternStorage, patternItem.drawingTool.fullHash, patternItem);
+  Vue.set(patternStorage, patternItem.fullHash, patternItem);
 };
 
 
@@ -137,7 +137,7 @@ export const deleteFromPatternStorage = (
   patternStorage: { [key: string]: PatternItem },
   patternItem: PatternItem,
 ): void => {
-  Vue.delete(patternStorage, patternItem.drawingTool.fullHash);
+  Vue.delete(patternStorage, patternItem.fullHash);
 };
 
 
@@ -152,7 +152,7 @@ export const loadFromLocalStorage = (): PatternStorage => {
   const reformattedOldStorage = drawingTools
     .map((drawingTool) => createPatternItem({ drawingTool }))
     .reduce((patternStorage, patternItem) => {
-      patternStorage[patternItem.drawingTool.fullHash] = patternItem;
+      patternStorage[patternItem.fullHash] = patternItem;
       return patternStorage;
     }, {} as Storage);
   // new storage
