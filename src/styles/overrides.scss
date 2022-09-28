@@ -162,3 +162,12 @@
     @content;
   }
 }
+
+
+@mixin v-toolbar() {
+  &::v-deep {
+    .v-toolbar__content {
+      @content;
+    }
+  }
+}

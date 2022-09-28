@@ -1,39 +1,74 @@
 <template>
-  <VCard elevation="0" class="card rounded-xl" :color="colors.ecruWhite">
-    <VCardTitle class="card-title"><slot name="title"></slot></VCardTitle>
-    <VCardText class="card-text">
-      <div v-if="patternItems.length > 0"
-        class="grid"
+  <VCard
+    elevation="0"
+    class="card rounded-xl"
+    :color="colors.ecruWhite"
+  >
+    <v-toolbar
+      class="toolbar"
+      color="transparent"
+      flat
+      short
+    >
+      <v-toolbar-title><slot name="title"></slot></v-toolbar-title>
+      <v-spacer/>
+      
+      <v-btn
+        icon
+        :color="colors.jambalaya"
+        @click="expandMosaics = !expandMosaics"
       >
-        <VBadge
-          v-for="(patternItem) in patternItems"
-          :key="patternItem.fullHash"
-          class="storage-item-ctn"
-          :color="colors.robinEggBlue"
-          icon="mdi-check"
-          :value="isSelected(patternItem)"
-          :offset-x="10"
-          :offset-y="10"
-        >
-          <VCard
-            :class="{
-              'storage-item': true,
-              'storage-item--active': isSelected(patternItem),
-              'rounded-lg': true,
-            }"
-            outlined
-            @click="$emit('select', patternItem)"
+        <v-icon v-if="expandMosaics">mdi-collapse-all-outline</v-icon>
+        <v-icon v-else>mdi-expand-all-outline</v-icon>
+      </v-btn>
+      
+      <!-- TODO: MENU WITH MORE OPTIONS -->
+      <!-- <v-menu
+        bottom
+        left
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
           >
-            <PreviewGenerator
-              class="pattern"
-              :drawingTool="patternItem.drawingTool"
-            />
-            <VCardTitle class="pattern-title text-subtitle-2 text-center text-truncate">
-              {{ patternItem.drawingTool.title }}
-            </VCardTitle>
-          </VCard>
-        </VBadge>
-      </div>
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in []"
+            :key="i"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu> -->
+      
+      <v-btn
+        icon
+        small
+        fab
+        outlined
+        :color="colors.jambalaya"
+        @click="$emit('close')"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <!-- <VCardTitle class="card-title"><slot name="title"></slot></VCardTitle> -->
+    <VCardText :class="{
+      'card-text' : true,
+      'card-text--empty': patternItems.length === 0,
+    }">
+
+      <Grid class="pattern-grid" v-if="patternItems.length > 0"
+        :patternItems="patternItems"
+        :expandMosaics="expandMosaics"
+        @selectPatternItems="$emit('select', $event)"
+      />
+
       <div v-else
         class="empty-ctn"
       >
@@ -43,9 +78,7 @@
         </div>
       </div>
     </VCardText>
-    <!-- <CancelButton class="cancel-button-adjust" @click="$emit('close')" /> -->
     <UtilityBar v-if="options.length > 0" :options="options" />
-    <CancelButton @click="$emit('close')" />
   </VCard>
 </template>
 
@@ -65,6 +98,9 @@ import {
 } from "vuetify/lib";
 import BrushIcon from "@/assets/icons/brush.svg?inline";
 import PreviewGenerator from "@/components/PreviewGenerator.vue";
+import Grid from "@/components/PatternItems/Grid.vue";
+import GridItemSelector from "@/components/PatternItems/GridItemSelector.vue";
+import GridItem from "@/components/PatternItems/GridItem.vue";
 import CancelButton from "@/components/modals/CancelButton.vue";
 import UtilityBar from "@/components/positioned/UtilityBar.vue";
 
@@ -85,6 +121,9 @@ export default {
     VAutocomplete,
     VScaleTransition,
     PreviewGenerator,
+    Grid,
+    GridItemSelector,
+    GridItem,
     CancelButton,
     UtilityBar,
     BrushIcon,
@@ -97,7 +136,7 @@ export default {
     },
     selected: {
       type: Array,
-      required: true,
+      required: false,
       default: () => new Array(),
     },
     options: {
@@ -108,6 +147,7 @@ export default {
   },
   data: function () {
     return {
+      expandMosaics: false,
       colors,
       isOptionsOpen: false,
     };
@@ -122,17 +162,46 @@ export default {
 
 <style lang="scss" scoped>
 @use "styles/colors" as colors;
-@use "styles/positioning" as positioning;
-@use "styles/screens" as screens;
+@use "styles/overrides" as overrides;
 
 .card {
-  overflow: hidden;
+  overflow-y: auto;
+  height: 100%;
 }
+
+.toolbar {
+  flex: 0 0 auto;
+  color: colors.$jambalaya;
+  @include overrides.v-toolbar {
+    padding-right: 20px;
+  }
+}
+
 .card-title {
   color: colors.$jambalaya !important;
 }
+
 .card-text {
-  padding: 24px !important;
+  overflow: auto;
+  padding-top: 24px !important;
+  display: flex;
+  flex-direction: row;
+  justify-items: flex-start;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+
+  &.card-text--empty {
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+  }
+}
+
+.pattern-grid {
+  position: relative;
+  flex: 1 1 auto;
 }
 
 .empty-ctn {
@@ -154,73 +223,5 @@ export default {
   text-align: center;
   font-size: 1.2rem;
   color: colors.$donkey-brown;
-}
-
-.grid {
-  @include positioning.relative-in-place;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(1, 225px);
-  justify-content: center;
-  justify-items: center;
-  padding-bottom: 50px;
-  row-gap: 20px;
-  column-gap: 10px;
-
-  @include screens.phone-landscape {
-    grid-template-columns: repeat(2, 175px);
-    justify-content: space-around;
-  }
-  @include screens.tablet-portrait {
-    grid-template-columns: repeat(4, 175px);
-  }
-  @include screens.tablet-landscape {
-    grid-template-columns: repeat(4, 175px);
-    column-gap: 20px;
-    row-gap: 30px;
-    justify-content: space-between;
-  }
-  @include screens.desktop {
-    grid-template-columns: repeat(5, 175px);
-    column-gap: 40px;
-    row-gap: 40px;
-  }
-}
-
-.storage-item-ctn {
-  justify-self: stretch;
-}
-
-.storage-item {
-  cursor: pointer;
-  @include positioning.relative-in-place;
-  display: grid;
-  justify-content: center;
-  justify-items: center;
-  padding: 10px;
-  background-color: transparent;
-  
-  .pattern {
-    border-radius: inherit;
-  }
-  
-  .pattern-title {
-    font-family: Nunito !important;
-    color: colors.$jambalaya !important;
-    user-select: none;
-  }
-  
-  &.storage-item--active {
-    background-color: rgba(colors.$persian-green, 0.25);
-  }
-}
-
-.v-card--link:before {
-  background-color: transparent !important;
-}
-
-
-.cancel-button-adjust {
-  z-index: 3;
 }
 </style>

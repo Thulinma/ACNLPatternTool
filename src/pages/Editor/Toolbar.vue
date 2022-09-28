@@ -378,10 +378,13 @@
     <VDialog
       v-model="storageOpen"
       content-class="storage--dialog"
+      :transition="$vuetify.breakpoint.mobile
+        ? 'dialog-bottom-transition'
+        : 'dialog-transition'"
+      :fullscreen="$vuetify.breakpoint.mobile"
       scrollable
-      width="auto"
     >
-      <Storage v-if="storageOpen" @close="storageOpen = false" @load="load" />
+      <Storage @close="storageOpen = false" @load="load" />
     </VDialog>
 
     <VDialog
@@ -1136,5 +1139,9 @@ $toolbar--options-width: 75px;
 .storage--dialog,
 .warning--dialog {
   box-shadow: none;
+}
+
+.storage--dialog {
+  height: 100%;
 }
 </style>

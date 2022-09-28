@@ -3,8 +3,7 @@
     @close="$emit('close')"
     :patternItems="patternItems"
     :options="options"
-    :selected="selected"
-    @select="toggleSelection"
+    @select="selected = $event"
   >
     <template #title>Storage</template>
     <template #empty-message>Storage Empty</template>
@@ -183,18 +182,6 @@ export default {
   methods: {
     ...mapMutations("storage", ["init"]),
     ...mapActions("storage", ["remove"]),
-    toggleSelection(patternItem) {
-      if (this.selected.includes(patternItem))
-        this.selected = intersection(
-          this.patternItems,
-          this.selected.filter(pi => pi !== patternItem),
-        );
-      else
-        this.selected = intersection(
-          this.patternItems,
-          this.selected.concat([patternItem]),
-        );
-    },
   },
   mounted() {
     this.init();

@@ -4,17 +4,18 @@
       :value="showDialog"
       @input="close"
       content-class="collection--dialog"
+      :transition="$vuetify.breakpoint.mobile ? 'dialog-bottom-transition' : 'dialog-transition'"
+      :fullscreen="$vuetify.breakpoint.mobile"
       scrollable
-      width="auto"
     >
       <PatternContainer
         @close="close"
         :patternItems="patternItems"
         :options="options"
-        :selected="selected"
-        @select="toggleSelection"
+        @select="selected = $event"
       >
         <template #title>Files loaded</template>
+        <template #empty-message>No pattern(s) found.</template>
       </PatternContainer>
     </VDialog>
     <FileLoader
@@ -32,7 +33,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { first, intersection } from "lodash";
+import { first } from "lodash";
 import { VDialog } from "vuetify/lib";
 import { Fragment } from "vue-fragment";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
@@ -210,18 +211,6 @@ export default {
   },
   methods: {
     ...mapActions("storage", ["add"]),
-    toggleSelection(patternItem) {
-      if (this.selected.includes(patternItem))
-        this.selected = intersection(
-          this.patternItems,
-          this.selected.filter(pi => pi !== patternItem),
-        );
-      else
-        this.selected = intersection(
-          this.patternItems,
-          this.selected.concat([patternItem]),
-        );
-    },
     open() {
       // will trigger multiload which clears
       this.$refs.collectionFileLoader.open();
@@ -253,5 +242,6 @@ export default {
 <style lang="scss">
 .collection--dialog {
   box-shadow: none;
+  height: 100%;
 }
 </style>

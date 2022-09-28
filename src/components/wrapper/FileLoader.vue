@@ -50,12 +50,7 @@ export default {
         ? this.files
         : [this.files]
       );;
-      if (drawingTools.length === 1)
-        this.$emit("load", drawingTools);
-      else if (drawingTools.length > 1)
-        this.$emit("load", drawingTools);
-      else
-        window.alert(`no pattern(s) could not be parsed`);
+      this.$emit("load", drawingTools);
       this.files = null; // reset
     },
   },
