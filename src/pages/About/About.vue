@@ -142,7 +142,7 @@ export default {
           headerTextColor: "#b59e8e",
           accentColor: "#f7e7d6",
           photo: photoMelon,
-          name: "MelonSpeedRuns",
+          name: "MelonSpeedruns",
           greeting: "Yahoo!!",
           role: "Data Miner",
           roleIcon: "mdi-pickaxe",
