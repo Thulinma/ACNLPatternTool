@@ -26,6 +26,10 @@
 <script>
 import Passport from "./Passport.vue";
 import photoViet from "@/assets/images/char/photo_viet.jpg";
+import photoThulinma from "@/assets/images/char/photo_thulinma.svg";
+import photoTero from "@/assets/images/char/photo_tero.jpg";
+import photoMyumi from "@/assets/images/char/photo_myumi.jpg";
+import photoMelon from "@/assets/images/char/photo_melon.png";
 
 export default {
   components: {
@@ -37,6 +41,7 @@ export default {
         {
           headerTextColor: "#91a28a",
           accentColor: "#e6eccf",
+          photo: photoThulinma,
           name: "Thulinma",
           greeting: "acpatterns.com!",
           title: "Computer Magician",
@@ -86,6 +91,7 @@ export default {
         {
           headerTextColor: "#9fa8a7",
           accentColor: "#dfebd5",
+          photo: photoMyumi,
           name: "Myumi K.",
           role: "Tool Developer",
           roleIcon: "mdi-wrench",
@@ -110,6 +116,7 @@ export default {
         {
           headerTextColor: "#a09d7e",
           accentColor: "#fbeec1",
+          photo: photoTero,
           name: "Tero",
           role: "Icon Designer",
           roleIcon: "mdi-brush",
@@ -134,6 +141,7 @@ export default {
         {
           headerTextColor: "#b59e8e",
           accentColor: "#f7e7d6",
+          photo: photoMelon,
           name: "MelonSpeedRuns",
           greeting: "Yahoo!!",
           role: "Data Miner",
