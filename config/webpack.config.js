@@ -1,5 +1,7 @@
+const path = require('path');
 const webpack = require('webpack');
 // auto-generate the index.html file
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -15,6 +17,7 @@ const {
   pathToPublicIndex,
   pathToFavicon,
   pathToClientSrcIndex,
+  pathToPublic,
 } = require('../etc/paths');
 
 
@@ -282,8 +285,21 @@ const pluginsDev = [
 
 const pluginsProd = [
   ...plugins,
+  new CopyPlugin({
+    patterns: [
+      {
+        from: path.resolve(pathToPublic, "fonts"),
+        to: path.resolve(pathToBuild, "fonts"),
+      },
+      {
+        from: path.resolve(pathToPublic, "font.css"),
+        to: path.resolve(pathToBuild, "font.css"),
+      }
+    ],
+  }),
   new MiniCssExtractPlugin({
     filename: "styles/style.css",
+    ignoreOrder: true,
   }),
   new HtmlWebpackPlugin({
     ...htmlWebpackOptions,
@@ -300,6 +316,7 @@ const optimizationDev = {
 };
 
 const optimizatonProd = {
+  ...optimization,
   minimizer: [
     new TerserPlugin({
       test: /\.js(\?.*)?$/i,
