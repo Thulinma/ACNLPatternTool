@@ -1,5 +1,21 @@
 # Updates
 
+## Sept 27, 2022
+
+- Added page transitions
+- Revamped About Us Page
+- Added enable/disable grid toggle button to the toolbar of the editor
+- clearer ACNH color picker with proper sliders and gradient color stops
+- Updated all modal inputs
+- Revamped Conversion modal
+  - Added Stepper
+  - Added Gridded stencil to help visualize tiling
+  - Improved conversion performance, responsiveness
+- Improved storage loading time
+- Added enter/exit/move pattern item animations to storage view
+- Added ctrl/shift selections in storage view
+- Added expandable/collapseable mosaic view in storage to help view mosaics from conversions
+
 ## March 28, 2021
 
 - Improved "Browse" page, which is not only faster than before but has more control over where your search terms apply to, as well as allowing searches by pattern style and type.
