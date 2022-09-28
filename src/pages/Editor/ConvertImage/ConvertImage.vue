@@ -61,6 +61,7 @@
           <SavingStage
             v-if="state === states.saving"
             :previewDataURL="previewDataURL"
+            :columns="columns"
             :outputs="outputs"
             @load="$emit('load', $event)"
           />
