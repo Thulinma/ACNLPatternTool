@@ -12,12 +12,12 @@
 </template>
 
 <script>
+import { first, without } from "lodash";
 import {
   mapGetters,
   mapMutations,
   mapActions,
 } from "vuex";
-import { first, intersection } from "lodash";
 import PatternContainer from "@/components/positioned/PatternContainer.vue";
 import {
   drawingToolToNamedPatternBlob,
@@ -75,6 +75,10 @@ export default {
           if (!window.confirm(message))
             return;
           await this.remove(source);
+          this.selected = without(
+            this.selected,
+            ...source,
+          );
         },
       };
 
