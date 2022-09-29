@@ -6,7 +6,7 @@
     }"
     :style="{
       'grid-template-rows': `repeat(${rows}, ${100/(expanded ? size: rows)}%)`,
-      'grid-template-column': `repeat(${cols}, ${100/(expanded ? size : cols)}%)`,
+      'grid-template-columns': `repeat(${cols}, ${100/(expanded ? size : cols)}%)`,
     }"
   >
     <SinglePreview
