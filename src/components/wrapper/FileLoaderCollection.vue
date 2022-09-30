@@ -224,12 +224,13 @@ export default {
     },
     multiload(drawingTools) {
       // clear
+      const date = new Date();
       Object.assign(this, {
         showDialog: true,
         patternItems: drawingTools.map(
           drawingTool => createPatternItem({
             drawingTool,
-            createdDate: new Date(),
+            createdDate: new Date(date.getTime()),
           })
         ),
         selected: [],

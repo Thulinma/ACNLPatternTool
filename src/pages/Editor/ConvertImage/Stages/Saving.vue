@@ -49,9 +49,10 @@ import colors from "@/styles/colors.scss";
 
 const dtToStorage = async function(drawingTools) {
   const mosaicId = uuidv4(); // share id so they can be rendered together
+  const date = new Date();
   const mockedPatternItems = drawingTools.map((drawingTool, i) => createPatternItem({
     drawingTool,
-    createdDate: new Date(),
+    createdDate: new Date(date.getTime()),
     mosaicId,
     row: Math.floor(i / this.columns),
     col: i % this.columns,
