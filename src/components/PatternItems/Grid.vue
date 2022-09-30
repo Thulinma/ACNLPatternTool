@@ -91,8 +91,11 @@ export default {
         }));
       return sortBy(
         mosaicItems,
-        mosaicItem => first(mosaicItem.patternItemGroup)
-          .createdDate.getTime(),
+        [
+          ({ patternItemGroup }) => -first(patternItemGroup).createdDate.getTime(),
+          ({ patternItemGroup }) => first(patternItemGroup).row,
+          ({ patternItemGroup }) => first(patternItemGroup).col,
+        ],
       );
     },
     patternItemGroups() {
