@@ -13,14 +13,23 @@
       <v-toolbar-title><slot name="title"></slot></v-toolbar-title>
       <v-spacer/>
       
-      <v-btn
-        icon
-        :color="colors.jambalaya"
-        @click="expandMosaics = !expandMosaics"
-      >
-        <v-icon v-if="expandMosaics">mdi-collapse-all-outline</v-icon>
-        <v-icon v-else>mdi-expand-all-outline</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <v-btn
+            v-on="on"
+            icon
+            :color="colors.jambalaya"
+            @click="expandMosaics = !expandMosaics"
+          >
+            <v-icon v-if="expandMosaics">mdi-image-size-select-large</v-icon>
+            <v-icon v-else>mdi-image-size-select-actual</v-icon>
+          </v-btn>
+        </template>
+        <span>
+          <span v-if="expandMosaics">Pattern View</span>
+          <span v-else>Mosaic View</span>
+        </span>
+      </v-tooltip>
       
       <!-- TODO: MENU WITH MORE OPTIONS -->
       <!-- <v-menu

@@ -337,7 +337,7 @@
               <IconGrid class="shortcut-icon" />
             </VBtn>
           </template>
-          <div>Turn Grid {{ mainGrid ? 'Off' : 'On' }}</div>
+          <div>Grid {{ mainGrid ? 'On' : 'Off' }}</div>
         </VTooltip>
       </div>
       
