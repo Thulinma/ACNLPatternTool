@@ -191,7 +191,8 @@ export default {
 }
 
 .card-text {
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
   padding-top: 24px !important;
   display: flex;
   flex-direction: row;
