@@ -78,8 +78,6 @@ export default {
     cleanUp() {
       if (this.model) this.scene.remove(this.model);
         this.model = null;
-      if (this.texture);
-        this.texture = null;
       if (this.stand) this.scene.remove(this.stand);
     },
     setupTexture() {
