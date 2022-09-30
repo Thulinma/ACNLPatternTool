@@ -68,7 +68,7 @@ export default {
       if (!this.expandMosaics)
         return grouped;
       // modify the groups
-      const hold = Object.entries(grouped)
+      const psuedoGrouped = Object.entries(grouped)
         .reduce((acc, [id, group]) => {
           if (group.length === 1)
             acc[id] = group
@@ -77,8 +77,7 @@ export default {
               acc[`${id}-${i}`] = [group[i]];
           return acc;
         }, {});
-      console.log(hold);
-      return hold;
+      return psuedoGrouped;
     },
     mosaicItems() {
       const mosaicItems = Object.entries(this.patternItemsGrouped)
