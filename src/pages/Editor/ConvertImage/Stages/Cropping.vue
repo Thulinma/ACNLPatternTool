@@ -22,7 +22,7 @@
       >
         <VIcon v-if="!showAdvanced" left>mdi-eye-off</VIcon>
         <VIcon v-else left>mdi-eye</VIcon>
-        <span>Tiling Options</span>
+        <span>Mosaic Options</span>
       </VBtn>
 
       <VBtn
