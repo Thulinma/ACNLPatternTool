@@ -145,11 +145,11 @@ export default {
             return;
           }
           const source = selected.length
-            ? patternItems
-            : selected;
+            ? selected
+            : patternItems;
           const namedImageBlobs = await Promise.all(
             source
-              .map(pi => pi.drawingTools)
+              .map(pi => pi.drawingTool)
               .map(dt => drawingToolToNamedImageBlob(dt))
           );
           const namedZipBlob = await namedBlobsToNamedZipBlob(namedImageBlobs);
