@@ -14,25 +14,23 @@
   </VBadge>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VBadge } from "vuetify/lib";
 import colors from "@/styles/colors.scss";
 
-export default {
+@Component({
   components: {
     VBadge,
-  },
-  props: {
-    value: {
-      type: Boolean,
-      default: () => false,
-    },
-  },
-  data() {
-    return {
-      colors,
-    };
-  },
+  }
+})
+export default class GridItemSelector extends Vue {
+  @Prop({
+    type: Boolean,
+    default: () => false
+  }) readonly value!: boolean;
+  
+  readonly colors = colors;
 };
 </script>
 

@@ -21,85 +21,91 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import {
   min,
   max,
   uniqBy,
   sortBy,
 } from "lodash";
-import { PatternItem } from "@/libs/storage";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import SinglePreview from "@/components/PatternItems/SinglePreview.vue"
+import { PatternItem } from "@/libs/storage";
 
-// will not always produce a square image when 
-// there are missing patterns in the mosaic
-// or if mosaic rows & cols is not equal
-export default {
+@Component({
   components: {
     SinglePreview,
   },
-  props: {
-    /**
-     * A group of pattern items that share a `mosaicId` value.
-     * @type {PatternItem[]}
-     */
-    patternItemGroup: {
-      type: Array,
-      required: true,
-      default: () => new Array(),
-    },
-    expanded: {
-      type: Boolean,
-      default: () => false,
-    }
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    /** @type {PatternItem[]} */
-    processedPatternItems() {
-      return uniqBy(sortBy(
-        this.patternItemGroup,
-        pi => pi.row,
-        pi => pi.col,
-      ), pi => `${pi.row} ${pi.col}`);
-    },
-    rowVals() {
-      return this.processedPatternItems.map(pi => pi.row);
-    },
-    colVals() {
-      return this.processedPatternItems.map(pi => pi.col);
-    },
-    /** @type {number} The minimum row index. */
-    minRowVal() {
-      return min(this.rowVals);
-    },
-    /** @type {number} The maximum row index. */
-    maxRowVal() {
-      return max(this.rowVals);
-    },
-    /** @type {number} The minimum column index. */
-    minColVal() {
-      return min(this.colVals)
-    },
-    /** @type {number} The maximum column index. */
-    maxColVal() {
-      return max(this.colVals)
-    },
-    /** @type {number} The number of rows. */
-    rows() {
-      return this.maxRowVal - this.minRowVal + 1;
-    },
-    /** @type {number} The number of columns. */
-    cols() {
-      return this.maxColVal - this.minColVal + 1;
-    },
-    /** @type {number} The maximum size as a square */
-    size() {
-      return max([this.rows, this.cols])
-    },
-  },
+})
+export default class MosaicPreview extends Vue {
+  /**
+   * The pattern item group to render.
+   */
+  @Prop() readonly patternItemGroup!: PatternItem[];
+  
+  /**
+   * When true, generates a square preview.
+   */
+  @Prop({
+    type: Boolean,
+    default: (): boolean => false,
+  }) readonly expanded!: boolean;
+  
+  /**
+   * The pattern items filtered down.
+   */
+  get processedPatternItems(): PatternItem[] {
+    return uniqBy(sortBy(
+      this.patternItemGroup,
+      pi => pi.row,
+      pi => pi.col,
+    ), pi => `${pi.row} ${pi.col}`);
+  }
+  
+  /** The row indexes. */
+  get rowVals(): number[] {
+    return this.processedPatternItems.map(pi => pi.row);
+  }
+  
+  /** The column indexes. */
+  get colVals(): number[] {
+    return this.processedPatternItems.map(pi => pi.col);
+  }
+  
+  /** The minimum row index. */
+  get minRowVal(): number {
+    return min(this.rowVals) as number;
+  }
+  
+  /** The maxiumum row index. */
+  get maxRowVal(): number {
+    return max(this.rowVals) as number;
+  }
+
+  /** The minimum column index. */
+  get minColVal(): number {
+    return min(this.colVals) as number;
+  }
+  
+  /** The maximum column index. */
+  get maxColVal(): number {
+    return max(this.colVals) as number;
+  }
+  
+  /** The number of rows. */
+  get rows(): number {
+    return this.maxRowVal - this.minRowVal + 1;
+  }
+  
+  /** The number of columns. */
+  get cols(): number {
+    return this.maxColVal - this.minColVal + 1;
+  }
+  
+  /** The maximum size as a square */
+  get size(): number {
+    return max([this.rows, this.cols]) as number;
+  }
 }
 </script>
 

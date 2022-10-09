@@ -21,7 +21,7 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import {
   without,
   concat,
@@ -33,135 +33,160 @@ import {
   min,
   max,
 } from "lodash";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { VContainer, VSpacer } from "vuetify/lib";
 import GridItemSelector from "@/components/PatternItems/GridItemSelector.vue"
 import GridItem from "@/components/PatternItems/GridItem.vue";
+import { PatternItem } from "@/libs/storage";
 
-export default {
+type PatternItemGroup = PatternItem[];
+
+@Component({
   components: {
     GridItem,
     GridItemSelector,
     VContainer,
     VSpacer,
   },
-  props: {
-    expandMosaics: {
-      type: Boolean,
-      default: () => false,
-    },
-    patternItems: {
-      type: Array,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      selectedPatternItemGroupSlices: [],
-    };
-  },
-  computed: {
-    patternItemsGrouped() {
-      const grouped = groupBy(
-        this.patternItems,
-        patternItem => patternItem.mosaicId,
-      );
-      if (!this.expandMosaics)
-        return grouped;
-      // modify the groups
-      const psuedoGrouped = Object.entries(grouped)
-        .reduce((acc, [id, group]) => {
-          if (group.length === 1)
-            acc[id] = group
-          else
-            for (let i = 0; i < group.length; ++i)
-              acc[`${id}-${i}`] = [group[i]];
-          return acc;
-        }, {});
-      return psuedoGrouped;
-    },
-    mosaicItems() {
-      const mosaicItems = Object.entries(this.patternItemsGrouped)
-        .map(([
-          mosaicId,
-          patternItemGroup,
-        ]) => ({
-          id: mosaicId,
-          patternItemGroup,
-        }));
-      return sortBy(
-        mosaicItems,
-        [
-          ({ patternItemGroup }) => -first(patternItemGroup).createdDate.getTime(),
-          ({ patternItemGroup }) => first(patternItemGroup).row,
-          ({ patternItemGroup }) => first(patternItemGroup).col,
-        ],
-      );
-    },
-    patternItemGroups() {
-      return this.mosaicItems
-        .map(mosaicItem => mosaicItem.patternItemGroup);
-    },
-    // reverse array mapping
-    patternItemGroupToIdx() {
-      return new Map(Array.from(
-        this.patternItemGroups
-          .entries()
-      ).map(([k, v]) => [v, k]));
-    },
-    selectedPatternItemGroups() {
-      return sortBy(
-        uniq(concat(...this.selectedPatternItemGroupSlices)),
-        patternItemGroup => this.patternItemGroupToIdx.get(patternItemGroup),
-      );
-    },
-    selectedPatternItems() {
-      return this.selectedPatternItemGroups.flat(2);
-    },
-  },
-  methods: {
-    onClick(event, patternItemGroup) {
-      if (event.shiftKey) {
-        const initialIdx = this.patternItemGroupToIdx.get(
-          first(last(this.selectedPatternItemGroupSlices))
+})
+export default class Grid extends Vue {
+  @Prop({
+    type: Boolean,
+    default: () => false,
+  }) readonly expandMosaics!: boolean;
+
+  @Prop({
+    type: Array,
+    required: true,
+  }) readonly patternItems!: PatternItem[];
+  
+  /** The selected slices when repeated shift/ctrl selecting. */
+  selectedPatternItemGroupSlices: PatternItemGroup[][] = [];
+  
+  /**
+   * The pattern items grouped by mosaic id or pseudo mosaic ids.
+   * In expanded mode gives each pattern item a unique generated mosaic id.
+   */
+  get patternItemsGrouped() {
+    const grouped = groupBy(
+      this.patternItems,
+      patternItem => patternItem.mosaicId,
+    );
+    if (!this.expandMosaics)
+      return grouped;
+    // modify the groups
+    const psuedoGrouped = Object.entries(grouped)
+      .reduce<typeof grouped>((acc, [id, group]) => {
+        if (group.length === 1)
+          acc[id] = group
+        else
+          for (let i = 0; i < group.length; ++i)
+            acc[`${id}-${i}`] = [group[i]];
+        return acc;
+      }, {});
+    return psuedoGrouped;
+  }
+  
+  /**
+   * Wrapped pattern groups in objects with mosaic ids for list rendering.
+   * Also sorts mosaic items by date, row, col.
+   */
+  get mosaicItems() {
+    const mosaicItems = Object.entries(this.patternItemsGrouped)
+      .map(([
+        mosaicId,
+        patternItemGroup,
+      ]) => ({
+        id: mosaicId,
+        patternItemGroup,
+      }));
+    return sortBy(
+      mosaicItems,
+      [
+        ({ patternItemGroup }) => -(first(patternItemGroup) as PatternItem).createdDate.getTime(),
+        ({ patternItemGroup }) => (first(patternItemGroup) as PatternItem).row,
+        ({ patternItemGroup }) => (first(patternItemGroup) as PatternItem).col,
+      ],
+    );
+  }
+  
+  /**
+   * The cumalative pattern item groups of all mosaics.
+   */
+  get patternItemGroups() {
+    return this.mosaicItems
+      .map(mosaicItem => mosaicItem.patternItemGroup);
+  }
+  
+  /**
+   * Reverse mapping of pattern item groups to their index.
+   */
+  get patternItemGroupToIdx() {
+    return new Map(Array.from(
+      this.patternItemGroups
+        .entries()
+    ).map(([k, v]) => [v, k]));
+  }
+  
+  /**
+   * The selected pattern item groups.
+   */
+  get selectedPatternItemGroups() {
+    return sortBy(
+      uniq(concat(...this.selectedPatternItemGroupSlices)),
+      patternItemGroup => this.patternItemGroupToIdx.get(patternItemGroup),
+    );
+  }
+  
+  /**
+   * The selected pattern items.
+   */
+  get selectedPatternItems() {
+    return this.selectedPatternItemGroups.flat(2);
+  }
+  
+  onClick(event: MouseEvent, patternItemGroup: PatternItem[]) {
+    if (event.shiftKey) {
+      const initialIdx = this.patternItemGroupToIdx.get(
+        first(last(this.selectedPatternItemGroupSlices) as PatternItemGroup[]) as PatternItemGroup
+      ) as number;
+      const currIdx = this.patternItemGroups.indexOf(patternItemGroup);
+      const willReverse = initialIdx > currIdx;
+      const patternItemGroupSlice = this.patternItemGroups
+        .slice(
+          min([initialIdx, currIdx]),
+          (max([initialIdx, currIdx]) as number) + 1,
         );
-        const currIdx = this.patternItemGroups.indexOf(patternItemGroup);
-        const willReverse = initialIdx > currIdx;
-        const patternItemGroupSlice = this.patternItemGroups
-          .slice(
-            min([initialIdx, currIdx]),
-            max([initialIdx, currIdx]) + 1,
-          );
-        if (willReverse)
-          patternItemGroupSlice.reverse();
-        this.selectedPatternItemGroupSlices = !event.ctrlKey
-          ? [patternItemGroupSlice]
-          : concat(
-            this.selectedPatternItemGroupSlices,
-            [patternItemGroupSlice]
-          );
-      }
-      else if (event.ctrlKey && !event.shiftKey) {
-        // remove pattern group from all slices
-        if (this.selectedPatternItemGroups.includes(patternItemGroup))
-          this.selectedPatternItemGroupSlices = this.selectedPatternItemGroupSlices
-            .map(patternItemGroupSlice => without(patternItemGroupSlice, patternItemGroup))
-            .filter(patternItemGroupSlice => Boolean(patternItemGroupSlice.length));
-        else // add single pattern group as a slice
-          this.selectedPatternItemGroupSlices = concat(
-            this.selectedPatternItemGroupSlices,
-            [[patternItemGroup]],
-          );
-      }
-      else
-        this.selectedPatternItemGroupSlices = [[patternItemGroup]];
-      this.$emit('selectPatternItems', this.selectedPatternItems);
-      this.$emit('selectPatternItemGroups', this.selectedPatternItemGroups);
+      if (willReverse)
+        patternItemGroupSlice.reverse();
+      this.selectedPatternItemGroupSlices = !event.ctrlKey
+        ? [patternItemGroupSlice]
+        : concat(
+          this.selectedPatternItemGroupSlices,
+          [patternItemGroupSlice]
+        );
     }
-  },
-  watch: {
-    patternItems() {
-      this.selectedPatternItemGroupSlices = [];
+    else if (event.ctrlKey && !event.shiftKey) {
+      // remove pattern group from all slices
+      if (this.selectedPatternItemGroups.includes(patternItemGroup))
+        this.selectedPatternItemGroupSlices = this.selectedPatternItemGroupSlices
+          .map(patternItemGroupSlice => without(patternItemGroupSlice, patternItemGroup))
+          .filter(patternItemGroupSlice => Boolean(patternItemGroupSlice.length));
+      else // add single pattern group as a slice
+        this.selectedPatternItemGroupSlices = concat(
+          this.selectedPatternItemGroupSlices,
+          [[patternItemGroup]],
+        );
     }
+    else
+      this.selectedPatternItemGroupSlices = [[patternItemGroup]];
+    this.$emit('selectPatternItems', this.selectedPatternItems);
+    this.$emit('selectPatternItemGroups', this.selectedPatternItemGroups);
+  }
+  
+  @Watch('patternItems')
+  onPatternItemsChanged() {
+    this.selectedPatternItemGroupSlices = [];
   }
 }
 </script>
