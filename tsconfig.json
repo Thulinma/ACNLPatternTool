@@ -3,6 +3,7 @@
     "target": "ES5",
     "module": "ESNext",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "strict": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -24,5 +25,8 @@
       "DOM",
       "ESNext",
     ]
+  },
+  "vueCompilerOptions": {
+    "target": 2,
   }
 }
