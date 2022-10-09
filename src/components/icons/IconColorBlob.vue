@@ -25,14 +25,16 @@
   </svg>
 </template>
 
-<script>
-export default {
-  props: {
-    color: {
-      type: String,
-      required: true
-    }
-  },
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class IconColorBlob extends Vue {
+  /** The css color of the color blob. */
+  @Prop({
+    type: String,
+    required: true,
+  }) readonly color!: string;
 };
 </script>
 
