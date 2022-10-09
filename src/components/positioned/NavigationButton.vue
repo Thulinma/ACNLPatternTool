@@ -20,22 +20,21 @@
   </button>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import { VDialog } from "vuetify/lib";
 import NavigationMenu from "@/components/positioned/NavigationMenu.vue";
 import IconCompass from "@/assets/icons/nookphone/compass.svg?inline";
 
-export default {
-  data: function () {
-    return {
-      open: false,
-    };
-  },
+@Component({
   components: {
     VDialog,
     NavigationMenu,
     IconCompass,
   },
+})
+export default class NavigationButton extends Vue {
+  open: boolean = false;
 };
 </script>
 

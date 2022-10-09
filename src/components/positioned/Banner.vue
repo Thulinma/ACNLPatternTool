@@ -8,13 +8,15 @@
 </template>
 
 <script>
+import { Vue, Component } from "vue-property-decorator";
 import IconBanner from "@/assets/icons/banner.svg?inline";
 
-export default {
-  name: "Banner",
+@Component({
   components: {
     IconBanner,
   },
+})
+export default class Banner extends Vue {
 };
 </script>
 
