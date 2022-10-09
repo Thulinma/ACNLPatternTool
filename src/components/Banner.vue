@@ -4,15 +4,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Banner",
-  props: {
-    bannerText: String,
-  },
-  data: function () {
-    return {};
-  },
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class Banner extends Vue {
+  @Prop({
+    type: String,
+    required: true,
+  }) bannerText!: string;
 };
 </script>
 
