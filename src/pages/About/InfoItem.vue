@@ -21,26 +21,33 @@
   </li>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VIcon } from "vuetify/lib";
 import { Fragment } from "vue-fragment";
 
-export default {
+export interface InfoItemOptions {
+  icon?: string,
+  iconFill?: string,
+  label?: string,
+  url?: string,
+}
+
+@Component({
   components: {
     VIcon,
     Fragment,
   },
-  props: {
-    infoItem: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    hasLink() {
-      return this.infoItem.url;
-    },
-  },
+})
+export default class InfoItem extends Vue {
+  @Prop({
+    type: Object,
+    required: true,
+  }) infoItem!: InfoItemOptions;
+  
+  get hasLink() {
+    return Boolean(this.infoItem.url);
+  }
 };
 </script>
 
