@@ -154,7 +154,7 @@ function toHex(n){return (n<16?"0":"")+n.toString(16);}
 
 class DrawingTool{
   /**
-   * @param {string | Uint8Array} data 
+   * @param {string | Uint8Array | DrawingTool} data 
    */
   constructor(data = null){
     this.renderTargets = []; //TODO: Should this be a map, perhaps? How do maps work in JS? Can we de-duplicate..?
@@ -282,13 +282,13 @@ class DrawingTool{
   get fullHash(){return this.pattern.fullHash();}
   /** @type {string} */
   get pixelHash(){return this.pattern.pixelHash();}
-  /** @type {number} */
+  /** @type {string} The name of the pattern. */
   get title(){return this.pattern.title;}
   set title(n){this.pattern.title = n;}
-  /** @type {string} */
+  /** @type {[string, number]} Creator name and id. */
   get creator(){return this.pattern.creator;}
   set creator(n){this.pattern.creator = n;}
-  /** @type {string} */
+  /** @type {[string, number]} */
   get town(){return this.pattern.town;}
   set town(n){this.pattern.town = n;}
   fixIssues(){this.pattern.fixIssues();}
