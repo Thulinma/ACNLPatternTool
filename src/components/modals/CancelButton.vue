@@ -12,7 +12,8 @@
   </VBtn>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import {
   VIcon,
   VBtn,
@@ -20,17 +21,14 @@ import {
 
 import colors from '@/styles/colors.scss';
 
-export default {
-  name: "CancelButton",
+@Component({
   components: {
     VIcon,
     VBtn,
   },
-  data: function () {
-    return {
-      colors,
-    };
-  },
+})
+export default class CancelButton extends Vue {
+  readonly colors = colors;
 };
 </script>
 

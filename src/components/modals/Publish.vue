@@ -109,7 +109,8 @@
   </VCard>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   VCard,
   VCardTitle,
@@ -130,8 +131,20 @@ import {
 import colors from './../../styles/colors.scss';
 import { computeOptsList } from "./../../libs/component-helpers";
 
-export default {
-  name: "Publish",
+type PatternDetails = {
+  title: string,
+  creator: {
+    id: number,
+    name: string,
+  },
+  town: {
+    id: number,
+    name: string,
+  }
+  type: number,
+};
+
+@Component({
   components: {
     VCard,
     VCardTitle,
@@ -142,94 +155,102 @@ export default {
     CancelButton,
     IconGenerator,
   },
-  props: {
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
-    },
-    patternDetails: {
-      type: Object,
-      required: true,
-    },
-  },
-  data: function () {
-    const styles = Object.values(StyleTag);
-    const types = Object.values(TypeTag);
-    const selectedStyles = new Array(3).fill("");
-    const selectedTypes = new Array(3).fill("");
-    return {
-      colors,
-      styles,
-      types,
-      details: {
-        ...this.$props.patternDetails,
-      },
-      selectedStyles,
-      selectedTypes,
-      isNSFW: false,
-      isUploading: false,
-    };
-  },
-  computed: {
-    styleOptsList() {
-      return computeOptsList(
-        this.selectedStyles,
-        [{ text: '- - -', value: "" }],
-        this.styles.map(style => ({ text: style, value: style })),
-      );
-    },
-    typeOptsList() {
-      return computeOptsList(
-        this.selectedTypes,
-        [{ text: '- - -', value: "" }],
-        this.types.map(type => ({ text: type, value: type })),
-      );
-    },
-  },
-  methods: {
-    update() {
-      this.details.title = this.details.title.trim();
-      this.details.town.name = this.details.town.name.trim();
-      this.details.creator.name = this.details.creator.name.trim();
-      if (this.originalType !== this.details.type) {
-        const msg =
-          "A change in pattern type may cause the pattern to change in specific areas. Do you wish to proceed?";
-        const confirm = window.confirm(msg);
-        if (!confirm) return;
-      }
+})
+export default class Publish extends Vue {
+  /** The drawing tool to publish. */
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  /** The extracted pattern details. */
+  @Prop({
+    type: Object,
+    required: true,
+  }) patternDetails!: PatternDetails;
+  
+  readonly colors = colors;
+  
+  /** The available styles for access. */
+  styles = Object.values(StyleTag);
 
-      this.$emit("update-details", {
-        ...this.details,
-      });
-    },
+  /** The available types for access. */
+  types = Object.values(TypeTag);
+  
+  /** The three selected styles. */
+  selectedStyles: [string, string, string] = ["", "", ""];
+  
+  /** The three selected types. */
+  selectedTypes: [string, string, string] = ["", "", ""];
+  
+  /** Whether or not the pattern is NSFW. */
+  isNSFW: boolean = false;
 
-    async publish() {
-      if (this.isUploading) return;
-      const title = this.details.title;
-      const town = this.details.town.name;
-      const author = this.details.town.author;
-      const isNSFW = this.isNSFW;
-      this.isUploading = true;
-      const uplStatus = await upload(
-        btoa(this.drawingTool.toString()),
-        ...this.selectedStyles,
-        ...this.selectedTypes,
-        isNSFW
+  /** Whether or not the pattern is in the middle of being uploaded. */
+  isUploading: boolean = false;
+  
+  /** The duplicated pattern details for update tracking. */
+  details = this.patternDetails;
+  
+  /** The list of style options available. */
+  get styleOptsList() {
+    return computeOptsList(
+      this.selectedStyles,
+      [{ text: '- - -', value: "" }],
+      this.styles.map(style => ({ text: style, value: style })),
+    );
+  }
+  
+  /** The list of type options available. */
+  get typeOptsList() {
+    return computeOptsList(
+      this.selectedTypes,
+      [{ text: '- - -', value: "" }],
+      this.types.map(type => ({ text: type, value: type })),
+    );
+  }
+  
+  // update() {
+  //   this.details.title = this.details.title.trim();
+  //   this.details.town.name = this.details.town.name.trim();
+  //   this.details.creator.name = this.details.creator.name.trim();
+  //   if (this.originalType !== this.details.type) {
+  //     const msg =
+  //       "A change in pattern type may cause the pattern to change in specific areas. Do you wish to proceed?";
+  //     const confirm = window.confirm(msg);
+  //     if (!confirm) return;
+  //   }
+
+  //   this.$emit("update-details", {
+  //     ...this.details,
+  //   });
+  // }
+
+  async publish() {
+    if (this.isUploading) return;
+    const title = this.details.title;
+    const town = this.details.town.name;
+    const author = this.details.creator.name;
+    const isNSFW = this.isNSFW;
+    this.isUploading = true;
+    const uplStatus = await upload(
+      window.btoa(this.drawingTool.toString()),
+      ...this.selectedStyles,
+      ...this.selectedTypes,
+      isNSFW
+    );
+    if (uplStatus && uplStatus["upload"]) {
+      this.$router.push({ hash: `H:${uplStatus["upload"]}` });
+      window.alert("Successfully uploaded to database");
+      this.$emit("close");
+    } else if (!uplStatus) {
+      window.alert(
+        "A pattern just like this already exists in the database!"
       );
-      if (uplStatus && uplStatus["upload"]) {
-        this.open = false;
-        this.$router.push({ hash: `H:${uplStatus["upload"]}` });
-        window.alert("Successfully uploaded to database");
-        this.$emit("close");
-      } else if (!uplStatus) {
-        window.alert(
-          "A pattern just like this already exists in the database!"
-        );
-        this.$emit("close");
-      }
-      this.isUploading = false;
-    },
-  },
+      this.$emit("close");
+    }
+    this.isUploading = false;
+  }
 };
 </script>
 
