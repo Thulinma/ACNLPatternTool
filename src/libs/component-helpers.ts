@@ -1,5 +1,5 @@
 
-type Option<T> = {
+export type Option<T> = {
   text: string,
   value: T
 };
