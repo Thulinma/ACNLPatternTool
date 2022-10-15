@@ -76,7 +76,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { VIcon } from "vuetify/lib";
-import { InfoItemOptions } from "./About.vue";
+import { MemberOptions } from "./About.vue";
 import InfoItem from "./InfoItem.vue";
 import colors from "@/styles/colors.scss";
 
@@ -130,12 +130,12 @@ export default class Passport extends Vue {
   @Prop({
     type: Array,
     default: () => [],
-  }) topInfoItems!: InfoItemOptions[];
+  }) topInfoItems!: MemberOptions[];
   
   @Prop({
     type: Array,
     default: () => [],
-  }) bottomInfoItems!: InfoItemOptions[];
+  }) bottomInfoItems!: MemberOptions[];
   
   @Prop({
     type: String,
