@@ -142,7 +142,7 @@ export default {
       try {
         await navigator.clipboard.writeText(presses);
       } catch (err) {
-        alert("Error! Could not copy: "+e);
+        alert("Error! Could not copy: "+err);
       }
       this.showKeypressCopied = true;
     },
