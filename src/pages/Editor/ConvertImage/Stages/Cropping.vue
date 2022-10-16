@@ -93,7 +93,8 @@
 </template>
 
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VIcon, VBtn, VSlider, VTextField } from "vuetify/lib";
 import { Cropper } from "vue-advanced-cropper";
 import GridStencil from "./GridStencil.vue";
@@ -101,8 +102,7 @@ import "vue-advanced-cropper/dist/style.css";
 
 import colors from "@/styles/colors.scss";
 
-export default {
-  name: "Cropping",
+@Component({
   components: {
     VIcon,
     VBtn,
@@ -110,54 +110,65 @@ export default {
     VTextField,
     Cropper,
   },
-  props: {
-    dataURL: {
-      type: [String, null],
-      required: false,
-    },
-    rows: {
-      type: Number,
-      required: true,
-    },
-    columns: {
-      type: Number,
-      required: true,
-    },
-  },
-  data: function () {
-    return {
-      colors,
-      showAdvanced: false,
-      GridStencil,
-    };
-  },
-  computed: {
-    aspectRatio() {
-      return this.columns / this.rows;
-    },
-  },
-  methods: {
-    onRowsInput(value) {
-      const rows = Number(value);
-      this.$forceUpdate();
-      if (Number.isNaN(rows)) return;
-      if (!Number.isInteger(rows)) return;
-      if (rows <= 0) return;
-      this.$emit("update:rows", rows);
-    },
-    onColumnsInput(value) {
-      const columns = Number(value);
-      this.$forceUpdate();
-      if (Number.isNaN(columns)) return;
-      if (!Number.isInteger(columns)) return;
-      if (columns <= 0) return;
-      this.$emit("update:columns", columns);
-    },
-    onNext(event) {
-      const { canvas: croppedCanvas } = this.$refs.cropper.getResult();
-      this.$emit("next", croppedCanvas);
-    },
-  },
+})
+export default class CroppingStage extends Vue {
+  $refs! : { cropper: Cropper; }
+  
+  @Prop({
+    required: false,
+  }) readonly dataURL!: string | null;
+  
+  @Prop({
+    type: Number,
+    required: true,
+  }) readonly rows!: number;
+  
+  @Prop({
+    type: Number,
+    required: true,
+  }) readonly columns!: number;
+  
+  readonly colors = colors;
+  
+  /**
+   * Whether to show the mosaic options.
+   */
+  showAdvanced = false;
+  
+  GridStencil = GridStencil;
+  
+  /**
+   * The aspect ratio of the crop stencil.
+   */
+  get aspectRatio(): number {
+    return this.columns / this.rows;
+  }
+  
+  onRowsInput(value: string) {
+    const rows = Number(value);
+    this.$forceUpdate();
+    if (Number.isNaN(rows)) return;
+    if (!Number.isInteger(rows)) return;
+    if (rows <= 0) return;
+    this.$emit("update:rows", rows);
+  }
+  
+  onColumnsInput(value: string) {
+    const columns = Number(value);
+    this.$forceUpdate();
+    if (Number.isNaN(columns)) return;
+    if (!Number.isInteger(columns)) return;
+    if (columns <= 0) return;
+    this.$emit("update:columns", columns);
+  }
+  
+  /**
+   * Advances the cropping stage.
+   */
+  onNext() {
+    const { canvas: croppedCanvas } = this.$refs.cropper.getResult();
+    this.$emit("next", croppedCanvas);
+  }
 };
 </script>
 

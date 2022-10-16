@@ -59,6 +59,7 @@
 </template>
 
 <script>
+// NOTE: DON'T CONVERT TO TS, CUSTOM 3RD PARTY COMPONENT
 import classnames from "classnames";
 import bem from "easy-bem";
 import {
