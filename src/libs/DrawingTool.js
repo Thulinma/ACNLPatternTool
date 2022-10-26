@@ -560,7 +560,11 @@ class DrawingTool{
     this.render();
   }
 
-  /// Returns the HTML color of the given palette index
+  /**
+   * Gets the css 6 digit hex color of the palette color at the index.
+   * @param {number} idx 0 - 14 only, #15 is the transparent ref
+   * @returns {string}
+   */
   getPalette(idx){
     if (idx < 0 || idx > 14){return "";}//abort for invalid indexes
     if (this.pattern instanceof ACNHFormat){
@@ -815,9 +819,12 @@ class DrawingTool{
     }
   }
 
-  /// When called with a function as parameter, adds an event handler for color changes.
-  /// When called without parameter (or with null), calls all onColorChange event handlers in sequence.
-  /// Called automatically whenever colors in the palette change, or a new pattern is loaded.
+  /**
+   * When called with a function as parameter, adds an event handler for color changes.
+   * When called without parameter (or with null), calls all onColorChange event handlers in sequence.
+   * Called automatically whenever colors in the palette change, or a new pattern is loaded.
+   * @param {null | Function} f 
+   */
   onColorChange(f = null){
     if (f === null){
       for (let i in this.handleColorChange){
@@ -828,7 +835,10 @@ class DrawingTool{
     }
   }
 
-  // removes a handler
+  /**
+   * Removes a handler.
+   * @param {null | Function} f 
+   */
   onColorChangeRemove(f = null) {
     if ((typeof f) === "function") {
       const idx = this.handleColorChange.indexOf(f);

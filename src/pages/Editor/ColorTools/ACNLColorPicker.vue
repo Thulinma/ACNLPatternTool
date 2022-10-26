@@ -43,56 +43,58 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import DrawingTool from "@/libs/DrawingTool";
 import ACNLFormat from "@/libs/ACNLFormat";
 
-export default {
-  name: "ACNLColorPicker",
-  props: {
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
-    },
-  },
-  data: function () {
-    const vibrantBlocks = [];
-    for (let i = 0x00; i < 0xff; i += 0x10) {
-      let vibrantBlock = [];
-      for (let j = 0x00; j < 0x09; j += 0x01)
-        vibrantBlock.push(ACNLFormat.paletteColors[i + j]);
-      vibrantBlocks.push(vibrantBlock);
-    }
-    const monoBlock = [];
-    for (let i = 0x0f; i < 0xff; i += 0x10)
-      monoBlock.push(ACNLFormat.paletteColors[i]);
-    return {
-      vibrantBlocks,
-      monoBlock,
-      currColor: this.drawingTool.color,
-    };
-  },
-  methods: {
-    onColorClick: function (event, color) {
-      // if color is the same, gets blocked at parent
+const vibrantBlocks: string[][] = [];
+for (let i = 0x00; i < 0xff; i += 0x10) {
+  let vibrantBlock = [];
+  for (let j = 0x00; j < 0x09; j += 0x01)
+    vibrantBlock.push(ACNLFormat.paletteColors[i + j]);
+  vibrantBlocks.push(vibrantBlock);
+}
+
+const monoBlock: string[] = [];
+for (let i = 0x0f; i < 0xff; i += 0x10)
+  monoBlock.push(ACNLFormat.paletteColors[i]);
+
+@Component
+export default class ACNLColorPicker extends Vue {
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  readonly vibrantBlocks = vibrantBlocks;
+  readonly monoBlock = monoBlock;
+  
+  currColor: string = this.drawingTool.color;
+  
+  onColorClick(_event: MouseEvent, color: string): void {
+    // if color is the same, gets blocked at parent
+    this.$emit("color-picked", color);
+  }
+  
+  onColorMousemove(event: MouseEvent, color: string): void {
+    // if color is the same, gets blocked at parent
+    if (event.buttons === 1) {
       this.$emit("color-picked", color);
-    },
-    onColorMousemove: function (event, color) {
-      // if color is the same, gets blocked at parent
-      if (event.buttons === 1) {
-        this.$emit("color-picked", color);
-      }
-    },
-    updateCurrColor: function () {
-      this.$data.currColor = this.drawingTool.color;
-    },
-  },
-  mounted: function () {
+    }
+  }
+  
+  updateCurrColor(): void {
+    this.$data.currColor = this.drawingTool.color;
+  }
+
+  mounted() {
     this.drawingTool.onColorChange(this.updateCurrColor);
-  },
-  beforeDestroy: function () {
+  }
+  
+  beforeDestroy() {
     this.drawingTool.onColorChangeRemove(this.updateCurrColor);
-  },
+  }
 };
 </script>
 
