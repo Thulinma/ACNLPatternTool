@@ -10,7 +10,8 @@
   </VApp>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import {
   VApp,
   VMain,
@@ -19,17 +20,15 @@ import {
 import NavigationButton from "./components/positioned/NavigationButton.vue";
 import Banner from "./components/positioned/Banner.vue";
 
-export default {
-  name: "App",
+@Component({
   components: {
     VApp,
     VMain,
     NavigationButton,
     Banner,
   },
-  data: function () {
-    return {};
-  },
+})
+export default class App extends Vue{
 };
 </script>
 
