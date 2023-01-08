@@ -7,7 +7,7 @@
   </router-link>
 </template>
 
-<script>
+<script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import IconBanner from "@/assets/icons/banner.svg?inline";
 
