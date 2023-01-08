@@ -171,13 +171,19 @@ class DrawingTool{
       if (data != null){this.load(data);}
     }
   }
-
+  
   ///Clears all data (except render targets and onLoad handlers) to defaults
   reset(){
     this.pattern = new ACNLFormat();
     this.pixels_buffer = new ArrayBuffer(4096);
     this.pixels = new Uint8Array(this.pixels_buffer);
+    /**
+     * @type {(x: number, y: number, tool: DrawingTool) => void}
+     */
     this.drawHandler = basicDrawing;
+    /**
+     * @type {(x: number, y: number, tool: DrawingTool) => void}
+     */
     this.drawHandlerAlt = basicDrawing;
     this.currentColor = 0;
     this.undoHistory = [];
@@ -404,6 +410,10 @@ class DrawingTool{
 
     this.onLoad();
   }
+  
+  /**
+   * @type {typeof ACNLFormat.typeInfo | typeof ACNHFormat.typeInfo}
+   */
   get allTypes(){
     if (this.pattern instanceof ACNHFormat){
       return ACNHFormat.typeInfo;
@@ -809,6 +819,12 @@ class DrawingTool{
   /// When called with a function as parameter, adds an event handler for pattern loads.
   /// When called without parameter (or with null), calls all onLoad event handlers in sequence.
   /// Called automatically whenever pattern changes type, when it is reset, or when an entirely new pattern is loaded
+  
+  /**
+   * Triggers onload handlers when called with a null argument or adds a handler
+   * when a callback is passed through.
+   * @param {(drawingTool: DrawingTool) => any | null} f 
+   */
   onLoad(f = null){
     if (f === null){
       for (let i in this.handleOnLoad){
