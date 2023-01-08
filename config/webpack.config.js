@@ -8,7 +8,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const { VuetifyLoaderPlugin } = require('vuetify-loader');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeThreePlugin = require('@vxna/optimize-three-webpack-plugin');
 const env = require('../etc/env'); // assume already loaded, checked
 const {
   pathToClientSrc,
@@ -264,7 +263,6 @@ const htmlWebpackOptions = {
 const plugins = [
   new VueLoaderPlugin(),
   new VuetifyLoaderPlugin(),
-  new OptimizeThreePlugin(),
   new webpack.DefinePlugin({ "env": JSON.stringify(clientEnv) }),
 ];
 
