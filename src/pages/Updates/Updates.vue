@@ -5,15 +5,17 @@
 </template>
 
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import MarkdownPage from "@/components/MarkdownPage.vue";
 import UpdatesMarkdown from "./Updates.md";
 
-export default {
+@Component({
   name: "Changelog",
   components: {
     MarkdownPage,
     UpdatesMarkdown,
-  }
-};
+  },
+})
+export default class Updates extends Vue {};
 </script>
