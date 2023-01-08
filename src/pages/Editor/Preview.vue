@@ -71,7 +71,9 @@
   </VCard>
 </template>
 
-<script>
+<script lang="ts">
+import { saveAs } from "file-saver";
+import { Vue, Component, Prop } from "vue-property-decorator"
 import {
   VDialog,
   VBtn,
@@ -98,7 +100,8 @@ import generateACNHKeypresses from "@/libs/ACNHKeypressGenerator";
 
 import colors from "@/styles/colors.scss";
 
-export default {
+
+@Component({
   name: "Preview",
   components: {
     VDialog,
@@ -116,44 +119,66 @@ export default {
     ACNLQRGenerator,
     ACNLToACNHInfo,
   },
-  props: {
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
-    },
-  },
-  data: function () {
-    const dataURL = "";
-    return {
-      colors,
-      dataURL,
-      gameModeInfo: false,
-      showKeypressModal: false,
-      showKeypressCopied: false,
-    };
-  },
-  methods: {
-    async downloadPNG() {
-      if (this.dataURL === "") return;
-      saveAs(this.dataURL, this.drawingTool.title + ".png");
-    },
-    async copyKeypresses(){
-      let presses = await generateACNHKeypresses(this.drawingTool);
-      try {
-        await navigator.clipboard.writeText(presses);
-      } catch (err) {
-        alert("Error! Could not copy: "+e);
-      }
-      this.showKeypressCopied = true;
-    },
-  },
+})
+export default class Preview extends Vue {
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) readonly drawingTool!: DrawingTool;
+
+  readonly colors: typeof colors = colors;
+
+  /**
+   * The data URL of the fully generated qr code.
+   */
+  dataURL: string = "";
+
+  /**
+   * Whether show the modal warning users about the game mode change.
+   */
+  gameModeInfo: boolean = false;
+
+  /**
+   * Whether to show the keypress modal.
+   */
+  showKeypressModal: boolean = false;
+
+  /**
+   * Whether to show the clipboard copy confirmation
+   */
+  showKeypressCopied: boolean = false;
+
+
+  /**
+   * Downloads the qr code as apng file.
+   */
+  async downloadPNG() {
+    if (this.dataURL === "") return;
+    saveAs(this.dataURL, this.drawingTool.title + ".png");
+  }
+
+
+  /**
+   * Copies the keypresses data.
+   */
+  async copyKeypresses(){
+    let presses = await generateACNHKeypresses(this.drawingTool);
+    try {
+      await navigator.clipboard.writeText(presses);
+    } catch (err) {
+      alert("Error! Could not copy: "+ err);
+    }
+    this.showKeypressCopied = true;
+  }
+
+
   async mounted() {
     if (this.drawingTool.compatMode == "ACNL") {
       this.dataURL = await generateACNLQR(this.drawingTool);
     } else {
       this.dataURL = await generateACNHPBL(this.drawingTool);
     }
-  },
+  }
 };
 </script>
 

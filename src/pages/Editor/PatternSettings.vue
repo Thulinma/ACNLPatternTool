@@ -124,7 +124,8 @@
   </VCard>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   VCard,
   VCardTitle,
@@ -136,8 +137,11 @@ import {
 } from "vuetify/lib";
 import CancelButton from "@/components/modals/CancelButton.vue";
 import DrawingTool from "@/libs/DrawingTool";
+import ACNLFormat from "@/libs/ACNLFormat";
+import ACNHFormat from "@/libs/ACNHFormat";
+import { PatternDetails } from "./Editor.vue";
 
-export default {
+@Component({
   name: "Settings",
   components: {
     VCard,
@@ -149,95 +153,128 @@ export default {
     VIcon,
     CancelButton,
   },
-  props: {
-    types: {
-      type: Array,
-      required: true,
+})
+export default class Settings extends Vue {
+  @Prop({
+    type: Array,
+    required: true,
+  }) readonly types!: typeof ACNLFormat.typeInfo | typeof ACNHFormat.typeInfo;
+  
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  /**
+   * The initial pattern details before settings are changed.
+   */
+  @Prop({
+    type: Object,
+    required: true,
+  }) readonly patternDetails!: PatternDetails;
+  
+  /**
+   * Reference to the props `types`.
+   * TODO: exchange references for the props reference. Unnecessary reference duplication.
+   */
+  patternTypes: typeof ACNLFormat.typeInfo | typeof ACNHFormat.typeInfo = this.types;
+  
+  /**
+   * A copy of the original details. Allows for canceling of updating the pattern details.
+   */
+  details: PatternDetails = {
+    ...this.patternDetails,
+  };
+  
+  /**
+   * Whether to show the advanced meta options.
+   */
+  showAdvanced: boolean = false;
+  
+  
+  /**
+   * A copy of the original patternDetails type.
+   */
+  originalType: number = this.patternDetails.type;
+  
+  
+  /**
+   * A copy of the original creator and town data.
+   */
+  storedMeta:{
+    creator: PatternDetails['creator'],
+    town: PatternDetails['town'],
+  } = {
+    creator: {
+      id: 0,
+      name: "",
     },
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
+    town: {
+      id: 0,
+      name: "",
     },
-    patternDetails: {
-      type: Object,
-      required: true,
-    },
-  },
-  data: function () {
-    return {
-      patternTypes: this.$props.types,
-      details: {
-        ...this.$props.patternDetails,
-      },
-      storedAuthorHuman: undefined,
-      showAdvanced: false,
-      originalType: this.$props.patternDetails.type,
-      storedMeta: {
-        creator: {
-          id: 0,
-          name: "",
-        },
-        town: {
-          id: 0,
-          name: "",
-        },
-      },
-    };
-  },
-  computed: {
-    metaCreatorStr() {
-      const creatorStr = `creator: ${this.storedMeta.creator.id} ${this.storedMeta.creator.name}`;
-      return creatorStr;
-    },
-    metaTownStr() {
-      const townStr = `town: ${this.storedMeta.town.id} ${this.storedMeta.town.name}`;
-      return townStr;
-    },
-  },
-  methods: {
-    update() {
-      this.details.title = this.details.title.trim();
-      this.details.town.name = this.details.town.name.trim();
-      this.details.creator.name = this.details.creator.name.trim();
-      if (this.originalType !== this.details.type) {
-        const msg =
-          "A change in pattern type may cause the pattern to change in specific areas. Do you wish to proceed?";
-        const confirm = window.confirm(msg);
-        if (!confirm) return;
-      }
+  };
+  
+  get metaCreatorStr() {
+    const creatorStr = `creator: ${this.storedMeta.creator.id} ${this.storedMeta.creator.name}`;
+    return creatorStr;
+  }
+  
+  get metaTownStr() {
+    const townStr = `town: ${this.storedMeta.town.id} ${this.storedMeta.town.name}`;
+    return townStr;
+  }
+  
+  update() {
+    this.details.title = this.details.title.trim();
+    this.details.town.name = this.details.town.name.trim();
+    this.details.creator.name = this.details.creator.name.trim();
+    if (this.originalType !== this.details.type) {
+      const msg =
+        "A change in pattern type may cause the pattern to change in specific areas. Do you wish to proceed?";
+      const confirm = window.confirm(msg);
+      if (!confirm) return;
+    }
 
-      this.$emit("update-details", {
-        ...this.details,
-      });
-    },
-    storeMeta() {
-      const { town, creator } = this.details;
-      const meta = JSON.stringify({
-        creator: { ...creator },
-        town: { ...town },
-      });
+    this.$emit("update-details", {
+      ...this.details,
+    });
+  }
+  
+  
+  storeMeta() {
+    const { town, creator } = this.details;
+    const meta = JSON.stringify({
+      creator: { ...creator },
+      town: { ...town },
+    });
 
-      this.storedMeta.creator = { ...creator };
-      this.storedMeta.town = { ...town };
-      localStorage.setItem("acnl_meta", meta);
-    },
-    loadMeta() {
-      const meta = JSON.parse(localStorage.getItem("acnl_meta"));
-      if (meta == null) return;
-      this.details.creator.id = meta.creator.id;
-      this.details.creator.name = meta.creator.name;
-      this.details.town.id = meta.town.id;
-      this.details.town.name = meta.town.name;
-    },
-  },
-  mounted() {
+    this.storedMeta.creator = { ...creator };
+    this.storedMeta.town = { ...town };
+    localStorage.setItem("acnl_meta", meta);
+  }
+  
+  
+  loadMeta() {
+    // @ts-ignore
     const meta = JSON.parse(localStorage.getItem("acnl_meta"));
     if (meta == null) return;
+    this.details.creator.id = meta.creator.id;
+    this.details.creator.name = meta.creator.name;
+    this.details.town.id = meta.town.id;
+    this.details.town.name = meta.town.name;
+  }
+  
+  
+  mounted() {
+    const storedMetaStr = localStorage.getItem("acnl_meta");
+    if (storedMetaStr == null) return;
+    const meta = JSON.parse(localStorage.getItem("acnl_meta") as string);
     this.storedMeta.creator.id = meta.creator.id;
     this.storedMeta.creator.name = meta.creator.name;
     this.storedMeta.town.id = meta.town.id;
     this.storedMeta.town.name = meta.town.name;
-  },
+  }
 };
 </script>
 
