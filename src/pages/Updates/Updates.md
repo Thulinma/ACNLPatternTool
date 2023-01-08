@@ -1,6 +1,6 @@
 # Updates
 
-## Sept 27, 2022
+## October 16, 2022
 
 - Added page transitions
 - Revamped About Us Page
@@ -14,7 +14,7 @@
 - Improved storage loading time
 - Added enter/exit/move pattern item animations to storage view
 - Added ctrl/shift selections in storage view
-- Added expandable/collapseable mosaic view in storage to help view mosaics from conversions
+- Added expandable/collapsible mosaic view in storage to help view mosaics from conversions
 
 ## March 28, 2021
 

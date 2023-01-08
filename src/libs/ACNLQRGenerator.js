@@ -39,16 +39,14 @@ async function generateACNLQR(newData){
   //Create QR code(s) in memory
   let codes = [];
   if (bytes.byteLength > 620){
-    const hints = new Map();
     const parityByte = Math.round(Math.random()*255);
-    hints.set(EncodeHintType.STRUCTURED_APPEND, [0, 3, parityByte]);
-    codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 0, 540), QRCodeDecoderErrorCorrectionLevel.M, hints));
-    hints.set(EncodeHintType.STRUCTURED_APPEND, [1, 3, parityByte]);
-    codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 540, 540), QRCodeDecoderErrorCorrectionLevel.M, hints));
-    hints.set(EncodeHintType.STRUCTURED_APPEND, [2, 3, parityByte]);
-    codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 1080, 540), QRCodeDecoderErrorCorrectionLevel.M, hints));
-    hints.set(EncodeHintType.STRUCTURED_APPEND, [3, 3, parityByte]);
-    codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 1620, 540), QRCodeDecoderErrorCorrectionLevel.M, hints));
+    for (let i = 0; i < 4; ++i)
+      codes.push(QRCodeEncoder.encode(
+        new Uint8Array(bytes, i * 540, 540),
+        QRCodeDecoderErrorCorrectionLevel.M,
+        null,
+        [i, 3, parityByte],
+      ));
   }else{
     codes.push(QRCodeEncoder.encode(new Uint8Array(bytes, 0, 620), QRCodeDecoderErrorCorrectionLevel.M, null));
   }
