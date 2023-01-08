@@ -2,35 +2,49 @@
   <router-view @redirect="redirect"></router-view>
 </template>
 
-<script>
+<script lang="ts">
+import { namespace } from "vuex-class";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { mapGetters, mapActions } from "vuex";
 
-export default {
+const modModule = namespace('profile');
+
+@Component({
   name: "ModeratorIndex",
-  computed: {
-    ...mapGetters("profile", ["isLoggedIn"]),
-  },
-  methods: {
-    ...mapActions("profile", ["continue"]),
-    // corrects link upon landing
-    redirect: function () {
-      let target;
-      if (!this.isLoggedIn) target = "login";
-      else target = "dashboard";
-      let targetPath = `/moderator/${target}`;
-      if (this.$route.path === targetPath) return;
-      this.$router.push(`/moderator/${target}`);
-    },
-  },
-  watch: {
-    isLoggedIn: function (newVal, oldVal) {
-      this.redirect();
-    },
-  },
-  mounted: async function () {
+})
+export default class ModeratorIndex extends Vue {
+  /**
+   * Whether the current moderator is logged in.
+   */
+  @modModule.Getter('isLoggedIn') readonly isLoggedIn!: boolean;
+
+  /**
+   * Attempts to skip the login process using our username and password from
+   * the last time if did not log out.
+   */
+  @modModule.Action('continue') continue!: () => void;
+
+  /**
+   * Corrects the page where we should be upon landing..
+   */
+  redirect(): void {
+    let target;
+    if (!this.isLoggedIn) target = "login";
+    else target = "dashboard";
+    let targetPath = `/moderator/${target}`;
+    if (this.$route.path === targetPath) return;
+    this.$router.push(`/moderator/${target}`);
+  }
+  
+  @Watch('isLoggedIn')
+  onIsLoggedInChanged() {
+    this.redirect();
+  }
+  
+  async mounted() {
     await this.continue();
     this.redirect();
-  },
+  }
 };
 </script>
 

@@ -46,59 +46,96 @@
   </div>
 </template>
 
-<script>
-import { mapGetters, mapActions, mapState } from "vuex";
+<script lang="ts">
+import { namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
 
-export default {
+const modModule = namespace("profile");
+
+@Component({
   name: "ModeratorLogin",
-  data: function () {
-    return {
-      username: "",
-      password: "",
-      didFail: false,
-    };
-  },
-  computed: {
-    ...mapState("profile", {
-      usedUsername: "username",
-      usedPassword: "password",
-    }),
-    ...mapGetters("profile", ["isLoggedIn"]),
-  },
-  methods: {
-    ...mapActions("profile", ["logIn"]),
-    onUsernameChange: function (event) {
-      const username = event.target.value;
-      this.username = username;
-      this.didFail = false;
-    },
-    onPasswordChange: function (event) {
-      const password = event.target.value;
-      this.password = password;
-      this.didFail = false;
-    },
-    // refocuses if one field is missing, submit with all fields
-    onLogIn: async function () {
-      const { username, password, $refs } = this;
-      if (username.length <= 0) {
-        $refs.username.focus();
-        return;
-      }
-      if (password.length <= 0) {
-        $refs.password.focus();
-        return;
-      }
-      await this.logIn({ username, password });
-      if (!this.isLoggedIn) this.didFail = true;
-      else this.$emit("redirect");
-    },
-  },
-  mounted: function () {
+})
+export default class ModeratorLogin extends Vue {
+  $refs!: {
+    username: HTMLInputElement;
+    password: HTMLInputElement;
+  };
+
+  /**
+   * The account username from the last session (if any).
+   */
+  @modModule.State("username") readonly usedUsername!: string;
+
+  /**
+   * The account password from the last session (if any).
+   */
+  @modModule.State("password") readonly usedPassword!: string;
+
+  /**
+   * Whether the user is logged into the account.
+   */
+  @modModule.Getter("isLoggedIn") readonly isLoggedIn!: string;
+
+  @modModule.Action("logIn")
+  logIn!: ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) => Promise<void>;
+
+  /**
+   * The user's moderator account username.
+   */
+
+  username: string = "";
+
+  /**
+   * The user's moderator account password.
+   */
+  password: string = "";
+
+  /**
+   * Whether we failed to log in with these credentials.`
+   * Used for form feedback.
+   */
+  didFail: boolean = false;
+
+  onUsernameChange(event: KeyboardEvent) {
+    const username = (event.target as HTMLInputElement).value;
+    this.username = username;
+    this.didFail = false;
+  }
+
+  onPasswordChange(event: KeyboardEvent) {
+    const password = (event.target as HTMLInputElement).value;
+    this.password = password;
+    this.didFail = false;
+  }
+
+  // refocuses if one field is missing, submit with all fields
+  async onLogIn() {
+    const { username, password, $refs } = this;
+    if (username.length <= 0) {
+      $refs.username.focus();
+      return;
+    }
+    if (password.length <= 0) {
+      $refs.password.focus();
+      return;
+    }
+    await this.logIn({ username, password });
+    if (!this.isLoggedIn) this.didFail = true;
+    else this.$emit("redirect");
+  }
+
+  mounted() {
     // only restores on success, handles back navigation edge case
     this.username = this.usedUsername;
     this.password = this.usedPassword;
-  },
-};
+  }
+}
 </script>
 
 

@@ -26,8 +26,8 @@
         <IconGenerator
           class="pickPattern"
           :pattern="opt.bytes"
-          width="150"
-          height="150"
+          :width="150"
+          :height="150"
         />
         <div class="pattern-details">
           <span>by {{ opt.author }}</span>
@@ -148,65 +148,115 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { UploadEntry, StyleTag } from "@/libs/origin";
+import { namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
 import { mapGetters, mapState, mapActions } from "vuex";
 import DrawingTool from "@/libs/DrawingTool";
 import IconGenerator from "@/components/IconGenerator.vue";
 
-const colors = {
-  natural: "#EAC558",
-  cute: "#E96598",
-  sporty: "#5EC299",
-  cool: "#6BB6DC",
-  rustic: "#74940D",
-  hip: "#EB7E32",
-  harmonious: "#DC3D32",
-  elegant: "#D589E8",
-  modern: "#5BC0B3",
-  historical: "#8D2E4B",
-  civic: "#4F57C8",
-  silly: "#E64369",
-  spooky: "#363655",
-  "sci-fi": "#408877",
-  aquatic: "#328BCE",
-  floral: "#EA80DA",
-  animal: "#AF2E33",
-  holiday: "#48903B",
-  food: "#B156FD",
-  brand: "#E93F33",
-  anime: "#EB8D77",
-  "video-game": "#0D1010",
-  meme: "#52307C",
+const colors: Record<StyleTag, string> = {
+  [StyleTag.Natural]: "#EAC558",
+  [StyleTag.Cute]: "#E96598",
+  [StyleTag.Sporty]: "#5EC299",
+  [StyleTag.Cool]: "#6BB6DC",
+  [StyleTag.Rustic]: "#74940D",
+  [StyleTag.Hip]: "#EB7E32",
+  [StyleTag.Harmonious]: "#DC3D32",
+  [StyleTag.Elegant]: "#D589E8",
+  [StyleTag.Modern]: "#5BC0B3",
+  [StyleTag.Historical]: "#8D2E4B",
+  [StyleTag.Civic]: "#4F57C8",
+  [StyleTag.Silly]: "#E64369",
+  [StyleTag.Spooky]: "#363655",
+  [StyleTag.SciFi]: "#408877",
+  [StyleTag.Aquatic]: "#328BCE",
+  [StyleTag.Floral]: "#EA80DA",
+  [StyleTag.Animal]: "#AF2E33",
+  [StyleTag.Holiday]: "#48903B",
+  [StyleTag.Food]: "#B156FD",
+  [StyleTag.Brand]: "#E93F33",
+  [StyleTag.Anime]: "#EB8D77",
+  [StyleTag.VideoGame]: "#0D1010",
+  [StyleTag.Meme]: "#52307C",
 };
 
-export default {
+const modModule = namespace('profile');
+
+@Component({
   name: "ModeratorDashboard",
   components: {
     IconGenerator,
   },
-  computed: {
-    ...mapState("profile", ["username", "pending"]),
-    ...mapGetters("profile", ["isLoggedIn"]),
-  },
-  methods: {
-    ...mapActions("profile", ["logOut", "getPending", "reject", "approve"]),
-    onLogOut: async function () {
+})
+export default class ModeratorDashboard extends Vue {
+  /**
+   * The username of this moderator user.
+   */
+  @modModule.State('username') readonly username!: string;
+  
+  /**
+   * The list of entries pending approval  pending approval.
+   */
+  @modModule.State('pending') readonly pending!: Array<UploadEntry>;
+  
+  /**
+   * Whether the current moderator is logged in.
+   */
+  @modModule.Getter('isLoggedIn') readonly isLoggedIn!: boolean;
+  
+  /**
+   * Logs out this moderator user.
+   */
+  @modModule.Action('logOut') logOut!: () => void;
+  
+  /**
+   * Refrehes the list of entries pending approval.
+   */
+  @modModule.Action('getPending') getPending!: () => void;
+  
+  /**
+   * Rejects the pattern.
+   */
+  @modModule.Action('reject') reject!: (hash: string) => void;
+  
+  /**
+   * Approves the pattern with options.
+   */
+  @modModule.Action('approve')
+  approve!: ({
+    hash,
+    options,
+  } : {
+    hash: string,
+    options: UploadEntry,
+  }) => void;
+  
+    async onLogOut() {
       await this.logOut();
-    },
-    onGetPending: async function () {
+    }
+    
+    async onGetPending() {
       await this.getPending();
-    },
-    tagClass(tag) {
+    }
+    
+    tagClass(tag: StyleTag) {
       if (tag != null)
         return {
-          backgroundColor: `${colors[tag.toLowerCase().replace(" ", "-")]}`,
+          backgroundColor: `${colors[tag]}`,
         };
-    },
-    wipePattern: async function (bytes) {
+    }
+    
+    /**
+     * @param bytes The bytes string of the upload entry.
+     */
+    async wipePattern(bytes: string): Promise<void> {
       const dT = new DrawingTool(bytes);
       await this.reject(dT.pixelHash);
-    },
-    okPattern: async function (options) {
+    }
+    
+    async okPattern(options: UploadEntry): Promise<void> {
       //Opt may contain:
       // nsfc: 0/1
       // offensive: 0/1
@@ -216,8 +266,7 @@ export default {
       const dT = new DrawingTool(options.bytes);
       const hash = dT.pixelHash;
       await this.approve({ hash, options });
-    },
-  },
+    }
 };
 </script>
 
