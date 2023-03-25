@@ -65,7 +65,7 @@
         <div class="filter-title">Town</div>
           <VTextField
             class="text-field"
-            v-model="nextOptions.authorFilter"
+            v-model="nextOptions.townFilter"
             @keyup.enter="onSearch"
             outlined
             clearable
