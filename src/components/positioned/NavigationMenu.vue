@@ -111,14 +111,14 @@
   </VCard>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import { VCard } from "vuetify/lib";
-
 // header svgs
 import IconNookHead from "@/assets/icons/nookphone/nook-head.svg?inline";
 import IconNookGPS from "@/assets/icons/nookphone/nook-gps.svg?inline";
 import IconNookService from "@/assets/icons/nookphone/nook-service.svg?inline";
-
+// nav icons
 import IconNavBrowse from "@/assets/icons/nav/browse.svg?inline";
 import IconNavEditor from "@/assets/icons/nav/editor.svg?inline";
 import IconNavFaq from "@/assets/icons/nav/faq.svg?inline";
@@ -131,8 +131,8 @@ import IconNavTwitter from "@/assets/icons/nav/twitter.svg?inline";
 import CancelButton from "@/components/modals/CancelButton.vue";
 
 const menuTitleDefault = "Main Menu";
-export default {
-  name: "NookPhoneMenu",
+
+@Component({
   components: {
     VCard,
     IconNavHome,
@@ -148,49 +148,46 @@ export default {
     IconNookService,
     CancelButton,
   },
-  data: function () {
-    return {
-      menuTitle: "Main Menu",
-    };
-  },
-  computed: {
-    dateObj: () =>  new Date(),
-    time: {
-      get: () => {
-      return new Date().toLocaleTimeString("en-US", {
+})
+export default class NookPhoneMenu extends Vue {
+  menuTitle: string = "MainMenu";
+  currDateTime: Date = new Date();
+  interval: number | undefined;
+  
+  get time() {
+    return this.currDateTime.toLocaleTimeString(
+      "en-US", {
         hour: "2-digit",
         timeZoneName: "short",
-      });
       },
-      set: (value) => {
-        return value;
-      }
-    },
-  },
-  mounted() {
-    const interval = setInterval(
-      () =>
-        (this.time = this.dateObj.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          timeZoneName: "short",
-        })),
-      1000
     );
-  },
-  methods: {
-    enterNavItem: async function (menuTitle = menuTitleDefault) {
-      this.menuTitle = menuTitle;
-    },
-    leaveNavItem: async function () {
-      const curr = this.menuTitle;
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve();
-        }, 300);
-      });
-      if (this.menuTitle === curr) this.menuTitle = menuTitleDefault;
-    },
-  },
+  }
+  
+  async enterNavItem(menuTitle: string = menuTitleDefault) {
+    this.menuTitle = menuTitle;
+  }
+  
+  async leaveNavItem() {
+    const curr = this.menuTitle;
+    await new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 300);
+    });
+    if (this.menuTitle === curr)
+      this.menuTitle = menuTitleDefault;
+  }
+  
+  mounted() {
+    this.interval = window.setInterval(() => {
+      this.currDateTime = new Date();
+    }, 1000);
+  }
+  
+  unmounted() {
+    window.clearInterval(this.interval);
+    this.interval = undefined;
+  }
 };
 </script>
 

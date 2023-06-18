@@ -13,46 +13,50 @@
   </Fragment>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { Fragment } from "vue-fragment";
 import { VFileInput } from "vuetify/lib";
 import { zipExts, extsToRead } from "@/libs/reader";
+import { read } from "@/libs/reader";
 
-export default {
-  name: "FileLoader",
+@Component({
   components: {
     VFileInput,
     Fragment,
   },
-  props: {
-    exts: {
-      type: Array,
-      required: true,
-    },
-  },
-  data: function() {
-    // single file (not in array) if not multiple
-    return {
-      files: null,
-    };
-  },
-  computed: {
-    accept() { return this.exts.join(","); },
-    multiple() { return this.exts === zipExts; }
-  },
-  methods: {
-    open() {
-      this.$refs.files.$el.querySelector("input").click();
-    },
-    async onChange() {
-      const drawingTools = await extsToRead.get(this.exts)(
-        this.multiple
-        ? this.files
-        : [this.files]
-      );;
-      this.$emit("load", drawingTools);
-      this.files = null; // reset
-    },
-  },
+})
+export default class FileLoader extends Vue {
+  $refs!: { files: Vue; }
+  
+  @Prop({
+    type: Array,
+    required: true,
+  }) readonly exts!: string[];
+  
+  files: File | File[] | null = null;
+  
+  get accept() { return this.exts.join(","); }
+  
+  get multiple() { return this.exts === zipExts; }
+  
+  /** Forcefully opens the browser file dialog. */
+  open() {
+    (
+      this.$refs.files.$el
+        .querySelector("input") as HTMLInputElement
+    )
+    .click();
+  }
+  
+  async onChange() {
+    const drawingTools = await (extsToRead.get(this.exts) as read)((
+      this.multiple
+      ? this.files
+      : [this.files]
+    ) as File[]);
+    this.$emit("load", drawingTools);
+    this.files = null; // reset
+  }
 };
 </script>

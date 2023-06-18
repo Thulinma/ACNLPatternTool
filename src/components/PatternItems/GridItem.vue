@@ -25,43 +25,45 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import { first } from "lodash";
 import {
   VCard,
   VCardText,
   VSpacer,
 } from "vuetify/lib";
+import {
+  Vue,
+  Component,
+  Prop,
+} from "vue-property-decorator";
 import MosaicPreview from "@/components/PatternItems/MosaicPreview.vue";
+import { PatternItem } from "@/libs/storage";
 
-export default {
+@Component({
   components: {
     VCard,
     VCardText,
     VSpacer,
     MosaicPreview,
   },
-  props: {
-    patternItemGroup: {
-      type: Array,
-      required: true,
-      validator: (patternItemGroup) => patternItemGroup.length >= 1,
-    },
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    patternItem() {
-      return first(this.patternItemGroup);
-    },
-  },
-  methods: {
-    onClick(event) {
-      event.stopPropagation();
-      this.$emit('click', event);
-    }
-  },
+})
+export default class GridItem extends Vue {
+  @Prop({
+    type: Array,
+    required: true,
+    validator: (patternItemGroup) => patternItemGroup.length >= 1,
+  }) readonly patternItemGroup!: PatternItem[];
+  
+  /** The first pattern item of the pattern item group. */
+  get patternItem(): PatternItem {
+    return first(this.patternItemGroup) as PatternItem;
+  }
+  
+  onClick(event: MouseEvent) {
+    event.stopPropagation();
+    this.$emit('click', event);
+  }
 };
 </script>
 

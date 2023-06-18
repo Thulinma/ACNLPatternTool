@@ -22,7 +22,7 @@ import {
   TextureLoader,
   Vector3,
 } from "three";
-import { GLTFLoader } from '@three/loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 //Global canvas and renderer
 let threeCanvas = document.createElement("canvas");

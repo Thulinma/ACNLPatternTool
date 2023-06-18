@@ -63,9 +63,9 @@
         >
           <VRadio
             v-for="option in imageSmoothingQualityOptions"
-            :key="option.imageSmoothingQuality"
-            :label="option.name"
-            :value="option.imageSmoothingQuality"
+            :key="option.text"
+            :label="option.text"
+            :value="option.value"
             :color="colors.jambalaya"
           />
         </VRadioGroup>
@@ -79,9 +79,9 @@
         >
           <VRadio
             v-for="option in isSplitPaletteOptions"
-            :key="option.isSplitPalette"
-            :label="option.name"
-            :value="option.isSplitPalette"
+            :key="option.text"
+            :label="option.text"
+            :value="option.value"
             :color="colors.jambalaya"
           />
         </VRadioGroup>
@@ -96,9 +96,9 @@
         >
           <VRadio
             v-for="option in paletteSelectorOptions"
-            :key="option.name"
-            :label="option.name"
-            :value="option.paletteSelector"
+            :key="option.text"
+            :label="option.text"
+            :value="option.value"
             :color="colors.jambalaya"
           />
         </VRadioGroup>
@@ -107,10 +107,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VBtn, VCheckbox, VRadio, VRadioGroup, VSlider } from "vuetify/lib";
 import { ImageSmoothingQuality } from "@/libs/canvasHelpers";
 import {
+  PaletteSelector,
   selectRGBPaletteFromImgData,
   selectYUVPaletteFromImgData,
   selectMedianCutPaletteFromImgData,
@@ -118,99 +120,65 @@ import {
   selectSepiaPalettefromImgData,
   selectLowestDistancePalette,
 } from "@/libs/converter";
+import { Option } from "@/libs/component-helpers";
 
 
 import colors from "@/styles/colors.scss";
 
-const paletteSelectorOptions = [
+const paletteSelectorOptions: Option<PaletteSelector>[] = [
   {
-    name: "RGB Colors",
-    paletteSelector: selectRGBPaletteFromImgData,
+    text: "RGB Colors",
+    value: selectRGBPaletteFromImgData,
   },
   {
-    name: "YUV Colors",
-    paletteSelector: selectYUVPaletteFromImgData,
+    text: "YUV Colors",
+    value: selectYUVPaletteFromImgData,
   },
   {
-    name: "Median Cut",
-    paletteSelector: selectMedianCutPaletteFromImgData,
+    text: "Median Cut",
+    value: selectMedianCutPaletteFromImgData,
   },
   {
-    name: "Greyscale",
-    paletteSelector: selectGreyscalePaletteFromImgData,
+    text: "Greyscale",
+    value: selectGreyscalePaletteFromImgData,
   },
   {
-    name: "Sepia",
-    paletteSelector: selectSepiaPalettefromImgData,
+    text: "Sepia",
+    value: selectSepiaPalettefromImgData,
   },
 ];
 
-const imageSmoothingQualityOptions = [
+const imageSmoothingQualityOptions: Option<ImageSmoothingQuality>[] = [
   {
-    name: "Sharpened",
-    imageSmoothingQuality: ImageSmoothingQuality.sharp,
+    text: "Sharpened",
+    value: ImageSmoothingQuality.sharp,
   },
   {
-    name: "Low Quality",
-    imageSmoothingQuality: ImageSmoothingQuality.low,
+    text: "Low Quality",
+    value: ImageSmoothingQuality.low,
   },
   {
-    name: "Medium Quality",
-    imageSmoothingQuality: ImageSmoothingQuality.medium,
+    text: "Medium Quality",
+    value: ImageSmoothingQuality.medium,
   },
   {
-    name: "High Quality",
-    imageSmoothingQuality: ImageSmoothingQuality.high,
+    text: "High Quality",
+    value: ImageSmoothingQuality.high,
   },
 ];
 
-const isSplitPaletteOptions = [
+const isSplitPaletteOptions: Option<boolean>[] = [
   {
-    name: "Split Palette",
-    isSplitPalette: true,
+    text: "Split Palette",
+    value: true,
   },
   {
-    name: "Shared Palette",
-    isSplitPalette: false,
+    text: "Shared Palette",
+    value: false,
   },
 ];
 
-export default {
-  name: "Adjusting",
-  props: {
-    isMosaic: {
-      type: Boolean,
-      required: true,
-    },
-    croppedIsTransparent: {
-      type: Boolean,
-      required: false,
-    },
-    transparency: {
-      type: Number,
-      required: true,
-    },
-    saturation: {
-      type: Number,
-      required: true,
-    },
-    imageSmoothingQuality: {
-      type: String,
-      required: true,
-    },
-    isSplitPalette: {
-      type: Boolean,
-      required: true,
-    },
-    paletteSelector: {
-      type: Function,
-      required: true,
-    },
-    previewDataURL: {
-      type: String,
-      required: false,
-    },
-  },
+@Component({
   components: {
     VBtn,
     VCheckbox,
@@ -218,14 +186,52 @@ export default {
     VRadioGroup,
     VSlider,
   },
-  data: function () {
-    return {
-      colors,
-      imageSmoothingQualityOptions,
-      isSplitPaletteOptions,
-      paletteSelectorOptions,
-    };
-  },
+})
+export default class AdjustingStage extends Vue {
+  @Prop({
+    type: Boolean,
+    required: true,
+  }) readonly isMosaic!: boolean;
+  
+  @Prop({
+    type: Boolean,
+    required: true,
+  }) readonly croppedIsTransparent!: boolean;
+  
+  @Prop({
+    type: Number,
+    required: true,
+  }) readonly transparency!: number;
+  
+  @Prop({
+    type: Number,
+    required: true,
+  }) readonly saturation!: number;
+  
+  @Prop({
+    type: String,
+    required: true,
+  }) readonly imageSmoothingQuality!: string;
+  
+  @Prop({
+    type: Boolean,
+    required: true,
+  }) readonly isSplitPalette!: boolean;
+  
+  @Prop({
+    type: Function,
+    required: true,
+  }) readonly paletteSelector!: PaletteSelector;
+  
+  @Prop({
+    type: String,
+    required: false,
+  }) readonly previewDataURL!: string
+  
+  readonly colors = colors;
+  readonly imageSmoothingQualityOptions = imageSmoothingQualityOptions;
+  readonly isSplitPaletteOptions = isSplitPaletteOptions;
+  readonly paletteSelectorOptions = paletteSelectorOptions;
 };
 </script>
 

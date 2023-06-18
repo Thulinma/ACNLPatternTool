@@ -5,30 +5,30 @@
   />
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator"
+import { PatternItem } from "@/libs/storage";
 import DrawingTool from "@/libs/DrawingTool";
 
 /**
  * PatternItem hash to dataURL mapping.
- * @type {Map<string, string>}
  */
-const srcCache = new Map();
+const srcCache = new Map<string, string>();
 
 /**
  * A PatternItem preview that can cache its own preview.
- */
-export default {
-  props: {
-    patternItem: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      src: "",
-    };
-  },
+*/
+@Component
+export default class SinglePreview extends Vue {
+  /** The pattern item to be rendered for the preview. */
+  @Prop({
+    type: Object,
+    required: true,
+  }) readonly patternItem!: PatternItem;
+  
+  /** The src string for the image. Will be generated if not in cache. */
+  src: string = "";
+  
   mounted() {
     if (!srcCache.has(this.patternItem.fullHash)) {
       // draw the pattern
@@ -42,8 +42,8 @@ export default {
       const dataUrl = canvas.toDataURL("image/png");
       srcCache.set(this.patternItem.fullHash, dataUrl);
     }
-    this.src = srcCache.get(this.patternItem.fullHash);
-  },
+    this.src = srcCache.get(this.patternItem.fullHash) as string;
+  }
 };
 </script>
 

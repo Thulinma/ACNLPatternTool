@@ -5,15 +5,17 @@
 </template>
 
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import MarkdownPage from "@/components/MarkdownPage.vue";
 import FAQMarkdown from "./FAQ.md";
 
-export default {
-  name: "FAQ",
+@Component({
   components: {
     MarkdownPage,
     FAQMarkdown,
   },
+})
+export default class FAQ extends Vue {
 };
 </script>

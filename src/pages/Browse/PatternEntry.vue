@@ -24,24 +24,21 @@
 </template>
 
 
-<script>
+<script lang="ts">
+import { PatternEntry } from "@/libs/origin";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import IconGenerator from "@/components/IconGenerator.vue";
 
-export default {
-  name: "PatternEntry",
+@Component({
   components: {
     IconGenerator,
   },
-  props: {
-    patternEntry: {
-      type: Object,
-      required: true,
-    },
-  },
-  data: function () {
-    return {};
-  },
-  methods: {},
+})
+export default class VPatternEntry extends Vue {
+  @Prop({
+    type: Object,
+    required: true,
+  }) readonly patternEntry!: PatternEntry;
 };
 </script>
 

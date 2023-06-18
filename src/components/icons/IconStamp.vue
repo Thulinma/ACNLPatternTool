@@ -111,15 +111,15 @@
 </template>
 
 
-<script>
-export default {
-  name: "IconStamp",
-  props: {
-    dateText: {
-      required: true,
-      type: String
-    }
-  }
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class IconStamp extends Vue {
+  @Prop({
+    type: String,
+    required: true,
+  }) dateText!: string;
 };
 </script>
 

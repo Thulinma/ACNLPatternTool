@@ -139,7 +139,7 @@
               }"
               v-bind="attrs"
               v-on="on"
-              @click="selectTool('fill', null)"
+              @click="selectTool('fill', '')"
               :ripple="false"
               elevation="0"
             >
@@ -165,7 +165,7 @@
               }"
               v-bind="attrs"
               v-on="on"
-              @click="selectTool('eyeDropper', null)"
+              @click="selectTool('eyeDropper', '')"
               :ripple="false"
               elevation="0"
             >
@@ -422,8 +422,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { v4 as uuidv4 } from "uuid";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   VDialog,
   VCard,
@@ -464,14 +465,15 @@ import IconGrid from "@/assets/icons/bx-grid.svg?inline";
 
 
 import colors from "@/styles/colors.scss";
+import { ColorPickerMode, PatternDetails } from "./Editor.vue";
 
 // tool functions IIFE
 const brush = (() => {
-  const small = (x, y, tool) => {
+  const small = (x: number, y: number, tool: DrawingTool) => {
     tool.drawPixel(x, y);
   };
 
-  const medium = (x, y, tool) => {
+  const medium = (x: number, y: number, tool: DrawingTool) => {
     const color = tool.setPixel(x, y);
     tool.setPixel(x - 1, y, color); // left
     tool.setPixel(x + 1, y, color); // right
@@ -480,8 +482,8 @@ const brush = (() => {
     tool.render();
   };
 
-  const large = (x, y, tool) => {
-    const color = tool.setPixel(x, y, color);
+  const large = (x: number, y: number, tool: DrawingTool) => {
+    const color = tool.setPixel(x, y);
     tool.setPixel(x - 1, y, color); // left
     tool.setPixel(x - 2, y, color); // left left
     tool.setPixel(x + 1, y, color); // right
@@ -499,7 +501,7 @@ const brush = (() => {
   return { small, medium, large };
 })();
 
-const eyeDropper = (x, y, tool) => {
+const eyeDropper = (x: number, y: number, tool: DrawingTool) => {
   let newColor = tool.getPixel(x, y);
   if (newColor !== false) {
     tool.currentColor = newColor;
@@ -507,13 +509,13 @@ const eyeDropper = (x, y, tool) => {
   }
 };
 
-const fill = (x, y, tool) => {
+const fill = (x: number, y: number, tool: DrawingTool) => {
   const prevColor = tool.getPixel(x, y);
   const newColor = tool.currentColor;
   if (prevColor === false) return; // invalid pixel
   if (prevColor === newColor) return; // nothing to flood
   let counter = 0;
-  const reColor = (inX, inY) => {
+  const reColor = (inX: number, inY: number) => {
     const thisColor = tool.getPixel(inX, inY);
     // not we're setting color on pixel data, has not been rendered, speed optimization
     if (
@@ -531,14 +533,17 @@ const fill = (x, y, tool) => {
   tool.render();
 };
 
+type Tool = (x: number, y: number, drawingTool: DrawingTool) => void;
+type ToolMap = Record<string, Tool>
+
 // string to handler mappings
-const toolMappings = {
+const toolMappings: Record<string, Tool | ToolMap> = {
   brush,
   fill,
   eyeDropper,
 };
 
-export default {
+@Component({
   name: "ToolBar",
   components: {
     VDialog,
@@ -573,176 +578,238 @@ export default {
     ACNLToACNHInfo,
     ACNHToACNLInfo,
   },
-  props: {
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
-    },
-    prevColorPicker: {
-      type: String,
-      required: false,
-    },
-    colorPicker: {
-      type: String,
-      required: false,
-    },
-    patternDetails: {
-      type: Object,
-      required: true,
-    },
-    mainGrid: {
-      type: Boolean,
-      required: true,
+})
+export default class Toolbar extends Vue {
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  @Prop({
+    type: String,
+    required: false,
+  }) prevColorPicker: ColorPickerMode = "acnl";
+  
+  @Prop({
+    required: true,
+  }) colorPicker!: ColorPickerMode | null;
+  
+  @Prop({
+    type: Object,
+    required: true,
+  }) patternDetails!: PatternDetails;
+  
+  @Prop({
+    type: Boolean,
+    required: true,
+  }) mainGrid!: boolean;
+  
+  readonly colors: typeof colors = colors;
+  
+  /**
+   * A string referring to a key in the tool mapping.
+   */
+  tool: string = "";
+  
+  /**
+   * A string referring to a key in the tool in the tool mapping.
+   * e.g. with a tool set to "brush", option can be set to "small"
+   */
+  option: string = "";
+  
+  
+  /**
+   * Whether to show the pattern settings modal.
+   */
+  settingsOpen: boolean = false;
+  
+  
+  /**
+   * Whether to show the preview modal.
+   */
+  previewOpen: boolean = false;
+  
+  
+  /**
+   * Whether to show the storage mdodal.
+   */
+  storageOpen: boolean = false;
+  
+  
+  /**
+   * Whether the game mode is ACNH
+   */
+  gameMode: boolean = this.drawingTool.compatMode === "ACNH";
+  
+  
+  /**
+   * Whether to show the modal warning users about a game mode change.
+   */
+  gameModeWarning: boolean = false;
+  
+  
+  /**
+   * Whether to forever dismiss the game mode warning modal.
+   */
+  dismissForever: boolean = false;
+  
+  
+  /**
+   * Component metadata.
+   */
+  gridInputId: string = uuidv4();
+  
+  /**
+   * Combines two vue event listener
+   */
+  readonly combineOns: typeof combineOns = combineOns;
+  
+  
+  load(binaryString: string) {
+    this.$emit("load", binaryString);
+  }
+  
+  
+  onChangeColorPicker(mode: ColorPickerMode) {
+    this.$emit("change-color-picker", mode);
+  }
+  
+  
+  /**
+   * Selects the primary tool for the left mouse button.
+   * @param alt Whether to select the secondary tool for the right mouse button instead.
+   */
+  selectTool(newTool: string, newOption: string, alt: boolean = false) {
+    // no matching tool, bail
+    if (!(newTool in toolMappings)) return;
+    let tool = toolMappings[newTool];
+    if (newOption && typeof toolMappings[newTool] === "object") {
+      if (!(newOption in toolMappings[newTool])) return;
+      tool = (tool as ToolMap)[newOption];
     }
-  },
-  data() {
-    return {
-      colors,
-      tool: null,
-      option: null,
-      settingsOpen: false,
-      previewOpen: false,
-      storageOpen: false,
-      // isACNH
-      gameMode: this.drawingTool.compatMode === "ACNH",
-      gameModeWarning: false,
-      dismissForever: false,
-      // component metadata
-      gridInputId: uuidv4(),
-    };
-  },
-  methods: {
-    combineOns,
-    load: function (binaryString) {
-      this.$emit("load", binaryString);
-    },
-    onChangeColorPicker: function (mode) {
-      this.$emit("change-color-picker", mode);
-    },
-    /**
-     * Sets the tool to the mouse button
-     *
-     * @param {String} mode
-     * @param {String} option
-     */
-    selectTool: function (newTool, newOption = null, alt = false) {
-      // no matching tool, bail
-      if (!(newTool in toolMappings)) return;
-      let tool = toolMappings[newTool];
-      if (newOption && typeof toolMappings[newTool] === "object") {
-        if (!(newOption in toolMappings[newTool])) return;
-        tool = tool[newOption];
-      }
-      if (alt) this.drawingTool.drawHandlerAlt = tool;
-      else {
-        this.drawingTool.drawHandler = tool;
-        this.tool = newTool;
-        this.option = newOption;
-      }
-    },
-    // helps determines if the passed tool is the current tool drawHandler
-    // can also determine if a tool has options
-    // -1 means invalid, none matching
-    // 0 counts itself
-    // 1+ for options not counting itself
-    countToolOptions: function (newTool, newOption) {
-      if (!(newTool in toolMappings)) return -1;
-      if (typeof toolMappings[newTool] === "function") return 0;
-      if (typeof toolMappings[newTool] === "object") {
-        if (newOption == null) return Object.keys(toolMappings[newTool]).length;
-        if (!(newOption in toolMappings[newTool])) return -1;
-        else return 0;
-      }
-      return -1;
-    },
-    cycleOptions: function () {
-      const { tool, option } = this;
-      if (this.option == null) return;
-      const options = Object.keys(toolMappings[tool]);
-      const idx = options.indexOf(option);
-      const nextIdx = (idx + 1) % options.length;
-      const nextOption = options[nextIdx];
-      this.option = nextOption;
-      this.selectTool(tool, nextOption);
-    },
-    onKey: async function (event) {
-      const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } =
-        event;
-      const noMod = !ctrlKey && !altKey && !metaKey && !shiftKey;
-      if (noMod) {
-        // cycle tool options
-        if (code === "KeyT") {
-          this.cycleOptions();
-          return;
-        }
-        // qrPreview
-        else if (code === "KeyP") {
-          this.settingsOpen = false;
-          this.$emit("change-color-picker", null);
-          // need to wait 2 ticks for portal to process
-          await this.$nextTick();
-          await this.$nextTick();
-          this.previewOpen = true;
-          return;
-        }
-      }
-      // undo redos
-      if (ctrlKey && !altKey && !metaKey) {
-        if (code === "KeyZ") {
-          if (shiftKey) this.drawingTool.redo();
-          else this.drawingTool.undo();
-        }
-      }
-    },
-    changeGameModeWithWarning() {
-      const targetCompatMode =
-        this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
-      const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
-      const dismissForever =
-        localStorage.getItem(
-          `dismiss${currentCompatMode}To${targetCompatMode}`
-        ) === "true";
-      if (!dismissForever) {
-        this.gameModeWarning = true;
+    if (alt) this.drawingTool.drawHandlerAlt = tool as Tool;
+    else {
+      this.drawingTool.drawHandler = tool as Tool;
+      this.tool = newTool;
+      this.option = newOption;
+    }
+  }
+  
+  
+  // helps determines if the passed tool is the current tool drawHandler
+  // can also determine if a tool has options
+  // -1 means invalid, none matching
+  // 0 counts itself
+  // 1+ for options not counting itself
+  countToolOptions(newTool: string, newOption: string): number {
+    if (!(newTool in toolMappings)) return -1;
+    if (typeof toolMappings[newTool] === "function") return 0;
+    if (typeof toolMappings[newTool] === "object") {
+      if (newOption == null) return Object.keys(toolMappings[newTool]).length;
+      if (!(newOption in toolMappings[newTool])) return -1;
+      else return 0;
+    }
+    return -1;
+  }
+  
+  
+  cycleOptions() {
+    const { tool, option } = this;
+    if (this.option == null) return;
+    const options = Object.keys(toolMappings[tool]);
+    const idx = options.indexOf(option);
+    const nextIdx = (idx + 1) % options.length;
+    const nextOption = options[nextIdx];
+    this.option = nextOption;
+    this.selectTool(tool, nextOption);
+  }
+  
+  
+  async onKey(event: KeyboardEvent) {
+    const { ctrlKey, altKey, metaKey, shiftKey, code, preventDefault } =
+      event;
+    const noMod = !ctrlKey && !altKey && !metaKey && !shiftKey;
+    if (noMod) {
+      // cycle tool options
+      if (code === "KeyT") {
+        this.cycleOptions();
         return;
       }
-      this.drawingTool.compatMode = targetCompatMode;
-      this.gameMode = this.drawingTool.compatMode === "ACNH";
-      this.$emit(
-        "change-prev-color-picker",
-        this.drawingTool.compatMode.toLowerCase()
-      );
-    },
-    changeGameModeFromWarning(dismissForever) {
-      this.gameModeWarning = false;
-      const targetCompatMode =
-        this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
-      const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
-      if (dismissForever) {
-        localStorage.setItem(
-          `dismiss${currentCompatMode}To${targetCompatMode}`,
-          true
-        );
+      // qrPreview
+      else if (code === "KeyP") {
+        this.settingsOpen = false;
+        this.$emit("change-color-picker", null);
+        // need to wait 2 ticks for portal to process
+        await this.$nextTick();
+        await this.$nextTick();
+        this.previewOpen = true;
+        return;
       }
-      this.drawingTool.compatMode = targetCompatMode;
-      this.gameMode = this.drawingTool.compatMode === "ACNH";
-      this.$emit(
-        "change-prev-color-picker",
-        this.drawingTool.compatMode.toLowerCase()
+    }
+    // undo redos
+    if (ctrlKey && !altKey && !metaKey) {
+      if (code === "KeyZ") {
+        if (shiftKey) this.drawingTool.redo();
+        else this.drawingTool.undo();
+      }
+    }
+  }
+  
+  
+  changeGameModeWithWarning() {
+    const targetCompatMode =
+      this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
+    const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
+    const dismissForever =
+      localStorage.getItem(
+        `dismiss${currentCompatMode}To${targetCompatMode}`
+      ) === "true";
+    if (!dismissForever) {
+      this.gameModeWarning = true;
+      return;
+    }
+    this.drawingTool.compatMode = targetCompatMode;
+    this.gameMode = this.drawingTool.compatMode === "ACNH";
+    this.$emit(
+      "change-prev-color-picker",
+      this.drawingTool.compatMode.toLowerCase()
+    );
+  }
+  
+  
+  changeGameModeFromWarning(dismissForever: boolean) {
+    this.gameModeWarning = false;
+    const targetCompatMode =
+      this.drawingTool.compatMode === "ACNH" ? "ACNL" : "ACNH";
+    const currentCompatMode = targetCompatMode === "ACNH" ? "ACNL" : "ACNH";
+    if (dismissForever) {
+      localStorage.setItem(
+        `dismiss${currentCompatMode}To${targetCompatMode}`,
+        String(true)
       );
-    },
-  },
+    }
+    this.drawingTool.compatMode = targetCompatMode;
+    this.gameMode = this.drawingTool.compatMode === "ACNH";
+    this.$emit(
+      "change-prev-color-picker",
+      this.drawingTool.compatMode.toLowerCase()
+    );
+  }
+  
+  
   mounted() {
     this.selectTool("brush", "small");
-    this.selectTool("eyeDropper", null, true);
+    this.selectTool("eyeDropper", "", true);
     window.addEventListener("keydown", this.onKey);
     this.drawingTool.onLoad((t) => {
       this.gameMode = t.compatMode == "ACNH";
     });
-  },
+  }
+  
+  
   beforeDestroy() {
     window.removeEventListener("keydown", this.onKey);
-  },
+  }
 };
 </script>
 

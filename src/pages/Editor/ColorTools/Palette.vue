@@ -44,67 +44,68 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import DrawingTool from "@/libs/DrawingTool";
 
+import { Vue, Component, Prop } from "vue-property-decorator";
 // svg icons
 import IconColorBlob from "@/components/icons/IconColorBlob.vue";
 import IconTransparentBlob from "@/components/icons/IconTransparentBlob.vue";
 
-export default {
-  name: "Palette",
+@Component({
   components: {
     IconColorBlob,
     IconTransparentBlob,
   },
-  props: {
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
-    },
-  },
-  data: function () {
-    const paletteColors = [];
-    for (let i = 0; i < 15; ++i)
-      paletteColors.push(this.drawingTool.getPalette(i));
-    return {
-      paletteColors,
-    };
-  },
-  methods: {
-    invalidIdx: function (idx) {
-      if (idx > 15 || idx < 0) {
-        console.log("detected invalid current color value:", idx);
-        return true;
-      }
-    },
-    onColorClick: function (event, idx) {
+})
+export default class Palette extends Vue {
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  paletteColors = new Array(16)
+    .fill(0)
+    .map((_v, i) => this.drawingTool.getPalette(i));
+    
+  invalidIdx(idx: number): boolean {
+    if (idx > 15 || idx < 0) {
+      console.log("detected invalid current color value:", idx);
+      return true;
+    }
+    return false;
+  }
+  
+  onColorClick(_event: MouseEvent, idx: number): void {
+    if (this.invalidIdx(idx)) return;
+    // DOUBLE CLICK, OPEN COLOR PICKER
+    if (this.drawingTool.currentColor === idx) {
+      this.$emit("change-color-picker");
+    }
+    this.$emit("change-current-color", idx);
+  }
+  
+  onColorMousemove(event: MouseEvent, idx: number): void {
+    if (event.buttons === 1) {
       if (this.invalidIdx(idx)) return;
-      // DOUBLE CLICK, OPEN COLOR PICKER
-      if (this.drawingTool.currentColor === idx) {
-        this.$emit("change-color-picker");
-      }
       this.$emit("change-current-color", idx);
-    },
-    onColorMousemove: function (event, idx) {
-      if (event.buttons === 1) {
-        if (this.invalidIdx(idx)) return;
-        this.$emit("change-current-color", idx);
-      }
-    },
-    updatePaletteColors: function () {
-      for (let i = 0; i < 15; ++i) {
-        const paletteColor = this.drawingTool.getPalette(i);
-        this.paletteColors.splice(i, 1, paletteColor);
-      }
-    },
-  },
-  mounted: function () {
+    }
+  }
+  
+  updatePaletteColors(): void {
+    for (let i = 0; i < 15; ++i) {
+      const paletteColor = this.drawingTool.getPalette(i);
+      this.paletteColors.splice(i, 1, paletteColor);
+    }
+  }
+  
+  mounted() {
     this.drawingTool.onColorChange(this.updatePaletteColors);
-  },
-  beforeDestroy: function () {
+  }
+  
+  beforeDestroy() {
     this.drawingTool.onColorChangeRemove(this.updatePaletteColors);
-  },
+  }
 };
 </script>
 

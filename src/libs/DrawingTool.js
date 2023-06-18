@@ -154,7 +154,7 @@ function toHex(n){return (n<16?"0":"")+n.toString(16);}
 
 class DrawingTool{
   /**
-   * @param {string | Uint8Array} data 
+   * @param {string | Uint8Array | DrawingTool} data 
    */
   constructor(data = null){
     this.renderTargets = []; //TODO: Should this be a map, perhaps? How do maps work in JS? Can we de-duplicate..?
@@ -171,13 +171,19 @@ class DrawingTool{
       if (data != null){this.load(data);}
     }
   }
-
+  
   ///Clears all data (except render targets and onLoad handlers) to defaults
   reset(){
     this.pattern = new ACNLFormat();
     this.pixels_buffer = new ArrayBuffer(4096);
     this.pixels = new Uint8Array(this.pixels_buffer);
+    /**
+     * @type {(x: number, y: number, tool: DrawingTool) => void}
+     */
     this.drawHandler = basicDrawing;
+    /**
+     * @type {(x: number, y: number, tool: DrawingTool) => void}
+     */
     this.drawHandlerAlt = basicDrawing;
     this.currentColor = 0;
     this.undoHistory = [];
@@ -282,13 +288,13 @@ class DrawingTool{
   get fullHash(){return this.pattern.fullHash();}
   /** @type {string} */
   get pixelHash(){return this.pattern.pixelHash();}
-  /** @type {number} */
+  /** @type {string} The name of the pattern. */
   get title(){return this.pattern.title;}
   set title(n){this.pattern.title = n;}
-  /** @type {string} */
+  /** @type {[string, number]} Creator name and id. */
   get creator(){return this.pattern.creator;}
   set creator(n){this.pattern.creator = n;}
-  /** @type {string} */
+  /** @type {[string, number]} */
   get town(){return this.pattern.town;}
   set town(n){this.pattern.town = n;}
   fixIssues(){this.pattern.fixIssues();}
@@ -404,6 +410,10 @@ class DrawingTool{
 
     this.onLoad();
   }
+  
+  /**
+   * @type {typeof ACNLFormat.typeInfo | typeof ACNHFormat.typeInfo}
+   */
   get allTypes(){
     if (this.pattern instanceof ACNHFormat){
       return ACNHFormat.typeInfo;
@@ -560,7 +570,11 @@ class DrawingTool{
     this.render();
   }
 
-  /// Returns the HTML color of the given palette index
+  /**
+   * Gets the css 6 digit hex color of the palette color at the index.
+   * @param {number} idx 0 - 14 only, #15 is the transparent ref
+   * @returns {string}
+   */
   getPalette(idx){
     if (idx < 0 || idx > 14){return "";}//abort for invalid indexes
     if (this.pattern instanceof ACNHFormat){
@@ -805,6 +819,12 @@ class DrawingTool{
   /// When called with a function as parameter, adds an event handler for pattern loads.
   /// When called without parameter (or with null), calls all onLoad event handlers in sequence.
   /// Called automatically whenever pattern changes type, when it is reset, or when an entirely new pattern is loaded
+  
+  /**
+   * Triggers onload handlers when called with a null argument or adds a handler
+   * when a callback is passed through.
+   * @param {(drawingTool: DrawingTool) => any | null} f 
+   */
   onLoad(f = null){
     if (f === null){
       for (let i in this.handleOnLoad){
@@ -815,9 +835,12 @@ class DrawingTool{
     }
   }
 
-  /// When called with a function as parameter, adds an event handler for color changes.
-  /// When called without parameter (or with null), calls all onColorChange event handlers in sequence.
-  /// Called automatically whenever colors in the palette change, or a new pattern is loaded.
+  /**
+   * When called with a function as parameter, adds an event handler for color changes.
+   * When called without parameter (or with null), calls all onColorChange event handlers in sequence.
+   * Called automatically whenever colors in the palette change, or a new pattern is loaded.
+   * @param {null | Function} f 
+   */
   onColorChange(f = null){
     if (f === null){
       for (let i in this.handleColorChange){
@@ -828,7 +851,10 @@ class DrawingTool{
     }
   }
 
-  // removes a handler
+  /**
+   * Removes a handler.
+   * @param {null | Function} f 
+   */
   onColorChangeRemove(f = null) {
     if ((typeof f) === "function") {
       const idx = this.handleColorChange.indexOf(f);

@@ -91,7 +91,8 @@
   </VCard>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   VToolbar,
   VToolbarTitle,
@@ -111,12 +112,12 @@ import Grid from "@/components/PatternItems/Grid.vue";
 import GridItemSelector from "@/components/PatternItems/GridItemSelector.vue";
 import GridItem from "@/components/PatternItems/GridItem.vue";
 import CancelButton from "@/components/modals/CancelButton.vue";
-import UtilityBar from "@/components/positioned/UtilityBar.vue";
-
+import UtilityBar, { UtilityBarOption } from "@/components/positioned/UtilityBar.vue";
+import { PatternItem } from "@/libs/storage";
 import colors from "@/styles/colors.scss";
 
-export default {
-  name: "PatternContainer",
+
+@Component({
   components: {
     VToolbar,
     VToolbarTitle,
@@ -137,34 +138,28 @@ export default {
     UtilityBar,
     BrushIcon,
   },
-  props: {
-    patternItems: {
-      type: Array,
-      required: true,
-      default: () => new Array(),
-    },
-    selected: {
-      type: Array,
-      required: false,
-      default: () => new Array(),
-    },
-    options: {
-      type: Array,
-      required: false,
-      default: () => new Array(),
-    },
-  },
-  data: function () {
-    return {
-      expandMosaics: false,
-      colors,
-      isOptionsOpen: false,
-    };
-  },
-  methods: {
-    isSelected(patternItem) {
-      return this.selected.includes(patternItem);
-    }
+})
+export default class PatternContainer extends Vue {
+  @Prop({
+    type: Array,
+    required: true,
+  }) readonly patternItems!: PatternItem[];
+  
+  @Prop({
+    type: Array,
+    default: () => [],
+  }) readonly selected!: PatternItem[];
+  
+  @Prop({
+    type: Array,
+    default: () => [],
+  }) readonly options!: UtilityBarOption[];
+  
+  readonly colors = colors;
+  expandMosaics: boolean = false;
+
+  isSelected(patternItem: PatternItem) {
+    return this.selected.includes(patternItem);
   }
 };
 </script>

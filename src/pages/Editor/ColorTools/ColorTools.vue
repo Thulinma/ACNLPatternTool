@@ -62,7 +62,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   VCard,
   VCardText,
@@ -71,15 +72,14 @@ import {
   VTabsItems,
   VTabItem,
 } from "vuetify/lib";
-import Palette from "./Palette";
+import Palette from "./Palette.vue";
 import DrawingTool from "@/libs/DrawingTool";
-import ACNLColorPicker from "./ACNLColorPicker";
-import ACNHColorPicker from "./ACNHColorPicker";
+import ACNLColorPicker from "./ACNLColorPicker.vue";
+import ACNHColorPicker from "./ACNHColorPicker.vue";
 
 import colors from "@/styles/colors.scss";
 
-export default {
-  name: "ColorTools",
+@Component({
   components: {
     VCard,
     VCardText,
@@ -91,57 +91,56 @@ export default {
     ACNLColorPicker,
     ACNHColorPicker,
   },
-  props: {
-    drawingTool: {
-      type: DrawingTool,
-      required: true,
-    },
-    prevColorPicker: {
-      type: String,
-      required: false,
-    },
-    colorPicker: {
-      type: String,
-      required: false,
-    },
-  },
-  data() {
-    return {
-      colors,
-      modes: ["acnl", "acnh"],
-    };
-  },
-  computed: {
-    isPicking: function () {
-      return this.colorPicker != null;
-    },
-    isACNL: function () {
-      return this.colorPicker === "acnl";
-    },
-    isACNH: function () {
-      return this.colorPicker === "acnh";
-    },
-    isWheel: function () {
-      return this.colorPicker === "wheel";
-    },
-    modeIndex() {
-      if (this.colorPicker == null)
-        return 0;
-      return this.modes.indexOf(this.colorPicker);
-    },
-  },
-  methods: {
-    onModeIndex(modeIndex) {
-      this.$emit("change-color-picker", this.modes[modeIndex]);
-    },
-    // also responsible for closing, send null to close
-    onChangeColorPicker: function (colorPickerMode) {
-      this.$emit("change-color-picker", colorPickerMode);
-    },
-    onChangeCurrentColor: function (idx) {
-      this.$emit("change-current-color", idx);
-    },
-  },
+})
+export default class ColorTools extends Vue {
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  @Prop({
+    type: String,
+    required: false,
+  }) prevColorPicker!: "acnl" | "acnh" | null;
+  
+  @Prop({
+    type: String,
+    required: false,
+  }) colorPicker!: "acnl" | "acnh" | null;
+  
+  readonly colors = colors;
+  readonly modes = ["acnl", "acnh"];
+  
+  get isPicking(): boolean {
+    return this.colorPicker != null;
+  }
+  
+  get isACNL(): boolean {
+    return this.colorPicker === "acnl";
+  }
+  
+  get isACNH(): boolean {
+    return this.colorPicker === "acnh";
+  }
+  
+  get modeIndex(): number {
+    if (this.colorPicker == null)
+      return 0;
+    return this.modes.indexOf(this.colorPicker);
+  }
+  
+  onModeIndex(modeIndex: number): void {
+    this.$emit("change-color-picker", this.modes[modeIndex]);
+  }
+  
+  // also responsible for closing, send null to close
+  onChangeColorPicker(colorPickerMode: "acnl" | "acnh" | null): void {
+    this.$emit("change-color-picker", colorPickerMode);
+  }
+  
+  onChangeCurrentColor(idx: number): void {
+    this.$emit("change-current-color", idx);
+  }
 };
 </script>
 

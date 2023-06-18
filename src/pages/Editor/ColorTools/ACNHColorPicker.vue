@@ -174,7 +174,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { VSlider } from "vuetify/lib";
 import ACNHFormat from "@/libs/ACNHFormat";
 
@@ -182,145 +183,142 @@ import IconLeftArrow from "@/assets/icons/bxs-left-arrow.svg?inline";
 import IconRightArrow from "@/assets/icons/bxs-right-arrow.svg?inline";
 
 import colors from "@/styles/colors.scss";
+import DrawingTool from "@/libs/DrawingTool";
 
 const hues = 30;
 const vividnesses = 15;
 const brightnesses = 15;
 
-export default {
-  name: "ACNHColorPicker",
+@Component({
   components: {
     VSlider,
     IconLeftArrow,
     IconRightArrow,
   },
-  props: {
-    drawingTool: Object,
-  },
-  data() {
-    return {
-      hues,
-      vividnesses,
-      brightnesses,
-      
-      colors,
-      hue: 0,
-      vividness: 0,
-      brightness: 0,
-      hueSliderColors: [],
-      vividnessSliderColors: [],
-      brightnessSliderColors: [],
-      hueGradient: {
-        background: "",
-      },
-      vividnessGradient: {
-        background: "",
-      },
-      brightnessGradient: {
-        background: "",
-      },
-      currentColor: 0,
-      acnh: this.drawingTool.compatMode === "ACNH",
-    };
-  },
-  methods: {
-    setSliderColors: function () {
-      // color of draw tool will be in HSV format
-      // increments based on slots in sliders in ACNH
-      // H = hue 1 - 30
-      // S = vividness 1 - 15
-      // V = brightness 1 - 15
+})
+export default class ACNHColorPicker extends Vue {
+  @Prop({
+    type: DrawingTool,
+    required: true,
+  }) drawingTool!: DrawingTool;
+  
+  readonly hues = hues;
+  readonly vividnesses = vividnesses;
+  readonly brightnesses = brightnesses;
+  readonly colors = colors;
+  
+  hueSliderColors: string[] = [];
+  vividnessSliderColors: string[] = [];
+  brightnessSliderColors: string[] = [];
+  
+  hue: number = 0;
+  vividness: number = 0;
+  brightness: number = 0;
+  
+  hueGradient = { background: "" };
+  vividnessGradient = { background: "" };
+  brightnessGradient = { background: "" };
+  
+  currentColor: string = "";
+  
+  acnh = this.drawingTool.compatMode === "ACNH";
+  
+  setSliderColors(): void {
+    // color of draw tool will be in HSV format
+    // increments based on slots in sliders in ACNH
+    // H = hue 1 - 30
+    // S = vividness 1 - 15
+    // V = brightness 1 - 15
 
-      // hue
-      let hueSlider = [];
-      for (let i = 0; i < hues; i++) {
-        hueSlider.push(
-          ACNHFormat.slidersToColor(i, this.vividness, this.brightness)
-        );
-      }
-      this.hueSliderColors = [...hueSlider];
+    // hue
+    let hueSlider = [];
+    for (let i = 0; i < hues; i++) {
+      hueSlider.push(
+        ACNHFormat.slidersToColor(i, this.vividness, this.brightness)
+      );
+    }
+    this.hueSliderColors = [...hueSlider];
 
-      // vividness & brightness
-      let vividnessSlider = [];
-      for (let i = 0; i < vividnesses; i++) {
-        vividnessSlider.push(
-          ACNHFormat.slidersToColor(this.hue, i, this.brightness)
-        );
-      }
-      
-      let brightnessSlider = [];
-      for (let i = 0; i < brightnesses; i++) {
-        brightnessSlider.push(
-          ACNHFormat.slidersToColor(this.hue, this.vividness, i)
-        );
-      }
-      
-      this.vividnessSliderColors = [...vividnessSlider];
-      this.brightnessSliderColors = [...brightnessSlider];
-      
-      const hueStops = this.hueSliderColors.map((color, i) => {
-        if (i === 0)
-          return `${color} ${i * 100/hueSlider.length}%`;
-        return `${color} ${i * 100/hueSlider.length}% ${(i + 1) * 100/hueSlider.length}%`;
-      });
-      
-      const vividnessStops = this.vividnessSliderColors.map((color, i) => {
-        if (i === 0)
-          return `${color} ${(i + 1) * 100/vividnessSlider.length}%`;
-        return `${color} ${i * 100/vividnessSlider.length}% ${(i + 1) * 100/vividnessSlider.length}%`;
-      });
-      
-      const brightnessStops = this.brightnessSliderColors.map((color, i) => {
-        if (i === 0)
-          return `${color} ${(i + 1) * 100/brightnessSlider.length}%`;
-        return `${color} ${i * 100/brightnessSlider.length}% ${(i + 1) * 100/brightnessSlider.length}%`;
-      });
-      
-      this.hueGradient.background =
-        `linear-gradient(to right, ${hueStops.join(",")})`;
-      this.vividnessGradient.background =
-        `linear-gradient(to right, ${vividnessStops.join(",")})`;
-      this.brightnessGradient.background =
-        `linear-gradient(to right, ${brightnessStops.join(",")})`;
-      if (
-        this.currentColor !==
+    // vividness & brightness
+    let vividnessSlider = [];
+    for (let i = 0; i < vividnesses; i++) {
+      vividnessSlider.push(
+        ACNHFormat.slidersToColor(this.hue, i, this.brightness)
+      );
+    }
+    
+    let brightnessSlider = [];
+    for (let i = 0; i < brightnesses; i++) {
+      brightnessSlider.push(
+        ACNHFormat.slidersToColor(this.hue, this.vividness, i)
+      );
+    }
+    
+    this.vividnessSliderColors = [...vividnessSlider];
+    this.brightnessSliderColors = [...brightnessSlider];
+    
+    const hueStops = this.hueSliderColors.map((color, i) => {
+      if (i === 0)
+        return `${color} ${i * 100/hueSlider.length}%`;
+      return `${color} ${i * 100/hueSlider.length}% ${(i + 1) * 100/hueSlider.length}%`;
+    });
+    
+    const vividnessStops = this.vividnessSliderColors.map((color, i) => {
+      if (i === 0)
+        return `${color} ${(i + 1) * 100/vividnessSlider.length}%`;
+      return `${color} ${i * 100/vividnessSlider.length}% ${(i + 1) * 100/vividnessSlider.length}%`;
+    });
+    
+    const brightnessStops = this.brightnessSliderColors.map((color, i) => {
+      if (i === 0)
+        return `${color} ${(i + 1) * 100/brightnessSlider.length}%`;
+      return `${color} ${i * 100/brightnessSlider.length}% ${(i + 1) * 100/brightnessSlider.length}%`;
+    });
+    
+    this.hueGradient.background =
+      `linear-gradient(to right, ${hueStops.join(",")})`;
+    this.vividnessGradient.background =
+      `linear-gradient(to right, ${vividnessStops.join(",")})`;
+    this.brightnessGradient.background =
+      `linear-gradient(to right, ${brightnessStops.join(",")})`;
+    if (
+      this.currentColor !==
+      ACNHFormat.slidersToColor(this.hue, this.vividness, this.brightness)
+    ) {
+      this.currentColor = ACNHFormat.slidersToColor(
+        this.hue,
+        this.vividness,
+        this.brightness
+      );
+      this.$emit(
+        "color-picked",
         ACNHFormat.slidersToColor(this.hue, this.vividness, this.brightness)
-      ) {
-        this.currentColor = ACNHFormat.slidersToColor(
-          this.hue,
-          this.vividness,
-          this.brightness
-        );
-        this.$emit(
-          "color-picked",
-          ACNHFormat.slidersToColor(this.hue, this.vividness, this.brightness)
-        );
-      }
-    },
-    setSliderPosition: function (currentColor) {
-      // when user switches between colors on the palettes,
-      // we need to display the correct colors on the sliders
-      // as well as have the sliders in the right positions
+      );
+    }
+  }
+  
+  setSliderPosition(currentColor: string): void {
+    // when user switches between colors on the palettes,
+    // we need to display the correct colors on the sliders
+    // as well as have the sliders in the right positions
 
-      // set selected drawing color
-      // todo: need to call this from editor at same time as onChangedCurrentColor
-      let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(currentColor);
-      if (!rgb) {
-        return;
-      }
+    // set selected drawing color
+    // todo: need to call this from editor at same time as onChangedCurrentColor
+    let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(currentColor);
+    if (!rgb) { return; }
 
-      rgb = {
-        r: parseInt(rgb[1], 16),
-        g: parseInt(rgb[2], 16),
-        b: parseInt(rgb[3], 16),
-      };
+    const parsedRgb = {
+      r: parseInt(rgb[1], 16),
+      g: parseInt(rgb[2], 16),
+      b: parseInt(rgb[3], 16),
+    };
 
-      const sliderPositions = ACNHFormat.colorToSliders(rgb.r, rgb.g, rgb.b);
-      this.hue = sliderPositions[0];
-      this.vividness = sliderPositions[1];
-      this.brightness = sliderPositions[2];
-    },
-  },
+    const sliderPositions = ACNHFormat.colorToSliders(parsedRgb.r, parsedRgb.g, parsedRgb.b);
+    this.hue = sliderPositions[0];
+    this.vividness = sliderPositions[1];
+    this.brightness = sliderPositions[2];
+  }
+  
   mounted() {
     this.setSliderPosition(this.drawingTool.color);
     this.setSliderColors();
@@ -328,12 +326,17 @@ export default {
       this.setSliderPosition(this.drawingTool.color);
       this.setSliderColors();
     });
-  },
-  watch: {
-    hue() { this.setSliderColors(); },
-    vividness() { this.setSliderColors(); },
-    brightness() { this.setSliderColors(); },
   }
+  
+  
+    @Watch('hue')
+    onHueChanged() { this.setSliderColors(); }
+    
+    @Watch('vividness')
+    onVividnessChanged() { this.setSliderColors(); }
+    
+    @Watch('brightness')
+    onBrightnessChanged() { this.setSliderColors(); }
 };
 </script>
 

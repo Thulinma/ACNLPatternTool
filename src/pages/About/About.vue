@@ -23,149 +23,162 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import Passport from "./Passport.vue";
+import { InfoItemOptions } from "./InfoItem.vue";
 import photoViet from "@/assets/images/char/photo_viet.jpg";
 import photoThulinma from "@/assets/images/char/photo_thulinma.svg";
 import photoTero from "@/assets/images/char/photo_tero.jpg";
 import photoMyumi from "@/assets/images/char/photo_myumi.jpg";
 import photoMelon from "@/assets/images/char/photo_melon.png";
 
-export default {
+export interface MemberOptions {
+  headerTextColor?: string,
+  accentColor?: string,
+  photo?: string,
+  name?: string,
+  greeting?: string,
+  title?: string,
+  role?: string,
+  roleIcon?: string,
+  topInfoItems?: InfoItemOptions[],
+  bottomInfoItems?: InfoItemOptions[],
+}
+
+@Component({
   components: {
     Passport,
   },
-  data: function () {
-    return {
-      members: [
-        {
-          headerTextColor: "#91a28a",
-          accentColor: "#e6eccf",
-          photo: photoThulinma,
-          name: "Thulinma",
-          greeting: "acpatterns.com!",
-          title: "Computer Magician",
-          role: "Tool Developer",
-          roleIcon: "mdi-wrench",
-          topInfoItems: [
-            {
-              icon: "mdi-island",
-              iconFill: "#318746",
-              label: "Thulopia",
-            }
-          ],
-          bottomInfoItems: [
-            {
-              icon: "mdi-account",
-              iconFill: "#66afb8",
-              label: "Portfolio",
-              url: "https://thulinma.com",
-            },
-          ],
-        },
-        {
-          headerTextColor: "#838486",
-          accentColor: "#d7d7d7",
-          photo: photoViet,
-          name: "DamSenViet",
-          role: "Tool Developer",
-          roleIcon: "mdi-wrench",
-          greeting: "Sleeping atm.",
-          title: "Sleeping Human",
-          topInfoItems: [
-            {
-              icon: "mdi-island",
-              iconFill: "#318746",
-              label: "Norende",
-            }
-          ],
-          bottomInfoItems: [
-            {
-              icon: "mdi-account",
-              iconFill: "#66afb8",
-              label: "Portfolio",
-              url: "https://vietdaitran.com",
-            },
-          ],
-        },
-        {
-          headerTextColor: "#9fa8a7",
-          accentColor: "#dfebd5",
-          photo: photoMyumi,
-          name: "Myumi K.",
-          role: "Tool Developer",
-          roleIcon: "mdi-wrench",
-          greeting: "(๑•̀ㅂ•́)و",
-          title: "Aggressive Birthday Girl",
-          topInfoItems: [
-            {
-              icon: "mdi-island",
-              iconFill: "#318746",
-              label: "Willowtale",
-            }
-          ],
-          bottomInfoItems: [
-            {
-              icon: "mdi-github",
-              iconFill: "#000000",
-              label: "GitHub",
-              url: "https://github.com/myumi",
-            },
-          ],
-        },
-        {
-          headerTextColor: "#a09d7e",
-          accentColor: "#fbeec1",
-          photo: photoTero,
-          name: "Tero",
-          role: "Icon Designer",
-          roleIcon: "mdi-brush",
-          greeting: "Graphic design is my passion",
-          title: "Easy-Breezy Designer",
-          topInfoItems: [
-            {
-              icon: "mdi-island",
-              iconFill: "#318746",
-              label: "Koron",
-            },
-          ],
-          bottomInfoItems: [
-            {
-              icon: "mdi-account",
-              iconFill: "#66afb8",
-              label: "Portfolio",
-              url: "https://tero.space",
-            },
-          ],
-        },
-        {
-          headerTextColor: "#b59e8e",
-          accentColor: "#f7e7d6",
-          photo: photoMelon,
-          name: "MelonSpeedruns",
-          greeting: "Yahoo!!",
-          role: "Data Miner",
-          roleIcon: "mdi-pickaxe",
-          title: "Fruit Person",
-          topInfoItems: [
-            {
-              icon: "mdi-island",
-              iconFill: "#318746",
-              label: "Fruita",
-            },
-          ],
-          bottomInfoItems: [
-            {
-              icon: "mdi-twitter",
-              iconFill: "#1da1f2",
-              label: "Twitter",
-              url: "https://twitter.com/MelonSpeedruns",
-            },
-          ],
-        },
-      ],
-    };
-  },
+})
+export default class About extends Vue {
+    members: MemberOptions[] = [
+      {
+        headerTextColor: "#91a28a",
+        accentColor: "#e6eccf",
+        photo: photoThulinma,
+        name: "Thulinma",
+        greeting: "acpatterns.com!",
+        title: "Computer Magician",
+        role: "Tool Developer",
+        roleIcon: "mdi-wrench",
+        topInfoItems: [
+          {
+            icon: "mdi-island",
+            iconFill: "#318746",
+            label: "Thulopia",
+          }
+        ],
+        bottomInfoItems: [
+          {
+            icon: "mdi-account",
+            iconFill: "#66afb8",
+            label: "Portfolio",
+            url: "https://thulinma.com",
+          },
+        ],
+      },
+      {
+        headerTextColor: "#838486",
+        accentColor: "#d7d7d7",
+        photo: photoViet,
+        name: "DamSenViet",
+        role: "Tool Developer",
+        roleIcon: "mdi-wrench",
+        greeting: "Sleeping atm.",
+        title: "Sleeping Human",
+        topInfoItems: [
+          {
+            icon: "mdi-island",
+            iconFill: "#318746",
+            label: "Norende",
+          }
+        ],
+        bottomInfoItems: [
+          {
+            icon: "mdi-account",
+            iconFill: "#66afb8",
+            label: "Portfolio",
+            url: "https://vietdaitran.com",
+          },
+        ],
+      },
+      {
+        headerTextColor: "#9fa8a7",
+        accentColor: "#dfebd5",
+        photo: photoMyumi,
+        name: "Myumi K.",
+        role: "Tool Developer",
+        roleIcon: "mdi-wrench",
+        greeting: "(๑•̀ㅂ•́)و",
+        title: "Aggressive Birthday Girl",
+        topInfoItems: [
+          {
+            icon: "mdi-island",
+            iconFill: "#318746",
+            label: "Willowtale",
+          }
+        ],
+        bottomInfoItems: [
+          {
+            icon: "mdi-github",
+            iconFill: "#000000",
+            label: "GitHub",
+            url: "https://github.com/myumi",
+          },
+        ],
+      },
+      {
+        headerTextColor: "#a09d7e",
+        accentColor: "#fbeec1",
+        photo: photoTero,
+        name: "Tero",
+        role: "Icon Designer",
+        roleIcon: "mdi-brush",
+        greeting: "Graphic design is my passion",
+        title: "Easy-Breezy Designer",
+        topInfoItems: [
+          {
+            icon: "mdi-island",
+            iconFill: "#318746",
+            label: "Koron",
+          },
+        ],
+        bottomInfoItems: [
+          {
+            icon: "mdi-account",
+            iconFill: "#66afb8",
+            label: "Portfolio",
+            url: "https://tero.space",
+          },
+        ],
+      },
+      {
+        headerTextColor: "#b59e8e",
+        accentColor: "#f7e7d6",
+        photo: photoMelon,
+        name: "MelonSpeedruns",
+        greeting: "Yahoo!!",
+        role: "Data Miner",
+        roleIcon: "mdi-pickaxe",
+        title: "Fruit Person",
+        topInfoItems: [
+          {
+            icon: "mdi-island",
+            iconFill: "#318746",
+            label: "Fruita",
+          },
+        ],
+        bottomInfoItems: [
+          {
+            icon: "mdi-twitter",
+            iconFill: "#1da1f2",
+            label: "Twitter",
+            url: "https://twitter.com/MelonSpeedruns",
+          },
+        ],
+      },
+    ]
 };
 </script>
 

@@ -4,14 +4,13 @@
       <VTextField
         class="searchbar"
         v-model="nextOptions.titleFilter"
-        @keyup.enter="onSearch"
+        @input="onSearchDebounced"
         outlined
         clearable
         placeholder="Search..."
       >
         <template #prepend-inner>
-          <VIcon v-if="isOptionsChanged" :color="colors.jambalaya">mdi-cached</VIcon>
-          <VIcon v-else :color="colors.jambalaya">mdi-magnify</VIcon>
+          <VIcon color="colors.jambalaya">mdi-magnify</VIcon>
         </template>
       </VTextField>
     </div>
@@ -26,7 +25,7 @@
           :items="typeOptsList[i]"
           outlined
           hide-details
-          @keyup.enter.prevent="onSearch"
+          @input="onSearchDebounced"
           :menu-props="{
             'content-class': 'browse-tag--menu',
           }"
@@ -42,7 +41,7 @@
           :items="styleOptsList[i]"
           outlined
           hide-details
-          @keyup.enter.prevent="onSearch"
+          @input="onSearchDebounced"
           :menu-props="{
             'content-class': 'browse-tag--menu',
           }"
@@ -54,7 +53,7 @@
           <VTextField
             class="text-field"
             v-model="nextOptions.authorFilter"
-            @keyup.enter="onSearch"
+            @input="onSearchDebounced"
             outlined
             clearable
             hide-details
@@ -65,8 +64,8 @@
         <div class="filter-title">Town</div>
           <VTextField
             class="text-field"
-            v-model="nextOptions.authorFilter"
-            @keyup.enter="onSearch"
+            v-model="nextOptions.townFilter"
+            @input="onSearchDebounced"
             outlined
             clearable
             hide-details
@@ -81,7 +80,7 @@
           :items="sortingOpts"
           outlined
           hide-details
-          @keyup.enter="onSearch"
+          @input="onSearchDebounced"
           :menu-props="{
             'content-class': 'browse-tag--menu',
           }"
@@ -124,18 +123,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import qs from "qs";
+import { debounce } from "lodash";
 import {
   Sorting,
   StyleTag,
   TypeTag,
+  PatternEntry,
 } from "@/libs/origin";
 import {
   createOptions,
   cloneOptions,
+  SearchOptions,
 } from "@/store/modules/browse/helpers";
-import { createNamespacedHelpers } from "vuex";
+
+import { namespace } from "vuex-class"
+import { Vue, Component } from "vue-property-decorator";
+import { NavigationGuardNext, Route } from "vue-router";
 
 import {
   VPagination,
@@ -143,11 +148,14 @@ import {
   VSelect,
   VTextField,
 } from "vuetify/lib";
-import PatternEntry from "./PatternEntry";
+
+import VPatternEntry from "./PatternEntry.vue";
 import BxRefresh from "@/assets/icons/bx-refresh.svg?inline";
 
-import { computeOptsList } from "@/libs/component-helpers";
+import { Option, computeOptsList } from "@/libs/component-helpers";
 import colors from "@/styles/colors.scss";
+
+const browseModule = namespace('browse');
 
 // const colors = {
 //   natural: "#EAC558",
@@ -175,213 +183,16 @@ import colors from "@/styles/colors.scss";
 //   meme: "#52307C",
 // };
 
-export default {
-  name: "Browse",
-  
+@Component({
   components: {
     VPagination,
     VIcon,
     VSelect,
     VTextField,
-    PatternEntry,
+    PatternEntry: VPatternEntry,
     BxRefresh,
   },
-  
-  data() {
-    return {
-      colors,
-      // enumerated values from origin
-      styleTagOptions: Object.values(StyleTag),
-      typeTagOptions: Object.values(TypeTag),
-      // search options replicated from browse
-      currOptions: createOptions(),
-      currResults: new Array(),
-      nextOptions: createOptions(),
-      isLoading: false,
-      // current page number 0 indexed
-      pageSize: 30,
-      pageNumber: 0,
-    };
-  },
-  
-  computed: {
-    
-    /**
-     * Style tag options lists available at each selected style tag index.
-     */
-    styleOptsList() {
-      return computeOptsList(
-        this.nextOptions.styleTagsFilter,
-        [{ text: '- - -', value: null }],
-        this.styleTagOptions.map(style => ({ text: style, value: style })),
-      );
-    },
-
-    /**
-     * Type tag options lists available at each selected style tag index.
-     */
-    typeOptsList() {
-      return computeOptsList(
-        this.nextOptions.typeTagsFilter,
-        [{ text: '- - -', value: null }],
-        this.typeTagOptions.map(style => ({ text: style, value: style })),
-      );
-    },
-    
-    /**
-     * Sorting options.
-     */
-    sortingOpts() {
-      return Object.entries(Sorting)
-        .reverse()
-        .map(([text, value]) => ({
-            text,
-            value,
-          }));
-    },
-    
-    isOptionsChanged() {
-      return (
-        JSON.stringify(this.nextOptions) !==
-        JSON.stringify(this.currOptions)
-      );
-    },
-    
-    // last page number available 0 indexed
-    maxPageNumber() {
-      // calculate results with undefined trailing removed
-      const maxPageNumber = Math.floor(
-        this.currResults.length /
-        this.pageSize
-      );
-      return maxPageNumber;
-    },
-    
-    currPageResults() {
-      const startingIndex = this.pageNumber * this.pageSize;
-      const endingIndex = (this.pageNumber + 1) * this.pageSize;
-      return this.currResults
-        .slice(startingIndex, endingIndex)
-        .filter(result => result != null);
-    },
-    
-    isCurrPageEmpty() {
-      return !this.isLoading && this.currPageResults.length === 0;
-    },
-  },
-  
-  methods: {
-    ...createNamespacedHelpers('browse')
-      .mapActions(['updateResults']),
-    async updateCurrResults() {
-        this.isLoading = true;
-        let results;
-        try {
-          results = await this.updateResults({
-            options: cloneOptions(this.currOptions),
-            localPageSize: this.pageSize,
-            localPageNumber: this.pageNumber,
-          });
-        }
-        catch (error) {
-          this.isLoading = false;
-          return;
-        }
-        this.currResults = results.slice();
-        this.isLoading = false;
-    },
-    
-    updateOptions(options, newPageNumber) {
-      options = cloneOptions(options);
-      newPageNumber = parseInt(newPageNumber);
-      const defaultOptions = createOptions();
-
-      this.currOptions.titleFilter = (
-        options.titleFilter ||
-        defaultOptions.titleFilter
-      );
-      this.currOptions.authorFilter = (
-        options.authorFilter ||
-        defaultOptions.authorFilter
-      );
-      this.currOptions.townFilter = (
-        options.townFilter ||
-        defaultOptions.townFilter
-      );
-      this.currOptions.styleTagsFilter = (
-        options.styleTagsFilter ||
-        defaultOptions.styleTagsFilter
-      );
-      this.currOptions.typeTagsFilter = (
-        options.typeTagsFilter ||
-        defaultOptions.typeTagsFilter
-      );
-      
-      this.pageNumber = newPageNumber || 0;
-      this.updateCurrResults();
-    },
-    
-    // update route with options
-    updateRoute(options, newPageNumber) {
-      newPageNumber = Number.parseInt(newPageNumber);
-      const currentRoute = this.$router.currentRoute;
-      const routeOptions = {
-        path: currentRoute.path,
-        query: {
-          ...cloneOptions(options),
-          pageNumber: newPageNumber,
-        },
-      };
-      
-      const currentQs = qs.stringify(currentRoute.query);
-      const nextQs = qs.stringify(routeOptions.query);
-      const willUpdate = currentQs !== nextQs;
-      if (willUpdate)
-        this.$router.push(routeOptions);
-    },
-    
-    onChangePage(newPageNumber) {
-      this.pageNumber = Math.min(
-        Math.max(newPageNumber, 0),
-        this.maxPageNumber,
-      );
-      this.updateRoute(
-        this.currOptions,
-        Math.min(this.maxPageNumber, Math.max(this.pageNumber, 0)),
-      );
-    },
-    
-    onPrevPage() {
-      this.updateRoute(this.currOptions, Math.max(this.pageNumber - 1), 0);
-    },
-    
-    onNextPage() {
-      this.updateRoute(this.currOptions, Math.min(this.maxPageNumber, this.pageNumber + 1));
-    },
-    
-    onJumpPage() {
-      const response = window.prompt("Page number to jump to:");
-      if (response == null || response === "") return;
-      try {
-        const pn = Number.parseInt(response);
-        const errorMessage = `Page does not exist: ${pn}`;
-        if (pn < 0)
-          throw new Error(errorMessage)
-        else if (pn > this.maxPageNumber)
-          throw new Error(errorMessage);
-        this.updateRoute(this.currOptions, pn);
-      }
-      catch (error) {
-        window.alert(error.message);
-      }
-    },
-    
-    onSearch() {
-      // will trigger updateOptions
-      this.updateRoute(this.nextOptions, 0);
-    },
-  },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter (to, from, next: NavigationGuardNext<Browse>) {
     const defaultOptions = createOptions();
     const {
       titleFilter,
@@ -392,34 +203,29 @@ export default {
       pageNumber,
     } = to.query;
     
-    const options = {
-      titleFilter,
-      townFilter,
-      authorFilter,
-      styleTagsFilter,
-      typeTagsFilter,
-    };
-    
     const normalizedOptions = {
       titleFilter: titleFilter || defaultOptions.titleFilter,
       townFilter: townFilter || defaultOptions.townFilter,
       authorFilter: authorFilter || defaultOptions.authorFilter,
-      styleTagsFilter: (styleTagsFilter || defaultOptions.styleTagsFilter)
+      styleTagsFilter: (styleTagsFilter as SearchOptions['styleTagsFilter'] || defaultOptions.styleTagsFilter)
+        // @ts-ignore
         .filter(stf => stf !== "")
         .concat(defaultOptions.styleTagsFilter)
         .slice(0, defaultOptions.styleTagsFilter.length),
-      typeTagsFilter: (typeTagsFilter || defaultOptions.typeTagsFilter)
+      typeTagsFilter: (typeTagsFilter as SearchOptions['typeTagsFilter'] || defaultOptions.typeTagsFilter)
+        // @ts-ignore
         .filter(ttf => ttf !== "")
         .concat(defaultOptions.typeTagsFilter)
         .slice(0, defaultOptions.typeTagsFilter.length),
-    };
+    } as SearchOptions;
     
     next(vm => {
-      vm.updateOptions(normalizedOptions, pageNumber || 0);
-      vm.updateRoute(normalizedOptions, pageNumber || 0);
+      vm.updateOptions(normalizedOptions, pageNumber as string || 0);
+      vm.updateRoute(normalizedOptions, pageNumber as string || 0);
     });
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate (to, _from, next: NavigationGuardNext<Browse>) {
+    const defaultOptions = createOptions();
     let {
       titleFilter,
       townFilter,
@@ -430,16 +236,253 @@ export default {
     } = to.query;
     
     const options = {
-      titleFilter,
-      townFilter,
-      authorFilter,
+      titleFilter: titleFilter || defaultOptions.titleFilter,
+      townFilter: townFilter || defaultOptions.townFilter,
+      authorFilter: authorFilter || defaultOptions.authorFilter,
       styleTagsFilter,
       typeTagsFilter,
     };
     
+    // @ts-ignore
     this.updateOptions(options, pageNumber);
     next();
-  },
+  }
+})
+export default class Browse extends Vue {
+  readonly colors = colors;
+  readonly styleTagOptions = Object.values(StyleTag);
+  readonly typeTagOptions = Object.values(TypeTag);
+  
+  /**
+   * The current search options as determined by the route query parameters.
+   */
+  currOptions: SearchOptions = createOptions();
+  
+  /**
+   * The current search results for the current search options.
+   */
+  currResults: PatternEntry[] = new Array();
+  
+  /**
+   * The search options to update the page route to when search is executed.
+   */
+  nextOptions: SearchOptions = createOptions();
+  
+  /**
+   * Whether or not the page is waiting on new results.
+   */
+  isLoading: boolean = false;
+  
+  /**
+   * The number of patterns to be displayed on the current page.
+   * Since the pages are virtualized pages, we can set it to any number.
+   */
+  pageSize: number = 30;
+  
+  /**
+   * The 0-indexed page number.
+   */
+  pageNumber: number = 0;
+  
+  /**
+   * Style tag options lists available at each selected style tag index.
+   */
+  get styleOptsList(): Option<StyleTag | null>[][] {
+    return computeOptsList(
+      this.nextOptions.styleTagsFilter,
+      [{ text: '- - -', value: null }],
+      this.styleTagOptions.map(style => ({ text: style, value: style })),
+    );
+  }
+
+  /**
+   * Type tag options lists available at each selected style tag index.
+   */
+  get typeOptsList(): Option<TypeTag | null>[][] {
+    return computeOptsList(
+      this.nextOptions.typeTagsFilter,
+      [{ text: '- - -', value: null }],
+      this.typeTagOptions.map(style => ({ text: style, value: style })),
+    );
+  }
+  
+  /**
+   * Sorting options.
+   */
+  get sortingOpts(): Option<Sorting>[] {
+    return Object.entries(Sorting)
+      .reverse()
+      .map(([text, value]) => ({
+          text,
+          value,
+        }));
+  }
+  
+  /**
+   * Whether or not any options have changed.
+   */
+  get isOptionsChanged(): boolean {
+    // console.log('curr', JSON.stringify(this.currOptions))
+    // console.log('next', JSON.stringify(this.nextOptions))
+    return (
+      JSON.stringify(this.nextOptions) !==
+      JSON.stringify(this.currOptions)
+    );
+  }
+  
+  /**
+   * The last page number available 0 indexed.
+   */
+  get maxPageNumber(): number {
+    // calculate results with undefined trailing removed
+    const maxPageNumber = Math.floor(
+      this.currResults.length /
+      this.pageSize
+    );
+    return maxPageNumber;
+  }
+  
+  get currPageResults() {
+    const startingIndex = this.pageNumber * this.pageSize;
+    const endingIndex = (this.pageNumber + 1) * this.pageSize;
+    return this.currResults
+      .slice(startingIndex, endingIndex)
+      .filter(result => result != null);
+  }
+  
+  /**
+   * Whether or not we have 0 search results after searching.
+   */
+  get isCurrPageEmpty(): boolean {
+    return !this.isLoading && this.currPageResults.length === 0;
+  }
+  
+  @browseModule.Action('updateResults')
+  updateResults!: ({
+    options,
+    localPageSize,
+    localPageNumber,
+  }: {
+    options: SearchOptions,
+    localPageSize: number,
+    localPageNumber: number,
+  }) => Promise<PatternEntry[]>;
+  
+  async updateCurrResults() {
+      this.isLoading = true;
+      let results: PatternEntry[];
+      try {
+        results = await this.updateResults({
+          options: cloneOptions(this.currOptions),
+          localPageSize: this.pageSize,
+          localPageNumber: this.pageNumber,
+        });
+      }
+      catch (error) {
+        this.isLoading = false;
+        return;
+      }
+      this.currResults = results.slice();
+      this.isLoading = false;
+  }
+  
+  updateOptions(options: SearchOptions, newPageNumber: string | number) {
+    options = cloneOptions(options);
+    const pageNumber = typeof newPageNumber === 'string'
+      ? parseInt(newPageNumber)
+      : newPageNumber;
+    const defaultOptions = createOptions();
+
+    this.currOptions.titleFilter = (
+      options.titleFilter ||
+      defaultOptions.titleFilter
+    );
+    this.currOptions.authorFilter = (
+      options.authorFilter ||
+      defaultOptions.authorFilter
+    );
+    this.currOptions.townFilter = (
+      options.townFilter ||
+      defaultOptions.townFilter
+    );
+    this.currOptions.styleTagsFilter = (
+      options.styleTagsFilter ||
+      defaultOptions.styleTagsFilter
+    );
+    this.currOptions.typeTagsFilter = (
+      options.typeTagsFilter ||
+      defaultOptions.typeTagsFilter
+    );
+    
+    this.pageNumber = pageNumber || 0;
+    this.updateCurrResults();
+  }
+  
+  // update route with options
+  updateRoute(options: SearchOptions, newPageNumber: string | number) {
+    const pageNumber = typeof newPageNumber === 'string'
+      ? parseInt(newPageNumber)
+      : newPageNumber;
+    const currentRoute = this.$router.currentRoute;
+    const routeOptions = {
+      path: currentRoute.path,
+      query: {
+        ...cloneOptions(options),
+        pageNumber,
+      },
+    };
+    
+    const currentQs = qs.stringify(currentRoute.query);
+    const nextQs = qs.stringify(routeOptions.query);
+    const willUpdate = currentQs !== nextQs;
+    if (willUpdate)
+      this.$router.push(`${currentRoute.path}?${nextQs}`);
+  }
+  
+  onChangePage(newPageNumber: number) {
+    this.pageNumber = Math.min(
+      Math.max(newPageNumber, 0),
+      this.maxPageNumber,
+    );
+    this.updateRoute(
+      this.currOptions,
+      Math.min(this.maxPageNumber, Math.max(this.pageNumber, 0)),
+    );
+  }
+  
+  onPrevPage() {
+    this.updateRoute(this.currOptions, Math.max(this.pageNumber - 1));
+  }
+  
+  onNextPage() {
+    this.updateRoute(this.currOptions, Math.min(this.maxPageNumber, this.pageNumber + 1));
+  }
+  
+  onJumpPage() {
+    const response = window.prompt("Page number to jump to:");
+    if (response == null || response === "") return;
+    try {
+      const pn = Number.parseInt(response);
+      const errorMessage = `Page does not exist: ${pn}`;
+      if (pn < 0)
+        throw new Error(errorMessage)
+      else if (pn > this.maxPageNumber)
+        throw new Error(errorMessage);
+      this.updateRoute(this.currOptions, pn);
+    }
+    catch (error) {
+      // window.alert(error.message);
+    }
+  }
+  
+  onSearch() {
+    // clearing it sets it to null for some reason, fix it
+    // https://github.com/vuetifyjs/vuetify/issues/4144
+    this.nextOptions.titleFilter = this.nextOptions.titleFilter || "";
+    this.updateRoute(this.nextOptions, 0);
+  }
+  
+  public onSearchDebounced = debounce(this.onSearch, 200);
 };
 </script>
 

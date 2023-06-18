@@ -9,7 +9,7 @@
   >
     <VBtn
       v-for="(option) in options"
-      :key="option.message"
+      :key="option.label"
       class="btn"
       value="''"
       @click="option.callback()"
@@ -21,7 +21,8 @@
 </template>
 
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   VBottomNavigation,
   VBtn,
@@ -29,32 +30,27 @@ import {
 } from "vuetify/lib";
 import colors from "@/styles/colors.scss";
 
-/**
- * INTERFACE FOR OPTIONS
- * interface Option {
- *  icon: string,
- *  label: string,
- *  callback: function,
- * }
- */
-export default {
-  name: "UtilityBar",
+
+export interface UtilityBarOption {
+  icon: string,
+  label: string,
+  callback: Function,
+}
+
+@Component({
   components: {
     VBottomNavigation,
     VBtn,
     VIcon,
   },
-  props: {
-    options: {
-      type: Array,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      colors,
-    };
-  }
+})
+export default class UtilityBar extends Vue {
+  @Prop({
+    type: Array,
+    default: () => [],
+  }) readonly options!: UtilityBarOption[];
+  
+  readonly colors = colors;
 };
 </script>
 

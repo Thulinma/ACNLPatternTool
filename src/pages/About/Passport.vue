@@ -73,67 +73,76 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VIcon } from "vuetify/lib";
+import { MemberOptions } from "./About.vue";
 import InfoItem from "./InfoItem.vue";
 import colors from "@/styles/colors.scss";
 
-export default {
+@Component({
   components: {
     VIcon,
     InfoItem,
   },
-  props: {
-    headerTextColor: {
-      type: String,
-      default: () => "#91a28a",
-    },
-    accentColor: {
-      type: String,
-      default: () => "#e6eccf",
-    },
-    photo: {
-      type: String,
-      default: () => "",
-    },
-    name: {
-      type: String,
-      default: () => "Tom Nook",
-    },
-    greeting: {
-      type: String,
-      default: () => "...",
-    },
-    title: {
-      type: String,
-      default: () => "Aspiring Millionaire",
-    },
-    role: {
-      type: String,
-      default: () => "Snake oil salesman",
-    },
-    roleIcon: {
-      type: String,
-      default: () => "mdi-wrench",
-    },
-    topInfoItems: {
-      type: Array,
-      default: () => [],
-    },
-    bottomInfoItems: {
-      type: Array,
-      default: () => [],
-    },
-    bottomLeftText: {
-      type: String,
-      default: () => "",
-    },
-  },
-  data() {
-    return {
-      colors,
-    };
-  },
+})
+export default class Passport extends Vue {
+  @Prop({
+    type: String,
+    default: () => "#91a28a",
+  }) headerTextColor!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "#e6eccf",
+  }) accentColor!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "",
+  }) photo!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "Tom Nook",
+  }) name!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "...",
+  }) greeting!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "Aspiring Millionaire",
+  }) title!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "Snake oil salesman",
+  }) role!: string;
+  
+  @Prop({
+    type: String,
+    default: () => "mdi-wrench",
+  }) roleIcon!: string;
+  
+  @Prop({
+    type: Array,
+    default: () => [],
+  }) topInfoItems!: MemberOptions[];
+  
+  @Prop({
+    type: Array,
+    default: () => [],
+  }) bottomInfoItems!: MemberOptions[];
+  
+  @Prop({
+    type: String,
+    default: () => "",
+  }) bottomLeftText!: string;
+  
+  readonly colors = colors;
 };
 </script>
 

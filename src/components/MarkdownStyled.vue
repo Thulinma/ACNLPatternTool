@@ -4,9 +4,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "StyledMarkdown",
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component
+export default class StyledMarkdown extends Vue {
 };
 </script>
 

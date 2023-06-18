@@ -168,7 +168,7 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
 /* libs */
 import DrawingTool from "@/libs/DrawingTool";
 import { view } from "@/libs/origin";
@@ -182,8 +182,10 @@ import {
   patternExts,
   qrImageExts,
 } from "@/libs/reader";
-import { createPatternItem } from "@/libs/storage";
+import { PatternItem, createPatternItem } from "@/libs/storage";
 // components
+import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import { mapActions } from "vuex";
 import {
   VDialog,
@@ -202,7 +204,28 @@ import ThreeDRender from "@/components/ThreeDRender.vue";
 import Toolbar from "./Toolbar.vue";
 import CancelButton from "@/components/modals/CancelButton.vue";
 
-export default {
+const storageModule = namespace('storage');
+
+/**
+ * Mirrored pattern details in an object to sync w/ pattern as it changes.
+ */
+export interface PatternDetails {
+  title: string,
+  creator: {
+    id: number,
+    name: string,
+    gender?: "Male" | "Female",
+  },
+  town: {
+    id: number,
+    name: string,
+  },
+  type: number,
+}
+
+export type ColorPickerMode = "acnl" | "acnh";
+
+@Component({
   name: "Editor",
   components: {
     VDialog,
@@ -220,286 +243,377 @@ export default {
     Publish,
     CancelButton,
   },
-  data() {
-    // randomize the gender
-    const randomBinary = Math.floor(Math.random());
-    return {
-      patternExts,
-      qrImageExts,
-
-      drawingTool: new DrawingTool(),
-      patternDetails: {
-        // redundant mirrored properties, need these to sync
-        title: "Empty",
-        creator: {
-          id: 0,
-          name: "Unknown",
-        },
-        town: {
-          id: 0,
-          name: "Unknown",
-        },
-        type: 9,
-      },
-
-      // colorTool & toolbar fields
-      prevColorPicker: "acnl",
-      colorPicker: null, // color picker mode
-
-      // modals
-      convertImage: null,
-      publishing: false,
-
-      // menu states
-      forceShowImportMenu: false,
-      forceShowExportMenu: false,
-
-      // main pattern canvas settings
-      mainGrid: true,
-    };
-  },
-  computed: {
-    importMenuItems() {
-      const items = [
-        {
-          label: "Convert from IMG",
-          onSelect: () => {
-            this.convertImage = true;
-          }
-        },
-        {
-          label: "Open QR Code",
-          exts: qrImageExts,
-          onLoad: this.load,
-        },
-        {
-          label: "Open .ACNL / .ACNH",
-          exts: patternExts,
-          onLoad: this.load,
-        },
-        {
-          label: "Open .ZIP / .DAT",
-          onLoadCollection: this.load,
+})
+export default class Editor extends Vue {
+  $refs!: {
+    main: HTMLCanvasElement,
+    preview: HTMLCanvasElement,
+  };
+  
+  readonly patternExts!: typeof patternExts;
+  readonly qrImageExts!: typeof qrImageExts;
+  
+  drawingTool: DrawingTool = new DrawingTool();
+  
+  /**
+   * Mirrored pattern details in an object to sync w/DrawingTool as it changes.
+   * Cannot completely track internal drawing tool changes (vue limitation).
+   */
+  patternDetails: PatternDetails = {
+    title: "Empty",
+    creator: {
+      id: 0,
+      name: "Unknown",
+    },
+    town: {
+      id: 0,
+      name: "Unknown",
+    },
+    type: 9,
+  };
+  
+  /**
+   * The current color picker opened or null if not open.
+   */
+  colorPicker: ColorPickerMode | null = null;
+  /**
+   * Used to track the last opened color picker type to re-open if tools need them.
+   */
+  prevColorPicker: ColorPickerMode = "acnl";
+  
+  /**
+   * Whether the convert image modal is open.
+   */
+  convertImage: boolean = false;
+  /**
+   * Whether the publishing modal is open.
+   */
+  publishing: boolean = false;
+  
+  // menu states
+  forceShowImportMenu: boolean = false;
+  forceShowExportMenu: boolean = false;
+  
+  // main pattern canvas settings
+  mainGrid: boolean = true;
+  
+  get importMenuItems() {
+    const items = [
+      {
+        label: "Convert from IMG",
+        onSelect: () => {
+          this.convertImage = true;
         }
-      ];
-      return items;
-    },
-    exportMenuItems() {
-      const items = [];
-      if (this.drawingTool.compatMode === "ACNL") {
-        items.push(
-          {
-            label: "as .ACNL",
-            onSelect: this.downloadBinary,
-          },
-          {
-            label: "as QR Code",
-            onSelect: this.downloadQR,
-          },
-        );
+      },
+      {
+        label: "Open QR Code",
+        exts: qrImageExts,
+        onLoad: this.load,
+      },
+      {
+        label: "Open .ACNL / .ACNH",
+        exts: patternExts,
+        onLoad: this.load,
+      },
+      {
+        label: "Open .ZIP / .DAT",
+        onLoadCollection: this.load,
       }
-      if (this.drawingTool.compatMode === "ACNH") {
-        items.push(
-          {
-            label: "as .ACNH",
-            onSelect: this.downloadBinary,
-          },
-          {
-            label: "as PBL",
-            onSelect: this.downloadQR,
-          },
-        );
-      }
+    ];
+    return items;
+  };
+  
+  
+  get exportMenuItems() {
+    const items = [];
+    if (this.drawingTool.compatMode === "ACNL") {
+      items.push(
+        {
+          label: "as .ACNL",
+          onSelect: this.downloadBinary,
+        },
+        {
+          label: "as QR Code",
+          onSelect: this.downloadQR,
+        },
+      );
+    }
+    if (this.drawingTool.compatMode === "ACNH") {
+      items.push(
+        {
+          label: "as .ACNH",
+          onSelect: this.downloadBinary,
+        },
+        {
+          label: "as PBL",
+          onSelect: this.downloadQR,
+        },
+      );
+    }
+    items.push({
+      label: "to Storage",
+      onSelect: this.saveToStorage,
+    });
+    if (this.drawingTool.compatMode === "ACNL") {
       items.push({
-        label: "to Storage",
-        onSelect: this.saveToStorage,
+            label: "Publish",
+            onSelect: this.beginPublishing,
       });
-      if (this.drawingTool.compatMode === "ACNL") {
-        items.push({
-              label: "Publish",
-              onSelect: this.beginPublishing,
-        });
-      }
-      return items;
-    },
-  },
-  methods: {
-    ...mapActions("storage", ["add"]),
-    // ------------------
-    // REACTION FUNCTIONS
-    // ------------------
-    // data can be binary string or any drawingTool accepted data type
-    load([drawingTool]) {
-      this.drawingTool.load(drawingTool.toString());
-      this.drawingTool.render();
-      this.syncPatternDetails();
-    },
-    onColorPicked: function (color, log = true) {
-      if (this.drawingTool.currentColor === 15) {
-        return alert("This one has to stay transparent!");
-      }
-      const currentColor = this.drawingTool.currentColor;
-      if (this.drawingTool.getPalette(currentColor) === color) return;
-      this.drawingTool.pushUndo();
-      this.drawingTool.setPalette(this.drawingTool.currentColor, color);
-      if (log) console.log(`color picked: ${color}`);
-    },
-    onChangeCurrentColor: function (idx, log = true) {
-      if (this.drawingTool.currentColor === idx) return;
-      this.drawingTool.currentColor = idx;
-      this.drawingTool.onColorChange();
-      if (log) console.log(`changed current color: ${idx}`);
-    },
-    onChangeColorPicker: function (mode) {
-      if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
-      this.colorPicker = mode;
-    },
-    onChangePrevColorPicker: function (mode) {
-      if (!["acnh", "acnl"].includes(mode)) return;
-      else this.prevColorPicker = mode;
-    },
-    updatePatternDetails: function (patternDetails) {
-      // update current with incoming
-      this.patternDetails = {
-        ...this.patternDetails,
-        ...patternDetails,
-      };
+    }
+    return items;
+  }
+  
+  @storageModule.Action('add')
+  add!: (patternItems: PatternItem[]) => Promise<void>
+  
+  // ------------------
+  // REACTION FUNCTIONS
+  // ------------------
+  load([drawingTool]: DrawingTool[]) {
+    this.drawingTool.load(drawingTool.toString());
+    this.drawingTool.render();
+    this.syncPatternDetails();
+  }
+  
+  
+  /**
+   * When a color is picked, update the drawing tool with the color picked.
+   * @param color The css hex color string to attempt changing to.
+   * @param log Whether to log the change.
+   */
+  onColorPicked(color: string, log = true) {
+    if (this.drawingTool.currentColor === 15) {
+      return alert("This one has to stay transparent!");
+    }
+    const currentColor = this.drawingTool.currentColor;
+    if (this.drawingTool.getPalette(currentColor) === color) return;
+    this.drawingTool.pushUndo();
+    this.drawingTool.setPalette(this.drawingTool.currentColor, color);
+    if (log) console.log(`color picked: ${color}`);
+  }
+  
+  
+  /**
+   * When the current color is changed,
+   * @param idx The index of the current color.
+   * @param log Whether to log the change.
+   */
+  onChangeCurrentColor(idx: number, log = true) {
+    if (this.drawingTool.currentColor === idx) return;
+    this.drawingTool.currentColor = idx;
+    this.drawingTool.onColorChange();
+    if (log) console.log(`changed current color: ${idx}`);
+  }
+  
+  
+  /**
+   * When the color picker changes between ACNL and ACNH modes.
+   * Updates color picker mode and tracking data.
+   */
+  onChangeColorPicker(mode: ColorPickerMode | null) {
+    if (this.colorPicker != null) this.prevColorPicker = this.colorPicker;
+    this.colorPicker = mode;
+  }
+  
+  
+  /**
+   * When the previous color picker mode changes.
+   */
+  onChangePrevColorPicker(mode: ColorPickerMode) {
+    if (!["acnh", "acnl"].includes(mode)) return;
+    else this.prevColorPicker = mode;
+  }
+  
+  
+  /**
+   * Updates the current pattern details with new pattern details.
+   */
+  updatePatternDetails(patternDetails: PatternDetails) {
+    // update current with incoming
+    this.patternDetails = {
+      ...this.patternDetails,
+      ...patternDetails,
+    };
+    
+    // alias everything and update drawingTool
+    const { title, creator, town, type } = this.patternDetails;
+    this.drawingTool.title = title;
+    this.drawingTool.patternType = type;
+    this.drawingTool.creator = [creator.name, creator.id];
+    this.drawingTool.town = [town.name, town.id];
+  }
+  
+  
+  /**
+   * Update the canvas by setting or unsetting grid lines.
+   * @param newGridStatus Whether the grid lines should be turned on.
+   */
+  updateMainGrid(newGridStatus: boolean) {
+    this.mainGrid = newGridStatus;
+    this.drawingTool.changeCanvasGrid(this.$refs.main, { grid: newGridStatus });
+    this.drawingTool.render();
+  }
+  
+  
+  // ------------------
+  // SAVING FUNCTIONS
+  // ------------------
+  /**
+   * Downloads the pattern file for the current pattern.
+   */
+  async downloadBinary() {
+    const namedPatternBlob = await drawingToolToNamedPatternBlob(this.drawingTool);
+    await downloadNamedBlob(namedPatternBlob);
+  }
+  
+  /**
+   * Downloads the qr code for the current pattern.
+   */
+  async downloadQR() {
+    const namedImageBlob = await drawingToolToNamedImageBlob(this.drawingTool);
+    await downloadNamedBlob(namedImageBlob);
+  }
+  
+  
+  /**
+   * Saves the current pattern in the drawing tool to the storage.
+   */
+  async saveToStorage() {
+    const copy = new DrawingTool(this.drawingTool.toString());
+    await this.add([createPatternItem({
+      drawingTool: copy,
+      createdDate: new Date(),
+    })]);
+    window.alert("Successfully saved to Storage!");
+  }
+  
+  
+  // MODAL REACTION
+  beginPublishing() {
+    if (this.drawingTool.compatMode === "ACNH") {
+      window.alert(
+        "Publishing is not available for ACNH formatted patterns."
+      );
+      return;
+    }
+    this.publishing = true;
+  }
 
-      // alias everything and update drawingTool
-      const { title, creator, town, type } = this.patternDetails;
-      this.drawingTool.title = title;
-      this.drawingTool.patternType = type;
-      this.drawingTool.creator = [creator.name, creator.id];
-      this.drawingTool.town = [town.name, town.id];
-    },
-    updateMainGrid: function (newGridStatus) {
-      this.$data.mainGrid = newGridStatus;
-      this.drawingTool.changeCanvasGrid(this.$refs.main, { grid: newGridStatus });
-      this.drawingTool.render();
-    },
-    // ------------------
-    // SAVING FUNCTIONS
-    // ------------------
-    async downloadBinary() {
-      const namedPatternBlob = await drawingToolToNamedPatternBlob(this.drawingTool);
-      await downloadNamedBlob(namedPatternBlob);
-    },
-    async downloadQR() {
-      const namedImageBlob = await drawingToolToNamedImageBlob(this.drawingTool);
-      await downloadNamedBlob(namedImageBlob);
-    },
-    async saveToStorage() {
-      const copy = new DrawingTool(this.drawingTool.toString());
-      await this.add([createPatternItem({
-        drawingTool: copy,
-        createdDate: new Date(),
-      })]);
-      window.alert("Successfully saved to Storage!");
-    },
-
-    // MODAL REACTION
-    beginPublishing() {
-      if (this.drawingTool.compatMode === "ACNH") {
-        window.alert(
-          "Publishing is not available for ACNH formatted patterns."
-        );
-        return;
-      }
-      this.publishing = true;
-    },
-
-    // ---------------------------------------------
-    // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
-    // ---------------------------------------------
-    // sets up an new (already existing) instance of drawingTool
-    initializePattern: async function () {
-      // intial color palette
-      const initialColors = [
-        "#FFFFFF",
-        "#888888",
-        "#000000",
-        "#FF0000",
-        "#FF6600",
-        "#FFFF00",
-        "#22DD22",
-        "#008833",
-        "#00CDFF",
-        "#1077FF",
-        "#0000FF",
-        "#CC00FF",
-        "#FF00CC",
-        "#FFAA88",
-        "#993200",
-      ];
-      let currentColor = 0;
-      for (const color of initialColors) {
-        this.onChangeCurrentColor(currentColor, false);
-        this.onColorPicked(color, false);
-        ++currentColor;
-      }
-      // generate stitching patterns
-      const stichingColor = initialColors.indexOf("#FFAA88");
-      this.onChangeCurrentColor(stichingColor, false);
-      for (let i = 1; i < 32; ++i) {
-        this.drawingTool.setPixel(15, i); // vertical stiches
-        this.drawingTool.setPixel(i, 15); // horizontal stiches
-        if ((i + 1) % 3 === 0) ++i;
-      }
-      this.drawingTool.setPixel(15, 15);
-      // reset current color back to normal
-      this.onChangeCurrentColor(0, false);
-      console.log("new pattern initialized");
-    },
-    // load a pattern from the route, set up new pattern if none in route
-    loadFromRoute: async function () {
-      const isPatternInUrlHash = this.$router.currentRoute.hash.length > 1;
-      if (!isPatternInUrlHash) {
-        this.initializePattern();
-        return;
-      }
-      // pattern stored in URL
-      const fragment = this.$router.currentRoute.hash.substring(1);
-      // determine protocols
-      const isHashProtocol = fragment.startsWith("H:");
-      if (isHashProtocol) {
-        const hash = fragment.substring(2);
-        const bytes = await view(hash);
-        this.drawingTool.load(bytes);
-      } else {
-        this.drawingTool.load(lzString.compressToUTF16("TEST"));
-      }
-      return true;
-    },
-    // syncs relevant details for updateDetails
-    syncPatternDetails: async function () {
-      // copy details from drawingTool
-      const { creator, town } = this.patternDetails;
-      this.patternDetails.title = this.drawingTool.title;
-      this.patternDetails.type = this.drawingTool.patternType;
-      [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
-      [town.name, town.id] = this.drawingTool.town;
-    },
-    onImportTouchStart() {
-      this.forceShowImportMenu = !this.forceShowImportMenu;
-    },
-    onExportTouchStart() {
-      this.forceShowExportClick = !this.forceShowExportClick;
-    },
-  },
-  mounted: async function () {
+  // ---------------------------------------------
+  // ROUTE LOADING / COMPONENT MOUNTING  FUNCTIONS
+  // ---------------------------------------------
+  /**
+   * sets up an new (already existing) instance of drawingTool
+   */
+  async initializePattern(): Promise<void> {
+    // intial color palette
+    const initialColors = [
+      "#FFFFFF",
+      "#888888",
+      "#000000",
+      "#FF0000",
+      "#FF6600",
+      "#FFFF00",
+      "#22DD22",
+      "#008833",
+      "#00CDFF",
+      "#1077FF",
+      "#0000FF",
+      "#CC00FF",
+      "#FF00CC",
+      "#FFAA88",
+      "#993200",
+    ];
+    let currentColor = 0;
+    for (const color of initialColors) {
+      this.onChangeCurrentColor(currentColor, false);
+      this.onColorPicked(color, false);
+      ++currentColor;
+    }
+    // generate stitching patterns
+    const stichingColor = initialColors.indexOf("#FFAA88");
+    this.onChangeCurrentColor(stichingColor, false);
+    for (let i = 1; i < 32; ++i) {
+      this.drawingTool.setPixel(15, i); // vertical stiches
+      this.drawingTool.setPixel(i, 15); // horizontal stiches
+      if ((i + 1) % 3 === 0) ++i;
+    }
+    this.drawingTool.setPixel(15, 15);
+    // reset current color back to normal
+    this.onChangeCurrentColor(0, false);
+    console.log("new pattern initialized");
+  }
+  
+  
+  /**
+   * Load a pattern from the route, set up new pattern if none in route
+   * Returns true when successfully loaded from url.
+   */
+  async loadFromRoute(): Promise<boolean | undefined> {
+    const isPatternInUrlHash = this.$router.currentRoute.hash.length > 1;
+    if (!isPatternInUrlHash) {
+      this.initializePattern();
+      return;
+    }
+    // pattern stored in URL
+    const fragment = this.$router.currentRoute.hash.substring(1);
+    // determine protocols
+    const isHashProtocol = fragment.startsWith("H:");
+    if (isHashProtocol) {
+      const hash = fragment.substring(2);
+      const bytes = await view(hash);
+      this.drawingTool.load(bytes);
+    } else {
+      this.drawingTool.load(lzString.compressToUTF16("TEST"));
+    }
+    return true;
+  }
+  
+  
+  /**
+   * Syncs relevant details between the drawing tool and the pattern details.
+   */
+  syncPatternDetails() {
+    // copy details from drawingTool
+    const { creator, town } = this.patternDetails;
+    this.patternDetails.title = this.drawingTool.title;
+    this.patternDetails.type = this.drawingTool.patternType;
+    [creator.name, creator.id] = this.drawingTool.creator;
+    // [creator.name, creator.id, creator.gender] = this.drawingTool.creator;
+    [town.name, town.id] = this.drawingTool.town;
+  }
+  
+  
+  /**
+   * To force import menu to open when touching.
+   */
+  onImportTouchStart() {
+    this.forceShowImportMenu = !this.forceShowImportMenu;
+  }
+  
+  
+  /**
+   * To force export menu to open when touhcing.
+   */
+  onExportTouchStart() {
+    this.forceShowExportMenu = !this.forceShowExportMenu;
+  }
+  
+  
+  async mounted() {
     // setup drawingTool
     await this.loadFromRoute();
     this.syncPatternDetails();
 
     // mount canvases and render
-    this.drawingTool.addCanvas(this.$refs.main, { grid: this.$data.mainGrid });
+    this.drawingTool.addCanvas(this.$refs.main, { grid: this.mainGrid });
     this.drawingTool.addCanvas(this.$refs.preview);
     this.drawingTool.render();
 
     this.drawingTool.onLoad(() => {
       this.syncPatternDetails();
     });
-  },
+  }
 };
 </script>
 

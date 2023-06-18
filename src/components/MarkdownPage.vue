@@ -6,12 +6,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import MarkdownStyled from "@/components/MarkdownStyled.vue";
 
-export default {
+@Component({
   components: { MarkdownStyled },
-  name: "MarkdownPage",
+})
+export default class MarkdownPage extends Vue {
 };
 </script>
 

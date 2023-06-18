@@ -351,6 +351,13 @@ class ACNHFormat{
   static bytesForType(t){
     return ACNHFormat.texWidthForType(t) > 32 ? 2216 : 680;
   }
+  /**
+   * Converts slider positions to a css 6 digit hex color.
+   * @param {number} hIn 
+   * @param {number} sIn 
+   * @param {number} vIn 
+   * @returns {string}
+   */
   static slidersToColor(hIn, sIn, vIn){
     const s = Sinc*sIn/100.0;
     const v = (Vstart+Vinc*vIn)/100.0;
@@ -379,6 +386,13 @@ class ACNHFormat{
     while(hex.length<6) hex = '0'+hex;
     return `#${hex.toUpperCase()}`;
   }
+  /**
+   * Converts a css 6 digit hex color or numeric rgb values to slider positions.
+   * @param {string | number} r A css 6 digit hex color or numeric red rgb value.
+   * @param {number} g Numeric green rgb value.
+   * @param {number} b Numeric blue rgb value.
+   * @returns {[number, number, number]} Red, green, blue values.
+   */
   static colorToSliders(r,g,b){
     if (typeof r == "string" && r.length == 7 && r.substr(0, 1) == '#'){r = r.substr(1);}
     if (typeof r == "string" && r.length == 6){

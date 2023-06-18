@@ -46,26 +46,34 @@
   </FileLoaderCollection>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VListItem, VListItemTitle } from "vuetify/lib";
 import FileLoader from "@/components/wrapper/FileLoader.vue";
 import FileLoaderCollection from "@/components/wrapper/FileLoaderCollection.vue";
 
-export default {
-  name: "ImportMenuItem",
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    }
-  },
+export type MenuItem = { label: string } & ({
+  onSelect: Function,
+} | {
+  exts: string[],
+  onLoad: Function,
+} | {
+  onLoadCollection: Function,
+});
+
+@Component({
   components: {
     VListItem,
     VListItemTitle,
     FileLoader,
     FileLoaderCollection,
   },
-  data() { return {}; },
+})
+export default class ImportMenuItem extends Vue {
+  @Prop({
+    type: Object,
+    required: true,
+  }) item!: MenuItem;
 }
 </script>
 
