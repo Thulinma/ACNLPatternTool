@@ -4,14 +4,13 @@
       <VTextField
         class="searchbar"
         v-model="nextOptions.titleFilter"
-        @keyup.enter="onSearch"
+        @input="onSearchDebounced"
         outlined
         clearable
         placeholder="Search..."
       >
         <template #prepend-inner>
-          <VIcon v-if="isOptionsChanged" :color="colors.jambalaya">mdi-cached</VIcon>
-          <VIcon v-else :color="colors.jambalaya">mdi-magnify</VIcon>
+          <VIcon color="colors.jambalaya">mdi-magnify</VIcon>
         </template>
       </VTextField>
     </div>
@@ -26,7 +25,7 @@
           :items="typeOptsList[i]"
           outlined
           hide-details
-          @keyup.enter.prevent="onSearch"
+          @input="onSearchDebounced"
           :menu-props="{
             'content-class': 'browse-tag--menu',
           }"
@@ -42,7 +41,7 @@
           :items="styleOptsList[i]"
           outlined
           hide-details
-          @keyup.enter.prevent="onSearch"
+          @input="onSearchDebounced"
           :menu-props="{
             'content-class': 'browse-tag--menu',
           }"
@@ -54,7 +53,7 @@
           <VTextField
             class="text-field"
             v-model="nextOptions.authorFilter"
-            @keyup.enter="onSearch"
+            @input="onSearchDebounced"
             outlined
             clearable
             hide-details
@@ -66,7 +65,7 @@
           <VTextField
             class="text-field"
             v-model="nextOptions.townFilter"
-            @keyup.enter="onSearch"
+            @input="onSearchDebounced"
             outlined
             clearable
             hide-details
@@ -81,7 +80,7 @@
           :items="sortingOpts"
           outlined
           hide-details
-          @keyup.enter="onSearch"
+          @input="onSearchDebounced"
           :menu-props="{
             'content-class': 'browse-tag--menu',
           }"
@@ -126,6 +125,7 @@
 
 <script lang="ts">
 import qs from "qs";
+import { debounce } from "lodash";
 import {
   Sorting,
   StyleTag,
@@ -481,6 +481,8 @@ export default class Browse extends Vue {
     this.nextOptions.titleFilter = this.nextOptions.titleFilter || "";
     this.updateRoute(this.nextOptions, 0);
   }
+  
+  public onSearchDebounced = debounce(this.onSearch, 200);
 };
 </script>
 
