@@ -154,8 +154,10 @@ export default class ThreeDRender extends Vue {
     this.cleanUp();
     //Get new model properties
     const modelType = typeInfoToModelType.get(this.drawingTool.typeInfo);
-    if (modelType === ModelType.Standee)
+    if (modelType === ModelType.Standee) {
+      this.loading = false;
       return;
+    }
     const modelUrlData = typeInfoToModelUrlData.get(this.drawingTool.typeInfo) as ModelUrlData;
     const modelOffset = { x: 0, y: -6, z: 0, rough: 1.5 };
     (this.controls as OrbitControls).maxZoom = 2.0;
