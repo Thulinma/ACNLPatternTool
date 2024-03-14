@@ -28,7 +28,7 @@ import Passport from "./Passport.vue";
 import photoViet from "@/assets/images/char/photo_viet.jpg";
 import photoThulinma from "@/assets/images/char/photo_thulinma.svg";
 import photoTero from "@/assets/images/char/photo_tero.jpg";
-import photoMyumi from "@/assets/images/char/photo_myumi.jpg";
+import photoMayumi from "@/assets/images/char/photo_mayumi.jpg";
 import photoMelon from "@/assets/images/char/photo_melon.png";
 
 export default {
@@ -91,8 +91,8 @@ export default {
         {
           headerTextColor: "#9fa8a7",
           accentColor: "#dfebd5",
-          photo: photoMyumi,
-          name: "Myumi K.",
+          photo: photoMayumi,
+          name: "Mayumi O.",
           role: "Tool Developer",
           roleIcon: "mdi-wrench",
           greeting: "(๑•̀ㅂ•́)و",
@@ -110,6 +110,12 @@ export default {
               iconFill: "#000000",
               label: "GitHub",
               url: "https://github.com/myumi",
+            },
+            {
+              icon: "mdi-account",
+              iconFill: "#66afb8",
+              label: "Portfolio",
+              url: "https://mayumi.dev",
             },
           ],
         },
